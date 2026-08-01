@@ -13,3 +13,33 @@ The player fights through a series of gladiator battles using a customizable six
 Every decision should make the player think:
 
 > "Which die face should I replace to make my build stronger?"
+
+## Design Pillars
+
+### 1. Build Crafting Comes First
+
+The core progression of the game is not leveling up a character, but continuously improving and reshaping a six-sided die. Every new face should encourage players to think about new synergies and long-term build strategies.
+
+---
+
+### 2. Meaningful Decisions Every Turn
+
+Combat should never become a repetitive sequence of choosing the same action. Players should constantly evaluate their available actions, current build, enemy state, and possible outcomes before making a decision.
+
+---
+
+### 3. Reward Creative Synergies
+
+The most satisfying moments should come from discovering powerful combinations between die faces, equipment, spells, and status effects. Players should feel rewarded for building clever synergies rather than simply increasing damage numbers.
+
+---
+
+### 4. High Risk, High Reward
+
+Powerful effects should often come with meaningful drawbacks. Players are encouraged to take calculated risks in exchange for the possibility of creating exceptionally powerful builds.
+
+---
+
+### 5. Easy to Learn, Hard to Master
+
+The basic rules should be understandable within minutes, while mastering build optimization, resource management, and combat decisions should provide long-term depth.
