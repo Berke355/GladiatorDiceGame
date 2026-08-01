@@ -43,3 +43,60 @@ Powerful effects should often come with meaningful drawbacks. Players are encour
 ### 5. Easy to Learn, Hard to Master
 
 The basic rules should be understandable within minutes, while mastering build optimization, resource management, and combat decisions should provide long-term depth.
+
+## Core Gameplay Loop
+
+The game revolves around a simple but highly replayable gameplay loop that constantly encourages players to improve their die and experiment with new builds.
+
+```text
+Battle
+    ↓
+Earn Gold
+    ↓
+Visit Preparation Area (Market)
+    ↓
+Choose Whether to Spend Gold
+    ↓
+Buy Die Faces, Equipment, or Spells
+    ↓
+Modify Your Die
+    ↓
+Prepare Your Build
+    ↓
+Next Battle
+```
+
+### Battle
+
+Players fight enemies in turn-based gladiator battles. During combat, every turn presents meaningful decisions through different available actions (such as attacking, defending, or casting spells). The outcome of these actions is determined by rolling the customized die.
+
+### Earn Gold
+
+Winning battles rewards the player with gold. Gold is the primary resource used to improve future runs.
+
+### Preparation Area (Market)
+
+After every battle, players enter a preparation phase.
+
+This is not simply a shop, but a strategic decision space where players can improve their current build before the next fight.
+
+The market offers only a limited number of randomly selected options each visit.
+
+Players may:
+
+- Buy new die faces.
+- Buy equipment.
+- Learn new spells.
+- Skip the market entirely and save their gold for later.
+
+Players are never forced to spend their resources.
+
+### Modify the Die
+
+Newly purchased die faces can replace existing faces on the six-sided die.
+
+Choosing which face to replace is one of the most important strategic decisions in the game.
+
+### Repeat
+
+Players continue alternating between battles and preparation phases until they either defeat the final boss or lose the run.
