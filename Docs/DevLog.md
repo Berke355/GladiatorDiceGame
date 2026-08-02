@@ -1,5 +1,57 @@
-# Developer Log
+# Dev Log
 
-## Day 1
+## Day 1 - Project Initialization
 
-I Just started filling the Game Design Documant . I decided the core mechanics of the gameplay, the design philosoph and gameplay loop. I ponder the question "What do I want the player to feel during playing my game?" then I answered this by just feel powerfull. I want them to build broken synergies and as they feel powerful every run then they will start thinking "What else could I do?" and this is why they will keep playing the game. 
+### Accomplished
+- Created the GitHub repository.
+- Set up the documentation structure.
+- Wrote the High Concept.
+- Defined the Design Pillars.
+
+### Decisions
+- The die is the player's progression system.
+- Build crafting is the core gameplay.
+
+### Next Steps
+- Define the Dice System.
+
+## Day 2 - Combat Design Discussion
+
+### Accomplished
+
+- Continued defining the core gameplay systems.
+- Finalized the overall Dice System Philosophy.
+- Defined the anatomy of a die face.
+- Started designing the first build archetype (Burn).
+
+### Design Challenge
+
+While discussing combat, we identified an important design problem.
+
+The original idea was:
+
+Choose an action → Roll the die.
+
+This created situations where the rolled face could not interact with the chosen action, resulting in turns where nothing meaningful happened.
+
+Several solutions were discussed:
+
+- Allow every die face to have effects for every action.
+- Introduce a reroll system.
+- Change the combat flow.
+
+### Decision
+
+For the first prototype, the combat flow will be:
+
+Roll the die → Choose an action.
+
+Each die face can support multiple actions with different effectiveness, allowing the player to make meaningful decisions after seeing the rolled face while avoiding completely wasted turns.
+
+This decision will be validated through gameplay prototyping rather than theory alone.
+
+### Next Steps
+
+- Build the first playable combat prototype.
+- Test whether the new combat flow feels engaging.
+- Continue designing the Build Archetypes.
