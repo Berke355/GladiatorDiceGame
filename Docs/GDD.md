@@ -100,3 +100,23 @@ Choosing which face to replace is one of the most important strategic decisions 
 ### Repeat
 
 Players continue alternating between battles and preparation phases until they either defeat the final boss or lose the run.
+
+## Dice System Philosophy
+
+The die is the core of the player's progression. Instead of improving a traditional RPG character, players continuously reshape and optimize their six-sided die throughout a run.
+
+> **You don't build a hero. You build a die.**
+
+Each die face is more than a number. It represents a strategic choice that can interact with other faces, equipment, spells, and status effects to create powerful synergies.
+
+The goal is not to collect the highest numbers, but to discover the strongest combinations.
+
+### Design Principles
+
+- Every die face should have a purpose.
+- Synergies are more valuable than raw numbers.
+- Powerful builds should emerge from smart decisions, not pure luck.
+- Different runs should naturally encourage different builds.
+- Players should constantly evaluate whether a new die face fits their current strategy.
+
+The strongest moments in the game should come from discovering unexpected combinations and watching a carefully crafted build come together.
