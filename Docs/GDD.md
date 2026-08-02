@@ -120,3 +120,17 @@ The goal is not to collect the highest numbers, but to discover the strongest co
 - Players should constantly evaluate whether a new die face fits their current strategy.
 
 The strongest moments in the game should come from discovering unexpected combinations and watching a carefully crafted build come together.
+
+### Die Face Structure
+
+Every die face is defined by a common set of properties.
+
+- Name
+- Rarity
+- Price
+- Action Type
+- Value
+- Primary Effect
+- Secondary Effect (optional)
+- Tags
+- Description
