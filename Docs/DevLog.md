@@ -55,3 +55,21 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Build the first playable combat prototype.
 - Test whether the new combat flow feels engaging.
 - Continue designing the Build Archetypes.
+
+## Day 3 - Battle State Machine & Core Loop
+
+### Accomplished
+- Implemented the core State Machine architecture for the combat loop.
+- Created `BattleManager` as the central state controller.
+- Developed `BattleState` abstract base class and concrete states (`PlayerRollState`, `PlayerActionSelectState`).
+- Integrated `DieFaceSO` data array into the `BattleManager`.
+- Implemented random dice rolling logic triggering on player input (Spacebar).
+- Successfully managed state transitions using dependency injection (Constructor passing).
+
+### Decisions
+- Dice rolling logic is placed inside the `Execute` method of `PlayerRollState`, checking for explicit player input rather than rolling automatically upon entering the state. This increases game feel and interactivity.
+
+### Next Steps
+- Pass the rolled die face data from `PlayerRollState` to `PlayerActionSelectState`.
+- Implement the Action Selection mechanics (Attack, Defense, Magic).
+- Calculate and apply damage/effects based on the rolled face and chosen action.
