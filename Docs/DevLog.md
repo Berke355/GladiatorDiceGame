@@ -73,3 +73,17 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Pass the rolled die face data from `PlayerRollState` to `PlayerActionSelectState`.
 - Implement the Action Selection mechanics (Attack, Defense, Magic).
 - Calculate and apply damage/effects based on the rolled face and chosen action.
+
+## Day 4 - Action Selection & Effect Execution
+
+### Accomplished
+- Implemented `PlayerActionSelectState` to handle player input for actions.
+- Shared state data between states by storing the `currentRolledFace` inside `BattleManager`.
+- Mapped keyboard inputs (1, 2, 3) to `ActionType` enums (Attack, Defense, Magic).
+- Created the effect execution logic that filters and applies the correct `ActionEffect` from the rolled face.
+- Closed the core combat loop by transitioning back to the rolling state.
+
+### Next Steps
+- Introduce a basic Entity system with Health (HP) for Player and Enemy.
+- Implement the `EnemyTurnState`.
+- Apply actual damage/defense values to entities instead of using Debug.Log.

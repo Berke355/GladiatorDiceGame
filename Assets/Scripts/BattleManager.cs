@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class BattleManager : MonoBehaviour
 {
     private BattleState currentState;
+    public DieFaceSO currentRolledFace;
 
     [SerializeField]
     public DieFaceSO[] currentDiceFaces = new DieFaceSO[6];

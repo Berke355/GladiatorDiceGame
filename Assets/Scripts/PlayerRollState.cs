@@ -14,6 +14,7 @@ public class PlayerRollState : BattleState
             int index = Random.Range(0,6);
             DieFaceSO face = battleManager.currentDiceFaces[index];
             Debug.Log("Zar Atıldı. Gelen yüz: " + face.faceName);
+            battleManager.currentRolledFace = face;
 
             battleManager.ChangeState(new PlayerActionSelectState(battleManager));
         }
