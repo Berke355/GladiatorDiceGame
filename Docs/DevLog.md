@@ -87,3 +87,19 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Introduce a basic Entity system with Health (HP) for Player and Enemy.
 - Implement the `EnemyTurnState`.
 - Apply actual damage/defense values to entities instead of using Debug.Log.
+
+## Day 5 - Entity System & Combat Loop Finalization
+
+### Accomplished
+- Created the core `Entity` class to manage Health (HP) and temporary Block (armor) for both Player and Enemy.
+- Implemented robust damage calculation logic where Block prioritizes damage mitigation before HP reduction.
+- Implemented `EnemyTurnState` to automatically deal damage to the player and complete the turn cycle.
+- Adjusted the Block reset mechanic to trigger *after* the enemy attacks, ensuring logical defensive gameplay.
+- Added death checking logic (`currentHP <= 0`) and object destruction.
+- Prevented the "attack from the grave" bug by ensuring the game only transitions to the enemy turn if the enemy is still alive.
+- **Phase 1 Prototype is officially complete!** The core mechanical loop (Roll Die -> Select Action -> Apply Effect -> Enemy Turn -> Repeat) is fully functional and tested via the console.
+
+### Next Steps (Phase 2)
+- Implement a User Interface (UI) to visualize the Die, Action Buttons, Health, and Block.
+- Create new `DieFaceSO` assets with complex mechanics (e.g., Stun, Burn) to test build synergies.
+- Begin laying the foundation for the Market/Shop system to upgrade dice faces.

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
+    public Entity enemy;
+    public Entity player;
+
     private BattleState currentState;
     public DieFaceSO currentRolledFace;
 
