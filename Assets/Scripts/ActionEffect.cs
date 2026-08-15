@@ -1,8 +1,10 @@
 using UnityEngine;
+using System;
 
-[System.Serializable]
+[Serializable]
 public struct ActionEffect
 {
     public ActionType actionType;
-    public int value;
+    public EffectSO effectLogic;
+    public float multiplier;
 }

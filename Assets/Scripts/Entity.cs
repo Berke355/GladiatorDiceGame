@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Entity : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class Entity : MonoBehaviour
     public int maxHP;
     public int currentHP;
     public int currentBlock;
+
+    public event Action OnHealthChanged;
 
     public void TakeDamage(int damageAmount){
         if(currentBlock == damageAmount){
@@ -24,13 +27,30 @@ public class Entity : MonoBehaviour
             Debug.Log(entityName + " öldü.");
             Destroy(gameObject);
         }
+
+        OnHealthChanged?.Invoke();
     }
 
     public void GainBlock(int amount){
         currentBlock = currentBlock + amount;
+
+        OnHealthChanged?.Invoke();
     }
 
     public void ResetBlock(){
         currentBlock = 0;
+
+        OnHealthChanged?.Invoke();
+    }
+
+    public void Heal(int amount){
+        if(amount >= (maxHP - currentHP)){
+            currentHP = maxHP;
+        }
+        else if(amount < (maxHP - currentHP)){
+            currentHP = currentHP + amount;
+        }
+
+        OnHealthChanged?.Invoke();
     }
 }

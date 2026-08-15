@@ -35,21 +35,9 @@ public class PlayerActionSelectState : BattleState
 
         foreach(ActionEffect effect in battleManager.currentRolledFace.effects){
             if(effect.actionType == selectedAction){
-                if(battleManager.enemy != null){
-                    if(effect.actionType == ActionType.Attack){
-                        battleManager.enemy.TakeDamage(effect.value);
-                        Debug.Log(battleManager.player.entityName + " saldırdı! Düşmana " + effect.value + " hasar verdi.");
-                    }
-                    else if(effect.actionType == ActionType.Defense){
-                        battleManager.player.GainBlock(effect.value);
-                        Debug.Log(battleManager.player.entityName + " savunma yaptı! " + effect.value + " kalkan kazandı.");
-                    }
-                    else if(effect.actionType == ActionType.Magic){
-                        Debug.Log("Hiçbir şey olmadı.");
-                    }
-                }
-                else{
-                    break;
+                if(effect.effectLogic != null){
+                    int finalValue = Mathf.RoundToInt(battleManager.currentRolledFace.baseValue * effect.multiplier);
+                    effect.effectLogic.Execute(battleManager.player, battleManager.enemy, finalValue);
                 }
             }
         }

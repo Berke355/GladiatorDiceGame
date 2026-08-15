@@ -103,3 +103,18 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Implement a User Interface (UI) to visualize the Die, Action Buttons, Health, and Block.
 - Create new `DieFaceSO` assets with complex mechanics (e.g., Stun, Burn) to test build synergies.
 - Begin laying the foundation for the Market/Shop system to upgrade dice faces.
+
+## Day 6 - Advanced Effects Architecture (Build Crafting Foundation)
+
+### Accomplished
+- **Polymorphism Implemented:** Replaced hardcoded switch statements in `PlayerActionSelectState` with a robust Strategy Pattern using `EffectSO` (ScriptableObject).
+- **Decoupled Mechanics:** Created `DamageEffectSO`, `BlockEffectSO`, and `VampireEffectSO` as independent logic blocks (Lego pieces) that can be plugged into any die face.
+- **Base Value System:** Refactored `DieFaceSO` to hold a single `baseValue` and `ActionEffect` to use a `multiplier` instead of hardcoded raw values. This dramatically improves UI readability and game design consistency (e.g., 6 Damage vs 3 Block from a "Base 6" roll).
+- **Vampire Mechanic:** Implemented a new `Heal` method in `Entity` (with over-heal protection and UI event triggers) and successfully tested the `VampireEffect` which deals damage and heals simultaneously.
+- **UI Event Hookups Completed:** Ensured `OnHealthChanged` events trigger correctly for all health modifications, preventing tight coupling with `UIManager`.
+
+### Next Steps (Phase 3)
+- Add more advanced mechanics like `ShieldBashEffect` (Damage scaling with Block).
+- Introduce Status Effects (DoT like Poison or Burn) and EndTurn phase processing.
+- Build out the visual UI (Buttons for actions instead of keyboard inputs, animated Health Bars).
+- Begin designing the Roguelite progression loop (Map/Shop/Next Battle).

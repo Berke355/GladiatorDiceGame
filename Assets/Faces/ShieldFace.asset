@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
-  m_Name: SwordFace
+  m_Name: ShieldFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
-  faceName: Sword
-  description: 'On Defense: Gain block equal to half of my value. On Attack: damage
-    the enemy equal to my value.'
+  faceName: Shield
+  description: 'Attack: Deal damage equal to half of my value to the enemy. Defense:
+    Gain block equal to my value.'
   effects:
-  - actionType: 1
-    value: 0
   - actionType: 0
+    effectLogic: {fileID: 0}
     value: 1
+  - actionType: 1
+    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    value: 2
