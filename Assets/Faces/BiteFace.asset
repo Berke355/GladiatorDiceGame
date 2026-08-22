@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
-  m_Name: ShieldFace
+  m_Name: BiteFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
-  faceName: Shield
-  description: 'Attack: Deal damage equal to half of my value to the enemy. Defense:
-    Gain block equal to my value.'
+  faceName: Bite
+  description: 'Attack: Deal lifesteal damage equal to half of my value. Magic: Heal
+    equal to my value.'
   baseValue: 2
   effects:
   - actionType: 0
-    effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    effectLogic: {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}
     multiplier: 0.5
-  - actionType: 1
-    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
     multiplier: 1

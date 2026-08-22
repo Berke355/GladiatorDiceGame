@@ -10,16 +10,22 @@ public class PlayerRollState : BattleState
         Debug.Log("Zar atma durumuna girildi.");
     }
     public override void Execute(){
-        if(Input.GetKeyDown(KeyCode.Space)){
-            int index = Random.Range(0,6);
-            DieFaceSO face = battleManager.currentDiceFaces[index];
-            Debug.Log("Zar Atıldı. Gelen yüz: " + face.faceName);
-            battleManager.currentRolledFace = face;
-
-            battleManager.ChangeState(new PlayerActionSelectState(battleManager));
-        }
+        
     }
     public override void Exit(){
         Debug.Log("Çıkış durumuna girildi.");
+    }
+
+    public void RollTheDice(){
+        int index = Random.Range(0,6);
+        DieFaceSO face = battleManager.currentDiceFaces[index];
+        Debug.Log("Zar Atıldı. Gelen yüz: " + face.faceName);
+        battleManager.currentRolledFace = face;
+
+        if(UIManager.Instance != null){
+            UIManager.Instance.UpdateDiceText(battleManager.currentRolledFace);
+        }
+
+        battleManager.ChangeState(new PlayerActionSelectState(battleManager));
     }
 }

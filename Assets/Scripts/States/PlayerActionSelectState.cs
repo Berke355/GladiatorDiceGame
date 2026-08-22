@@ -14,16 +14,7 @@ public class PlayerActionSelectState : BattleState
     }
 
     public override void Execute(){
-
-        if(Input.GetKeyDown(KeyCode.Alpha1)){
-            ExecuteAction(ActionType.Attack);
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha2)){
-            ExecuteAction(ActionType.Defense);
-        }
-        else if(Input.GetKeyDown(KeyCode.Alpha3)){
-            ExecuteAction(ActionType.Magic);
-        }
+        
     }
 
     public override void Exit(){

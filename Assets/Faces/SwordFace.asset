@@ -15,8 +15,11 @@ MonoBehaviour:
   faceName: Sword
   description: 'On Defense: Gain block equal to half of my value. On Attack: damage
     the enemy equal to my value.'
+  baseValue: 2
   effects:
   - actionType: 1
-    value: 0
+    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    multiplier: 0.5
   - actionType: 0
-    value: 1
+    effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    multiplier: 1

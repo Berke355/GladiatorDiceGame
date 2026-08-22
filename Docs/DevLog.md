@@ -118,3 +118,17 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Introduce Status Effects (DoT like Poison or Burn) and EndTurn phase processing.
 - Build out the visual UI (Buttons for actions instead of keyboard inputs, animated Health Bars).
 - Begin designing the Roguelite progression loop (Map/Shop/Next Battle).
+
+## Day 7 - Visual UI and Architecture Refinement
+
+### Accomplished
+- **Visual UI Integration:** Replaced keyboard-based combat inputs with interactive on-screen UI buttons (`RollTheDice`, `Attack`, `Defense`, `Magic`).
+- **Health Bars:** Implemented visual Health Bars (Sliders) for both Player and Enemy to accurately track HP in real-time.
+- **Dice Roll Display:** Added dynamic UI text to display the current rolled face, its base value, and description to improve testing clarity and UX.
+- **State Machine Refactoring:** Removed legacy `Input.GetKeyDown` polling from `PlayerActionSelectState` and `PlayerRollState`. Input is now event-driven via `BattleManager` methods (`OnActionSelected`, `OnRolled`).
+- **Singleton Pattern:** Refactored `UIManager` into a Singleton to optimize UI updates (e.g., `UpdateDiceText`) and eliminate the overhead of `FindFirstObjectByType`.
+
+### Next Steps (Phase 3 Continued)
+- **Enemy AI (Intent System):** Implement Slay the Spire style intent mechanics for the enemy using the existing `EffectSO` architecture.
+- Create `EnemyBrain` and `EnemyIntent` structures.
+- Display Enemy Intents on the UI before the player acts.

@@ -31,4 +31,18 @@ public class BattleManager : MonoBehaviour
             currentState.Execute();
         }
     }
+
+    public void OnActionSelected(int actionIndex){
+        ActionType selectedAction = (ActionType)actionIndex;
+
+        if(currentState is PlayerActionSelectState playerState){
+            playerState.ExecuteAction(selectedAction);
+        }
+    }
+
+    public void OnRolled(){
+        if(currentState is PlayerRollState playerState){
+            playerState.RollTheDice();
+        }
+    }
 }
