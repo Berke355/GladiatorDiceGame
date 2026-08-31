@@ -7,12 +7,17 @@ public class EnemyTurnState : BattleState
     }
 
     public override void Enter(){
-        battleManager.player.TakeDamage(1);
-        Debug.Log(battleManager.enemy.entityName + " saldırdı ve sana 1 hasar verdi.");
-
-        battleManager.player.ResetBlock();
+        battleManager.enemy.ResetBlock();
+        
+        EnemyIntent intent = battleManager.enemyBrain.currentIntent;
+        
+        if(intent.effectLogic != null){
+            intent.effectLogic.Execute(battleManager.enemy, battleManager.player, intent.value);
+        }
+        
         battleManager.ChangeState(new PlayerRollState(battleManager));
     }
+
 
     public override void Execute(){
 

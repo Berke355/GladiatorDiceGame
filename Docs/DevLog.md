@@ -132,3 +132,14 @@ This decision will be validated through gameplay prototyping rather than theory 
 - **Enemy AI (Intent System):** Implement Slay the Spire style intent mechanics for the enemy using the existing `EffectSO` architecture.
 - Create `EnemyBrain` and `EnemyIntent` structures.
 - Display Enemy Intents on the UI before the player acts.
+
+## Day 8 - Enemy AI & Decoupled Architecture
+
+### Accomplished
+- **Enemy Intent System:** Implemented a Slay the Spire style intent system. Created `EnemyBrain` to manage and randomly select from a pool of `EnemyIntent`s.
+- **UI Intent Display:** The UIManager now displays the enemy's planned action (e.g., Attack 5, Guard 3) at the very start of the turn (during `PlayerRollState`), giving the player tactical foresight.
+- **Universal EffectSO Architecture:** Refactored `EffectSO.Execute` to use `source` and `target` instead of hardcoded `player` and `enemy`. This decoupled polymorphism allows both players and enemies to seamlessly use the exact same logic Legos (e.g., `DamageEffectSO`, `BlockEffectSO`) without duplicating scripts or adding if-statements.
+- **Deckbuilder Block Rules:** Fixed the turn-based Block reset logic. A character's block is now correctly reset at the *start of their own turn* (`PlayerRollState` for player, `EnemyTurnState` for enemy).
+
+### Next Steps
+- **Status Effects (Phase 3 Continued):** Implement a robust status effect system in `Entity.cs` to handle Damage over Time (Poison, Bleed) and Buffs/Debuffs.

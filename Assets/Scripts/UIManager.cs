@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI diceInfoText;
     public TextMeshProUGUI playerText;
     public TextMeshProUGUI enemyText;
+    public TextMeshProUGUI enemyIntentText;
     public Slider playerHealthBar;
     public Slider enemyHealthBar;
 
@@ -68,6 +69,12 @@ public class UIManager : MonoBehaviour
     public void UpdateDiceText(DieFaceSO rolledFace){
         if(rolledFace != null){
             diceInfoText.text = "Face: " + rolledFace.faceName + "\nValue: " + rolledFace.baseValue + "\n" + rolledFace.description;
+        }
+    }
+
+    public void UpdateEnemyIntentText(EnemyIntent intent){
+        if(enemyIntentText != null){
+            enemyIntentText.text = "Düşman Niyeti:\n" + intent.intentName + " (" + intent.value + ")";
         }
     }
 

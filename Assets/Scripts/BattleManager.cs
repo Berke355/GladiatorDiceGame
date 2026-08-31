@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
+    public EnemyBrain enemyBrain;
     public Entity enemy;
     public Entity player;
 
