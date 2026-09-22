@@ -6,5 +6,4 @@ public struct ActionEffect
 {
     public ActionType actionType;
     public EffectSO effectLogic;
-    public float multiplier;
 }

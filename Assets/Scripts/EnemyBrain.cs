@@ -12,7 +12,7 @@ public class EnemyBrain : MonoBehaviour
             int randomIndex = Random.Range(0, possibleIntents.Count);
             currentIntent = possibleIntents[randomIndex];
 
-            Debug.Log("Düşmanın Yeni Niyeti: " + currentIntent.intentName + "(" + currentIntent.value + ")");
+            Debug.Log("Enemy's New Intent: " + currentIntent.intentName + " (" + currentIntent.value + ")");
         }
     }
 }

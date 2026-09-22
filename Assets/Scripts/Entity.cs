@@ -1,5 +1,12 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+
+public enum StatusType {
+    None,
+    Burn,
+    FireShield
+}
 
 public class Entity : MonoBehaviour
 {
@@ -10,47 +17,93 @@ public class Entity : MonoBehaviour
 
     public event Action OnHealthChanged;
 
-    public void TakeDamage(int damageAmount){
-        if(currentBlock == damageAmount){
-            currentBlock = 0;
+    private Dictionary<StatusType, int> activeStatuses = new Dictionary<StatusType, int>();
+    private bool burnAddedThisTurn = false;
+
+    public void ApplyStatus(StatusType type, int amount) {
+        if (!activeStatuses.ContainsKey(type)) {
+            activeStatuses[type] = 0;
         }
-        else if(currentBlock > damageAmount){
-            currentBlock = currentBlock - damageAmount;
+        activeStatuses[type] += amount;
+        
+        if (type == StatusType.Burn) {
+            burnAddedThisTurn = true;
         }
-        else if(currentBlock < damageAmount){
+
+        OnHealthChanged?.Invoke();
+    }
+
+    public int GetStatus(StatusType type) {
+        if (activeStatuses.ContainsKey(type)) {
+            return activeStatuses[type];
+        }
+        return 0;
+    }
+
+    public void ConsumeStatus(StatusType type) {
+        if (activeStatuses.ContainsKey(type)) {
+            activeStatuses[type] = 0;
+            OnHealthChanged?.Invoke();
+        }
+    }
+
+    public void TakeDamage(int damageAmount, Entity source = null){
+        if(currentBlock >= damageAmount){
+            currentBlock -= damageAmount;
+        }
+        else{
             int damageTaken = damageAmount - currentBlock;
             currentBlock = 0;
-            currentHP = currentHP - damageTaken;
+            currentHP -= damageTaken;
+            if(currentHP <= 0){
+                currentHP = 0;
+                Debug.Log(entityName + " died.");
+            }
         }
 
-        if(currentHP <= 0){
-            Debug.Log(entityName + " öldü.");
-            Destroy(gameObject);
+        if (GetStatus(StatusType.FireShield) > 0 && source != null) {
+            source.ApplyStatus(StatusType.Burn, GetStatus(StatusType.FireShield));
         }
-
-        OnHealthChanged?.Invoke();
-    }
-
-    public void GainBlock(int amount){
-        currentBlock = currentBlock + amount;
-
-        OnHealthChanged?.Invoke();
-    }
-
-    public void ResetBlock(){
-        currentBlock = 0;
 
         OnHealthChanged?.Invoke();
     }
 
     public void Heal(int amount){
-        if(amount >= (maxHP - currentHP)){
+        currentHP += amount;
+        if(currentHP > maxHP){
             currentHP = maxHP;
         }
-        else if(amount < (maxHP - currentHP)){
-            currentHP = currentHP + amount;
-        }
-
         OnHealthChanged?.Invoke();
+    }
+
+    public void GainBlock(int amount){
+        currentBlock += amount;
+        OnHealthChanged?.Invoke();
+    }
+
+    public void ResetBlock(){
+        currentBlock = 0;
+        OnHealthChanged?.Invoke();
+    }
+
+    public void OnTurnStart() {
+        ResetBlock();
+        burnAddedThisTurn = false;
+        ConsumeStatus(StatusType.FireShield);
+    }
+
+    public void OnTurnEnd() {
+        int burn = GetStatus(StatusType.Burn);
+        if (burn > 0) {
+            TakeDamage(burn, null);
+            
+            if (!burnAddedThisTurn) {
+                activeStatuses[StatusType.Burn] -= 2;
+                if (activeStatuses[StatusType.Burn] < 0) {
+                    activeStatuses[StatusType.Burn] = 0;
+                }
+            }
+            OnHealthChanged?.Invoke();
+        }
     }
 }

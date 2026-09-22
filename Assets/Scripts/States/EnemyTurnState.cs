@@ -7,7 +7,7 @@ public class EnemyTurnState : BattleState
     }
 
     public override void Enter(){
-        battleManager.enemy.ResetBlock();
+        battleManager.enemy.OnTurnStart();
         
         EnemyIntent intent = battleManager.enemyBrain.currentIntent;
         
@@ -15,6 +15,7 @@ public class EnemyTurnState : BattleState
             intent.effectLogic.Execute(battleManager.enemy, battleManager.player, intent.value);
         }
         
+        battleManager.enemy.OnTurnEnd();
         battleManager.ChangeState(new PlayerRollState(battleManager));
     }
 

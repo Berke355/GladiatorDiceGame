@@ -9,7 +9,7 @@ public class PlayerRollState : BattleState
     public override void Enter(){
         Debug.Log("Entered the roll state.");
 
-        battleManager.player.ResetBlock();
+        battleManager.player.OnTurnStart();
 
         battleManager.enemyBrain.ChooseNextIntent();
 

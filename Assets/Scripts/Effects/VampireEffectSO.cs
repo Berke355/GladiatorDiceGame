@@ -8,6 +8,6 @@ public class VampireEffectSO : EffectSO
 
         source.Heal(value);
 
-        Debug.Log(source.entityName + " Vampir vuruşu yaptı! " + value + " hasar verdi ve canını doldurdu.");
+        Debug.Log(source.entityName + " used Vampire strike! Dealt " + value + " damage and healed.");
     }
 }

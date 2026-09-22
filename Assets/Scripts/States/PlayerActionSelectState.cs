@@ -9,8 +9,8 @@ public class PlayerActionSelectState : BattleState
     }
 
     public override void Enter(){
-        Debug.Log("Aksiyon seçme durumununa girildi.");
-        Debug.Log("Gelen Yüzün açıklaması: " + battleManager.currentRolledFace.description);
+        Debug.Log("Entered Action Select state.");
+        Debug.Log("Rolled face description: " + battleManager.currentRolledFace.description);
     }
 
     public override void Execute(){
@@ -18,7 +18,7 @@ public class PlayerActionSelectState : BattleState
     }
 
     public override void Exit(){
-        Debug.Log("Aksiyon seçimi durumundan çıkıldı.");
+        Debug.Log("Exited Action Select state.");
     }
 
     public void ExecuteAction(ActionType selectedAction){
@@ -27,16 +27,16 @@ public class PlayerActionSelectState : BattleState
         foreach(ActionEffect effect in battleManager.currentRolledFace.effects){
             if(effect.actionType == selectedAction){
                 if(effect.effectLogic != null){
-                    int finalValue = Mathf.RoundToInt(battleManager.currentRolledFace.baseValue * effect.multiplier);
-                    effect.effectLogic.Execute(battleManager.player, battleManager.enemy, finalValue);
+                    effect.effectLogic.Execute(battleManager.player, battleManager.enemy, battleManager.currentRolledFace.baseValue);
                 }
             }
         }
 
         if(battleManager.enemy.currentHP <= 0){
-            Debug.Log("Savaş bitti. Düşman öldü.");
+            Debug.Log("Battle ended. Enemy died.");
         }
         else{
+            battleManager.player.OnTurnEnd();
             battleManager.ChangeState(new EnemyTurnState(battleManager));
         }
     }
