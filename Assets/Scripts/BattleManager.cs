@@ -21,6 +21,13 @@ public class BattleManager : MonoBehaviour
         currentDiceFaces = run.dieFaces;
         player.maxHP = run.maxHP;
         player.currentHP = run.currentHP;
+
+        // The run picks this battle's enemy; the scene's Enemy object takes its stats.
+        EnemySO enemyData = RunManager.Instance.PickEnemyForNextBattle();
+        enemy.entityName = enemyData.enemyName;
+        enemy.maxHP = enemyData.maxHP;
+        enemy.currentHP = enemyData.maxHP;
+        enemyBrain.Setup(enemyData);
     }
 
     public void ChangeState(BattleState newState){

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf8ccbab6a5cddb41a3b386f1321f2df, type: 3}
+  m_Name: Bestiarius
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySO
+  enemyName: Bestiarius
+  tier: 2
+  maxHP: 80
+  escalationPerTurn: 0
+  intents:
+  - intentName: Whip
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    value: 5
+    weight: 2
+    attackBonusGain: 0
+  - intentName: Unleash
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    value: 12
+    weight: 1
+    attackBonusGain: 0
+  - intentName: Feed the Beast
+    intentType: 2
+    effects:
+    - {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
+    value: 6
+    weight: 1
+    attackBonusGain: 0

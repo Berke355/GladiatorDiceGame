@@ -14,7 +14,7 @@ public class PlayerRollState : BattleState
         battleManager.enemyBrain.ChooseNextIntent();
 
         if(UIManager.Instance != null){
-            UIManager.Instance.UpdateEnemyIntentText(battleManager.enemyBrain.currentIntent);
+            UIManager.Instance.UpdateEnemyIntentText(battleManager.enemyBrain.DescribeCurrentIntent());
         }
     }
 

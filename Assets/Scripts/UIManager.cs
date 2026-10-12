@@ -61,7 +61,7 @@ public class UIManager : MonoBehaviour
 
         string statusText = BuildStatusText(enemy);
 
-        enemyText.text = "HP: " + enemy.currentHP + " / " + enemy.maxHP + "\nBlock: " + enemy.currentBlock; 
+        enemyText.text = enemy.entityName + "\nHP: " + enemy.currentHP + " / " + enemy.maxHP + "\nBlock: " + enemy.currentBlock;
         if (statusText != "") enemyText.text += "\nStatus: " + statusText;
     }
 
@@ -99,9 +99,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateEnemyIntentText(EnemyIntent intent){
+    public void UpdateEnemyIntentText(string intentDescription){
         if(enemyIntentText != null){
-            enemyIntentText.text = "Intent:\n" + intent.intentName + " (" + intent.value + ")";
+            enemyIntentText.text = "Intent:\n" + intentDescription;
         }
     }
 

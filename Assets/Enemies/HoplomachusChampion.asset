@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf8ccbab6a5cddb41a3b386f1321f2df, type: 3}
+  m_Name: HoplomachusChampion
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySO
+  enemyName: Hoplomachus Champion
+  tier: 2
+  maxHP: 90
+  escalationPerTurn: 0
+  intents:
+  - intentName: Spear Thrust
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    value: 7
+    weight: 2
+    attackBonusGain: 0
+  - intentName: Shield Rush
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    value: 5
+    weight: 1
+    attackBonusGain: 0
+  - intentName: Battle Cry
+    intentType: 2
+    effects: []
+    value: 0
+    weight: 1
+    attackBonusGain: 3

@@ -483,3 +483,50 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - Add weighted, non-repeating intent selection, the multi-hit effect and enemy escalation.
 - Raise the player's max HP to 50 and heal 50% after boss victories.
 - Then the boss dice system (Minotaur, Medusa, Hydra) and ending the run after the final boss.
+
+## Day 22 - Enemy System & First Balance Check
+
+### Accomplished
+- **Enemies as Data:**
+  - `EnemySO` (name, tier, HP, `escalationPerTurn`, intents) with all 14 enemies from the GDD roster in `Assets/Enemies/`.
+  - `EncounterConfigSO` lists every enemy.
+  - The Battle scene has one generic Enemy object whose stats and brain are set from the picked `EnemySO`.
+- **Intents:** `EnemyIntent` now has a list of effects (all using the same value), a weight and an `attackBonusGain`.
+- **Enemy Brain:**
+  - picks intents by weight, with the same intent at most 2 times in a row
+  - describes the intent with its grown value (e.g. "Ride Down (14)", "Twin Strike (2 x 4)")
+  - handles enemy-only escalation (per turn, or from intents like Battle Cry)
+- **Multi-Hit Effect:** `MultiHitDamageEffectSO`; each hit wears down block and triggers FireShield separately.
+- **Run:**
+  - The enemy tier comes from the battle number. Boss slots use the next tier until bosses exist.
+  - No enemy repeats within a run.
+  - Max HP is now 50, and boss victories heal 50% of max HP.
+- **UI:** the enemy's name is shown, along with its intent description.
+- **Tests:**
+  - Intent weights and the repeat cap were checked for all 14 enemies.
+  - Escalation (Essedarius 4 → 6 → 10 → 14), Battle Cry (7 → 13), Twin Strike against block and FireShield.
+  - No repeats across 200 simulated runs, tier selection and the boss heal.
+- **First Run Simulation:** 300 simulated 11-battle runs each for 5 dice, using the real `Entity`, `EnemyBrain` and effects with a simple bot.
+
+### Findings
+- **The roster numbers don't fit the player's damage scale.** Faces deal about 2–3 per turn, while enemies have 18–110 HP.
+- **An unbuilt die (3 Sword + 3 Shield) never got past the Weak tier.** It took about 37 turns per Weak enemy and lost all 50 HP.
+- **Even upgraded builds rarely reached battle 8,** except Poison at 68%, and **none cleared all 11 battles.**
+- **Caveats:** the bot was simple and never shopped in the Market, and there were no bosses. Still, the gap is too large for better play to close.
+- The roster numbers were proposed without checking them against face values; the simulation caught it.
+
+### Decisions
+- **Lower the enemy numbers (mainly HP)** instead of raising face values. Face values, upgrade costs (rarity multiplier × value) and Max Value rules are all built around small values, so changing the 14 enemy assets is the smaller and safer change.
+- **Measurable targets for the difficulty curve:**
+  - An unbuilt die gets through the Weak tier losing about 10–15 HP.
+  - A well-built die mostly beats the Strong tier.
+  - A die bought without a plan stalls at battles 9–10.
+- **Neutral starting die** (3 Sword + 3 Shield): the player builds the archetype during the run, instead of starting with the Burn test set.
+- **The simulation bot must shop in the Market** (buy and upgrade between battles), or balance can't be judged honestly.
+
+### Next Steps
+- Build a run simulator whose bots use the real `Market` to buy and upgrade: a focused bot for each archetype, and an unplanned buyer.
+- Switch the starting die to 3 Sword + 3 Shield.
+- Tune enemy HP and damage with the simulator until the targets are met.
+- Then the boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, and a boss gold reward.
+- Center the offer cards when a Market has fewer than 3 offers.

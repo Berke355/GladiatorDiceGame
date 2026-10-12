@@ -1722,36 +1722,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cde46336daa81f419b180e1e6415d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBrain
-  possibleIntents:
-  - intentName: Basic Attack
-    intentType: 0
-    effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 2
-  - intentName: Basic Attack
-    intentType: 0
-    effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 2
-  - intentName: Basic Defense
-    intentType: 1
-    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-    value: 2
-  - intentName: Basic Defense
-    intentType: 1
-    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-    value: 2
-  - intentName: Bite Attack
-    intentType: 0
-    effectLogic: {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}
-    value: 1
-  - intentName: Self Heal
-    intentType: 2
-    effectLogic: {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
-    value: 3
   currentIntent:
     intentName: 
     intentType: 0
-    effectLogic: {fileID: 0}
+    effects: []
     value: 0
+    weight: 0
+    attackBonusGain: 0
 --- !u!1 &1173936934
 GameObject:
   m_ObjectHideFlags: 0
@@ -3531,7 +3508,6 @@ MonoBehaviour:
   enemyBrain: {fileID: 1097898073}
   enemy: {fileID: 1097898071}
   player: {fileID: 748316986}
-  currentRolledFace: {fileID: 0}
 --- !u!1 &2063461031
 GameObject:
   m_ObjectHideFlags: 0
