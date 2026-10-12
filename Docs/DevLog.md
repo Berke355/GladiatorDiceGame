@@ -249,3 +249,29 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Fix the player health bar fill, which renders as a solid gray block.
 - Play-test the Burn die and tune values. Decide on Fuel's scaling and its decay-skip side effect.
 - Sword and Shield are still identical. Give them distinct identities.
+
+## Day 14 - Rarity & Economy Design
+
+### Accomplished
+- Wrote the **Rarity & Economy** section of the GDD: goals, rarity tiers, run structure, Market and Grand Market, prices and upgrades, and the save vs. tempo decision.
+- Added the **Value Is the Effect** rule and the **Max Value** property to the GDD's die face section.
+
+### Design Challenge
+Some faces become far stronger than others when their value goes up (e.g. Fuel multiplies Burn by its value). These faces should be rare and expensive, but never pure luck: most runs should still find the key face of their build. Gold should also create a real decision: save for a powerful late-game face, or spend now for tempo.
+
+### Decisions
+- **Rarity comes from scaling, not raw power:** Common = linear, Rare = conditional or multi-effect, Epic = multiplicative. Fuel and Cauterize are Epic.
+- **Run structure:** about 10–11 battles, a boss every 3–5 battles, and a final boss that ends the run.
+- **Grand Market after bosses,** with at least one guaranteed Epic. Its timing is predictable, so saving gold for it is a plan rather than a gamble. This was chosen over a hidden pity timer, which keeps players from planning.
+- **Build-aware offers:** offers are weighted (around 60%) toward the tags already on the die, so players can find their build's key face while still discovering new ones.
+- **Upgrading is a separate Market service.** Cost = rarity multiplier (Common ×3, Rare ×5, Epic ×10) × current value, and every face has a Max Value cap.
+- **Placeholder prices:** 10 gold per victory; buy prices Common 8, Rare 15, Epic 30.
+- **No interest mechanic for now.** Carrying HP over between battles already makes saving costly. Interest is the first thing to revisit if saving never pays off.
+
+### Next Steps
+- Add `rarity`, `maxValue` and `tags` to `DieFaceSO`, with price derived from rarity, and set them on the existing faces.
+- Build the Market: random offers, buying a face and choosing which die face it replaces, and the upgrade service.
+- Add boss battles and the Grand Market to the run structure.
+- Resolve the GDD's open questions (Normal Market Epic chance, offers per Market, boss gold reward, Max Values).
+- Scale enemies over the run, show gold and the battle number during battle, and fix the player health bar fill.
+- Play-test the Burn die. Sword and Shield are still identical.
