@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ShieldFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Shield
-  description: 'Attack: Deal damage equal to my value. Defense: Gain block equal
+  description: 'Attack: Deal damage equal to my value. Defense: Gain Fortify equal
     to my value.'
   rarity: 0
   tags: 01000000
@@ -23,4 +23,4 @@ MonoBehaviour:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
   - actionType: 1
-    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    effectLogic: {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}

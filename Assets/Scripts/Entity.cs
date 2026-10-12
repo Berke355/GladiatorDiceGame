@@ -7,7 +7,9 @@ public enum StatusType {
     None,
     Burn,
     FireShield,
-    Poison
+    Poison,
+    // Block that does not reset at turn start. Absorbs damage after Block.
+    Fortify
 }
 
 public class Entity : MonoBehaviour
@@ -53,14 +55,22 @@ public class Entity : MonoBehaviour
         }
     }
 
+    // Damage is absorbed by Block first, then Fortify, and only the rest reaches HP.
     public void TakeDamage(int damageAmount, Entity source = null){
-        if(currentBlock >= damageAmount){
-            currentBlock -= damageAmount;
+        int remaining = damageAmount;
+
+        int blocked = Math.Min(currentBlock, remaining);
+        currentBlock -= blocked;
+        remaining -= blocked;
+
+        int fortified = Math.Min(GetStatus(StatusType.Fortify), remaining);
+        if(fortified > 0){
+            activeStatuses[StatusType.Fortify] -= fortified;
+            remaining -= fortified;
         }
-        else{
-            int damageTaken = damageAmount - currentBlock;
-            currentBlock = 0;
-            LoseHP(damageTaken);
+
+        if(remaining > 0){
+            LoseHP(remaining);
         }
 
         if (GetStatus(StatusType.FireShield) > 0 && source != null) {

@@ -385,3 +385,37 @@ The Grand Market needs at least 3 Epic faces, and Epic faces need archetypes to 
 - Watch Poison's balance: a full Poison die beat the 30 HP test enemy in 5 turns (a Burn die takes about 10–12). Revisit once enemies scale; decaying by 1 per tick is the fallback.
 - Center the offer cards when a Market has fewer than 3 offers.
 - Add boss enemies, the final boss and a boss gold reward. Scale enemies over the run.
+
+## Day 19 - Shield Archetype & Fortify
+
+### Accomplished
+- **Fortify Status:** `Entity.TakeDamage` now absorbs damage with Block first, then Fortify, then HP. Fortify never resets at turn start. Damage over time (Burn, Poison) bypasses it. Shown in the battle UI.
+- **New Effects:**
+  - `DefenseScaledDamageEffectSO`: deals value + the source's Block + Fortify, consuming nothing.
+  - `ConsumeOwnStatusDamageEffectSO`: consumes one of the source's own statuses and deals value + stacks × value.
+- **Shield Faces:**
+  - **Shield**, reworked as the Common starter: Attack deals damage, Defense gains Fortify.
+  - **Shield Bash** (Rare): Attack deals value + Block + Fortify, Defense gives block.
+  - **Shield Burst** (Epic): Attack consumes all Fortify for value + Fortify × value, Defense gains Fortify.
+- Added Shield Bash and Shield Burst to the Market pool. There are now 4 Epic faces.
+- Marked Poison and Shield as implemented in the GDD.
+- **Tests:**
+  - Re-ran the regression suite after changing `TakeDamage` (18/18), then ran 10 Fortify and Shield tests (turn start, absorb order, DoT bypass, Bash, Burst including with 0 Fortify).
+  - Ran a Play Mode battle with a Shield die: Console damage matched value + Fortify × value (Fortify 4 gave 10, 3 gave 8, 2 gave 6).
+
+### Decisions
+- **Shield is the Shield archetype starter now**, which ends the Sword/Shield duplication. Sword stays the plain Physical face.
+- **Fortify absorbs after Block,** so the turn's temporary Block is spent before the stored protection.
+- **Regression test before features:** `TakeDamage` is the core of combat, so the old tests were re-run before any Shield face was added.
+
+### Observations
+These come from a few runs against the weak test enemy, not real balance data.
+- **Battle length:** a Poison die took about 5 turns, Burn about 10–12, Shield about 16–18.
+- **Shield** feels very safe but slow. Shield Burst's risk doesn't show yet because the enemy only deals 1–2 damage.
+- **Enemy attacks wear down stored Fortify,** which creates a "cash out now or keep stacking" tension, Shield's version of Burn's "consume or let it tick".
+
+### Next Steps
+- Enemy scaling and boss enemies: all three archetypes were only tested against one weak enemy, so balance can't be judged yet.
+- Add the final boss that ends the run (about 11 battles) and a boss gold reward.
+- Center the offer cards when a Market has fewer than 3 offers.
+- Play-test full runs and tune Poison (decay?), Shield and prices.

@@ -74,6 +74,8 @@ public class UIManager : MonoBehaviour
         if (poison > 0) statusText += "Poison (" + poison + ") ";
         int fireShield = entity.GetStatus(StatusType.FireShield);
         if (fireShield > 0) statusText += "FireShield (" + fireShield + ") ";
+        int fortify = entity.GetStatus(StatusType.Fortify);
+        if (fortify > 0) statusText += "Fortify (" + fortify + ") ";
         return statusText;
     }
 

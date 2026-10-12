@@ -248,7 +248,7 @@ Burst damage over a short time. Build Burn up, then cash it out.
 | Fuel | Payoff (multiply Burn) | Epic |
 | Cauterize | Payoff (consume Burn to heal) | Epic |
 
-### Poison (next)
+### Poison (implemented)
 
 Slow and inevitable. Strongest in long fights, which makes it the boss-fighting build.
 
@@ -265,7 +265,7 @@ Slow and inevitable. Strongest in long fights, which makes it the boss-fighting 
 
 Plague introduces a new Epic pattern: **die-composition scaling** ("for each X face on your die"). It directly rewards building the die around one archetype, and alone it still applies its value (it counts itself).
 
-### Shield (next)
+### Shield (implemented)
 
 Defense that turns into offense. Stack up protection, then trade it for one big hit.
 
