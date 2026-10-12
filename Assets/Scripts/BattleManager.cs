@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
@@ -48,6 +49,11 @@ public class BattleManager : MonoBehaviour
         if(currentState is PlayerActionSelectState playerState){
             playerState.ExecuteAction(selectedAction);
         }
+    }
+
+    // Called by the Restart button on the battle result screen.
+    public void RestartBattle(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void OnRolled(){

@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI enemyIntentText;
     public Slider playerHealthBar;
     public Slider enemyHealthBar;
+    public GameObject battleResultPanel;
+    public TextMeshProUGUI battleResultText;
 
     void Awake(){
         if (Instance != null && Instance != this){
@@ -71,6 +73,10 @@ public class UIManager : MonoBehaviour
     }
 
     void OnDestroy(){
+        if(Instance == this){
+            Instance = null;
+        }
+
         if(player != null){
             player.OnHealthChanged -= UpdatePlayerUI;
         }
@@ -89,6 +95,15 @@ public class UIManager : MonoBehaviour
     public void UpdateEnemyIntentText(EnemyIntent intent){
         if(enemyIntentText != null){
             enemyIntentText.text = "Intent:\n" + intent.intentName + " (" + intent.value + ")";
+        }
+    }
+
+    public void ShowBattleResult(bool playerWon){
+        if(battleResultPanel != null){
+            battleResultPanel.SetActive(true);
+        }
+        if(battleResultText != null){
+            battleResultText.text = playerWon ? "VICTORY" : "DEFEAT";
         }
     }
 

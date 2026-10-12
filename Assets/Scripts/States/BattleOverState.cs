@@ -10,6 +10,10 @@ public class BattleOverState : BattleState
 
     public override void Enter(){
         Debug.Log(playerWon ? "Battle ended. Player won." : "Battle ended. Player died.");
+
+        if(UIManager.Instance != null){
+            UIManager.Instance.ShowBattleResult(playerWon);
+        }
     }
 
     public override void Execute(){

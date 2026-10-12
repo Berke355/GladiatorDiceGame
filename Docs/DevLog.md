@@ -202,3 +202,22 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Multiplying Burn counts as adding Burn, so Fuel also skips the next decay. Keep it as a feature or change it.
 - Sword and Shield are still identical. Give them distinct identities.
 - Show a win/lose screen and start the Gold → Market loop.
+
+## Day 12 - Battle Result Screen
+
+### Accomplished
+- **Result Screen:** Added `BattleResultPanel` to the Canvas: a full-screen dark overlay with a large "VICTORY" / "DEFEAT" text and a Restart button. The overlay blocks clicks on the battle UI behind it.
+- **UI Hookup:** `BattleOverState` calls `UIManager.ShowBattleResult(playerWon)` when the battle ends.
+- **Restart:** `BattleManager.RestartBattle()` reloads the active scene to start a fresh battle.
+- **Singleton Safety:** `UIManager` clears its `Instance` in `OnDestroy`, so reloading the scene never leaves a stale reference.
+- Play-tested win (a full Burn-die fight), loss and restart. Input after the battle ends is ignored.
+
+### Decisions
+- Restart reloads the scene instead of resetting state by hand. It is simple and reliable for a single-battle prototype, and will be replaced when battles chain into a run.
+
+### Next Steps
+- Start the Gold → Market loop: reward gold on victory and replace Restart with "Continue" to the Market.
+- Keep the player's die between battles (it currently lives on the scene's `BattleManager`).
+- Fix the player health bar fill, which renders as a solid gray block.
+- Play-test the Burn die and tune values. Decide on Fuel's scaling and its decay-skip side effect.
+- Sword and Shield are still identical. Give them distinct identities.
