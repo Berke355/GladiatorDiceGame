@@ -452,3 +452,34 @@ Every battle uses the same weak enemy, so neither archetype balance nor the save
 - Then Medusa (`targetDie` in `EffectContext`, battle-scoped Petrify) and the Hydra (heads, regrowth, regeneration).
 - End the run after the final boss, and set a boss gold reward.
 - Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 21 - Enemy Roster & Difficulty Curve
+
+### Accomplished
+- Added the **Enemy Tiers** and **Enemy Roster** to the GDD:
+  - **Weak (battles 1–3):** Tiro, Murmillo, Thraex, Lampadarius, Arena Wolf.
+  - **Medium (battles 5–7):** Retiarius, Dimachaerus, Arena Lion, Venefica, Secutor.
+  - **Strong (battles 9–10):** Essedarius, War Elephant, Hoplomachus Champion, Bestiarius.
+  - Each enemy has HP and weighted intents. The new enemy mechanics (multi-hit, escalation) are recorded.
+- Updated the run structure: the player has 50 max HP, and winning a boss battle restores 50% of max HP.
+
+### Design Challenge
+The difficulty curve has to produce a specific feeling at each stage of a run, and the final stretch has to reward a strong build instead of punishing it.
+
+### Decisions
+- **Each tier has a role:**
+  - **Weak** enemies are a toll: plain damage and block, small Burn/Poison, "let me get through cheaply".
+  - **Medium** enemies are the first real threat, each with one readable danger mechanic.
+  - **Strong** enemies are the build check.
+- **"Clock, not lock":** strong enemies never shut down combos; that's what bosses do. Their high HP and rising damage set a clock. A strong build beats the clock and shows big numbers, which is the game's power fantasy. A die that came together by chance loses the race.
+- **The final boss** tests the whole run rather than simply being hard.
+- **Escalation is enemy-only data,** with the grown value shown in the intent. A general Strength status is postponed until the Berserker archetype because it would touch every damage effect.
+- **No enemy repeats within a run.** Each pool has 4–5 enemies for 2–3 battles.
+- **Max HP 50 and healing after bosses:** with 25 HP, carried-over damage and no healing outside battle, runs would end from slow HP loss instead of build quality.
+- Enemies are real Roman gladiator types and arena beasts, so the arena theme stays consistent.
+
+### Next Steps
+- Add `EnemySO` (name, HP, weighted intents) and the Weak, Medium and Strong pools, picked by run segment without repeats.
+- Add weighted, non-repeating intent selection, the multi-hit effect and enemy escalation.
+- Raise the player's max HP to 50 and heal 50% after boss victories.
+- Then the boss dice system (Minotaur, Medusa, Hydra) and ending the run after the final boss.

@@ -166,6 +166,8 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 - A **boss battle** happens every 3–5 battles. The **final boss** ends the run.
 - Example layout: battles 1–3 → **boss (4)** → battles 5–7 → **boss (8)** → battles 9–10 → **final boss (11)**.
 - After every battle except the final boss, the player visits the Market. After a boss, it is a **Grand Market** instead.
+- **Player HP:** 50 max. HP carries over between battles.
+- **Healing after bosses:** winning a boss battle restores 50% of max HP (placeholder). Without it, runs would end from slow HP loss instead of from how good the build is.
 
 ### Market
 
@@ -318,13 +320,63 @@ Normal enemies keep the intent system: at the start of the player's turn, the en
 - **Data, not code:** each enemy is defined as data (name, HP, list of intents), just like die faces.
 - **Pools by run segment:** each part of the run has its own enemy pool, so enemies get stronger as the run goes on.
 
-| Segment | Battles | Enemies |
-|---|---|---|
-| Early | 1–3 | Weak: low HP, simple intents |
-| Middle | 5–7 | Medium: more HP, mixed intents |
-| Late | 9–10 | Strong: high HP, dangerous intents |
-
 - **Intent choice:** intents have weights, and the same intent cannot be picked several times in a row. This avoids streaks like healing three turns in a row.
+- **No repeats:** the same enemy never appears twice in one run.
+
+#### Enemy Tiers
+
+Each tier has its own pool. Battles before the first boss draw from the Weak pool, battles between the bosses from the Medium pool, and battles after the second boss from the Strong pool.
+
+| Tier | Battles | Role | Player feeling | HP | Damage |
+|---|---|---|---|---|---|
+| **Weak** | 1–3 | **Toll** | "Let me get through without losing much HP." | 18–26 | 2–4, small Burn/Poison |
+| **Medium** | 5–7 | **First real threat** | "I could lose this run." | 40–50 | Spikes of 8–10 |
+| **Strong** | 9–10 | **Build check** | With a good build: "Look how strong I've become!" Without one: the end of the run. | 80–110 | Rising every turn |
+
+- **Weak** enemies use plain swords and shields: flat damage, block, and at most small amounts of Burn or Poison. They don't challenge the player; they make the player want to get through cheaply.
+- **Medium** enemies each have **one danger mechanic**. It is readable, but ignoring it costs a lot of HP. This is where players first feel that the run can end.
+- **Strong** enemies test the whole build: **"clock, not lock."** They never shut down the player's combos (that's what bosses do). Instead, high HP and rising damage set a clock:
+  - A strong build melts them before the clock runs out, and their large HP gives combos room to show big numbers. This is where the game's power fantasy happens, and players start wondering what other broken combos exist.
+  - A die that came together by chance loses the race.
+- The **final boss** serves the same purpose: it tests the whole run rather than simply being hard. A player without a strong build was lucky to get there; a player with one has earned a satisfying win.
+
+#### Enemy Roster
+
+Enemies are real Roman gladiator types and arena beasts. Weights are shown as (×N). All numbers are placeholders.
+
+**Weak (battles 1–3):**
+
+| Enemy | HP | Intents | Note |
+|---|---|---|---|
+| **Tiro** (recruit) | 20 | Slash 3 (×3), Guard: block 3 (×2) | The simplest enemy, teaches the basics |
+| **Murmillo** (heavy shield gladiator) | 26 | Shield Wall: block 5 (×2), Strike 3 (×2) | A defensive enemy whose block has to be broken through |
+| **Thraex** (curved dagger) | 22 | Sica Cut 2 (×2), Envenom: Poison 1 (×2), Guard: block 2 (×1) | Small Poison: the fight costs more HP the longer it lasts |
+| **Lampadarius** (torchbearer) | 22 | Torch Swing: Burn 2 (×2), Strike 3 (×2), Guard: block 2 (×1) | Small Burn |
+| **Arena Wolf** | 18 | Bite 4 (×3), Howl: block 3 (×1) | Low HP but hits hard; finish it fast |
+
+**Medium (battles 5–7), each with one danger mechanic:**
+
+| Enemy | HP | Intents | Danger |
+|---|---|---|---|
+| **Retiarius** (net and trident) | 42 | Jab 4 (×2), Net: block 6 (×1), Trident Thrust 10 (×1) | **Telegraphed spike:** ignore the intent and take 10 |
+| **Dimachaerus** (two swords) | 40 | Twin Strike: 2 × 4 damage (×2), Parry: block 5 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
+| **Arena Lion** | 48 | Maul 8 (×2), Feast: 5 damage and heal 5 (×2) | **Self-healing:** punishes slow damage |
+| **Venefica** (poisoner) | 40 | Poison Dart: Poison 3 (×2), Strike 4 (×1), Smoke: block 5 (×1) | **Poisons the player:** Poison never decays, so long fights become deadly |
+| **Secutor** (pursuer) | 46 | Brace: Fortify 6 (×2), Shield Slam 7 (×2) | **Stacks Fortify:** deal damage early or its stored protection becomes too much to break |
+
+**Strong (battles 9–10), the build check:**
+
+| Enemy | HP | Intents | Clock |
+|---|---|---|---|
+| **Essedarius** (chariot fighter) | 85 | Ride Down 6 (×2), Wheel Spikes 4 (×1), Rein In: block 8 (×1) | **Gathering speed:** all its attacks gain +2 damage every turn |
+| **War Elephant** | 110 | Stomp 14 (×1), Trunk Swat 6 (×2), Thick Hide: Fortify 8 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
+| **Hoplomachus Champion** | 90 | Spear Thrust 7 (×2), Shield Rush: 5 damage and block 5 (×1), Battle Cry (×1) | **Rage:** each Battle Cry permanently raises all its damage |
+| **Bestiarius** (beast tamer) | 80 | Whip 5 (×2), Unleash 12 (×1), Feed the Beast: heal 6 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
+
+#### New Mechanics for Enemies
+
+- **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
+- **Escalation** (Essedarius, Hoplomachus): rising damage is **enemy-only data**. An enemy's attack intents grow by a fixed amount each turn (Essedarius), or permanently after a specific intent (Hoplomachus' Battle Cry). The grown value is shown in the intent. A general "Strength" status was considered but postponed until the Berserker archetype, because it would touch every damage effect.
 
 ### Bosses
 
@@ -417,4 +469,4 @@ All boss numbers (HP, damage, countdown length, stagger threshold, head count) a
 
 - Gold reward for boss victories.
 - Exact Petrify duration (2 or 3 turns).
-- Normal enemy roster for each segment.
+- Healing amount after a boss (50% of max HP is a placeholder).
