@@ -45,14 +45,16 @@ Code, comments, docs and commit messages are in English. Commits use Conventiona
 - `DieFace` — an instance on the die: `definition` + its own `value`. Effects use the instance's `value`, and upgrades change only the instance. Never modify a `DieFaceSO` at runtime: two copies on the die share one asset.
 - Rarity follows value scaling (Common linear, Rare conditional/multi-effect, Epic multiplicative). Current `maxValue` rule: Common base+3, Rare base+2, Epic base+1. Design rule: the printed value is exactly what the effects use — no per-effect multipliers (removed on purpose, see DevLog Day 9).
 - ScriptableObjects are for design data only. Never store mutable run state in an SO asset: changes made in Play Mode persist in the Editor but not in builds.
-- `Effects/EffectSO` — abstract strategy: `Execute(Entity source, Entity target, int value)`. Every effect is source/target-agnostic so the same asset works for the player's die faces and for `EnemyIntent`s. New mechanics are added as a new `EffectSO` subclass with `[CreateAssetMenu(menuName = "Dice/Effects/...")]`, not by branching in the states.
+- `Effects/EffectSO` — abstract strategy: `Execute(EffectContext context)`. `EffectContext` carries `source`, `target`, `value`, `die` (the source's `List<DieFace>`) and `face` (the triggering `DieFace`). `die` and `face` are null for enemy intents, so effects that read them need a fallback. New information for effects goes into `EffectContext` instead of changing the signature. Every effect is source/target-agnostic so the same asset works for the player's die faces and for `EnemyIntent`s. Effects must not reach the die through globals such as `RunManager`.
+- `ApplyStatusPerTaggedFaceEffectSO` implements die-composition scaling (value × faces on the die with a tag, e.g. Plague); without a die it counts as 1. New mechanics are added as a new `EffectSO` subclass with `[CreateAssetMenu(menuName = "Dice/Effects/...")]`, not by branching in the states.
 - Effect assets and face assets are created in the Editor (`Assets/Faces/` holds the faces). `value` meaning is per effect (e.g. `MultiplyStatusEffectSO` treats it as a multiplier).
 
 ### Entities and statuses
 - `Entity` holds HP, block and a `Dictionary<StatusType, int>` of statuses (`StatusType` enum is in `Entity.cs`). Damage hits block first. Every state change must raise `OnHealthChanged`, which is how `UIManager` refreshes.
 - Block resets at the start of the owner's own turn (`OnTurnStart`), not the end.
-- Status rules are hardcoded in `Entity`: Burn deals its stacks as damage at `OnTurnEnd`, bypassing block, and decays by 2 unless Burn was added since the last tick; FireShield applies Burn to the attacker when hit (only if `TakeDamage` gets a `source`) and is cleared at turn start. Effects that should trigger FireShield must pass `source` to `TakeDamage`.
-- Adding a status means touching `StatusType`, `Entity` turn hooks and the status text in `UIManager` (which lists statuses explicitly).
+- Status rules are hardcoded in `Entity`: Burn deals its stacks as damage at `OnTurnEnd`, bypassing block, and decays by 2 unless Burn was added since the last tick; Poison also ticks at `OnTurnEnd`, bypasses block and never decays; FireShield applies Burn to the attacker when hit (only if `TakeDamage` gets a `source`) and is cleared at turn start. Effects that should trigger FireShield must pass `source` to `TakeDamage`.
+- Adding a status means touching `StatusType`, `Entity` turn hooks and `UIManager.BuildStatusText` (which lists statuses explicitly).
+- Enums used in assets (`StatusType`, `FaceTag`, `Rarity`, `ActionType`) are serialized as numbers: only add new values at the end, never insert or reorder.
 
 ### UI
 - `UIManager` is a Battle-scene singleton (`UIManager.Instance`, cleared in `OnDestroy`); states null-check it before calling `UpdateDiceText` / `UpdateEnemyIntentText` / `ShowBattleResult`. Entity and UI references are assigned in the Inspector.

@@ -356,3 +356,32 @@ The Grand Market needs at least 3 Epic faces, and Epic faces need archetypes to 
 - Add the new faces to the Market pool and check that the Grand Market shows 3 Epic offers.
 - Center the offer cards when a Market has fewer than 3 offers.
 - Add boss enemies, the final boss and a boss gold reward. Scale enemies over the run.
+
+## Day 18 - Poison Archetype & EffectContext
+
+### Accomplished
+- **Poison Status:** Ticks at the end of the poisoned entity's turn, bypasses block and never decays. Shown in the battle UI.
+- **Poison Faces:**
+  - **Venom** (Common): Attack applies Poison, Defense gives block.
+  - **Toxic Blade** (Rare): Attack deals damage and applies Poison.
+  - **Miasma** (Rare): Defense gives block and applies Poison.
+  - **Plague** (Epic): Magic applies Poison for each Poison face on the die, with an Attack fallback.
+- **EffectContext Refactor:** Every effect now takes `Execute(EffectContext context)` instead of `(source, target, value)`. The context also carries the source's `die` and the triggering `face`, which are null for enemy intents. All 8 effects and both call sites were converted without changing any logic, and a 16-case regression test (every face action plus the enemy intents) passed.
+- **Die-Composition Scaling:** Added `ApplyStatusPerTaggedFaceEffectSO`, which applies value × (faces on the die with a tag). The status and tag are set in the Inspector so other archetypes can reuse it. The triggering face counts itself; without a die (enemies) it counts as 1.
+- **Market:** Added the four Poison faces to the pool. **The Grand Market now shows 3 Epic offers** (Fuel, Cauterize, Plague).
+- **Cleanup:** Merged the duplicated status text in `UIManager` into `BuildStatusText`.
+
+### Decisions
+- **Parameter object over the alternatives:**
+  - Storing the die on `Entity` would put player-only data on the shared combatant class and hide a dependency.
+  - Reading `RunManager` from inside an effect would break source/target independence and make tests depend on the RunManager.
+  - Computing the count in the battle state would move mechanic logic out of `EffectSO`.
+  - `EffectContext` grows by adding fields, which the Hammer archetype will need (for example, which face triggered the effect).
+- **Refactor first, then the feature:** The signature change was made and regression-tested on its own before Plague was added, so any failure could be traced to one change.
+- **Serialized enums only grow at the end.** Unity stores enum values in assets as numbers, so inserting a value would silently change existing assets.
+
+### Next Steps
+- Implement Shield: the Fortify status (absorbs damage after Block, never resets), the Shield rework, Shield Bash and Shield Burst.
+- Watch Poison's balance: a full Poison die beat the 30 HP test enemy in 5 turns (a Burn die takes about 10–12). Revisit once enemies scale; decaying by 1 per tick is the fallback.
+- Center the offer cards when a Market has fewer than 3 offers.
+- Add boss enemies, the final boss and a boss gold reward. Scale enemies over the run.

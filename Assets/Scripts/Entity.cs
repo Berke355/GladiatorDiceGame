@@ -2,10 +2,12 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+// Assets store these as numbers: always add new statuses at the end.
 public enum StatusType {
     None,
     Burn,
-    FireShield
+    FireShield,
+    Poison
 }
 
 public class Entity : MonoBehaviour
@@ -114,5 +116,12 @@ public class Entity : MonoBehaviour
             OnHealthChanged?.Invoke();
         }
         burnAddedSinceLastTick = false;
+
+        // Poison never decays and bypasses block.
+        int poison = GetStatus(StatusType.Poison);
+        if (poison > 0) {
+            LoseHP(poison);
+            OnHealthChanged?.Invoke();
+        }
     }
 }

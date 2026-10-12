@@ -42,11 +42,7 @@ public class UIManager : MonoBehaviour
             playerHealthBar.value = player.currentHP;
         }
 
-        string statusText = "";
-        int burn = player.GetStatus(StatusType.Burn);
-        if (burn > 0) statusText += "Burn (" + burn + ") ";
-        int fireShield = player.GetStatus(StatusType.FireShield);
-        if (fireShield > 0) statusText += "FireShield (" + fireShield + ") ";
+        string statusText = BuildStatusText(player);
 
         playerText.text = "HP " + player.currentHP + " / " + player.maxHP + "\nBlock: " + player.currentBlock;
         if (statusText != "") playerText.text += "\nStatus: " + statusText;
@@ -63,14 +59,22 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        string statusText = "";
-        int burn = enemy.GetStatus(StatusType.Burn);
-        if (burn > 0) statusText += "Burn (" + burn + ") ";
-        int fireShield = enemy.GetStatus(StatusType.FireShield);
-        if (fireShield > 0) statusText += "FireShield (" + fireShield + ") ";
+        string statusText = BuildStatusText(enemy);
 
         enemyText.text = "HP: " + enemy.currentHP + " / " + enemy.maxHP + "\nBlock: " + enemy.currentBlock; 
         if (statusText != "") enemyText.text += "\nStatus: " + statusText;
+    }
+
+    // Lists every active status. New statuses must be added here to show up.
+    private static string BuildStatusText(Entity entity){
+        string statusText = "";
+        int burn = entity.GetStatus(StatusType.Burn);
+        if (burn > 0) statusText += "Burn (" + burn + ") ";
+        int poison = entity.GetStatus(StatusType.Poison);
+        if (poison > 0) statusText += "Poison (" + poison + ") ";
+        int fireShield = entity.GetStatus(StatusType.FireShield);
+        if (fireShield > 0) statusText += "FireShield (" + fireShield + ") ";
+        return statusText;
     }
 
     void OnDestroy(){
