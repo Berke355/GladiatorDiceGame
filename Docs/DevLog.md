@@ -177,3 +177,28 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Sword and Shield are now mechanically identical (Attack: damage, Defense: block). Give them distinct identities.
 - Create Burn build assets and test the build in play mode.
 - Show a win/lose screen and start the Gold → Market loop.
+
+## Day 11 - Burn Build Faces
+
+### Accomplished
+- **Self-targeted Statuses:** Added `applyToSelf` to `ApplyStatusEffectSO` so a face can apply a status to its user (e.g. FireShield on the player).
+- **Burn Effect Assets:** Created `ApplyBurnEffect`, `ApplyFireShieldSelfEffect`, `MultiplyBurnEffect`, `ConsumeBurnDamageEffect` and `ConsumeBurnHealEffect`.
+- **Burn Faces:**
+  - **Ember (3):** Attack: apply Burn. Defense: block. The starter that seeds Burn.
+  - **Fuel (2):** Magic: multiply the enemy's Burn. Defense: block as a fallback when there is no Burn.
+  - **Detonate (2):** Attack: consume Burn for value + stacks damage. Magic: apply Burn. Cash out or keep building.
+  - **Cauterize (1):** Magic: consume Burn and heal value × stacks. Attack: damage.
+  - **Flame Ward (2):** Defense: block and FireShield on self, so attackers get burned.
+- **Test Die:** 2× Ember, Fuel, Detonate, Cauterize, Flame Ward. Raised test HP to Player 25 / Enemy 30 so Burn has time to play out.
+
+### Decisions
+- **Every face keeps a fallback action** so a bad roll is never a fully wasted turn (Day 2 decision).
+- **Consume vs. let it tick:** Burn deals damage every turn but decays; consuming it gives one big hit or heal and resets the stacks. This is the core decision of the build.
+- Cauterize stays at value 1 so its heal equals the consumed stacks.
+
+### Next Steps
+- Play-test the Burn die and tune values.
+- Watch Fuel's scaling: its value is the multiplier, so upgrading it would grow very fast. Consider keeping it fixed at 2.
+- Multiplying Burn counts as adding Burn, so Fuel also skips the next decay. Keep it as a feature or change it.
+- Sword and Shield are still identical. Give them distinct identities.
+- Show a win/lose screen and start the Gold → Market loop.

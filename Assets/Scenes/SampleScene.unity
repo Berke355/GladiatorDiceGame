@@ -1138,8 +1138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity
   entityName: Player
-  maxHP: 3
-  currentHP: 3
+  maxHP: 25
+  currentHP: 25
   currentBlock: 0
 --- !u!212 &748316987
 SpriteRenderer:
@@ -1433,8 +1433,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity
   entityName: Enemy
-  maxHP: 4
-  currentHP: 4
+  maxHP: 30
+  currentHP: 30
   currentBlock: 0
 --- !u!212 &1097898072
 SpriteRenderer:
@@ -3045,12 +3045,12 @@ MonoBehaviour:
   player: {fileID: 748316986}
   currentRolledFace: {fileID: 0}
   currentDiceFaces:
-  - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
-  - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
-  - {fileID: 11400000, guid: 6becce56e1cbb9b43b23bb84deec20f2, type: 2}
-  - {fileID: 11400000, guid: 6becce56e1cbb9b43b23bb84deec20f2, type: 2}
-  - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
-  - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
+  - {fileID: 11400000, guid: aa02c0908dbe2f342b77e9771d09d897, type: 2}
+  - {fileID: 11400000, guid: aa02c0908dbe2f342b77e9771d09d897, type: 2}
+  - {fileID: 11400000, guid: a945924d7a75fb64da8a3a6dd8898b05, type: 2}
+  - {fileID: 11400000, guid: 72dc78b53232a5b4389d82ae7e0d4c3d, type: 2}
+  - {fileID: 11400000, guid: 9418b242856f4c34c8819564b81b3397, type: 2}
+  - {fileID: 11400000, guid: 55e5e902bbdbd9d4e97d5cd98b5fb004, type: 2}
 --- !u!1 &2063461031
 GameObject:
   m_ObjectHideFlags: 0
