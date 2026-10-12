@@ -326,3 +326,33 @@ Some faces become far stronger than others when their value goes up (e.g. Fuel m
 - Add boss enemies, the final boss that ends the run (about 11 battles), and a boss gold reward.
 - Scale enemies over the run, show gold and the battle number during battle, and fix the player health bar fill.
 - Play-test the full loop and tune prices and values. Sword and Shield are still identical.
+
+## Day 17 - Build Archetypes Design
+
+### Accomplished
+- Wrote the **Build Archetypes** section of the GDD:
+  - **Standalone Faces, Build Potential** principle, with a test for it
+  - the Starter → Engine/Bridge → Payoff archetype template
+  - Burn documented as the reference archetype
+  - full face designs for Poison and Shield
+  - Future Archetypes, Hybrid Builds and open questions
+- Updated the Rarity & Economy section with later decisions: the Grand Market offers 3 Epics, Epic faces can only be upgraded at the Grand Market, the 70/25/5 rarity weights, and the Max Value rule. Removed open questions that are now answered.
+
+### Design Challenge
+The Grand Market needs at least 3 Epic faces, and Epic faces need archetypes to be the payoff of. New archetypes also have to stay clearly different from Burn and keep runs flexible when the player can't find the faces they want.
+
+### Decisions
+- **Every face works on its own; its build unlocks its real potential.** Each face has a useful floor without its build (a fallback action or a useful minimum such as "value + X × value") and a much higher ceiling inside it.
+- **Archetype template:** Starter (Common) produces the resource, Engine/Bridge (Rare) grows it or connects builds, Payoff (Epic) turns it into results multiplicatively. Rarity follows from the role.
+- **Poison:** never decays and is never consumed. It is attrition, while Burn is burst, which makes Poison the boss-fighting build. Faces: Venom (Common), Toxic Blade and Miasma (Rare bridges), Plague (Epic).
+- **Die-composition scaling:** a new Epic pattern ("for each Poison face on your die") that directly rewards building the die around an archetype.
+- **Shield:** uses a new **Fortify** status, a block that doesn't reset at turn start. Cashing it out deals heavy damage but drops your stored protection. Faces: Shield reworked as the Common starter, Shield Bash (Rare), Shield Burst (Epic).
+- **Reworking Shield** into the Shield starter ends the Sword/Shield duplication.
+- **Future archetypes:** Hammer (Charge and die manipulation instead of breaking Max Value), Berserker, Crowd Favor and die topology are recorded for later.
+
+### Next Steps
+- Implement Poison: the status, its UI text, the Venom, Toxic Blade and Miasma faces, and Plague's die-composition scaling (effects can't see the die yet, so they need a way to get that information).
+- Implement Shield: the Fortify status, the Shield rework, Shield Bash and Shield Burst.
+- Add the new faces to the Market pool and check that the Grand Market shows 3 Epic offers.
+- Center the offer cards when a Market has fewer than 3 offers.
+- Add boss enemies, the final boss and a boss gold reward. Scale enemies over the run.

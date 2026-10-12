@@ -171,14 +171,15 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 
 Each visit offers a limited, random selection. The player is never forced to spend.
 
-- **Normal Market:** a few face offers. Epic faces can appear, but rarely.
-- **Grand Market (after a boss):** at least **one Epic face is guaranteed**. Because Grand Markets come at known points (after bosses), saving gold for one is a plannable strategy, not a gamble.
+- **Normal Market:** 3 face offers, with rarity weights Common 70%, Rare 25%, Epic 5%. Epic faces can appear, but rarely.
+- **Grand Market (after a boss):** 3 offers, **all Epic**. The Grand Market is the station for Epic faces. Because Grand Markets come at known points (after bosses), saving gold for one is a plannable strategy, not a gamble.
+- A face is offered at most once per visit.
 - **Build-aware offers:** offers are weighted toward the tags already on the player's die (around 60%, not 100%). A Burn die is more likely to be offered Burn faces such as Fuel, while some offers still come from outside the build so players keep discovering new faces.
 
 Market services:
 
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
-- **Upgrade a face:** raise one die face's value by 1, up to that face's Max Value.
+- **Upgrade a face:** raise one die face's value by 1, up to that face's Max Value. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
 
 ### Prices
 
@@ -194,7 +195,7 @@ Prices are placeholders, to be tuned through play-testing.
 | Rare | ×5 | 10 | 15 |
 | Epic | ×10 | 20 | 30 |
 
-- **Max Value:** every face has an upgrade cap. Prices make upgrading Epic faces expensive, and the cap rules out extreme cases (e.g. Fuel capped at 3, so it can never multiply Burn by 4 or more).
+- **Max Value:** every face has an upgrade cap. Prices make upgrading Epic faces expensive, and the cap rules out extreme cases (e.g. Fuel capped at 3, so it can never multiply Burn by 4 or more). Current placeholder rule: Common base + 3, Rare base + 2, Epic base + 1.
 
 ### Save vs. Tempo
 
@@ -206,7 +207,102 @@ The decision only works if both paths are viable.
 
 ### Open Questions
 
-- Epic chance in a Normal Market.
-- Number of offers per Market and Grand Market.
 - Gold reward for boss victories.
-- Max Value for each existing face.
+
+## Build Archetypes
+
+A build archetype is a family of faces built around one shared resource or play style. Archetypes give the player directions to grow their die, while hybrids keep runs flexible.
+
+### Standalone Faces, Build Potential
+
+**Every face must be useful on its own. Its build unlocks its real potential.**
+
+- **Floor:** On a die with no other faces from its build, a face still has at least one action that does something useful. A player who buys it without a plan is never punished.
+- **Ceiling:** With the rest of its build on the die, the same face becomes much stronger.
+- **Test:** imagine the face on a die with no other faces from its build. Does at least one action still do something meaningful? If not, give it a standalone fallback action, or make its effect have a useful minimum (e.g. "value + Fortify × value" instead of "Fortify × value").
+
+Existing faces pass this test through their fallback actions: Fuel's Magic does nothing without Burn, but its Defense still gives block. Cauterize's Magic needs Burn, but its Attack still deals damage.
+
+### Archetype Template
+
+Every archetype follows the same three roles. This keeps archetypes readable for players and makes rarity follow naturally from the Rarity Tiers rule.
+
+| Role | Purpose | Rarity |
+|---|---|---|
+| **Starter** | Produces the build's resource | Common |
+| **Engine / Bridge** | Grows the resource, or connects the build to another one | Rare |
+| **Payoff** | Turns the resource into results, multiplicatively | Epic |
+
+### Burn (implemented)
+
+Burst damage over a short time. Build Burn up, then cash it out.
+
+- **Resource:** Burn on the enemy. It deals its stacks as damage at the end of the owner's turn, bypasses block and decays by 2 (not on the tick right after it was applied).
+- **Identity:** Consume or let it tick? Detonating gives a big hit but resets the stacks.
+
+| Face | Role | Rarity |
+|---|---|---|
+| Ember | Starter | Common |
+| Detonate | Engine (cash-out) | Rare |
+| Flame Ward | Bridge (Burn + Block) | Rare |
+| Fuel | Payoff (multiply Burn) | Epic |
+| Cauterize | Payoff (consume Burn to heal) | Epic |
+
+### Poison (next)
+
+Slow and inevitable. Strongest in long fights, which makes it the boss-fighting build.
+
+- **Resource:** Poison on the enemy. It deals its stacks as damage at the end of the poisoned entity's turn and bypasses block. **It never decays.**
+- **Identity:** You only apply Poison. Unlike Burn, nothing consumes or detonates it, and no face does anything extra with the stacks. The payoff is that it never goes away.
+- **Difference from Burn:** Burn is burst (decays, gets consumed). Poison is attrition (never decays, never consumed).
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Venom** | Starter | Common | 2 | Attack: apply Poison equal to my value. Defense: gain block equal to my value. |
+| **Toxic Blade** | Bridge (Poison + Physical) | Rare | 2 | Attack: deal damage and apply Poison equal to my value. |
+| **Miasma** | Bridge (Poison + Block) | Rare | 2 | Defense: gain block and apply Poison equal to my value. |
+| **Plague** | Payoff | Epic | 1 | Magic: apply Poison equal to my value for each Poison face on your die. Attack: apply Poison equal to my value. |
+
+Plague introduces a new Epic pattern: **die-composition scaling** ("for each X face on your die"). It directly rewards building the die around one archetype, and alone it still applies its value (it counts itself).
+
+### Shield (next)
+
+Defense that turns into offense. Stack up protection, then trade it for one big hit.
+
+- **Resource:** **Fortify**, a new status on yourself. Fortify absorbs damage like Block (Block first, then Fortify), but it **does not reset at the start of your turn**. Damage over time (Burn, Poison) bypasses it like it bypasses Block.
+- **Identity:** High risk, high reward. Cashing out Fortify deals heavy damage but leaves you without your stored protection.
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Shield** (reworked) | Starter | Common | 2 | Attack: deal damage equal to my value. Defense: gain Fortify equal to my value. |
+| **Shield Bash** | Engine | Rare | 2 | Attack: deal damage equal to my value plus your Block and Fortify (nothing is consumed). Defense: gain block equal to my value. |
+| **Flame Ward** | Bridge (Burn + Block) | Rare | 2 | (existing face) |
+| **Shield Burst** | Payoff | Epic | 2 | Attack: consume all Fortify and deal my value plus Fortify × my value as damage. Defense: gain Fortify equal to my value. |
+
+Reworking Shield into the Shield starter also ends the Sword/Shield duplication: Sword stays the plain Physical face.
+
+### Future Archetypes
+
+Ideas to revisit after Poison and Shield.
+
+- **Hammer:** Pour power into one face and set up the turn it lands for a one-turn kill. Uses in-battle growth instead of permanent upgrades, so it never needs to break Max Value:
+  - **Charge:** the face gains +1 temporary value every turn it isn't rolled.
+  - **Die manipulation:** reroll the die, or trigger your highest-value face.
+  - Needs changes to the battle state machine.
+- **Berserker:** Power for blood. Some faces hurt you, others grow stronger as your HP drops. Since HP carries over between battles, self-damage is a real run-long cost. Fits the gladiator theme, and needs no new status.
+- **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.
+- **Die topology:** Face positions on the die matter, e.g. opposite faces (1–6, 2–5, 3–4) or adjacent faces. Turns "which face do I replace?" into "which face, in which slot?". Complex, so it stays a late idea.
+
+### Hybrid Builds
+
+Hybrids add variety and give players a way to pivot when they can't find the faces they want, instead of giving up on the run.
+
+- **Bridge faces** carry two archetype tags (e.g. Flame Ward: Burn + Block, Toxic Blade: Poison + Physical) and naturally connect two builds.
+- **Die-composition payoffs** can be written for any tag, or even reward variety (e.g. "for each different tag on your die").
+- **Tag weighting stays around 60%** so about 40% of offers come from outside the current build and pivoting stays possible.
+
+### Open Questions
+
+- Poison may prove too strong if it never decays. If so, let it decay by 1 per tick.
+- How Fortify interacts with FireShield and future Block effects.
+- Second payoff faces for Poison and Shield, so each archetype has more than one Epic.
