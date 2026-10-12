@@ -87,9 +87,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateDiceText(DieFaceSO rolledFace){
+    public void UpdateDiceText(DieFace rolledFace){
         if(rolledFace != null){
-            diceInfoText.text = "Face: " + rolledFace.faceName + "\nValue: " + rolledFace.baseValue + "\n" + rolledFace.description;
+            diceInfoText.text = "Face: " + rolledFace.definition.faceName + "\nValue: " + rolledFace.value + "\n" + rolledFace.definition.description;
         }
     }
 

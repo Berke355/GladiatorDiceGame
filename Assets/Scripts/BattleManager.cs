@@ -8,11 +8,12 @@ public class BattleManager : MonoBehaviour
     public Entity player;
 
     private BattleState currentState;
-    public DieFaceSO currentRolledFace;
+    [System.NonSerialized]
+    public DieFace currentRolledFace;
 
     // Borrowed from the run in Awake; the run owns the die.
     [System.NonSerialized]
-    public List<DieFaceSO> currentDiceFaces;
+    public List<DieFace> currentDiceFaces;
 
     void Awake(){
         // Load the run's die and the player's HP before UIManager.Start reads them.

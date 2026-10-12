@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: BiteFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Bite
-  description: 'Attack: Deal damage equal to my value and heal that much. Magic: Heal equal to my value.'
+  description: 'Attack: Deal damage equal to my value and heal that much. Magic:
+    Heal equal to my value.'
+  rarity: 1
+  tags: 02000000
   baseValue: 2
+  maxValue: 4
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}

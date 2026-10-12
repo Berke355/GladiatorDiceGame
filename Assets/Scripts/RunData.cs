@@ -6,15 +6,18 @@ using System.Collections.Generic;
 [Serializable]
 public class RunData
 {
-    public List<DieFaceSO> dieFaces;
+    public List<DieFace> dieFaces;
     public int maxHP;
     public int currentHP;
     public int gold;
     public int battlesWon;
 
     public RunData(List<DieFaceSO> startingDieFaces, int startingMaxHP){
-        // Copy the list so the run never edits the starting die it was created from.
-        dieFaces = new List<DieFaceSO>(startingDieFaces);
+        // Each face on the die is its own instance, so upgrading one never touches the asset or other copies.
+        dieFaces = new List<DieFace>();
+        foreach(DieFaceSO face in startingDieFaces){
+            dieFaces.Add(new DieFace(face));
+        }
         maxHP = startingMaxHP;
         currentHP = startingMaxHP;
     }

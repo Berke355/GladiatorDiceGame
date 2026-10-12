@@ -13,8 +13,8 @@ public class RunManager : MonoBehaviour
     public List<DieFaceSO> startingDieFaces = new List<DieFaceSO>();
     public int startingMaxHP = 25;
 
-    [Header("Rewards")]
-    public int goldPerVictory = 10;
+    [Header("Economy")]
+    public EconomyConfigSO economy;
 
     [Header("Scenes")]
     public string battleSceneName = "Battle";
@@ -60,8 +60,8 @@ public class RunManager : MonoBehaviour
         }
 
         run.battlesWon++;
-        run.gold += goldPerVictory;
-        return goldPerVictory;
+        run.gold += economy.goldPerVictory;
+        return economy.goldPerVictory;
     }
 
     public void GoToMarket(){

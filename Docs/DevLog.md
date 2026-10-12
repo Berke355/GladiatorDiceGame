@@ -275,3 +275,24 @@ Some faces become far stronger than others when their value goes up (e.g. Fuel m
 - Resolve the GDD's open questions (Normal Market Epic chance, offers per Market, boss gold reward, Max Values).
 - Scale enemies over the run, show gold and the battle number during battle, and fix the player health bar fill.
 - Play-test the Burn die. Sword and Shield are still identical.
+
+## Day 15 - Rarity Data & Die Face Instances
+
+### Accomplished
+- **Rarity & Tags:** Added the `Rarity` (Common, Rare, Epic) and `FaceTag` (Physical, Block, Lifesteal, Burn) enums. `DieFaceSO` now has `rarity`, `tags` and `maxValue`, and `maxValue` can never be set below `baseValue`.
+- **Die Face Instances:** Added `DieFace`, a `DieFaceSO` definition plus this copy's own `value`. The run's die is now a `List<DieFace>`, and battle effects use the instance's value.
+- **Economy Config:** Added `EconomyConfigSO` (`Assets/Config/EconomyConfig.asset`) with gold per victory, buy prices and upgrade multipliers, plus the `GetBuyPrice` and `GetUpgradeCost` formulas from the GDD. Moved `goldPerVictory` from `RunManager` into it.
+- **Face Data:** Set rarity, tags and max value on all eight faces (Sword, Shield, Ember: Common; Bite, Detonate, Flame Ward: Rare; Fuel, Cauterize: Epic).
+- Tested in Play Mode: upgrading one Ember leaves the other Ember and the asset unchanged, and the upgraded copy applies Burn equal to its own value.
+
+### Decisions
+- **Definition / Instance (Type Object pattern):** `DieFaceSO` describes what a face is and never changes at runtime. `DieFace` is a copy on the die with its own value. Upgrading the shared asset would upgrade every copy at once, and in the Editor the change would stay on disk after Play Mode.
+- **Economy numbers live in one ScriptableObject.** They are design data, so an SO fits, and tuning them doesn't require touching code.
+- **Max Value rule (placeholder):** Common base + 3, Rare base + 2, Epic base + 1, which keeps Fuel capped at 3.
+
+### Next Steps
+- Build the Market: generate offers (rarity chances, about 60% tag weighting), buy a face and choose which die face it replaces, and the upgrade service.
+- Add boss battles and the Grand Market (guaranteed Epic) to the run structure.
+- Resolve the remaining GDD open questions (Normal Market Epic chance, offers per Market, boss gold reward).
+- Scale enemies over the run, show gold and the battle number during battle, and fix the player health bar fill.
+- Play-test the Burn die. Sword and Shield are still identical.

@@ -15,7 +15,10 @@ MonoBehaviour:
   faceName: Ember
   description: 'Attack: Apply Burn equal to my value. Defense: Gain block equal to
     my value.'
+  rarity: 0
+  tags: 03000000
   baseValue: 3
+  maxValue: 6
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 6b11e72c35be2e344b7e718b742f902d, type: 2}
