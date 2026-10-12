@@ -32,12 +32,11 @@ public class PlayerActionSelectState : BattleState
             }
         }
 
-        if(battleManager.enemy.currentHP <= 0){
-            Debug.Log("Battle ended. Enemy died.");
-        }
-        else{
-            battleManager.player.OnTurnEnd();
-            battleManager.ChangeState(new EnemyTurnState(battleManager));
-        }
+        if(battleManager.CheckBattleOver()) return;
+
+        battleManager.player.OnTurnEnd();
+        if(battleManager.CheckBattleOver()) return;
+
+        battleManager.ChangeState(new EnemyTurnState(battleManager));
     }
 }

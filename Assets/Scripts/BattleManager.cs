@@ -23,6 +23,15 @@ public class BattleManager : MonoBehaviour
         currentState.Enter();
     }
 
+    // Ends the battle if either side is dead. Callers must stop their turn flow when this returns true.
+    public bool CheckBattleOver(){
+        if(player.IsDead || enemy.IsDead){
+            ChangeState(new BattleOverState(this, !player.IsDead));
+            return true;
+        }
+        return false;
+    }
+
     void Start(){
         ChangeState(new PlayerRollState(this));
     }

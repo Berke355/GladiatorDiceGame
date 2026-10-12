@@ -4,7 +4,7 @@ using UnityEngine;
 public class VampireEffectSO : EffectSO
 {
     public override void Execute(Entity source, Entity target, int value){
-        target.TakeDamage(value);
+        target.TakeDamage(value, source);
 
         source.Heal(value);
 

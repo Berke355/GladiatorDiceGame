@@ -14,8 +14,11 @@ public class EnemyTurnState : BattleState
         if(intent.effectLogic != null){
             intent.effectLogic.Execute(battleManager.enemy, battleManager.player, intent.value);
         }
-        
+        if(battleManager.CheckBattleOver()) return;
+
         battleManager.enemy.OnTurnEnd();
+        if(battleManager.CheckBattleOver()) return;
+
         battleManager.ChangeState(new PlayerRollState(battleManager));
     }
 
