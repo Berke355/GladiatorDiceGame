@@ -27,7 +27,7 @@ public class PlayerRollState : BattleState
     }
 
     public void RollTheDice(){
-        int index = Random.Range(0,6);
+        int index = Random.Range(0, battleManager.currentDiceFaces.Count);
         DieFaceSO face = battleManager.currentDiceFaces[index];
         Debug.Log("The dice were rolled. Face: " + face.faceName);
         battleManager.currentRolledFace = face;

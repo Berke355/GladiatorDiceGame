@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
@@ -11,8 +10,17 @@ public class BattleManager : MonoBehaviour
     private BattleState currentState;
     public DieFaceSO currentRolledFace;
 
-    [SerializeField]
-    public DieFaceSO[] currentDiceFaces = new DieFaceSO[6];
+    // Borrowed from the run in Awake; the run owns the die.
+    [System.NonSerialized]
+    public List<DieFaceSO> currentDiceFaces;
+
+    void Awake(){
+        // Load the run's die and the player's HP before UIManager.Start reads them.
+        RunData run = RunManager.Instance.run;
+        currentDiceFaces = run.dieFaces;
+        player.maxHP = run.maxHP;
+        player.currentHP = run.currentHP;
+    }
 
     public void ChangeState(BattleState newState){
         if(currentState != null){
@@ -51,9 +59,11 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    // Called by the Restart button on the battle result screen.
-    public void RestartBattle(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    // Called by the button on the battle result screen.
+    public void OnResultButton(){
+        if(currentState is BattleOverState overState){
+            overState.Continue();
+        }
     }
 
     public void OnRolled(){

@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     public Slider enemyHealthBar;
     public GameObject battleResultPanel;
     public TextMeshProUGUI battleResultText;
+    public TextMeshProUGUI battleResultButtonText;
 
     void Awake(){
         if (Instance != null && Instance != this){
@@ -98,12 +99,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void ShowBattleResult(bool playerWon){
+    public void ShowBattleResult(bool playerWon, int goldEarned){
         if(battleResultPanel != null){
             battleResultPanel.SetActive(true);
         }
         if(battleResultText != null){
-            battleResultText.text = playerWon ? "VICTORY" : "DEFEAT";
+            battleResultText.text = playerWon
+                ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>"
+                : "DEFEAT";
+        }
+        if(battleResultButtonText != null){
+            battleResultButtonText.text = playerWon ? "Continue" : "New Run";
         }
     }
 

@@ -221,3 +221,31 @@ This decision will be validated through gameplay prototyping rather than theory 
 - Fix the player health bar fill, which renders as a solid gray block.
 - Play-test the Burn die and tune values. Decide on Fuel's scaling and its decay-skip side effect.
 - Sword and Shield are still identical. Give them distinct identities.
+
+## Day 13 - Run Architecture & Market Scene
+
+### Accomplished
+- **RunData:** A plain `[Serializable]` C# class holding everything that lives for a whole run: the die, max/current HP, gold and battles won.
+- **RunManager:** A `DontDestroyOnLoad` singleton that owns `RunData` and drives scene flow (`GoToMarket`, `GoToNextBattle`, `RestartRun`).
+- **Bootstrap:** `RunManager` is not placed in any scene. A `[RuntimeInitializeOnLoadMethod(BeforeSceneLoad)]` method instantiates `Resources/RunManager.prefab` before the first scene loads, so any scene can be played directly from the Editor and duplicates can't happen. The starting die, starting HP (25) and gold reward (10) are set on the prefab.
+- **Battle ↔ Run:** `BattleManager` borrows the die and the player's HP from the run in `Awake`. `BattleOverState` reports the result to `RunManager.OnBattleEnded`, which stores HP and awards gold.
+- **Result Screen:** Victory shows "+10 Gold" and a Continue button to the Market. Defeat shows New Run, which starts a fresh run.
+- **Market Scene:** A new placeholder `Market` scene (`MarketUI`) shows gold, HP and battles won, plus a Next Battle button.
+- Renamed `SampleScene` to `Battle` (GUID kept). Both scenes are in Build Settings.
+- Play-tested the full loop: win → Market → next battle with the same HP → lose → New Run with a reset run. Also tested starting Play Mode directly from the Market scene.
+
+### Decisions
+- **Data lifetimes:** Design data (faces, effects) stays in ScriptableObjects. Run data lives in `RunData`, owned by `RunManager`. Battle data stays in the Battle scene. Mutable run state is never stored in an SO asset, because Play Mode changes to assets persist in the Editor but not in builds.
+- **DontDestroyOnLoad manager + separate data class:** Chosen over ScriptableObject run data (the Editor persistence trap), static classes (invisible in the Inspector) and a single scene (manual resets, harder to grow). Keeping `RunData` as plain data makes JSON saves and tests easy later.
+- **Dependency direction:** Battle doesn't know about the Market. It only borrows from the run and reports its result, and `RunManager` decides what comes next.
+- **HP carries over between battles**, so HP becomes a run-long resource (Slay the Spire style).
+- **The Market is a separate scene.**
+
+### Next Steps
+- Build the Market: offer a limited random selection of die faces with prices, buy with gold, and pick which face of the die to replace.
+- Add `Rarity` and `Price` to `DieFaceSO` (from the GDD face structure).
+- Scale enemies with `battlesWon`, or define an encounter list, so later battles get harder.
+- Show gold and the battle number during battle.
+- Fix the player health bar fill, which renders as a solid gray block.
+- Play-test the Burn die and tune values. Decide on Fuel's scaling and its decay-skip side effect.
+- Sword and Shield are still identical. Give them distinct identities.
