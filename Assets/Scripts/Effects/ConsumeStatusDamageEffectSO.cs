@@ -5,14 +5,14 @@ public class ConsumeStatusDamageEffectSO : EffectSO
 {
     public StatusType statusToConsume;
 
-    public override void Execute(Entity source, Entity target, int value)
+    public override void Execute(EffectContext context)
     {
-        int consumedAmount = target.GetStatus(statusToConsume);
-        int totalDamage = value + consumedAmount;
+        int consumedAmount = context.target.GetStatus(statusToConsume);
+        int totalDamage = context.value + consumedAmount;
 
-        target.ConsumeStatus(statusToConsume);
-        target.TakeDamage(totalDamage, source);
+        context.target.ConsumeStatus(statusToConsume);
+        context.target.TakeDamage(totalDamage, context.source);
 
-        Debug.Log(source.entityName + " consumed " + consumedAmount + " " + statusToConsume + " from " + target.entityName + " and dealt " + totalDamage + " damage.");
+        Debug.Log(context.source.entityName + " consumed " + consumedAmount + " " + statusToConsume + " from " + context.target.entityName + " and dealt " + totalDamage + " damage.");
     }
 }

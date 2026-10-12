@@ -25,10 +25,17 @@ public class PlayerActionSelectState : BattleState
         this.selectedAction=selectedAction;
 
         DieFace rolledFace = battleManager.currentRolledFace;
+        EffectContext context = new EffectContext{
+            source = battleManager.player,
+            target = battleManager.enemy,
+            value = rolledFace.value,
+            die = battleManager.currentDiceFaces,
+            face = rolledFace
+        };
         foreach(ActionEffect effect in rolledFace.definition.effects){
             if(effect.actionType == selectedAction){
                 if(effect.effectLogic != null){
-                    effect.effectLogic.Execute(battleManager.player, battleManager.enemy, rolledFace.value);
+                    effect.effectLogic.Execute(context);
                 }
             }
         }

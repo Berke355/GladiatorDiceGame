@@ -5,15 +5,15 @@ public class MultiplyStatusEffectSO : EffectSO
 {
     public StatusType statusToMultiply;
 
-    public override void Execute(Entity source, Entity target, int value)
+    public override void Execute(EffectContext context)
     {
-        int currentStatus = target.GetStatus(statusToMultiply);
+        int currentStatus = context.target.GetStatus(statusToMultiply);
         if (currentStatus > 0)
         {
             // value is the multiplier (e.g. 2 for Fuel)
-            int amountToAdd = (currentStatus * value) - currentStatus;
-            target.ApplyStatus(statusToMultiply, amountToAdd);
-            Debug.Log(source.entityName + " multiplied " + target.entityName + "'s " + statusToMultiply + " by " + value + ".");
+            int amountToAdd = (currentStatus * context.value) - currentStatus;
+            context.target.ApplyStatus(statusToMultiply, amountToAdd);
+            Debug.Log(context.source.entityName + " multiplied " + context.target.entityName + "'s " + statusToMultiply + " by " + context.value + ".");
         }
     }
 }

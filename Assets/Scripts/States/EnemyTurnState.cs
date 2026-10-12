@@ -12,7 +12,12 @@ public class EnemyTurnState : BattleState
         EnemyIntent intent = battleManager.enemyBrain.currentIntent;
         
         if(intent.effectLogic != null){
-            intent.effectLogic.Execute(battleManager.enemy, battleManager.player, intent.value);
+            // Enemies have no die, so die and face stay null.
+            intent.effectLogic.Execute(new EffectContext{
+                source = battleManager.enemy,
+                target = battleManager.player,
+                value = intent.value
+            });
         }
         if(battleManager.CheckBattleOver()) return;
 

@@ -3,8 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewBlockEffect", menuName = "Dice/Effects/Block Effect")]
 public class BlockEffectSO : EffectSO
 {
-    public override void Execute(Entity source, Entity target, int value){
-        source.GainBlock(value);
-        Debug.Log("Gained " + value + " block.");
+    public override void Execute(EffectContext context){
+        context.source.GainBlock(context.value);
+        Debug.Log("Gained " + context.value + " block.");
     }
 }

@@ -5,14 +5,14 @@ public class ConsumeStatusHealEffectSO : EffectSO
 {
     public StatusType statusToConsume;
 
-    public override void Execute(Entity source, Entity target, int value)
+    public override void Execute(EffectContext context)
     {
-        int consumedAmount = target.GetStatus(statusToConsume);
-        int totalHeal = value * consumedAmount;
+        int consumedAmount = context.target.GetStatus(statusToConsume);
+        int totalHeal = context.value * consumedAmount;
 
-        target.ConsumeStatus(statusToConsume);
-        source.Heal(totalHeal);
+        context.target.ConsumeStatus(statusToConsume);
+        context.source.Heal(totalHeal);
 
-        Debug.Log(source.entityName + " consumed " + consumedAmount + " " + statusToConsume + " from " + target.entityName + " and healed for " + totalHeal + " HP.");
+        Debug.Log(context.source.entityName + " consumed " + consumedAmount + " " + statusToConsume + " from " + context.target.entityName + " and healed for " + totalHeal + " HP.");
     }
 }

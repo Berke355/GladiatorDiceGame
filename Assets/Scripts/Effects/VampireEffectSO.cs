@@ -3,11 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "VampireEffect", menuName = "Dice/Effects/Vampire Effect")]
 public class VampireEffectSO : EffectSO
 {
-    public override void Execute(Entity source, Entity target, int value){
-        target.TakeDamage(value, source);
+    public override void Execute(EffectContext context){
+        context.target.TakeDamage(context.value, context.source);
 
-        source.Heal(value);
+        context.source.Heal(context.value);
 
-        Debug.Log(source.entityName + " used Vampire strike! Dealt " + value + " damage and healed.");
+        Debug.Log(context.source.entityName + " used Vampire strike! Dealt " + context.value + " damage and healed.");
     }
 }

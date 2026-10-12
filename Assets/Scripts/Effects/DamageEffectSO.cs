@@ -3,8 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewDamageEffect", menuName = "Dice/Effects/Damage Effect")]
 public class DamageEffectSO : EffectSO
 {
-    public override void Execute(Entity source, Entity target, int value){
-        target.TakeDamage(value, source);
-        Debug.Log(source.entityName + " attacked! Dealt " + value + " damage.");
+    public override void Execute(EffectContext context){
+        context.target.TakeDamage(context.value, context.source);
+        Debug.Log(context.source.entityName + " attacked! Dealt " + context.value + " damage.");
     }
 }
