@@ -53,6 +53,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 55e5e902bbdbd9d4e97d5cd98b5fb004, type: 2}
   startingMaxHP: 25
   economy: {fileID: 11400000, guid: 7c6729f1722a84a4a8373d47c7c57e9d, type: 2}
+  bossBattles: 0400000008000000
   battleSceneName: Battle
   marketSceneName: Market
   run:

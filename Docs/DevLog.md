@@ -296,3 +296,33 @@ Some faces become far stronger than others when their value goes up (e.g. Fuel m
 - Resolve the remaining GDD open questions (Normal Market Epic chance, offers per Market, boss gold reward).
 - Scale enemies over the run, show gold and the battle number during battle, and fix the player health bar fill.
 - Play-test the Burn die. Sword and Shield are still identical.
+
+## Day 16 - Market & Grand Market
+
+### Accomplished
+- **Market Rules (`Market`):** A plain C# class with no UI that generates offers, handles buying and handles upgrades.
+  - **Normal Market:** 3 offers with rarity weights 70 / 25 / 5, weighted about 60% toward tags already on the die.
+  - **Grand Market:** Epic offers only.
+  - A face is offered at most once per visit.
+  - **Buying:** the bought face replaces a die face chosen by the player, as a new `DieFace` instance.
+  - **Upgrading:** the Normal Market upgrades Common and Rare faces, the Grand Market upgrades Epic faces. The Max Value cap and the rising upgrade cost apply.
+- **Market Scene (`MarketUI`):** 3 offer cards (name, rarity, value and max, description, price), the 6 die faces with an upgrade button under each, a hint line, a Cancel button and Next Battle. Buying takes two steps: pick an offer, then pick the face it replaces. Other buttons are locked while choosing.
+- **Run Structure:** `RunManager.bossBattles` (4 and 8) marks boss slots. Winning one opens the Grand Market.
+- **Config:** `EconomyConfigSO` now holds the Market pool, offers per Market, rarity weights and the tag-match chance.
+- **Tests:**
+  - Tested the rules without a scene: over 2,000 Markets, rarity came out at 70.6 / 24.4 / 5.0 with no duplicate offers in a visit. Buying, upgrades and the Normal/Grand split all followed the rules.
+  - Play-tested the scene by clicking through it: buy, replace, upgrade, cancel, Grand Market, and the next battle using the changed die.
+
+### Decisions
+- **Model / View split:** All Market rules live in `Market`, while `MarketUI` only draws its state and forwards clicks. The rules can be tested without a scene, and the UI can be rebuilt without touching them.
+- **Grand Market:** 3 offers, all Epic. It is the station for buying and upgrading Epic faces, and Epic faces can only be upgraded there.
+- **Normal Market:** 3 offers using the rarity weights 70 / 25 / 5.
+- **No duplicate offers:** when the pool runs out (only 2 Epic faces exist today), the Market shows fewer offers instead of repeating a face.
+- Offer and slot buttons are wired in code with `AddListener` because each needs its own index. Single buttons stay wired in the Inspector.
+
+### Next Steps
+- Design at least one more Epic face so the Grand Market can show 3 offers, and more faces overall so tag weighting reaches its 60% target.
+- Center the offer cards when a Market has fewer than 3 offers.
+- Add boss enemies, the final boss that ends the run (about 11 battles), and a boss gold reward.
+- Scale enemies over the run, show gold and the battle number during battle, and fix the player health bar fill.
+- Play-test the full loop and tune prices and values. Sword and Shield are still identical.

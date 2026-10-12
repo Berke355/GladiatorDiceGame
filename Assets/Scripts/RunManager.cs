@@ -16,6 +16,13 @@ public class RunManager : MonoBehaviour
     [Header("Economy")]
     public EconomyConfigSO economy;
 
+    [Header("Run Structure")]
+    // Boss battle numbers. Winning one opens the Grand Market instead of a normal one.
+    // Boss enemies themselves are not implemented yet.
+    public List<int> bossBattles = new List<int>{ 4, 8 };
+
+    public bool IsGrandMarket => bossBattles.Contains(run.battlesWon);
+
     [Header("Scenes")]
     public string battleSceneName = "Battle";
     public string marketSceneName = "Market";
