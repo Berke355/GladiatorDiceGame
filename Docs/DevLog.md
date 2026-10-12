@@ -530,3 +530,33 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - Tune enemy HP and damage with the simulator until the targets are met.
 - Then the boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, and a boss gold reward.
 - Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 23 - Run Simulator & Balance Findings (in progress)
+
+### Accomplished
+- **Run Simulator** (`Assets/Editor/RunSimulator.cs`, menu: Tools → Gladiator Dice → Run Balance Simulation):
+  - Simulates full 11-battle runs with the real `Entity`, `EnemyBrain`, effects and `Market`, without loading scenes.
+  - Enemy HP and damage can be scaled per tier on simulation-only copies, so numbers can be explored without editing assets.
+  - Five bots: no shopping, an unplanned buyer, and one focused bot each for Burn, Poison and Shield.
+- **Neutral starting die:** 3 Sword + 3 Shield.
+- **Fixed a bot weakness:** the bot stacked Fortify with Shield even when its die had nothing that spends Fortify.
+
+### Findings
+- **Weak tier target met:** at enemy HP ×0.3 and damage ×0.5, the no-shopping die clears the Weak tier losing about 14 HP. Weak enemies would then have 6–8 HP and deal 1–2 damage.
+- **Lowering enemies alone isn't enough.** Even with Medium and Strong HP ×0.3, focused builds almost never clear a run. The walls are battle 4 (the first Medium enemy) and battle 8 (the first Strong enemy).
+- **Player power grows too slowly.** At 10 gold per victory, a build hasn't formed by the time Medium enemies arrive.
+- **Gold income is the strongest lever.** At 20 gold per victory with the same enemy settings:
+  - the focused Poison bot clears 17% of runs (0% at 10 gold)
+  - the unplanned buyer reaches battle 8 in 19% of runs (5% at 10 gold)
+- **Starting faces at value 3** help in the Medium tier but drop Weak tier HP loss to about 7, below the target, so they stay at 2.
+- **Shield is the weakest build in every scenario,** either because of the bot's Shield strategy or the build itself.
+
+### Open Decisions
+- Raise gold per victory (e.g. 20), and possibly raise prices with it so saving for Epics stays a real decision.
+- Whether 6–8 HP Weak enemies feel right, or all face values should be scaled up instead.
+
+### Next Steps
+- Decide on gold income and prices, then tune each enemy with the simulator (starting point: Weak HP ×0.3 / damage ×0.5, Medium ×0.4 / ×0.6, Strong ×0.4 / ×0.6) and write the final numbers into the assets.
+- Look into why the Shield build underperforms.
+- Then the boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, and a boss gold reward.
+- Center the offer cards when a Market has fewer than 3 offers.

@@ -45,12 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunManager
   startingDieFaces:
-  - {fileID: 11400000, guid: aa02c0908dbe2f342b77e9771d09d897, type: 2}
-  - {fileID: 11400000, guid: aa02c0908dbe2f342b77e9771d09d897, type: 2}
-  - {fileID: 11400000, guid: a945924d7a75fb64da8a3a6dd8898b05, type: 2}
-  - {fileID: 11400000, guid: 72dc78b53232a5b4389d82ae7e0d4c3d, type: 2}
-  - {fileID: 11400000, guid: 9418b242856f4c34c8819564b81b3397, type: 2}
-  - {fileID: 11400000, guid: 55e5e902bbdbd9d4e97d5cd98b5fb004, type: 2}
+  - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
+  - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
+  - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
+  - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
+  - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
+  - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
   startingMaxHP: 50
   economy: {fileID: 11400000, guid: 7c6729f1722a84a4a8373d47c7c57e9d, type: 2}
   encounters: {fileID: 11400000, guid: 0c03be810ca835746ad6247037d6106a, type: 2}
