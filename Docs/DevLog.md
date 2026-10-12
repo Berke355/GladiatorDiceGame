@@ -143,3 +143,37 @@ This decision will be validated through gameplay prototyping rather than theory 
 
 ### Next Steps
 - **Status Effects (Phase 3 Continued):** Implement a robust status effect system in `Entity.cs` to handle Damage over Time (Poison, Bleed) and Buffs/Debuffs.
+
+## Day 9 - Status Engine & Burn Build Mechanics
+
+### Accomplished
+- **Status Engine:** `Entity` now stores statuses in a `Dictionary<StatusType, int>` with `ApplyStatus`, `GetStatus` and `ConsumeStatus`. Status changes raise `OnHealthChanged` so the UI stays in sync.
+- **Turn Hooks:** Added `OnTurnStart` (reset block, clear FireShield) and `OnTurnEnd` (Burn tick) to `Entity`, called by the battle states for both sides.
+- **Burn & FireShield:** Burn deals its stacks as damage at the end of the owner's turn and decays by 2. FireShield applies Burn to anyone who hits its owner.
+- **Burn Build Effects:** Added `ApplyStatusEffectSO`, `ConsumeStatusDamageEffectSO` (consume a status for bonus damage), `ConsumeStatusHealEffectSO` (consume a status to heal) and `MultiplyStatusEffectSO` (e.g. double the target's Burn).
+- **Status UI:** `UIManager` shows active Burn and FireShield stacks for both entities.
+- Removed the per-effect `multiplier` from `ActionEffect`; every effect now receives the face's `baseValue` directly.
+
+### Decisions
+- **Value is the effect:** The number printed on a face is exactly what its effects use. With multipliers, a face showing 4 could really deal 8, and players would learn to ignore the big number on the face. Faces differ through which actions and effects they support, not through hidden scaling.
+
+### Next Steps
+- Create effect and face assets for the Burn build to test it in the scene.
+- Handle battle end (win/lose) instead of letting the loop run on.
+
+## Day 10 - Combat Rule Fixes & Battle End
+
+### Accomplished
+- **FireShield Fix:** `DamageEffectSO` and `VampireEffectSO` now pass `source` to `TakeDamage`, so regular attacks trigger FireShield.
+- **Burn Decay Fix:** Burn added since the last tick no longer decays on that tick, even when it was applied during the opponent's turn. The flag is now reset after the tick instead of at turn start.
+- **Burn Ignores Block:** Burn ticks reduce HP directly through a private `LoseHP` helper instead of `TakeDamage`.
+- **Battle End:** Added `Entity.IsDead`, `BattleManager.CheckBattleOver()` and `BattleOverState`. The check runs after every action and every end-of-turn tick, so the loop stops when either side dies (including deaths from Burn).
+- **Face Data Cleanup:** Rewrote the Sword, Shield and Bite descriptions to match the value-based rules and removed the leftover `multiplier` fields from the face assets.
+
+### Decisions
+- Damage over Time bypasses block, so Block counters direct attacks but not Burn.
+
+### Next Steps
+- Sword and Shield are now mechanically identical (Attack: damage, Defense: block). Give them distinct identities.
+- Create Burn build assets and test the build in play mode.
+- Show a win/lose screen and start the Gold → Market loop.
