@@ -306,3 +306,115 @@ Hybrids add variety and give players a way to pivot when they can't find the fac
 - Poison may prove too strong if it never decays. If so, let it decay by 1 per tick.
 - How Fortify interacts with FireShield and future Block effects.
 - Second payoff faces for Poison and Shield, so each archetype has more than one Epic.
+
+## Enemies & Bosses
+
+The arena hosts two kinds of opponents. **Normal enemies** use telegraphed intents and set the pace of a run. **Bosses** are legendary champions of the Colosseum who fight with their own die.
+
+### Normal Enemies
+
+Normal enemies keep the intent system: at the start of the player's turn, the enemy picks and shows its next action (Slay the Spire style), so the player can plan around it.
+
+- **Data, not code:** each enemy is defined as data (name, HP, list of intents), just like die faces.
+- **Pools by run segment:** each part of the run has its own enemy pool, so enemies get stronger as the run goes on.
+
+| Segment | Battles | Enemies |
+|---|---|---|
+| Early | 1–3 | Weak: low HP, simple intents |
+| Middle | 5–7 | Medium: more HP, mixed intents |
+| Late | 9–10 | Strong: high HP, dangerous intents |
+
+- **Intent choice:** intents have weights, and the same intent cannot be picked several times in a row. This avoids streaks like healing three turns in a row.
+
+### Bosses
+
+Bosses appear at battles 4, 8 and 11 (the final boss). They are what players remember about a run, so each one is built around a mechanic of its own.
+
+#### Boss Design Principles
+
+- **Unique concepts, not mirror matches:** bosses never use the player's archetypes (Burn, Poison, Shield). Each boss has its own concept, its own die and boss-only mechanics. Fighting a stronger copy of your own build teaches nothing new; a boss that petrifies your die asks a question the player has never faced.
+- **Bosses test the die:** each boss tests a different aspect of the player's die. The most threatening attack in a game about building a die is an attack on the die itself.
+- **Test, don't hard-counter:** a boss can favor some builds, but every build must have a way to win. A boss mechanic never leaves the player with nothing to do (e.g. a petrified face still gives a little block). This is the boss version of the Standalone Faces rule.
+- **Battle-scoped effects:** whatever a boss does to the player's die lasts only for that battle. The run's die is never changed permanently.
+
+#### Boss Dice
+
+- **Each boss has a 6-face die** built from boss-only faces. Boss faces use the same rule as the player's: the printed value is the effect.
+- **Telegraphed roll:** the boss rolls its die at the start of the player's turn, and the result is shown as its intent (e.g. "Charge: 25 damage in 3 turns"). Luck still matters, since the boss's strongest face can come up, but the player always sees it coming and can react.
+- **Fixed actions:** each boss face has one fixed action chosen by the designer. Bosses don't need an AI: the player makes the decisions, and the boss's job is to be a readable threat.
+- **Visible die:** the boss's 6 faces are shown for the whole battle, so players can read the odds ("1 Charge face: a 1 in 6 chance each turn"). Reading the boss's die is a skill to master.
+
+#### Minotaur (battle 4)
+
+A raging bull of the labyrinth. The first boss teaches players to read a boss die and plan around a countdown.
+
+- **Tests:** planning ahead.
+- **Mechanic: Charge countdown.** When the Charge face is rolled, the Minotaur lowers its horns and a visible countdown starts: in 3 turns, it deals one huge hit.
+- **Counterplay:** be ready with block when the charge lands, or **stagger** it: if the Minotaur takes enough damage during the countdown, the charge is cancelled. Defensive and aggressive builds both have an answer.
+
+| Face | Count | Action |
+|---|---|---|
+| Gore | 2 | Attack: deal heavy damage |
+| Trample | 2 | Attack: deal damage and gain block |
+| Hide | 1 | Defense: gain a lot of block |
+| Charge | 1 | Start the charge countdown (huge hit in 3 turns, cancelled by stagger) |
+
+#### Medusa (battle 8)
+
+The gorgon whose gaze turns gladiators to stone. Medusa attacks the player's die itself.
+
+- **Tests:** reliance on single faces. Dice with backup faces (duplicates, several faces that do the same job) hold up better.
+- **Mechanic: Petrify.** Medusa's gaze petrifies the player's **highest-value face**. The target is shown in the intent, so the player knows which face is in danger.
+- **Stone faces:** a petrified face still exists on the die, but when it is rolled it only gives a little block, so the player is never left with nothing to do. Petrify wears off after **2–3 turns** (exact number to tune), but Medusa can petrify again.
+- Petrify lasts only for the battle and never changes the run's die.
+
+| Face | Count | Action |
+|---|---|---|
+| Gaze | 2 | Petrify the player's highest-value face |
+| Serpent Bite | 2 | Attack: deal damage |
+| Coil | 1 | Attack: deal damage, plus extra damage for each petrified face the player has |
+| Stone Skin | 1 | Defense: gain a lot of block |
+
+#### Hydra (battle 11, final boss)
+
+The many-headed serpent: cut off one head and two grow back, unless the wound is burned. In the myth, Heracles cauterized the necks with fire.
+
+- **Tests:** how the player deals damage.
+- **Mechanic: Heads.** The Hydra starts with a few heads. Its Bite face attacks once per head.
+  - **Cutting heads:** a single big hit cuts off a head.
+  - **Regrowth:** at the start of its turn, every cut head grows back as two, **unless the Hydra has Burn**.
+  - **Regeneration:** the Hydra also heals every turn based on its head count, and Burn stops this too.
+- **Every build has a path:**
+  - **Burn** cuts heads safely and stops regeneration.
+  - **Poison** never cuts heads (so no regrowth) and, since it never decays, eventually outpaces regeneration.
+  - **Burst** builds (e.g. Shield Burst) deal big hits but grow more heads, a risk/reward decision about when to strike.
+
+| Face | Count | Action |
+|---|---|---|
+| Bite | 3 | Attack: deal damage once per head |
+| Thrash | 1 | Attack: deal heavy damage |
+| Regrow | 1 | Magic: heal a large amount (blocked by Burn) |
+| Hiss | 1 | Defense: gain block |
+
+All boss numbers (HP, damage, countdown length, stagger threshold, head count) are placeholders, to be tuned through play-testing.
+
+### Technical Notes
+
+- Bosses reuse `DieFace` and `EffectSO`, with boss-only mechanics written as new `EffectSO` subclasses.
+- **`EffectContext` needs a `targetDie` field:** `die` is the source's die, but Medusa acts on the target's die. This is a new field, not a signature change.
+- **Battle-scoped face states** (e.g. Petrified) live in battle data, never in `RunData`.
+- **Brains:** normal enemies use the intent brain, and bosses need a dice brain that rolls at the start of the player's turn and exposes the rolled face as the intent.
+
+### Future
+
+- **Multiple bosses per slot (planned):** each boss slot will have a pool of bosses, and one is picked per run (e.g. battle 4: Minotaur or Trickster). This is required for replayability. Candidates:
+  - **Trickster:** manipulates the player's luck ("roll twice, keep the lower"), testing consistency.
+  - **The Emperor:** the arena's ruler, whose thumbs-up or thumbs-down die changes the rules of the fight.
+- **Boss phases:** at 50% HP a boss upgrades or swaps one of its faces, mirroring what the player does in the Market.
+- **Boss loot:** the Grand Market after a boss slightly favors Epic faces themed around that boss.
+
+### Open Questions
+
+- Gold reward for boss victories.
+- Exact Petrify duration (2 or 3 turns).
+- Normal enemy roster for each segment.

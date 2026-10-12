@@ -419,3 +419,36 @@ These come from a few runs against the weak test enemy, not real balance data.
 - Add the final boss that ends the run (about 11 battles) and a boss gold reward.
 - Center the offer cards when a Market has fewer than 3 offers.
 - Play-test full runs and tune Poison (decay?), Shield and prices.
+
+## Day 20 - Enemies & Bosses Design
+
+### Accomplished
+- Wrote the **Enemies & Bosses** section of the GDD:
+  - normal enemies as data, with pools for each run segment and weighted, non-repeating intents
+  - boss design principles and how boss dice work
+  - three bosses: Minotaur, Medusa and Hydra
+  - technical notes, Future ideas and open questions
+
+### Design Challenge
+Every battle uses the same weak enemy, so neither archetype balance nor the save vs. tempo decision can be judged. Bosses also need to feel different from normal enemies and from the player's own builds.
+
+### Decisions
+- **Normal enemies keep the intent system,** defined as data, with enemy pools for early, middle and late battles.
+- **Bosses fight with their own die,** rolled at the start of the player's turn and shown as the intent. Luck still matters, but the player always sees the threat coming. Rolling after the player acts was rejected because a lucky boss roll could end a run with no counterplay, which feels unfair when HP carries over.
+- **Fixed actions per boss face** instead of an AI. The boss's job is to be a readable threat.
+- **The boss die is visible all battle** so players can read the odds.
+- **Bosses use unique concepts, not the player's archetypes.** Mirror matches against a stronger copy of your own build are dull. Boss-only mechanics can't leak into player builds because normal enemies have no die.
+- **Each boss tests a different part of the player's die:**
+  - **Minotaur** (battle 4): planning, through a visible charge countdown that block or a stagger can answer.
+  - **Medusa** (battle 8): reliance on single faces, by petrifying the highest-value face for 2–3 turns.
+  - **Hydra** (battle 11, final): damage type. Big hits cut heads that regrow as two unless it has Burn, and it regenerates while unburned.
+- **Test, don't hard-counter:** every build needs a way to beat every boss. A petrified face still gives a little block.
+- **Boss effects are battle-scoped** and never change the run's die.
+- **Multiple bosses per slot is planned,** for replayability. Boss phases and boss loot are recorded as Future ideas.
+
+### Next Steps
+- Define normal enemies as data (`EnemySO`), add early, middle and late pools, and add weighted, non-repeating intents.
+- Build the boss dice system (boss brain, telegraphed roll, visible die) with the Minotaur first.
+- Then Medusa (`targetDie` in `EffectContext`, battle-scoped Petrify) and the Hydra (heads, regrowth, regeneration).
+- End the run after the final boss, and set a boss gold reward.
+- Center the offer cards when a Market has fewer than 3 offers.
