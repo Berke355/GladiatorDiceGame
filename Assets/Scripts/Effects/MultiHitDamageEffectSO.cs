@@ -13,4 +13,8 @@ public class MultiHitDamageEffectSO : EffectSO
         }
         Debug.Log(context.source.entityName + " hit " + hits + " times for " + context.value + " damage each.");
     }
+
+    public override string Describe(int value){
+        return hits + " x " + value + " damage";
+    }
 }

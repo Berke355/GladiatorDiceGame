@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Dimachaerus
   tier: 1
-  maxHP: 12
+  maxHP: 17
   escalationPerTurn: 0
   intents:
   - intentName: Twin Strike

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Hoplomachus Champion
   tier: 2
-  maxHP: 22
+  maxHP: 44
   escalationPerTurn: 0
   intents:
   - intentName: Spear Thrust

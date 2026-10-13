@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Essedarius
   tier: 2
-  maxHP: 21
+  maxHP: 42
   escalationPerTurn: 1
   intents:
   - intentName: Ride Down

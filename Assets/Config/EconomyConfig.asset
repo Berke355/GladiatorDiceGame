@@ -33,6 +33,10 @@ MonoBehaviour:
   rareWeight: 25
   epicWeight: 5
   tagMatchChance: 0.6
+  startingFaceOfferCount: 3
+  startingCommonWeight: 85
+  startingRareWeight: 13
+  startingEpicWeight: 2
   commonPrice: 10
   rarePrice: 25
   epicPrice: 60

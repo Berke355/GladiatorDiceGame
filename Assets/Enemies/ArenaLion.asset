@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Arena Lion
   tier: 1
-  maxHP: 14
+  maxHP: 20
   escalationPerTurn: 0
   intents:
   - intentName: Maul

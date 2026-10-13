@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: SwordFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Sword
-  description: 'Attack: Deal damage equal to my value. Defense: Gain block equal
-    to my value.'
+  description: 'Attack: Deal damage equal to my value and apply 1 Bleed. Defense:
+    Gain block equal to my value.'
   rarity: 0
   tags: 00000000
   baseValue: 2
   maxValue: 5
   effects:
-  - actionType: 1
-    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+  - actionType: 0
+    effectLogic: {fileID: 11400000, guid: 500381d8c1c6de746b04f404c897c503, type: 2}
+  - actionType: 1
+    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}

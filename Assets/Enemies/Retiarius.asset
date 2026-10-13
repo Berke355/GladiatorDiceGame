@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Retiarius
   tier: 1
-  maxHP: 13
+  maxHP: 18
   escalationPerTurn: 0
   intents:
   - intentName: Jab

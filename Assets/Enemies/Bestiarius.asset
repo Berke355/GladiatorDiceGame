@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Bestiarius
   tier: 2
-  maxHP: 20
+  maxHP: 40
   escalationPerTurn: 0
   intents:
   - intentName: Whip

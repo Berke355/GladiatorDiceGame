@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Arena Wolf
   tier: 0
-  maxHP: 5
+  maxHP: 9
   escalationPerTurn: 0
   intents:
   - intentName: Bite

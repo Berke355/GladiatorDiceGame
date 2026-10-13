@@ -74,6 +74,7 @@ public static class RunSimulator
         try{
             for(int r = 0; r < runs; r++){
                 RunData run = new RunData(config.startingDieFaces, config.startingMaxHP);
+                run.dieFaces.Add(new DieFace(ChooseStartingFace(bot, StartingFaceOffers.Generate(config.economy, config.startingDieFaces))));
                 int hpBeforeWeak = run.currentHP;
 
                 for(int battle = 1; battle <= BattlesPerRun; battle++){
@@ -258,6 +259,24 @@ public static class RunSimulator
 
     private static bool Has(DieFaceSO face, ActionType action){
         return face.effects.Exists(effect => effect.actionType == action);
+    }
+
+    // ---------- Run start ----------
+
+    // Focused bots take a face of their archetype (or the rarest offer), the others pick at random.
+    private static DieFaceSO ChooseStartingFace(Bot bot, List<DieFaceSO> offers){
+        if(bot.shopping == Shopping.Focused){
+            DieFaceSO best = null;
+            foreach(DieFaceSO face in offers){
+                bool fits = face.tags.Contains(bot.focusTag);
+                bool bestFits = best != null && best.tags.Contains(bot.focusTag);
+                if(best == null || (fits && !bestFits) || (fits == bestFits && face.rarity > best.rarity)){
+                    best = face;
+                }
+            }
+            return best;
+        }
+        return offers[Random.Range(0, offers.Count)];
     }
 
     // ---------- Shopping ----------

@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
 
     void Awake(){
         // Load the run's die and the player's HP before UIManager.Start reads them.
+        RunManager.Instance.EnsureStartingFace();
         RunData run = RunManager.Instance.run;
         currentDiceFaces = run.dieFaces;
         player.maxHP = run.maxHP;

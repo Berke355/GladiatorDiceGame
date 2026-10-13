@@ -59,18 +59,26 @@ public class EnemyBrain : MonoBehaviour
         return currentIntent.value + (currentIntent.intentType == ActionType.Attack ? attackBonus : 0);
     }
 
+    // Readable intent text built from the effects, e.g. "Shield Slam: 4 damage" or "Shield Rush: 2 damage, 2 block".
     public string DescribeCurrentIntent(){
-        if(currentIntent.attackBonusGain > 0 && (currentIntent.effects == null || currentIntent.effects.Count == 0)){
-            return currentIntent.intentName + " (+" + currentIntent.attackBonusGain + " damage)";
-        }
-
+        List<string> parts = new List<string>();
         int value = GetCurrentValue();
-        foreach(EffectSO effect in currentIntent.effects){
-            if(effect is MultiHitDamageEffectSO multiHit){
-                return currentIntent.intentName + " (" + multiHit.hits + " x " + value + ")";
+        if(currentIntent.effects != null){
+            foreach(EffectSO effect in currentIntent.effects){
+                string description = effect != null ? effect.Describe(value) : "";
+                if(description != ""){
+                    parts.Add(description);
+                }
             }
         }
-        return currentIntent.intentName + " (" + value + ")";
+        if(currentIntent.attackBonusGain > 0){
+            parts.Add("+" + currentIntent.attackBonusGain + " damage on all attacks");
+        }
+
+        if(parts.Count == 0){
+            return currentIntent.intentName + " (" + value + ")";
+        }
+        return currentIntent.intentName + ": " + string.Join(", ", parts);
     }
 
     // Runs the current intent. Enemies have no die, so die and face stay null in the context.

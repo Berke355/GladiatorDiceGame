@@ -19,6 +19,13 @@ public class EconomyConfigSO : ScriptableObject
     [Range(0f, 1f)]
     public float tagMatchChance = 0.6f;
 
+    [Header("Starting Face")]
+    // The starting face choice uses the Market pool, minus faces already on the starting die.
+    public int startingFaceOfferCount = 3;
+    public int startingCommonWeight = 85;
+    public int startingRareWeight = 13;
+    public int startingEpicWeight = 2;
+
     [Header("Buy Price")]
     public int commonPrice = 8;
     public int rarePrice = 15;

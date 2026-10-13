@@ -30,6 +30,7 @@ public class RunManager : MonoBehaviour
     public bool IsGrandMarket => bossBattles.Contains(run.battlesWon);
 
     [Header("Scenes")]
+    public string runStartSceneName = "RunStart";
     public string battleSceneName = "Battle";
     public string marketSceneName = "Market";
 
@@ -60,8 +61,25 @@ public class RunManager : MonoBehaviour
         StartNewRun();
     }
 
+    // The starting die has five faces; the sixth is picked from startingFaceOffers on the run start screen.
     public void StartNewRun(){
         run = new RunData(startingDieFaces, startingMaxHP);
+        run.startingFaceOffers = StartingFaceOffers.Generate(economy, startingDieFaces);
+    }
+
+    public void ChooseStartingFace(DieFaceSO face){
+        if(run.startingFaceChosen){
+            return;
+        }
+        run.dieFaces.Add(new DieFace(face));
+        run.startingFaceChosen = true;
+    }
+
+    // Lets the Battle scene be played directly from the Editor, skipping the run start screen.
+    public void EnsureStartingFace(){
+        if(!run.startingFaceChosen && run.startingFaceOffers.Count > 0){
+            ChooseStartingFace(run.startingFaceOffers[Random.Range(0, run.startingFaceOffers.Count)]);
+        }
     }
 
     // Called once when a battle ends. Returns the gold earned.
@@ -116,8 +134,9 @@ public class RunManager : MonoBehaviour
         SceneManager.LoadScene(battleSceneName);
     }
 
+    // A new run begins on the run start screen, where the starting face is picked.
     public void RestartRun(){
         StartNewRun();
-        SceneManager.LoadScene(battleSceneName);
+        SceneManager.LoadScene(runStartSceneName);
     }
 }

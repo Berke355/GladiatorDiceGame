@@ -7,4 +7,8 @@ public class BlockEffectSO : EffectSO
         context.source.GainBlock(context.value);
         Debug.Log("Gained " + context.value + " block.");
     }
+
+    public override string Describe(int value){
+        return value + " block";
+    }
 }

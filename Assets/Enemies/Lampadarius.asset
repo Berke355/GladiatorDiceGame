@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Lampadarius
   tier: 0
-  maxHP: 7
+  maxHP: 13
   escalationPerTurn: 0
   intents:
   - intentName: Torch Swing

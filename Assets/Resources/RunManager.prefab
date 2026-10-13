@@ -47,15 +47,15 @@ MonoBehaviour:
   startingDieFaces:
   - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
   - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
-  - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
   - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
   - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
-  - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
+  - {fileID: 11400000, guid: 6fdb3d88cbe76434085ec1775e8012a4, type: 2}
   startingMaxHP: 50
   economy: {fileID: 11400000, guid: 7c6729f1722a84a4a8373d47c7c57e9d, type: 2}
   encounters: {fileID: 11400000, guid: 0c03be810ca835746ad6247037d6106a, type: 2}
   bossBattles: 0400000008000000
   bossHealFraction: 0.5
+  runStartSceneName: RunStart
   battleSceneName: Battle
   marketSceneName: Market
   run:
@@ -65,3 +65,5 @@ MonoBehaviour:
     gold: 0
     battlesWon: 0
     metEnemies: []
+    startingFaceOffers: []
+    startingFaceChosen: 0

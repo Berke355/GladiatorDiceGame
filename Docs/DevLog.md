@@ -592,3 +592,47 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, a boss gold reward, then re-balance with bosses in.
 - Center the offer cards when a Market has fewer than 3 offers.
 - Play-test a full run by hand to check how the new numbers feel.
+
+## Day 25 - Run Start, Bleed & Readable Intents
+
+### Accomplished
+- **Play-test feedback:** the Secutor could not be beaten. Its Brace stacked permanent Fortify faster than the starting die could break it, and its "Shield Slam (4)" intent was misread because intents only showed a name and a number.
+- **Bleed status:** deals 1 damage at the end of its owner's turn, then loses 1 stack, so stacks are duration rather than damage. It bypasses Block and Fortify.
+- **Sword:** Attack deals its value and applies a fixed 1 Bleed (`ApplyStatusEffectSO.fixedAmount`); Defense gives block. Shield is unchanged (2 damage / 2 Fortify).
+- **Health Potion** (Common, value 3, max 4): Magic heals its value, with no Attack or Defense.
+- **Enemy Fortify:** Secutor's Brace and the War Elephant's Thick Hide now grant 1 Fortify (was 3).
+- **Readable intents:**
+  - Added `EffectSO.Describe(value)`, and `EnemyBrain` builds intent text from it (e.g. "Shield Slam: 4 damage", "Brace: 1 Fortify", "Battle Cry: +1 damage on all attacks").
+- **Run Start:**
+  - The starting die is now 2 Sword, 2 Shield and a Health Potion, plus a sixth face picked on the new RunStart scene. RunStart is the first scene in Build Settings.
+  - `StartingFaceOffers` offers 3 faces (weights 85/13/2) from different archetypes, never a starter face.
+  - Playing the Battle scene directly picks a random offer.
+- **Shared card text:** `OfferCardUI.DescribeFace`, used by the Market and RunStart.
+- **Simulator:** bots now pick a starting face (focused bots pick their archetype).
+- **Rebalance:** the new starting die made the game far too easy (Burn/Poison bots cleared 98–99% of runs). Raised enemy HP only (Weak ×1.8, Medium ×1.4, Strong ×2.0); damage is unchanged.
+- **GDD:** added the Run Start and Status Effects sections, readable intents, the enemy Fortify changes, the new HP numbers, updated balance results, and reroll as a Future idea.
+
+### Results (600–1000 runs per bot)
+| Target | Result |
+|---|---|
+| Unbuilt die loses about 10–15 HP in the Weak tier | 12 HP, then it dies in the Medium tier ✅ |
+| Unplanned buyer stalls in the Strong tier | 75% reach battle 8, 2% clear ✅ |
+| Well-built die mostly wins | Poison 87%, Burn 72% ✅; Shield 7% ❌ |
+
+### Decisions
+- **Sword and Shield mirror each other:** Sword is stronger on offense (it also bleeds) and weaker on defense (temporary Block). Shield is the opposite (permanent Fortify, weaker attacks).
+- **Fortify must come in small amounts** because it never resets. Enemy Fortify intents are kept at 1.
+- **Bleed is a fixed 1 on Sword,** so upgrading Sword only raises its damage and it stays Common.
+- **Single-action faces are fine** (Health Potion does nothing at full HP). A future once-per-roll reroll is the planned answer to rolls that don't fit.
+- **Starting face choice:** 3 random faces from different archetypes, mostly Common. Every run starts different and points toward a build from the first moment.
+- **Rebalance through HP only,** so enemy hits stay readable and small.
+
+### Observations
+- **Too few Common faces:** with starter faces excluded, only Ember and Venom are Common. The third starting offer is therefore always Rare or Epic, so the real mix is about 60% Common instead of 85%.
+- **Shield is still far too slow:** its strong-tier fights take about 17 turns versus about 5 for other builds.
+
+### Next Steps
+- Rework the Shield archetype and design more Common faces (for Shield, Lifesteal and a possible Bleed archetype).
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, a boss gold reward, then re-balance with bosses in.
+- Reroll (once per roll).
+- Center the offer cards when a Market has fewer than 3 offers.

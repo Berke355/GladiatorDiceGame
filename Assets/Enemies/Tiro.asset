@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Tiro
   tier: 0
-  maxHP: 6
+  maxHP: 11
   escalationPerTurn: 0
   intents:
   - intentName: Slash

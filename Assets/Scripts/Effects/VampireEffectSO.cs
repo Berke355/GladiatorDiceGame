@@ -10,4 +10,8 @@ public class VampireEffectSO : EffectSO
 
         Debug.Log(context.source.entityName + " used Vampire strike! Dealt " + context.value + " damage and healed.");
     }
+
+    public override string Describe(int value){
+        return value + " damage, heal " + value;
+    }
 }

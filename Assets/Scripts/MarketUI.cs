@@ -83,10 +83,7 @@ public class MarketUI : MonoBehaviour
 
             MarketOffer offer = market.offers[i];
             DieFaceSO face = offer.face;
-            card.infoText.text = "<b>" + face.faceName + "</b>\n"
-                + RarityLabel(face.rarity) + "\n"
-                + "Value " + face.baseValue + "  (max " + face.maxValue + ")\n"
-                + "<size=80%>" + face.description + "</size>";
+            card.infoText.text = OfferCardUI.DescribeFace(face);
 
             card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingOffer ? "Selected" : "Buy  " + offer.price + "g");
             card.buyButton.interactable = !choosingSlot && market.CanBuy(i);
@@ -115,13 +112,5 @@ public class MarketUI : MonoBehaviour
         hintText.text = choosingSlot
             ? "Choose a face to replace with " + market.offers[pendingOffer].face.faceName
             : (market.isGrand ? "Epic faces can be bought and upgraded here." : "Epic faces are upgraded at the Grand Market.");
-    }
-
-    private static string RarityLabel(Rarity rarity){
-        switch(rarity){
-            case Rarity.Rare: return "<color=#5DADE2>Rare</color>";
-            case Rarity.Epic: return "<color=#BB8FCE>Epic</color>";
-            default: return "<color=#D5D8DC>Common</color>";
-        }
     }
 }

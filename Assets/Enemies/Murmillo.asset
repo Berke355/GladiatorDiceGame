@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Murmillo
   tier: 0
-  maxHP: 8
+  maxHP: 14
   escalationPerTurn: 0
   intents:
   - intentName: Shield Wall

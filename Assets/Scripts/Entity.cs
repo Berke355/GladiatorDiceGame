@@ -9,7 +9,9 @@ public enum StatusType {
     FireShield,
     Poison,
     // Block that does not reset at turn start. Absorbs damage after Block.
-    Fortify
+    Fortify,
+    // Stacks are duration: 1 damage per tick, then -1.
+    Bleed
 }
 
 public class Entity : MonoBehaviour
@@ -131,6 +133,13 @@ public class Entity : MonoBehaviour
         int poison = GetStatus(StatusType.Poison);
         if (poison > 0) {
             LoseHP(poison);
+            OnHealthChanged?.Invoke();
+        }
+
+        // Bleed always deals 1 and bypasses block; its stacks count down the remaining turns.
+        if (GetStatus(StatusType.Bleed) > 0) {
+            LoseHP(1);
+            activeStatuses[StatusType.Bleed] -= 1;
             OnHealthChanged?.Invoke();
         }
     }

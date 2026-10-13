@@ -7,4 +7,8 @@ public class DamageEffectSO : EffectSO
         context.target.TakeDamage(context.value, context.source);
         Debug.Log(context.source.entityName + " attacked! Dealt " + context.value + " damage.");
     }
+
+    public override string Describe(int value){
+        return value + " damage";
+    }
 }

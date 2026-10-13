@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: War Elephant
   tier: 2
-  maxHP: 28
+  maxHP: 56
   escalationPerTurn: 0
   intents:
   - intentName: Stomp
@@ -35,6 +35,6 @@ MonoBehaviour:
     intentType: 1
     effects:
     - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
-    value: 3
+    value: 1
     weight: 1
     attackBonusGain: 0

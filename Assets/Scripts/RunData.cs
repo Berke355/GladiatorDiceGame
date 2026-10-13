@@ -13,6 +13,9 @@ public class RunData
     public int battlesWon;
     // Enemies already fought this run; an enemy never appears twice in one run.
     public List<EnemySO> metEnemies = new List<EnemySO>();
+    // The faces offered at the start of the run, and whether one was picked for the die.
+    public List<DieFaceSO> startingFaceOffers = new List<DieFaceSO>();
+    public bool startingFaceChosen;
 
     public RunData(List<DieFaceSO> startingDieFaces, int startingMaxHP){
         // Each face on the die is its own instance, so upgrading one never touches the asset or other copies.
