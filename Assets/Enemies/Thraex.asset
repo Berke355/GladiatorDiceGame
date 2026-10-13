@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Thraex
   tier: 0
-  maxHP: 22
+  maxHP: 7
   escalationPerTurn: 0
   intents:
   - intentName: Sica Cut
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 2
+    value: 1
     weight: 2
     attackBonusGain: 0
   - intentName: Envenom
@@ -35,6 +35,6 @@ MonoBehaviour:
     intentType: 1
     effects:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-    value: 2
+    value: 1
     weight: 1
     attackBonusGain: 0

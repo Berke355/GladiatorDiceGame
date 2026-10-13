@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Arena Wolf
   tier: 0
-  maxHP: 18
+  maxHP: 5
   escalationPerTurn: 0
   intents:
   - intentName: Bite
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 4
+    value: 2
     weight: 3
     attackBonusGain: 0
   - intentName: Howl
     intentType: 1
     effects:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-    value: 3
+    value: 2
     weight: 1
     attackBonusGain: 0

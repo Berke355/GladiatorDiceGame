@@ -42,7 +42,8 @@ public static class RunSimulator
         };
     }
 
-    // hpScale / damageScale are per tier (Weak, Medium, Strong) and only change simulation copies
+    // hpScale / damageScale are per tier (Weak, Medium, Strong); damageScale applies to every intent number.
+    // Both only change simulation copies
     // of the enemies, so numbers can be explored before editing the assets. Null means 1.
     public static string DefaultReport(int runs, float[] hpScale = null, float[] damageScale = null){
         StringBuilder report = new StringBuilder();
@@ -138,17 +139,24 @@ public static class RunSimulator
             EnemySO copy = Object.Instantiate(original);
             copy.hideFlags = HideFlags.HideAndDontSave;
             copy.maxHP = Mathf.Max(1, Mathf.RoundToInt(original.maxHP * hp));
+            // Every intent number scales together (damage, block, Fortify, heal, statuses, escalation),
+            // otherwise defensive intents end up huge next to the scaled-down HP and attacks.
+            copy.escalationPerTurn = ScaleValue(original.escalationPerTurn, damage);
             copy.intents = new List<EnemyIntent>();
             foreach(EnemyIntent intent in original.intents){
                 EnemyIntent scaled = intent;
-                if(intent.intentType == ActionType.Attack){
-                    scaled.value = Mathf.Max(1, Mathf.RoundToInt(intent.value * damage));
-                }
+                scaled.value = ScaleValue(intent.value, damage);
+                scaled.attackBonusGain = ScaleValue(intent.attackBonusGain, damage);
                 copy.intents.Add(scaled);
             }
             pool.Add(copy);
         }
         return pool;
+    }
+
+    // Zero stays zero; anything else stays at least 1.
+    private static int ScaleValue(int value, float scale){
+        return value <= 0 ? 0 : Mathf.Max(1, Mathf.RoundToInt(value * scale));
     }
 
     // Same rules as RunManager.PickEnemyForNextBattle.

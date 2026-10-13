@@ -14,27 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Bestiarius
   tier: 2
-  maxHP: 80
+  maxHP: 20
   escalationPerTurn: 0
   intents:
   - intentName: Whip
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 5
+    value: 2
     weight: 2
     attackBonusGain: 0
   - intentName: Unleash
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 12
+    value: 5
     weight: 1
     attackBonusGain: 0
   - intentName: Feed the Beast
     intentType: 2
     effects:
     - {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
-    value: 6
+    value: 2
     weight: 1
     attackBonusGain: 0

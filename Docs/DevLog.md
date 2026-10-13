@@ -560,3 +560,35 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - Look into why the Shield build underperforms.
 - Then the boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, and a boss gold reward.
 - Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 24 - Economy & Enemy Balance Pass
+
+### Accomplished
+- **Economy:** 20 gold per victory. Buy prices are now Common 10, Rare 25, Epic 60, and the Epic upgrade multiplier is ×20. Common and Rare upgrades stay at ×3 and ×5.
+- **Simulator fix:** enemy scaling now applies to every intent number (block, Fortify, heal, statuses, escalation, Battle Cry), not just attacks. Scaling only attacks left defensive intents huge next to the scaled-down HP. For example, Secutor gained Fortify 6 every turn with 14 HP, which no early die could break.
+- **Enemy numbers:** after a grid search, wrote Weak HP ×0.3 / values ×0.5, Medium ×0.3 / ×0.5 and Strong ×0.25 / ×0.4 into all 14 enemy assets. Re-running the simulator on the assets reproduced the same results.
+- **GDD:** updated prices, the upgrade table, tier HP/damage ranges and the enemy roster, and added a **Balance Targets** section with the simulator results.
+- **CLAUDE.md:** documented the simulator and that it must stay in sync with the battle and reward rules.
+
+### Results (1000 runs per bot)
+| Target | Result |
+|---|---|
+| Unbuilt die loses about 10–15 HP in the Weak tier | 12 HP, then it dies in the Medium tier ✅ |
+| Unplanned buyer stalls around battles 9–10 | 77% reach battle 8, 13% clear ✅ |
+| Well-built die mostly beats the Strong tier | Poison 73%, Burn 57% ✅; Shield 23% ❌ |
+
+### Decisions
+- **Asymmetric price increase:** doubling gold and every price would have changed nothing. Common and Rare got relatively cheaper so builds grow faster, while an Epic stays about three victories of saving.
+- **Weak enemies at 5–8 HP are fine.** The numbers are small, but the difficulty curve is what matters.
+- **Shield is an archetype problem,** not an enemy one: its strong-tier fights take about 9 turns versus about 4 for other builds, so escalating enemies win the race. Lowering enemies further would make every other build too easy.
+
+### Observations
+- Focused builds did worse right after the price change (Poison 17% → 4% clear) because they rely on Rare and Epic faces, which got relatively more expensive. Lower enemy numbers balanced this out.
+- Strong enemies now hit about as hard as weak ones (2–3 per attack). The difference between tiers comes from HP and escalation. Raising Strong damage to ×0.5 sharply lowered clear rates, so it stays at ×0.4. Play-testing may show that Strong enemies don't feel strong.
+- Simulator caveats: the bots never save for the Grand Market, and boss slots (battles 4, 8, 11) use regular enemies until bosses exist. Balance needs re-checking once bosses are in.
+
+### Next Steps
+- Rework the Shield archetype so it can win against escalating enemies (e.g. Shield Burst's numbers, a faster payoff), then re-run the simulator.
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, a boss gold reward, then re-balance with bosses in.
+- Center the offer cards when a Market has fewer than 3 offers.
+- Play-test a full run by hand to check how the new numbers feel.

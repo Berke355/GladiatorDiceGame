@@ -14,27 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: War Elephant
   tier: 2
-  maxHP: 110
+  maxHP: 28
   escalationPerTurn: 0
   intents:
   - intentName: Stomp
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 14
+    value: 6
     weight: 1
     attackBonusGain: 0
   - intentName: Trunk Swat
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 6
+    value: 2
     weight: 2
     attackBonusGain: 0
   - intentName: Thick Hide
     intentType: 1
     effects:
     - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
-    value: 8
+    value: 3
     weight: 1
     attackBonusGain: 0

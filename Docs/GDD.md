@@ -187,15 +187,15 @@ Market services:
 
 Prices are placeholders, to be tuned through play-testing.
 
-- **Gold income:** 10 gold per victory.
-- **Buy price by rarity:** Common 8, Rare 15, Epic 30. With current income, an Epic costs about three victories of saving.
+- **Gold income:** 20 gold per victory.
+- **Buy price by rarity:** Common 10, Rare 25, Epic 60. With current income, an Epic costs about three victories of saving, while Common and Rare faces are cheap enough to keep the build growing.
 - **Upgrade price:** rarity multiplier × current value, so each upgrade costs more than the last.
 
 | Rarity | Multiplier | 2 → 3 | 3 → 4 |
 |---|---|---|---|
 | Common | ×3 | 6 | 9 |
 | Rare | ×5 | 10 | 15 |
-| Epic | ×10 | 20 | 30 |
+| Epic | ×20 | 40 | 60 |
 
 - **Max Value:** every face has an upgrade cap. Prices make upgrading Epic faces expensive, and the cap rules out extreme cases (e.g. Fuel capped at 3, so it can never multiply Burn by 4 or more). Current placeholder rule: Common base + 3, Rare base + 2, Epic base + 1.
 
@@ -329,9 +329,9 @@ Each tier has its own pool. Battles before the first boss draw from the Weak poo
 
 | Tier | Battles | Role | Player feeling | HP | Damage |
 |---|---|---|---|---|---|
-| **Weak** | 1–3 | **Toll** | "Let me get through without losing much HP." | 18–26 | 2–4, small Burn/Poison |
-| **Medium** | 5–7 | **First real threat** | "I could lose this run." | 40–50 | Spikes of 8–10 |
-| **Strong** | 9–10 | **Build check** | With a good build: "Look how strong I've become!" Without one: the end of the run. | 80–110 | Rising every turn |
+| **Weak** | 1–3 | **Toll** | "Let me get through without losing much HP." | 5–8 | 1–2, small Burn/Poison |
+| **Medium** | 5–7 | **First real threat** | "I could lose this run." | 12–14 | Spikes of 4–5 |
+| **Strong** | 9–10 | **Build check** | With a good build: "Look how strong I've become!" Without one: the end of the run. | 20–28 | Rising every turn |
 
 - **Weak** enemies use plain swords and shields: flat damage, block, and at most small amounts of Burn or Poison. They don't challenge the player; they make the player want to get through cheaply.
 - **Medium** enemies each have **one danger mechanic**. It is readable, but ignoring it costs a lot of HP. This is where players first feel that the run can end.
@@ -342,41 +342,53 @@ Each tier has its own pool. Battles before the first boss draw from the Weak poo
 
 #### Enemy Roster
 
-Enemies are real Roman gladiator types and arena beasts. Weights are shown as (×N). All numbers are placeholders.
+Enemies are real Roman gladiator types and arena beasts. Weights are shown as (×N). Numbers were tuned with the run simulator (see Balance Targets below) and will be tuned further through play-testing.
 
 **Weak (battles 1–3):**
 
 | Enemy | HP | Intents | Note |
 |---|---|---|---|
-| **Tiro** (recruit) | 20 | Slash 3 (×3), Guard: block 3 (×2) | The simplest enemy, teaches the basics |
-| **Murmillo** (heavy shield gladiator) | 26 | Shield Wall: block 5 (×2), Strike 3 (×2) | A defensive enemy whose block has to be broken through |
-| **Thraex** (curved dagger) | 22 | Sica Cut 2 (×2), Envenom: Poison 1 (×2), Guard: block 2 (×1) | Small Poison: the fight costs more HP the longer it lasts |
-| **Lampadarius** (torchbearer) | 22 | Torch Swing: Burn 2 (×2), Strike 3 (×2), Guard: block 2 (×1) | Small Burn |
-| **Arena Wolf** | 18 | Bite 4 (×3), Howl: block 3 (×1) | Low HP but hits hard; finish it fast |
+| **Tiro** (recruit) | 6 | Slash 2 (×3), Guard: block 2 (×2) | The simplest enemy, teaches the basics |
+| **Murmillo** (heavy shield gladiator) | 8 | Shield Wall: block 2 (×2), Strike 2 (×2) | A defensive enemy whose block has to be broken through |
+| **Thraex** (curved dagger) | 7 | Sica Cut 1 (×2), Envenom: Poison 1 (×2), Guard: block 1 (×1) | Small Poison: the fight costs more HP the longer it lasts |
+| **Lampadarius** (torchbearer) | 7 | Torch Swing: Burn 1 (×2), Strike 2 (×2), Guard: block 1 (×1) | Small Burn |
+| **Arena Wolf** | 5 | Bite 2 (×3), Howl: block 2 (×1) | Low HP but hits hard; finish it fast |
 
 **Medium (battles 5–7), each with one danger mechanic:**
 
 | Enemy | HP | Intents | Danger |
 |---|---|---|---|
-| **Retiarius** (net and trident) | 42 | Jab 4 (×2), Net: block 6 (×1), Trident Thrust 10 (×1) | **Telegraphed spike:** ignore the intent and take 10 |
-| **Dimachaerus** (two swords) | 40 | Twin Strike: 2 × 4 damage (×2), Parry: block 5 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
-| **Arena Lion** | 48 | Maul 8 (×2), Feast: 5 damage and heal 5 (×2) | **Self-healing:** punishes slow damage |
-| **Venefica** (poisoner) | 40 | Poison Dart: Poison 3 (×2), Strike 4 (×1), Smoke: block 5 (×1) | **Poisons the player:** Poison never decays, so long fights become deadly |
-| **Secutor** (pursuer) | 46 | Brace: Fortify 6 (×2), Shield Slam 7 (×2) | **Stacks Fortify:** deal damage early or its stored protection becomes too much to break |
+| **Retiarius** (net and trident) | 13 | Jab 2 (×2), Net: block 3 (×1), Trident Thrust 5 (×1) | **Telegraphed spike:** ignore the intent and take 5 |
+| **Dimachaerus** (two swords) | 12 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
+| **Arena Lion** | 14 | Maul 4 (×2), Feast: 2 damage and heal 2 (×2) | **Self-healing:** punishes slow damage |
+| **Venefica** (poisoner) | 12 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** Poison never decays, so long fights become deadly |
+| **Secutor** (pursuer) | 14 | Brace: Fortify 3 (×2), Shield Slam 4 (×2) | **Stacks Fortify:** deal damage early or its stored protection becomes too much to break |
 
 **Strong (battles 9–10), the build check:**
 
 | Enemy | HP | Intents | Clock |
 |---|---|---|---|
-| **Essedarius** (chariot fighter) | 85 | Ride Down 6 (×2), Wheel Spikes 4 (×1), Rein In: block 8 (×1) | **Gathering speed:** all its attacks gain +2 damage every turn |
-| **War Elephant** | 110 | Stomp 14 (×1), Trunk Swat 6 (×2), Thick Hide: Fortify 8 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
-| **Hoplomachus Champion** | 90 | Spear Thrust 7 (×2), Shield Rush: 5 damage and block 5 (×1), Battle Cry (×1) | **Rage:** each Battle Cry permanently raises all its damage |
-| **Bestiarius** (beast tamer) | 80 | Whip 5 (×2), Unleash 12 (×1), Feed the Beast: heal 6 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
+| **Essedarius** (chariot fighter) | 21 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1) | **Gathering speed:** all its attacks gain +1 damage every turn |
+| **War Elephant** | 28 | Stomp 6 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 3 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
+| **Hoplomachus Champion** | 22 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: +1 damage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
+| **Bestiarius** (beast tamer) | 20 | Whip 2 (×2), Unleash 5 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
 
 #### New Mechanics for Enemies
 
 - **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
 - **Escalation** (Essedarius, Hoplomachus): rising damage is **enemy-only data**. An enemy's attack intents grow by a fixed amount each turn (Essedarius), or permanently after a specific intent (Hoplomachus' Battle Cry). The grown value is shown in the intent. A general "Strength" status was considered but postponed until the Berserker archetype, because it would touch every damage effect.
+
+#### Balance Targets
+
+Enemy numbers are tuned with the run simulator (`Tools → Gladiator Dice → Run Balance Simulation`), where bots fight with the real battle rules and shop in the real Market. The difficulty curve is measured against these targets:
+
+| Target | Result (1000 runs per bot) |
+|---|---|
+| An unbuilt die (no shopping) gets through the Weak tier losing about 10–15 HP | 12 HP lost, then it dies in the Medium tier |
+| A die bought without a plan stalls around battles 9–10 | 77% reach battle 8, 13% clear the run |
+| A well-built die mostly beats the Strong tier | Poison 73%, Burn 57% clear the run; Shield only 23% |
+
+Shield misses the target because its strong-tier fights are about twice as long as other builds', so escalating enemies win the race. This is an archetype problem, not an enemy one.
 
 ### Bosses
 

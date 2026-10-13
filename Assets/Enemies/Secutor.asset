@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Secutor
   tier: 1
-  maxHP: 46
+  maxHP: 14
   escalationPerTurn: 0
   intents:
   - intentName: Brace
     intentType: 1
     effects:
     - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
-    value: 6
+    value: 3
     weight: 2
     attackBonusGain: 0
   - intentName: Shield Slam
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 7
+    value: 4
     weight: 2
     attackBonusGain: 0

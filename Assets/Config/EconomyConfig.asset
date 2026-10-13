@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e2310fff4c3cb34aa4353ed9ec0611e, type: 3}
   m_Name: EconomyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EconomyConfigSO
-  goldPerVictory: 10
+  goldPerVictory: 20
   marketPool:
   - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
   - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}
@@ -33,9 +33,9 @@ MonoBehaviour:
   rareWeight: 25
   epicWeight: 5
   tagMatchChance: 0.6
-  commonPrice: 8
-  rarePrice: 15
-  epicPrice: 30
+  commonPrice: 10
+  rarePrice: 25
+  epicPrice: 60
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5
-  epicUpgradeMultiplier: 10
+  epicUpgradeMultiplier: 20
