@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class EconomyConfigSO : ScriptableObject
 {
     public int goldPerVictory = 10;
+    // Extra gold for winning a boss battle, so the Grand Market that follows is affordable.
+    public int bossVictoryBonus = 0;
 
     [Header("Market Offers")]
     // Every face the Market can offer.

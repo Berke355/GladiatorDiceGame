@@ -16,8 +16,8 @@ MonoBehaviour:
   description: 'Magic: Apply Bleed and Poison equal to my value.'
   rarity: 1
   tags: 060000000400000007000000
-  baseValue: 1
-  softCap: 3
+  baseValue: 2
+  softCap: 4
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 9236ed9622649e74582c8c6b7b9dc1bf, type: 2}

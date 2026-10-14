@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb82da2333dfc04089338e0fd22d8b3, type: 3}
-  m_Name: ApplyBleedOneEffect
+  m_Name: ApplyBleedTwoEffect
   m_EditorClassIdentifier: Assembly-CSharp::ApplyStatusEffectSO
   statusToApply: 5
   applyToSelf: 0
-  fixedAmount: 1
+  fixedAmount: 2

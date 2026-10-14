@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: EconomyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EconomyConfigSO
   goldPerVictory: 20
+  bossVictoryBonus: 30
   marketPool:
   - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}
   - {fileID: 11400000, guid: b0a9a16e229d0ca44949a4de50846412, type: 2}

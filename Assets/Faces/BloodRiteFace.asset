@@ -16,8 +16,8 @@ MonoBehaviour:
   description: 'Attack: Deal damage and apply Bleed equal to my value.'
   rarity: 1
   tags: 060000000000000007000000
-  baseValue: 2
-  softCap: 4
+  baseValue: 3
+  softCap: 5
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}

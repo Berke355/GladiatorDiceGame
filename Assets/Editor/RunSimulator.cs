@@ -34,6 +34,8 @@ public static class RunSimulator
     // A Focused bot rerolls at most this many times per Market, and only if it keeps this much gold after paying.
     // Public so experiments can compare reroll strategies.
     public static int MaxRerollsPerVisit = 3;
+    // Rage-building faces switch to attacking once the bot has this much Rage.
+    public static int RageToStartAttacking = 3;
     // 40 measured best: rerolling down to little gold costs the upgrades a build needs (DevLog Day 29).
     public static int GoldToKeepAfterReroll = 40;
 
@@ -64,6 +66,49 @@ public static class RunSimulator
         };
     }
 
+    // ---------- Balance experiments ----------
+
+    // Short clear-rate line for the given bots, e.g. "Bleed 12% / Rage 30%".
+    public static string ClearRates(IEnumerable<Bot> bots, int runs){
+        List<string> parts = new List<string>();
+        foreach(Bot bot in bots){
+            string report = Simulate(bot, runs);
+            int start = report.IndexOf("cleared all 11: ") + "cleared all 11: ".Length;
+            parts.Add(bot.label.Replace("Focused: ", "").Replace("Hybrid: ", "") + " " + report.Substring(start, report.IndexOf('%', start) - start) + "%");
+        }
+        return string.Join(" / ", parts);
+    }
+
+    // Runs measure() with some faces' base value and soft cap temporarily changed by the given amounts
+    // (keys are face names, e.g. "Open Wound"), then always restores them. The assets are never saved.
+    public static string WithFaceValueChanges(Dictionary<string, int> valueDeltas, System.Func<string> measure){
+        List<DieFaceSO> changed = new List<DieFaceSO>();
+        List<int> oldBase = new List<int>();
+        List<int> oldCap = new List<int>();
+        foreach(string guid in AssetDatabase.FindAssets("t:DieFaceSO", new[]{ "Assets/Faces" })){
+            DieFaceSO face = AssetDatabase.LoadAssetAtPath<DieFaceSO>(AssetDatabase.GUIDToAssetPath(guid));
+            if(face == null || !valueDeltas.ContainsKey(face.faceName)) continue;
+            changed.Add(face);
+            oldBase.Add(face.baseValue);
+            oldCap.Add(face.softCap);
+            face.baseValue += valueDeltas[face.faceName];
+            face.softCap += valueDeltas[face.faceName];
+        }
+        try{
+            return measure();
+        }
+        finally{
+            for(int i = 0; i < changed.Count; i++){
+                changed[i].baseValue = oldBase[i];
+                changed[i].softCap = oldCap[i];
+            }
+        }
+    }
+
+    public static Bot[] BotsMatching(params string[] labelParts){
+        return System.Array.FindAll(DefaultBots(), bot => System.Array.Exists(labelParts, part => bot.label.Contains(part)));
+    }
+
     // hpScale / damageScale are per tier (Weak, Medium, Strong); damageScale applies to every intent number.
     // Both only change simulation copies
     // of the enemies, so numbers can be explored before editing the assets. Null means 1.
@@ -92,6 +137,11 @@ public static class RunSimulator
         float[] turnsByTier = new float[3];
         int[] battlesByTier = new int[3];
         Dictionary<string, int> deathsByEnemy = new Dictionary<string, int>();
+        // What the die looks like when a run reaches the Strong tier (battle 8): is the build actually there?
+        Dictionary<string, int> facesAtBattle8 = new Dictionary<string, int>();
+        int buildFacesAtBattle8 = 0;
+        float goldAtFirstGrandMarket = 0;
+        int firstGrandMarketVisits = 0;
 
         try{
             for(int r = 0; r < runs; r++){
@@ -101,6 +151,13 @@ public static class RunSimulator
 
                 for(int battle = 1; battle <= BattlesPerRun; battle++){
                     reached[battle]++;
+                    if(battle == 8){
+                        foreach(DieFace face in run.dieFaces){
+                            string name = face.definition.faceName;
+                            facesAtBattle8[name] = (facesAtBattle8.ContainsKey(name) ? facesAtBattle8[name] : 0) + 1;
+                            if(bot.Fits(face.definition)) buildFacesAtBattle8++;
+                        }
+                    }
                     EnemyTier tier = config.GetTierForBattle(battle);
                     EnemySO enemyData = PickEnemy(pool, run, tier);
 
@@ -120,6 +177,12 @@ public static class RunSimulator
                     run.gold += config.economy.goldPerVictory;
                     if(config.bossBattles.Contains(run.battlesWon)){
                         run.currentHP = Mathf.Min(run.maxHP, run.currentHP + Mathf.RoundToInt(run.maxHP * config.bossHealFraction));
+                        run.gold += config.economy.bossVictoryBonus;
+                        // Gold in hand when the first Grand Market opens.
+                        if(run.battlesWon == config.bossBattles[0]){
+                            goldAtFirstGrandMarket += run.gold;
+                            firstGrandMarketVisits++;
+                        }
                     }
 
                     if(battle == 3){
@@ -142,7 +205,23 @@ public static class RunSimulator
             Object.DestroyImmediate(enemyObject);
         }
 
-        return FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
+        string report = FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
+        string gold = "avg gold entering the first Grand Market: " + (firstGrandMarketVisits > 0 ? (goldAtFirstGrandMarket / firstGrandMarketVisits).ToString("0") : "-") + "\n";
+        return report + gold + FormatDieAtBattle8(reached[8], buildFacesAtBattle8, facesAtBattle8);
+    }
+
+    // Average number of build faces at battle 8 and the most common faces on the die there.
+    private static string FormatDieAtBattle8(int runsReached, int buildFaces, Dictionary<string, int> faces){
+        if(runsReached == 0){
+            return "die at battle 8: -\n";
+        }
+        List<KeyValuePair<string, int>> sorted = new List<KeyValuePair<string, int>>(faces);
+        sorted.Sort((a, b) => b.Value.CompareTo(a.Value));
+        StringBuilder sb = new StringBuilder("die at battle 8: avg build faces " + ((float)buildFaces / runsReached).ToString("0.0") + "/6 | per run: ");
+        for(int i = 0; i < sorted.Count && i < 8; i++){
+            sb.Append(sorted[i].Key + " " + ((float)sorted[i].Value / runsReached).ToString("0.0") + ", ");
+        }
+        return sb.AppendLine().ToString();
     }
 
     // ---------- Enemies ----------
@@ -253,6 +332,7 @@ public static class RunSimulator
         DieFaceSO definition = face.definition;
         int burn = enemy.GetStatus(StatusType.Burn);
         int fortify = player.GetStatus(StatusType.Fortify);
+        int rage = player.GetStatus(StatusType.Rage);
         bool bigHit = brain.currentIntent.intentType == ActionType.Attack && brain.currentIntent.value + enemy.GetStatus(StatusType.Rage) >= 6;
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash");
@@ -270,11 +350,11 @@ public static class RunSimulator
             case "Plague": return ActionType.Magic;
             case "Shield Burst": return fortify >= 3 ? ActionType.Attack : ActionType.Defense;
             case "Bite": return player.currentHP < player.maxHP / 2 ? ActionType.Magic : ActionType.Attack;
-            // Rage and Ritual last the battle, so building them early pays off.
-            case "Fury": return ActionType.Magic;
+            // Rage and Ritual last the battle, so build some early, then start hitting with it.
+            case "Fury": return rage < RageToStartAttacking ? ActionType.Magic : ActionType.Attack;
             case "Incantation": return ActionType.Magic;
-            // Paying HP for Rage is only worth it with HP to spare.
-            case "Bloodrage": return player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
+            // Paying HP for Rage is only worth it with HP to spare and while Rage is still low.
+            case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
         if(bigHit && Has(definition, ActionType.Defense)) return ActionType.Defense;

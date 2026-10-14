@@ -168,6 +168,7 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 - After every battle except the final boss, the player visits the Market. After a boss, it is a **Grand Market** instead.
 - **Player HP:** 50 max. HP carries over between battles.
 - **Healing after bosses:** winning a boss battle restores 50% of max HP (placeholder). Without it, runs would end from slow HP loss instead of from how good the build is.
+- **Gold after bosses:** winning a boss battle pays a 30 gold bonus on top of the normal reward, so the player reaches the Grand Market able to afford about one Epic (simulated bots arrive with about 60 gold; without the bonus they had about 25, less than any Epic).
 
 ### Run Start
 
@@ -175,13 +176,13 @@ Every run starts from the same five neutral faces plus one face the player picks
 
 | Face | Count | Rarity | Value | Actions |
 |---|---|---|---|---|
-| **Sword** | 2 | Common | 2 | Attack: deal damage equal to my value and apply 1 Bleed. Defense: gain block equal to my value. |
+| **Sword** | 2 | Common | 2 | Attack: deal damage equal to my value and apply 2 Bleed. Defense: gain block equal to my value. |
 | **Shield** | 2 | Common | 2 | Attack: deal damage equal to my value. Defense: gain Fortify equal to my value. |
 | **Health Potion** | 1 | Common | 3 (soft cap 4) | Magic: heal equal to my value. No Attack or Defense. |
 | **Starting face** | 1 | Chosen | — | Picked by the player at the start of the run |
 
 - **Sword and Shield mirror each other:** Sword is stronger on offense (its attack also bleeds) and weaker on defense (temporary Block). Shield is stronger on defense (permanent Fortify) and weaker on offense. If one of them proves too strong, it will be rebalanced.
-- **Sword's Bleed is a fixed 1**, not its value, so upgrading Sword only raises its damage. With +1 value improving a single effect, Sword stays Common.
+- **Sword's Bleed is a fixed 2**, not its value, so upgrading Sword only raises its damage. With +1 value improving a single effect, Sword stays Common. It was 1, but Bleed applied on your turn ticks at the end of the enemy's turn, so 1 Bleed was gone before your next turn and "if the enemy is bleeding" faces never saw it.
 - **Health Potion** does one strong thing: rolled at full HP, it does nothing. This is intended. A later reroll mechanic (see Future below) gives players a way out of rolls that don't fit the situation.
 
 **Choosing the starting face:**
@@ -229,7 +230,7 @@ Market services:
 
 Prices are placeholders, to be tuned through play-testing.
 
-- **Gold income:** 20 gold per victory.
+- **Gold income:** 20 gold per victory, plus a 30 gold bonus for boss victories.
 - **Buy price by rarity:** Common 10, Rare 25, Epic 60. With current income, an Epic costs about three victories of saving, while Common and Rare faces are cheap enough to keep the build growing.
 - **Upgrade price:** rarity multiplier × current value, so each upgrade costs more than the last.
 
@@ -254,7 +255,6 @@ The decision only works if both paths are viable.
 
 ### Open Questions
 
-- Gold reward for boss victories.
 
 ## Status Effects
 
@@ -375,8 +375,8 @@ The glue between status builds. Ritual makes every status you apply stronger.
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
 | **Incantation** | Starter | Common | 1 | Magic: gain Ritual equal to my value. Defense: gain block equal to my value. |
-| **Witch's Curse** | Engine | Rare | 1 | Magic: apply Bleed and Poison equal to my value (two applications, so Ritual counts twice). |
-| **Blood Rite** | Bridge (Ritual + Physical) | Rare | 2 | Attack: deal damage and apply Bleed equal to my value. |
+| **Witch's Curse** | Engine | Rare | 2 | Magic: apply Bleed and Poison equal to my value (two applications, so Ritual counts twice). |
+| **Blood Rite** | Bridge (Ritual + Physical) | Rare | 3 | Attack: deal damage and apply Bleed equal to my value. |
 | **Dark Communion** | Payoff | Epic | 1 | Magic: gain Ritual equal to my value for each status type (Burn, Poison, Bleed) on the enemy, at least my value. |
 
 - **Dark Communion rewards variety:** the more different statuses the enemy carries, the more Ritual it gives. It is the "reward variety" payoff noted under Hybrid Builds.
@@ -390,12 +390,13 @@ A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder 
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
-| **Sword** | Starter (starting die) | Common | 2 | Attack: deal damage and apply 1 Bleed. Defense: gain block. |
-| **Serrated Blade** | Starter | Common | 2 | Attack: apply Bleed equal to my value. Defense: gain block equal to my value. |
+| **Sword** | Starter (starting die) | Common | 2 | Attack: deal damage and apply 2 Bleed. Defense: gain block. |
+| **Serrated Blade** | Starter | Common | 3 | Attack: apply Bleed equal to my value. Defense: gain block equal to my value. |
 | **Open Wound** | Engine | Rare | 2 | Attack: deal damage equal to my value; if the enemy is bleeding, hit again for my value. |
 | **Bloodscent** | Bridge (Bleed + Rage) | Rare | 2 | Defense: gain block equal to my value; if the enemy is bleeding, heal equal to my value. |
 | **Exsanguinate** | Payoff | Epic | 1 | Attack: consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
 
+- **Bleed timing:** Bleed applied on your turn ticks at the end of the enemy's turn, so N Bleed keeps the enemy marked for N − 1 of your turns. Bleed sources therefore apply at least 2 (Sword 2, Serrated Blade 3, Blood Rite 3, Witch's Curse 2); 1 Bleed would never reach your next turn.
 - **Conditional faces keep a floor:** without Bleed, Open Wound still hits once and Bloodscent still blocks (Standalone Faces rule).
 - **Exsanguinate vs. Detonate:** Detonate is additive (value + Burn), Exsanguinate is multiplicative (value × Bleed) and consumes the whole remaining duration. "Keep the mark for the conditional effects, or cash it in now?" is the Bleed build's core decision.
 - **The life loop (Bleed + Berserker bridge):** Berserker uses HP as a resource. Bloodrage spends HP for Rage, and Bloodscent heals it back while the enemy bleeds: lose HP, apply strong effects, heal back. Open Wound's second hit also benefits from Rage. Bloodscent's healing is kept as is for now and will be revisited if it proves too strong.
@@ -598,6 +599,5 @@ All boss numbers (HP, damage, countdown length, stagger threshold, head count) a
 
 ### Open Questions
 
-- Gold reward for boss victories.
 - Exact Petrify duration (2 or 3 turns).
 - Healing amount after a boss (50% of max HP is a placeholder).

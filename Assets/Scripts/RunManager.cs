@@ -84,13 +84,16 @@ public class RunManager : MonoBehaviour
         }
 
         run.battlesWon++;
-        run.gold += economy.goldPerVictory;
+        int goldEarned = economy.goldPerVictory;
 
+        // Bosses heal and pay a bonus, so the player reaches the Grand Market with gold to spend.
         if(bossBattles.Contains(run.battlesWon)){
             int heal = Mathf.RoundToInt(run.maxHP * bossHealFraction);
             run.currentHP = Mathf.Min(run.maxHP, run.currentHP + heal);
+            goldEarned += economy.bossVictoryBonus;
         }
-        return economy.goldPerVictory;
+        run.gold += goldEarned;
+        return goldEarned;
     }
 
     // Weak before the first boss, Medium between the bosses, Strong after the second.

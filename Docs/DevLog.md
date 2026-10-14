@@ -840,3 +840,41 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - UI phase 2: status icons from game-icons.net.
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
 - Die reroll (once per roll in battle). Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 31 - Balance Investigation, Bleed Timing & Boss Gold
+
+### Accomplished
+- **Balance investigation (simulator only, no assets changed during experiments):**
+  - +1, +2 and +4 to every Bleed face, more frequent Rares/Epics in the Market (55/35/10 and 45/40/15), +1 to weak Commons, a fixed Rage bot, and a Fury that also gains Rage on Attack.
+  - None of these lifted the weak archetypes (Bleed, Rage, Shield) meaningfully.
+- **Simulator tooling:**
+  - `WithFaceValueChanges` (temporary, always-restored face value changes), `ClearRates` and `BotsMatching` for short experiments.
+  - New report lines: the average die at battle 8 and gold when entering the first Grand Market.
+  - Rage bots now switch from building Rage to attacking at `RageToStartAttacking` (3).
+- **Play-test findings from the user:**
+  - Bleed never stayed on the enemy until the player's next turn.
+  - Gold never added up: the user reached the first Grand Market unable to afford anything.
+- **Bleed timing fix:** Sword now applies a fixed 2 Bleed (the effect asset was renamed to `ApplyBleedTwoEffect`, keeping its GUID). Serrated Blade 2 → 3, Blood Rite 2 → 3, Witch's Curse 1 → 2.
+- **Boss gold:** `EconomyConfigSO.bossVictoryBonus` (30) is added on boss victories (`RunManager.OnBattleEnded` and the simulator).
+- **GDD and CLAUDE.md** updated (Sword's 2 Bleed and why, Bleed timing, boss gold, new face values).
+
+### Results (500 runs per bot)
+No shopping 0% · Unplanned 0% · Burn 34% · Poison 70% · Ritual + Poison 36% · Shield 2% · Rage 5% · Ritual 1% · Bleed 0% · Ritual + Bleed 0% · Shield + Rage 2% · Bleed + Rage 1%. Bots now enter the first Grand Market with about 60 gold (25 before).
+
+### Findings
+- **Builds are made of Commons.** At battle 8 the focused bots' dice hold Ember ×3.5 (Burn), Venom ×2.9 (Poison), Sword ×3.2 + Serrated Blade ×1.8 (Bleed), Fury ×2.1 + Bloodrage ×2.0 (Rage). Rares and Epics appear only 0.2–0.4 times per run, so an archetype's real strength is its Common.
+- **The winning Commons grow during a fight; the losing ones don't.** Ember stacks Burn and ignites the total (3 → 6 → 9). Venom's Poison stacks and ticks by itself. Sword, Serrated Blade, Fury and Shield do the same small thing every turn, and against strong enemies that gain Rage every turn ("clock, not lock") that loses the race.
+- **Bleed's timing flaw:** Bleed applied on your turn ticks at the end of the enemy's turn, so 1 Bleed never reached the player's next turn and "if the enemy is bleeding" faces almost never triggered.
+- **Gold:** without a boss bonus, bots entered the Grand Market with about 25 gold while the cheapest Epic costs 60. Raising gold per victory to 25 made Poison too strong (86–94%), so a boss bonus fixes the Grand Market without changing the normal economy.
+- **A Burn bot signal:** with more gold, the Burn bot replaced its Embers with Epic Burn faces and got worse. Burn's Epics can be weaker in practice than its Common.
+
+### Decisions
+- **Sword applies 2 Bleed, and every Bleed source applies at least 2** (the user's call), so the mark reaches the player's next turn.
+- **Boss victories pay +30 gold;** gold per victory stays at 20.
+- **Weak archetypes need Commons that grow during a fight** (recommended direction; designs to be agreed).
+
+### Next Steps
+- Design and implement Action modules: buy an action ("Magic: apply Poison equal to my value") and attach it to a face's empty action slot. The module uses the host face's value.
+- Then equipment (passive items) on a trigger system ("at turn start", "when hit"...).
+- Give Bleed, Rage and Shield Commons that grow during a fight.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
