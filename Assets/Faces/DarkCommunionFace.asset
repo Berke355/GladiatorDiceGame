@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
+  m_Name: DarkCommunionFace
+  m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
+  faceName: Dark Communion
+  description: 'Magic: Gain Ritual equal to my value for each status type (Burn,
+    Poison, Bleed) on the enemy, at least my value.'
+  rarity: 2
+  tags: 06000000
+  baseValue: 1
+  softCap: 2
+  effects:
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: 0d74a8fd5a7a3ac40a60c27ffd635a82, type: 2}

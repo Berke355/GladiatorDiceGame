@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
+  m_Name: IncantationFace
+  m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
+  faceName: Incantation
+  description: 'Magic: Gain Ritual equal to my value. Defense: Gain block equal to
+    my value.'
+  rarity: 0
+  tags: 06000000
+  baseValue: 1
+  softCap: 4
+  effects:
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: 9040a9bae91a0e8488e90f88ee5323a9, type: 2}
+  - actionType: 1
+    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}

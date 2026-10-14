@@ -89,6 +89,12 @@ public class Entity : MonoBehaviour
         OnHealthChanged?.Invoke();
     }
 
+    // A cost paid in HP (e.g. Bloodrage): ignores Block and Fortify and triggers nothing.
+    public void PayHP(int amount){
+        LoseHP(amount);
+        OnHealthChanged?.Invoke();
+    }
+
     // Direct HP loss that ignores block (used by damage over time).
     private void LoseHP(int amount){
         currentHP -= amount;

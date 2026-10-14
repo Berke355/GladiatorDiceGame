@@ -712,3 +712,59 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - UI phase 2: status icons from game-icons.net.
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
 - Reroll (once per roll). Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 28 - Starting Face Fix, Berserker & Ritualist Faces
+
+### Accomplished
+- **Bug fix, starting face skipped:** pressing Play with the Battle scene open in the Editor skipped the run start screen, because `EnsureStartingFace` picked a random offer. Now `BattleManager.Awake` disables itself and sends the player to RunStart whenever no starting face has been chosen, so the choice can never be skipped. The redirect picks no enemy, so it doesn't use up the first battle.
+- **Berserker faces (Rage):**
+  - **Fury** (Common): Magic gains Rage, Attack deals damage.
+  - **Bloodrage** (Common): Magic loses HP and gains Rage, Attack deals damage.
+  - **Twin Axes** (Rare): Attack hits twice.
+  - **Iron Rage** (Rare, bridge to Shield): Defense gains Fortify and 1 Rage.
+  - **Unleash** (Epic): value × Rage damage, at least the value.
+- **Ritualist faces (Ritual):**
+  - **Incantation** (Common): Magic gains Ritual, Defense gives block.
+  - **Witch's Curse** (Rare): Magic applies Bleed and Poison.
+  - **Blood Rite** (Rare): Attack deals damage and applies Bleed.
+  - **Dark Communion** (Epic): Ritual per status type on the enemy.
+- **New effects:**
+  - `PayHPEffectSO`, with `Entity.PayHP` for HP costs.
+  - `OwnStatusScaledDamageEffectSO` (value × own Rage).
+  - `GainStatusPerOpponentStatusEffectSO` (Ritual per enemy status type).
+  - New assets for gaining Ritual, gaining 1 Rage and applying value-based Bleed.
+- **Content:** added the `Rage` and `Ritual` face tags. The Market pool is now 23 faces, with three new Commons for the starting face choice.
+- **Simulator:** bot rules for Fury, Incantation and Bloodrage (only pays HP with HP to spare), plus focused Rage and Ritual bots (7 bots total).
+- **Tests:** 13 face tests passed, for example Twin Axes with 4 Rage dealing 2 × 5, Unleash with 5 Rage dealing 15, Witch's Curse with 2 Ritual applying 3 Bleed + 3 Poison, Dark Communion giving 1/2/3 Ritual, and Bloodrage able to kill its user.
+
+### Results (700 runs per bot)
+| Bot | Reached battle 8 | Cleared |
+|---|---|---|
+| No shopping | 28% | 0% (Weak tier HP lost: 11 ✅) |
+| Unplanned buyer | 71% | 0% ✅ |
+| Poison | 93% | 63% |
+| Burn | 80% | 38% |
+| Shield | 90% | 0% |
+| Rage | 46% | 0% |
+| Ritual | 19% | 0% |
+
+### Decisions
+- **Twin Axes hits twice, not three times** (the user's call): with Rage on every hit, three hits scale like a multiplier and would belong in Epic.
+- **Bloodrage added** as a high-risk Berserker Common: Rage for HP, and HP carries over between battles.
+- **The starting face choice is never skipped:** it's part of every run, so the Battle scene redirects to it instead of picking for the player.
+
+### Observations
+- **Pool dilution:** going from 14 to 23 Market faces means each archetype's faces show up less often. Focused Burn and Poison bots got weaker (Burn 57% → 38%, Poison 85% → 63%).
+- **Berserker and Ritualist are not tuned yet** (0% clears). Ritual does nothing alone, so a bot that buys only Ritual-tagged faces is the wrong test. It needs a hybrid-aware bot (Ritual plus a status archetype).
+- **Shield still can't win the strong tier.** Iron Rage was meant to help but rarely comes up for a bot that focuses on the Block tag.
+- **The Common shortage is solved:** Fury, Bloodrage and Incantation give the starting face choice three more Commons.
+
+### Next Steps
+- Balance pass for the new archetypes:
+  - tune Berserker values and costs
+  - add a hybrid bot (e.g. Ritual + Poison/Bleed) to measure Ritualist
+  - revisit Shield with Iron Rage in mind
+- Decide how the Market should handle a larger pool (more offers, stronger tag weighting, or archetype-themed Markets).
+- UI phase 2: status icons from game-icons.net.
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
+- Reroll (once per roll). Center the offer cards when a Market has fewer than 3 offers.

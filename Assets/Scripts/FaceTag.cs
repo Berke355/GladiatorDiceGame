@@ -6,5 +6,7 @@ public enum FaceTag
     Block,
     Lifesteal,
     Burn,
-    Poison
+    Poison,
+    Rage,
+    Ritual
 }

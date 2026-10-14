@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
+  m_Name: IronRageFace
+  m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
+  faceName: Iron Rage
+  description: 'Defense: Gain Fortify equal to my value and 1 Rage.'
+  rarity: 1
+  tags: 0500000001000000
+  baseValue: 2
+  softCap: 4
+  effects:
+  - actionType: 1
+    effectLogic: {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
+  - actionType: 1
+    effectLogic: {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}

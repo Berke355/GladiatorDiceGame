@@ -16,8 +16,16 @@ public class BattleManager : MonoBehaviour
     public List<DieFace> currentDiceFaces;
 
     void Awake(){
+        // A run always starts by choosing the starting face. If this scene was played directly
+        // (e.g. Play pressed with Battle open in the Editor), send the player to the run start screen.
+        // Disabling this component also skips Start, so no turn begins.
+        if(!RunManager.Instance.run.startingFaceChosen){
+            enabled = false;
+            RunManager.Instance.GoToRunStart();
+            return;
+        }
+
         // Load the run's die and the player's HP before UIManager.Start reads them.
-        RunManager.Instance.EnsureStartingFace();
         RunData run = RunManager.Instance.run;
         currentDiceFaces = run.dieFaces;
         player.maxHP = run.maxHP;

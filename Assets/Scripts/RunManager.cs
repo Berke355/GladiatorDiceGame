@@ -75,13 +75,6 @@ public class RunManager : MonoBehaviour
         run.startingFaceChosen = true;
     }
 
-    // Lets the Battle scene be played directly from the Editor, skipping the run start screen.
-    public void EnsureStartingFace(){
-        if(!run.startingFaceChosen && run.startingFaceOffers.Count > 0){
-            ChooseStartingFace(run.startingFaceOffers[Random.Range(0, run.startingFaceOffers.Count)]);
-        }
-    }
-
     // Called once when a battle ends. Returns the gold earned.
     public int OnBattleEnded(bool playerWon, int playerHP){
         run.currentHP = playerHP;
@@ -124,6 +117,10 @@ public class RunManager : MonoBehaviour
         EnemySO picked = candidates[Random.Range(0, candidates.Count)];
         run.metEnemies.Add(picked);
         return picked;
+    }
+
+    public void GoToRunStart(){
+        SceneManager.LoadScene(runStartSceneName);
     }
 
     public void GoToMarket(){

@@ -39,6 +39,8 @@ public static class RunSimulator
             new Bot("Focused: Burn", Shopping.Focused, FaceTag.Burn),
             new Bot("Focused: Poison", Shopping.Focused, FaceTag.Poison),
             new Bot("Focused: Shield", Shopping.Focused, FaceTag.Block),
+            new Bot("Focused: Rage", Shopping.Focused, FaceTag.Rage),
+            new Bot("Focused: Ritual", Shopping.Focused, FaceTag.Ritual),
         };
     }
 
@@ -248,6 +250,11 @@ public static class RunSimulator
             case "Plague": return ActionType.Magic;
             case "Shield Burst": return fortify >= 3 ? ActionType.Attack : ActionType.Defense;
             case "Bite": return player.currentHP < player.maxHP / 2 ? ActionType.Magic : ActionType.Attack;
+            // Rage and Ritual last the battle, so building them early pays off.
+            case "Fury": return ActionType.Magic;
+            case "Incantation": return ActionType.Magic;
+            // Paying HP for Rage is only worth it with HP to spare.
+            case "Bloodrage": return player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
         if(bigHit && Has(definition, ActionType.Defense)) return ActionType.Defense;

@@ -332,6 +332,40 @@ Defense that turns into offense. Stack up protection, then trade it for one big 
 
 Reworking Shield into the Shield starter also ends the Sword/Shield duplication: Sword stays the plain Physical face.
 
+### Berserker (implemented)
+
+Power that keeps growing. Build Rage, then hit often or hit once with everything.
+
+- **Resource:** Rage on yourself. It lasts the whole battle and adds +1 damage per stack to every hit, so multi-hit faces gain the most.
+- **Identity:** Spend early turns building Rage instead of attacking, then cash it out. Bloodrage trades HP for Rage, and since HP carries over between battles, that cost lasts the whole run (Pillar 4).
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Fury** | Starter | Common | 1 | Magic: gain Rage equal to my value. Attack: deal damage equal to my value. |
+| **Bloodrage** | Starter (risky) | Common | 2 | Magic: lose HP and gain Rage equal to my value. Attack: deal damage equal to my value. |
+| **Twin Axes** | Engine | Rare | 1 | Attack: hit twice for my value. |
+| **Iron Rage** | Bridge (Rage + Block) | Rare | 2 | Defense: gain Fortify equal to my value and 1 Rage. |
+| **Unleash** | Payoff | Epic | 2 | Attack: deal my value × your Rage as damage (at least my value). |
+
+- **Twin Axes hits twice, not three times:** with Rage counted on every hit, three hits would scale like a multiplier and belong in Epic. Two hits keep it a Rare (+1 value improves two hits).
+- **Iron Rage** is the bridge to the Shield archetype: defending also builds permanent damage, which shortens Shield's slow fights.
+
+### Ritualist (implemented)
+
+The glue between status builds. Ritual makes every status you apply stronger.
+
+- **Resource:** Ritual on yourself. It lasts the whole battle and adds +1 per stack to every status applied to the opponent (Burn, Poison, Bleed). Self-applied statuses are not boosted.
+- **Identity:** Ritual does nothing on its own; it multiplies what other faces apply. It is meant to be combined with Bleed, Poison or Burn faces, which makes it the natural hybrid archetype.
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Incantation** | Starter | Common | 1 | Magic: gain Ritual equal to my value. Defense: gain block equal to my value. |
+| **Witch's Curse** | Engine | Rare | 1 | Magic: apply Bleed and Poison equal to my value (two applications, so Ritual counts twice). |
+| **Blood Rite** | Bridge (Ritual + Physical) | Rare | 2 | Attack: deal damage and apply Bleed equal to my value. |
+| **Dark Communion** | Payoff | Epic | 1 | Magic: gain Ritual equal to my value for each status type (Burn, Poison, Bleed) on the enemy, at least my value. |
+
+- **Dark Communion rewards variety:** the more different statuses the enemy carries, the more Ritual it gives. It is the "reward variety" payoff noted under Hybrid Builds.
+
 ### Future Archetypes
 
 Ideas to revisit after Poison and Shield.
@@ -340,8 +374,6 @@ Ideas to revisit after Poison and Shield.
   - **Charge:** the face gains +1 temporary value every turn it isn't rolled.
   - **Die manipulation:** reroll the die, or trigger your highest-value face.
   - Needs changes to the battle state machine.
-- **Berserker (Rage):** Power for blood. Faces that grant Rage, faces that hurt you, faces that grow stronger as your HP drops. Rage makes multi-hit faces especially strong. Since HP carries over between battles, self-damage is a real run-long cost.
-- **Ritualist (Ritual):** Faces that grant Ritual and boost every status you apply. Ritual connects Bleed, Poison and Burn, so it is a natural glue for hybrid builds.
 - **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.
 - **Die topology:** Face positions on the die matter, e.g. opposite faces (1–6, 2–5, 3–4) or adjacent faces. Turns "which face do I replace?" into "which face, in which slot?". Complex, so it stays a late idea.
 
@@ -434,13 +466,13 @@ Enemy numbers are tuned with the run simulator (`Tools → Gladiator Dice → Ru
 
 | Target | Result (600–1000 runs per bot) |
 |---|---|
-| An unbuilt die (no shopping) gets through the Weak tier losing about 10–15 HP | 8 HP lost, then it dies in the Medium tier (33% reach battle 8) |
-| A die bought without a plan stalls around battles 9–10 | 89% reach battle 8, 17% reach battle 9, 0% clear the run |
-| A well-built die mostly beats the Strong tier | Poison 85%, Burn 57% clear the run; Shield only 1% |
+| An unbuilt die (no shopping) gets through the Weak tier losing about 10–15 HP | 11 HP lost, then it dies in the Medium tier (28% reach battle 8) |
+| A die bought without a plan stalls around battles 9–10 | 71% reach battle 8, 11% reach battle 9, 0% clear the run |
+| A well-built die mostly beats the Strong tier | Poison 63%, Burn 38% clear the run; Shield, Berserker and Ritualist about 0% |
 
 Shield misses the target because its strong-tier fights take far longer than other builds' (about 24 turns versus 6), so enemies that build Rage win the race. This is an archetype problem, not an enemy one.
 
-These results use the Run Start die (2 Sword, 2 Shield, Health Potion and a chosen starting face). The starting face rarity is currently skewed toward Rare and Epic (about 60% Common instead of 85%) because only two Common faces (Ember, Venom) can be offered; more Common faces are needed.
+These results use the Run Start die (2 Sword, 2 Shield, Health Potion and a chosen starting face) and a 23-face Market pool. Adding the Berserker and Ritualist faces diluted the pool, so focused Burn and Poison bots find their faces less often. Berserker and Ritualist are not tuned yet, and the focused bots only buy faces of one tag, which doesn't suit Ritual (a hybrid glue). These archetypes need a balance pass and a hybrid-aware bot.
 
 ### Bosses
 
