@@ -768,3 +768,33 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - UI phase 2: status icons from game-icons.net.
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
 - Reroll (once per roll). Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 29 - Market Reroll & Hybrid Bots
+
+### Accomplished
+- **Market reroll:**
+  - `Market.Reroll()` pays for a fresh set of offers. Sold offers are replaced too, and the new set avoids the replaced faces when the pool allows.
+  - The price rises within a visit and resets at the next Market: Normal 5 / 10 / 15, Grand 15 / 30 / 45. The numbers live in `EconomyConfigSO` (`GetRerollCost`).
+  - A "Reroll Xg" button in the Market scene always shows the next price.
+- **Bleed tag:** added `FaceTag.Bleed` to Sword, Blood Rite and Witch's Curse, so build-aware offers and bots recognize Bleed faces.
+- **Hybrid bots:** bots can now focus on several tags. Added Ritual + Poison, Ritual + Bleed and Shield + Rage (10 bots total).
+- **Bot rerolls:** focused bots reroll the Market when nothing fits their build and they keep at least `GoldToKeepAfterReroll` (40) gold.
+- **Tests:** in Play Mode, three rerolls cost 5 + 10 + 15 gold, every reroll replaced all three offers with new faces, and the button disabled itself when the next price (20) was unaffordable.
+- **GDD and CLAUDE.md** updated (Market reroll, the die reroll renamed to keep the two apart, bots).
+
+### Results (400–500 runs per bot)
+- **Hybrid bots give healthier data:** Ritual alone clears 0% of runs, Ritual + Poison clears 31–35%.
+- **Reroll value depends on how it's used:** rerolling whenever nothing fits dropped Poison from 63% to 48%, because the gold went to rerolls instead of upgrades. Keeping at least 40 gold after a reroll made rerolls neutral to slightly positive (Poison 67%, Burn 44%).
+- **Still 0%:** Shield, Rage, Ritual + Bleed and Shield + Rage. Bleed is the clearest weakness, at only 1 damage per turn.
+
+### Decisions
+- **Paid rerolls instead of a few free ones** (the user's call): a price brings the decision back every visit and gives gold a third use (buy, upgrade, reroll), while free rerolls would only matter a few times per run.
+- **Price rises within a visit** so plenty of gold can't buy endless fishing for Epics. It resets every Market.
+- **The Grand Market reroll is much more expensive** (3×), since it only offers Epics.
+- **Market reroll and die reroll are separate mechanics,** named apart in the GDD.
+
+### Next Steps
+- Balance pass: Bleed, Rage, Shield and their hybrids (all at 0%). Likely face value changes rather than enemy changes.
+- UI phase 2: status icons from game-icons.net.
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
+- Die reroll (once per roll in battle). Center the offer cards when a Market has fewer than 3 offers.

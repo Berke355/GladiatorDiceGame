@@ -19,6 +19,14 @@ public class EconomyConfigSO : ScriptableObject
     [Range(0f, 1f)]
     public float tagMatchChance = 0.6f;
 
+    [Header("Market Reroll")]
+    // Cost of the first reroll in a visit, and how much each further reroll adds (resets every Market).
+    public int rerollBaseCost = 5;
+    public int rerollCostStep = 5;
+    // The Grand Market only offers Epics, so fishing there costs much more.
+    public int grandRerollBaseCost = 15;
+    public int grandRerollCostStep = 15;
+
     [Header("Starting Face")]
     // The starting face choice uses the Market pool, minus faces already on the starting die.
     public int startingFaceOfferCount = 3;
@@ -63,6 +71,13 @@ public class EconomyConfigSO : ScriptableObject
             cost *= aboveSoftCapFactor;
         }
         return (int)System.Math.Min(cost, int.MaxValue);
+    }
+
+    // Rising cost within one Market visit, e.g. 5 / 10 / 15 (Grand: 15 / 30 / 45).
+    public int GetRerollCost(bool grandMarket, int rerollsThisVisit){
+        return grandMarket
+            ? grandRerollBaseCost + grandRerollCostStep * rerollsThisVisit
+            : rerollBaseCost + rerollCostStep * rerollsThisVisit;
     }
 
     public bool IsAboveSoftCap(DieFace face){

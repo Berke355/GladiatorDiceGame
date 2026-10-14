@@ -17,12 +17,43 @@ public class Market
 
     private readonly RunData run;
     private readonly EconomyConfigSO economy;
+    // Rerolls bought during this visit; each one costs more than the last (resets next Market).
+    private int rerollCount;
+    // Faces from the offers a reroll replaced; avoided by the new offers when the pool allows.
+    private readonly List<DieFaceSO> replacedFaces = new List<DieFaceSO>();
 
     public Market(RunData run, EconomyConfigSO economy, bool isGrand){
         this.run = run;
         this.economy = economy;
         this.isGrand = isGrand;
         GenerateOffers();
+    }
+
+    // ---------- Reroll ----------
+
+    public int GetRerollCost(){
+        return economy.GetRerollCost(isGrand, rerollCount);
+    }
+
+    public bool CanReroll(){
+        return run.gold >= GetRerollCost();
+    }
+
+    // Pays for a fresh set of offers, all of them replaced (sold ones included).
+    public bool Reroll(){
+        if(!CanReroll()){
+            return false;
+        }
+        run.gold -= GetRerollCost();
+        rerollCount++;
+
+        replacedFaces.Clear();
+        foreach(MarketOffer offer in offers){
+            replacedFaces.Add(offer.face);
+        }
+        offers.Clear();
+        GenerateOffers();
+        return true;
     }
 
     // ---------- Offers ----------
@@ -68,15 +99,18 @@ public class Market
         return Rarity.Epic;
     }
 
-    // rarity == null means any rarity. A face is offered at most once per visit.
+    // rarity == null means any rarity. A face is offered at most once per set of offers,
+    // and faces a reroll just replaced are skipped unless nothing else is left.
     private List<DieFaceSO> GetUnofferedFaces(Rarity? rarity){
-        List<DieFaceSO> result = new List<DieFaceSO>();
+        List<DieFaceSO> fresh = new List<DieFaceSO>();
+        List<DieFaceSO> repeated = new List<DieFaceSO>();
         foreach(DieFaceSO face in economy.marketPool){
             if(rarity.HasValue && face.rarity != rarity.Value) continue;
             if(offers.Exists(offer => offer.face == face)) continue;
-            result.Add(face);
+            if(replacedFaces.Contains(face)) repeated.Add(face);
+            else fresh.Add(face);
         }
-        return result;
+        return fresh.Count > 0 ? fresh : repeated;
     }
 
     private bool SharesTagWithDie(DieFaceSO face){

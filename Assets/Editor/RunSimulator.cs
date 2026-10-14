@@ -14,15 +14,28 @@ public static class RunSimulator
     {
         public string label;
         public Shopping shopping;
-        // Archetype tag a Focused bot builds around.
-        public FaceTag focusTag;
+        // Archetype tags a Focused bot builds around. Several tags make a hybrid bot (e.g. Ritual + Poison).
+        public FaceTag[] focusTags;
 
-        public Bot(string label, Shopping shopping, FaceTag focusTag = FaceTag.Physical){
+        public Bot(string label, Shopping shopping, params FaceTag[] focusTags){
             this.label = label;
             this.shopping = shopping;
-            this.focusTag = focusTag;
+            this.focusTags = focusTags;
+        }
+
+        public bool Fits(DieFaceSO face){
+            foreach(FaceTag tag in focusTags){
+                if(face.tags.Contains(tag)) return true;
+            }
+            return false;
         }
     }
+
+    // A Focused bot rerolls at most this many times per Market, and only if it keeps this much gold after paying.
+    // Public so experiments can compare reroll strategies.
+    public static int MaxRerollsPerVisit = 3;
+    // 40 measured best: rerolling down to little gold costs the upgrades a build needs (DevLog Day 29).
+    public static int GoldToKeepAfterReroll = 40;
 
     private const int MaxTurnsPerBattle = 100;
     private const int BattlesPerRun = 11;
@@ -41,6 +54,10 @@ public static class RunSimulator
             new Bot("Focused: Shield", Shopping.Focused, FaceTag.Block),
             new Bot("Focused: Rage", Shopping.Focused, FaceTag.Rage),
             new Bot("Focused: Ritual", Shopping.Focused, FaceTag.Ritual),
+            // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
+            new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
+            new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
+            new Bot("Hybrid: Shield + Rage", Shopping.Focused, FaceTag.Block, FaceTag.Rage),
         };
     }
 
@@ -274,8 +291,8 @@ public static class RunSimulator
         if(bot.shopping == Shopping.Focused){
             DieFaceSO best = null;
             foreach(DieFaceSO face in offers){
-                bool fits = face.tags.Contains(bot.focusTag);
-                bool bestFits = best != null && best.tags.Contains(bot.focusTag);
+                bool fits = bot.Fits(face);
+                bool bestFits = best != null && bot.Fits(best);
                 if(best == null || (fits && !bestFits) || (fits == bestFits && face.rarity > best.rarity)){
                     best = face;
                 }
@@ -289,32 +306,43 @@ public static class RunSimulator
 
     private static void Shop(Bot bot, Market market, RunData run){
         switch(bot.shopping){
-            case Shopping.Focused: ShopFocused(market, run, bot.focusTag); break;
+            case Shopping.Focused: ShopFocused(market, run, bot); break;
             case Shopping.Unplanned: ShopUnplanned(market, run); break;
         }
     }
 
     // Buys the best affordable face of its archetype into a face outside it, otherwise upgrades its archetype's faces.
-    private static void ShopFocused(Market market, RunData run, FaceTag tag){
-        for(int guard = 0; guard < 10; guard++){
+    // If the Market shows nothing of its archetype, it rerolls while it can afford it and keep some gold.
+    private static void ShopFocused(Market market, RunData run, Bot bot){
+        int rerolls = 0;
+        for(int guard = 0; guard < 20; guard++){
             int bestOffer = -1;
+            bool fittingOfferOnShow = false;
             for(int i = 0; i < market.offers.Count; i++){
-                if(!market.CanBuy(i) || !market.offers[i].face.tags.Contains(tag)) continue;
+                if(market.offers[i].sold || !bot.Fits(market.offers[i].face)) continue;
+                fittingOfferOnShow = true;
+                if(!market.CanBuy(i)) continue;
                 if(bestOffer < 0 || market.offers[i].face.rarity > market.offers[bestOffer].face.rarity){
                     bestOffer = i;
                 }
             }
             if(bestOffer >= 0){
-                int slot = PickSlotToReplace(run, market.offers[bestOffer].face, tag);
+                int slot = PickSlotToReplace(run, market.offers[bestOffer].face, bot);
                 if(slot >= 0){
                     market.Buy(bestOffer, slot);
                     continue;
                 }
             }
 
+            if(!fittingOfferOnShow && rerolls < MaxRerollsPerVisit && run.gold - market.GetRerollCost() >= GoldToKeepAfterReroll){
+                market.Reroll();
+                rerolls++;
+                continue;
+            }
+
             int cheapestUpgrade = -1;
             for(int i = 0; i < run.dieFaces.Count; i++){
-                if(!run.dieFaces[i].definition.tags.Contains(tag) || !market.CanUpgrade(i)) continue;
+                if(!bot.Fits(run.dieFaces[i].definition) || !market.CanUpgrade(i)) continue;
                 if(cheapestUpgrade < 0 || market.GetUpgradeCost(i) < market.GetUpgradeCost(cheapestUpgrade)){
                     cheapestUpgrade = i;
                 }
@@ -328,11 +356,11 @@ public static class RunSimulator
     }
 
     // Replaces the weakest face outside the archetype; if the die is all archetype, only a lower-rarity one.
-    private static int PickSlotToReplace(RunData run, DieFaceSO incoming, FaceTag tag){
+    private static int PickSlotToReplace(RunData run, DieFaceSO incoming, Bot bot){
         int best = -1;
         for(int i = 0; i < run.dieFaces.Count; i++){
             DieFace face = run.dieFaces[i];
-            if(face.definition.tags.Contains(tag)) continue;
+            if(bot.Fits(face.definition)) continue;
             if(best < 0 || face.value < run.dieFaces[best].value) best = i;
         }
         if(best >= 0) return best;

@@ -13,6 +13,8 @@ public class MarketUI : MonoBehaviour
     public OfferCardUI[] offerCards;
     public DieSlotUI[] dieSlots;
     public Button cancelButton;
+    public Button rerollButton;
+    public TextMeshProUGUI rerollButtonText;
 
     private Market market;
     private RunData run;
@@ -35,7 +37,14 @@ public class MarketUI : MonoBehaviour
             dieSlots[i].upgradeButton.onClick.AddListener(() => OnUpgradeClicked(index));
         }
         cancelButton.onClick.AddListener(CancelBuy);
+        rerollButton.onClick.AddListener(OnRerollClicked);
 
+        Refresh();
+    }
+
+    private void OnRerollClicked(){
+        market.Reroll();
+        pendingOffer = -1;
         Refresh();
     }
 
@@ -110,6 +119,9 @@ public class MarketUI : MonoBehaviour
         }
 
         cancelButton.gameObject.SetActive(choosingSlot);
+        // The price rises with every reroll in this visit, so the button always shows the next price.
+        rerollButtonText.text = "Reroll  " + market.GetRerollCost() + "g";
+        rerollButton.interactable = !choosingSlot && market.CanReroll();
         hintText.text = choosingSlot
             ? "Choose a face to replace with " + market.offers[pendingOffer].face.faceName
             : (market.isGrand ? "Epic faces can be bought and upgraded here." : "Epic faces are upgraded at the Grand Market.");

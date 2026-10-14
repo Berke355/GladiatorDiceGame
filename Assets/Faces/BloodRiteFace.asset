@@ -15,7 +15,7 @@ MonoBehaviour:
   faceName: Blood Rite
   description: 'Attack: Deal damage and apply Bleed equal to my value.'
   rarity: 1
-  tags: 0600000000000000
+  tags: 060000000000000007000000
   baseValue: 2
   softCap: 4
   effects:

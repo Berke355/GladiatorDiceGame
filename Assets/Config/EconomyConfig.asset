@@ -42,6 +42,10 @@ MonoBehaviour:
   rareWeight: 25
   epicWeight: 5
   tagMatchChance: 0.6
+  rerollBaseCost: 5
+  rerollCostStep: 5
+  grandRerollBaseCost: 15
+  grandRerollCostStep: 15
   startingFaceOfferCount: 3
   startingCommonWeight: 85
   startingRareWeight: 13

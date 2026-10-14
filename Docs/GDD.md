@@ -194,7 +194,7 @@ Every run starts from the same five neutral faces plus one face the player picks
 
 **Future:**
 
-- **Reroll:** once per roll, the player may reroll the die. A bad roll can be escaped once, and if the reroll is also bad, that's the game's share of luck.
+- **Die reroll** (in battle, not the Market reroll below): once per roll, the player may reroll the die. A bad roll can be escaped once, and if the reroll is also bad, that's the game's share of luck.
 
 ### Market
 
@@ -202,13 +202,28 @@ Each visit offers a limited, random selection. The player is never forced to spe
 
 - **Normal Market:** 3 face offers, with rarity weights Common 70%, Rare 25%, Epic 5%. Epic faces can appear, but rarely.
 - **Grand Market (after a boss):** 3 offers, **all Epic**. The Grand Market is the station for Epic faces. Because Grand Markets come at known points (after bosses), saving gold for one is a plannable strategy, not a gamble.
-- A face is offered at most once per visit.
+- A face is offered at most once per set of offers.
 - **Build-aware offers:** offers are weighted toward the tags already on the player's die (around 60%, not 100%). A Burn die is more likely to be offered Burn faces such as Fuel, while some offers still come from outside the build so players keep discovering new faces.
 
 Market services:
 
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
 - **Upgrade a face:** raise one die face's value by 1. There is no hard limit; past the face's soft cap, upgrades get much more expensive. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
+- **Reroll the offers:** pay gold for a new set of offers (sold offers are replaced too). The new set avoids the faces it replaced when the pool allows.
+
+**Market reroll:**
+
+- **Why:** as the face pool grows, each archetype's faces appear less often. Rerolls let players hunt for their build's faces, and they give gold a third use besides buying and upgrading: "spend on a reroll, or keep the gold for an upgrade?"
+- **Paid, not limited:** a limited number of free rerolls would only matter for a few decisions per run and would be gone once spent. A price makes the decision come back every visit.
+- **The price rises within a visit and resets at the next Market**, so plenty of gold can't buy endless fishing for an Epic:
+
+| Market | 1st reroll | 2nd | 3rd |
+|---|---|---|---|
+| Normal | 5 gold | 10 | 15 |
+| Grand | 15 gold | 30 | 45 |
+
+- **The Grand Market reroll is much more expensive:** it only offers Epics, so hunting for one specific Epic should cost most of a battle's reward per try.
+- Simulated bots that rerolled whenever nothing fit their build did worse, because the gold went to rerolls instead of upgrades. Bots that kept at least 40 gold after a reroll did slightly better than bots that never rerolled. The tension is real.
 
 ### Prices
 

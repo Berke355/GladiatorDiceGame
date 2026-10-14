@@ -15,7 +15,7 @@ MonoBehaviour:
   faceName: Witch's Curse
   description: 'Magic: Apply Bleed and Poison equal to my value.'
   rarity: 1
-  tags: 0600000004000000
+  tags: 060000000400000007000000
   baseValue: 1
   softCap: 3
   effects:
