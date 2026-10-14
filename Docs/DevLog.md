@@ -798,3 +798,45 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - UI phase 2: status icons from game-icons.net.
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
 - Die reroll (once per roll in battle). Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 30 - Bleed Archetype
+
+### Accomplished
+- **Bleed as a mark:** Bleed keeps its rule (always 1 damage, −1 per tick). Its stacks are how long the enemy stays marked, and faces react to it with "if the enemy is bleeding" effects.
+- **`ConditionalEffectSO`:** a reusable "if" box that runs its inner effects only when a status is present (on the target, or on the source).
+- **`ConsumeStatusMultiplyDamageEffectSO`:** consumes a status and deals value × stacks. It's the multiplicative counterpart to Detonate's value + stacks.
+- **Bleed faces:**
+  - **Serrated Blade** (Common): Attack applies Bleed, Defense gives block.
+  - **Open Wound** (Rare): hits, then hits again if the enemy is bleeding.
+  - **Bloodscent** (Rare, Bleed + Rage bridge): blocks, and heals if the enemy is bleeding.
+  - **Exsanguinate** (Epic): consumes Bleed for value × stacks damage, at least the value.
+- **Content:** Market pool now 27 faces.
+- **Simulator:** added a focused Bleed bot and a Bleed + Rage hybrid (12 bots).
+- **Tests:** 8 tests passed, for example Open Wound with 3 Rage against a bleeding enemy (5 + 5), Bloodscent healing only while the enemy bleeds, and Exsanguinate consuming 6 Bleed for 6 damage (1 with no Bleed).
+- **GDD and CLAUDE.md** updated (Bleed archetype, the life loop, conditional effects).
+
+### Results (500 runs per bot)
+| Bot | Reached battle 8 | Cleared | Strong-tier turns |
+|---|---|---|---|
+| Poison | 96% | 61% | 6 |
+| Burn | 75% | 33% | 7 |
+| Ritual + Poison | 69% | 31% | 6 |
+| Bleed | 80% | 0% | 13 |
+| Bleed + Rage | 74% | 0% | 10 |
+| Rage | 52% | 1% | 10 |
+| Shield + Rage | 74% | 0% | 12 |
+| Shield | 90% | 0% | 21 |
+
+### Decisions
+- **Bleed's rule stays** (the user's call). Bleed builds don't use Bleed as their main damage; their faces react to it.
+- **Exsanguinate consumes Bleed,** so cashing in costs the mark that the conditional faces rely on.
+- **Bloodscent heals its value for now,** to be revisited if it proves too strong. Its healing is the bridge to Berserker's "lose HP → strong effect → heal back" loop, so it carries both the Bleed and Rage tags.
+
+### Observations
+- **One pattern explains every losing build:** winners kill strong enemies in 6–7 turns, losers take 10–21 turns. Bleed, Rage and Shield clear the Medium tier fine (74–90% reach battle 8) but lose the race against strong enemies that gain Rage every turn.
+
+### Next Steps
+- Balance pass on face values (not enemies, since Poison and Burn are on target): find which Bleed, Rage and Shield faces move the needle most, aim for about 30% clears for each, and keep Poison and Burn where they are.
+- UI phase 2: status icons from game-icons.net.
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
+- Die reroll (once per roll in battle). Center the offer cards when a Market has fewer than 3 offers.

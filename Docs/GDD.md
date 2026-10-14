@@ -381,6 +381,26 @@ The glue between status builds. Ritual makes every status you apply stronger.
 
 - **Dark Communion rewards variety:** the more different statuses the enemy carries, the more Ritual it gives. It is the "reward variety" payoff noted under Hybrid Builds.
 
+### Bleed (implemented)
+
+A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder or heal while it lasts.
+
+- **Resource:** Bleed on the enemy. It always deals 1 damage per tick and loses 1 stack, so its stacks are how many turns the enemy stays marked. The rule stays as it is: Bleed's value is the duration, not the damage.
+- **Identity:** faces with "if the enemy is bleeding" effects. Keep Bleed going to keep those effects on, or cash in the remaining duration with Exsanguinate.
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Sword** | Starter (starting die) | Common | 2 | Attack: deal damage and apply 1 Bleed. Defense: gain block. |
+| **Serrated Blade** | Starter | Common | 2 | Attack: apply Bleed equal to my value. Defense: gain block equal to my value. |
+| **Open Wound** | Engine | Rare | 2 | Attack: deal damage equal to my value; if the enemy is bleeding, hit again for my value. |
+| **Bloodscent** | Bridge (Bleed + Rage) | Rare | 2 | Defense: gain block equal to my value; if the enemy is bleeding, heal equal to my value. |
+| **Exsanguinate** | Payoff | Epic | 1 | Attack: consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
+
+- **Conditional faces keep a floor:** without Bleed, Open Wound still hits once and Bloodscent still blocks (Standalone Faces rule).
+- **Exsanguinate vs. Detonate:** Detonate is additive (value + Burn), Exsanguinate is multiplicative (value × Bleed) and consumes the whole remaining duration. "Keep the mark for the conditional effects, or cash it in now?" is the Bleed build's core decision.
+- **The life loop (Bleed + Berserker bridge):** Berserker uses HP as a resource. Bloodrage spends HP for Rage, and Bloodscent heals it back while the enemy bleeds: lose HP, apply strong effects, heal back. Open Wound's second hit also benefits from Rage. Bloodscent's healing is kept as is for now and will be revisited if it proves too strong.
+- **"If" effects are one reusable box** (`ConditionalEffectSO`), so future conditions ("if the enemy is poisoned", "if you have Fortify") need no new code.
+
 ### Future Archetypes
 
 Ideas to revisit after Poison and Shield.
