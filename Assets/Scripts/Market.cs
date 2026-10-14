@@ -8,25 +8,36 @@ public class MarketOffer
     public bool sold;
 }
 
+public class ModuleOffer
+{
+    public ActionModuleSO module;
+    public int price;
+    public bool sold;
+}
+
 // Market rules: generating offers, buying and upgrading. Plain C# with no UI,
 // so MarketUI only draws this state and forwards clicks (see GDD "Market").
 public class Market
 {
     public readonly bool isGrand;
     public readonly List<MarketOffer> offers = new List<MarketOffer>();
+    // Action modules on offer (Normal Market only, see GDD "Action Modules").
+    public readonly List<ModuleOffer> moduleOffers = new List<ModuleOffer>();
 
     private readonly RunData run;
     private readonly EconomyConfigSO economy;
     // Rerolls bought during this visit; each one costs more than the last (resets next Market).
     private int rerollCount;
-    // Faces from the offers a reroll replaced; avoided by the new offers when the pool allows.
+    // Faces and modules from the offers a reroll replaced; avoided by the new offers when the pool allows.
     private readonly List<DieFaceSO> replacedFaces = new List<DieFaceSO>();
+    private readonly List<ActionModuleSO> replacedModules = new List<ActionModuleSO>();
 
     public Market(RunData run, EconomyConfigSO economy, bool isGrand){
         this.run = run;
         this.economy = economy;
         this.isGrand = isGrand;
         GenerateOffers();
+        GenerateModuleOffers();
     }
 
     // ---------- Reroll ----------
@@ -51,8 +62,14 @@ public class Market
         foreach(MarketOffer offer in offers){
             replacedFaces.Add(offer.face);
         }
+        replacedModules.Clear();
+        foreach(ModuleOffer offer in moduleOffers){
+            replacedModules.Add(offer.module);
+        }
         offers.Clear();
+        moduleOffers.Clear();
         GenerateOffers();
+        GenerateModuleOffers();
         return true;
     }
 
@@ -114,14 +131,74 @@ public class Market
     }
 
     private bool SharesTagWithDie(DieFaceSO face){
+        return SharesTagWithDie(face.tags);
+    }
+
+    private bool SharesTagWithDie(List<FaceTag> tags){
         foreach(DieFace dieFace in run.dieFaces){
-            foreach(FaceTag tag in face.tags){
+            foreach(FaceTag tag in tags){
                 if(dieFace.definition.tags.Contains(tag)){
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    // ---------- Module offers ----------
+
+    // Same rules as face offers: rarity weights, build-aware tags, no repeats in a set,
+    // and modules a reroll just replaced are avoided when possible. The Grand Market sells no modules.
+    private void GenerateModuleOffers(){
+        if(isGrand){
+            return;
+        }
+        for(int i = 0; i < economy.modulesPerMarket; i++){
+            List<ActionModuleSO> candidates = GetUnofferedModules(RollRarity());
+            if(candidates.Count == 0) candidates = GetUnofferedModules(null);
+            if(candidates.Count == 0) break;
+
+            if(Random.value < economy.tagMatchChance){
+                List<ActionModuleSO> matching = candidates.FindAll(module => SharesTagWithDie(module.tags));
+                if(matching.Count > 0) candidates = matching;
+            }
+            ActionModuleSO picked = candidates[Random.Range(0, candidates.Count)];
+            moduleOffers.Add(new ModuleOffer{ module = picked, price = economy.GetBuyPrice(picked.rarity) });
+        }
+    }
+
+    private List<ActionModuleSO> GetUnofferedModules(Rarity? rarity){
+        List<ActionModuleSO> fresh = new List<ActionModuleSO>();
+        List<ActionModuleSO> repeated = new List<ActionModuleSO>();
+        foreach(ActionModuleSO module in economy.modulePool){
+            if(rarity.HasValue && module.rarity != rarity.Value) continue;
+            if(moduleOffers.Exists(offer => offer.module == module)) continue;
+            if(replacedModules.Contains(module)) repeated.Add(module);
+            else fresh.Add(module);
+        }
+        return fresh.Count > 0 ? fresh : repeated;
+    }
+
+    // A module can be bought only if some die face has its slot free.
+    public bool CanBuyModule(int offerIndex){
+        ModuleOffer offer = moduleOffers[offerIndex];
+        return !offer.sold && run.gold >= offer.price && run.dieFaces.Exists(face => face.CanAttach(offer.module));
+    }
+
+    public bool CanAttachModule(int offerIndex, int dieSlot){
+        return run.dieFaces[dieSlot].CanAttach(moduleOffers[offerIndex].module);
+    }
+
+    // Attaches the bought module to the die face in dieSlot (its slot for that action must be empty).
+    public bool BuyModule(int offerIndex, int dieSlot){
+        if(!CanBuyModule(offerIndex) || !CanAttachModule(offerIndex, dieSlot)){
+            return false;
+        }
+        ModuleOffer offer = moduleOffers[offerIndex];
+        run.gold -= offer.price;
+        run.dieFaces[dieSlot].Attach(offer.module);
+        offer.sold = true;
+        return true;
     }
 
     // ---------- Buying ----------

@@ -878,3 +878,30 @@ No shopping 0% · Unplanned 0% · Burn 34% · Poison 70% · Ritual + Poison 36% 
 - Then equipment (passive items) on a trigger system ("at turn start", "when hit"...).
 - Give Bleed, Rage and Shield Commons that grow during a fight.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 32 - Action Modules
+
+### Accomplished
+- **`ActionModuleSO`:** a bought action (name, rarity, tags, `action`, effects) attached to an empty action slot of a die face. Six modules in `Assets/Modules/`: Venom Coating, Kindling, Rend, Iron Skin (Common), War Cry, Ignition (Rare).
+- **`DieFace` owns its modules:** `GetEffects(action)` merges definition and module effects, `HasAction`, `CanAttach` (the face has no effect for that action yet), `Attach`, `DisplayName` ("Sword +1") and `FullDescription`. Battle, UI and simulator now read effects only through `DieFace` (regression check: 84 comparisons, 0 mismatches).
+- **Market:** the Normal Market offers 2 modules next to the 3 faces (`modulesPerMarket`, same rarity/tag rules, rerolls replace them too); the Grand Market sells none. Prices follow face prices (10/25/60).
+- **Market scene:** "FACES" and "ACTION MODULES" rows; buying a module highlights only the faces with that slot empty; die slots list their empty slots.
+- **Simulator:** focused bots buy modules of their archetype with the gold left after upgrades, attach them to faces outside the archetype and play them there; unplanned bots sometimes buy random modules. `BuyModules` switches this off for comparisons, and reports show modules on the die at battle 8.
+- **GDD and CLAUDE.md** updated.
+
+### Results (500 runs per bot)
+Without / with modules: Burn 32% / 26% · Poison 73% / 72% · Ritual + Poison 39% / 40% · others unchanged. The difference is within noise.
+
+### Findings
+- **A module is an option, not an extra effect.** One roll is still one action, so a module is only worth "its action minus the face's best action". On a value-2 Sword, Venom Coating (2 Poison, about 3 damage) is weaker than the Sword itself (2 damage + 2 Bleed).
+- Naive bots that bought modules first lost a lot (Burn 32% → 5%): the gold came out of upgrades, and Kindling replaced damage with fuel that nothing ignited.
+- Ignition fits almost only on the Health Potion, the only starter face with an empty Attack slot.
+
+### Decisions
+- **Modules stay as they are for now** (prices, set, no removal). They are a flexibility and hybrid tool, not a power source; revisit them after the equipment / trigger system.
+- Replacing a face discards its modules.
+
+### Next Steps
+- Equipment (passive items) on a trigger system ("at turn start", "when hit"...), then re-evaluate modules with it.
+- Give Bleed, Rage and Shield Commons that grow during a fight.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.

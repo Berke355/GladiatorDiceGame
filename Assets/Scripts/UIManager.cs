@@ -93,9 +93,9 @@ public class UIManager : MonoBehaviour
 
     // After the roll: show the face and what each action would do; actions the face lacks stay disabled.
     public void ShowRolledFace(DieFace face, List<DieFace> die){
-        rolledFaceTitle.text = face.definition.faceName + "  <size=70%>Value " + face.value + "</size>";
-        rolledFaceText.text = GameText.Colorize(face.definition.description);
-        rolledFaceTooltip.text = GameText.FaceTooltip(face.definition, face.value);
+        rolledFaceTitle.text = face.DisplayName + "  <size=70%>Value " + face.value + "</size>";
+        rolledFaceText.text = GameText.Colorize(face.FullDescription);
+        rolledFaceTooltip.text = GameText.FaceTooltip(face);
         UpdateDieChips(die, face);
 
         rollButton.interactable = false;
@@ -130,10 +130,9 @@ public class UIManager : MonoBehaviour
     private string DescribeAction(DieFace face, List<DieFace> die, ActionType action){
         EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = die, face = face };
         List<string> parts = new List<string>();
-        foreach(ActionEffect effect in face.definition.effects){
-            if(effect.actionType != action || effect.effectLogic == null) continue;
-            string description = effect.effectLogic.Describe(context);
-            parts.Add(description != "" ? description : effect.effectLogic.name);
+        foreach(EffectSO effect in face.GetEffects(action)){
+            string description = effect.Describe(context);
+            parts.Add(description != "" ? description : effect.name);
         }
         return string.Join(", ", parts);
     }

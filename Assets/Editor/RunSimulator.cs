@@ -24,8 +24,16 @@ public static class RunSimulator
         }
 
         public bool Fits(DieFaceSO face){
+            return Fits(face.tags);
+        }
+
+        public bool Fits(ActionModuleSO module){
+            return Fits(module.tags);
+        }
+
+        private bool Fits(List<FaceTag> tags){
             foreach(FaceTag tag in focusTags){
-                if(face.tags.Contains(tag)) return true;
+                if(tags.Contains(tag)) return true;
             }
             return false;
         }
@@ -38,6 +46,8 @@ public static class RunSimulator
     public static int RageToStartAttacking = 3;
     // 40 measured best: rerolling down to little gold costs the upgrades a build needs (DevLog Day 29).
     public static int GoldToKeepAfterReroll = 40;
+    // Bots buy action modules; off to measure what modules add.
+    public static bool BuyModules = true;
 
     private const int MaxTurnsPerBattle = 100;
     private const int BattlesPerRun = 11;
@@ -140,6 +150,7 @@ public static class RunSimulator
         // What the die looks like when a run reaches the Strong tier (battle 8): is the build actually there?
         Dictionary<string, int> facesAtBattle8 = new Dictionary<string, int>();
         int buildFacesAtBattle8 = 0;
+        int modulesAtBattle8 = 0;
         float goldAtFirstGrandMarket = 0;
         int firstGrandMarketVisits = 0;
 
@@ -156,6 +167,7 @@ public static class RunSimulator
                             string name = face.definition.faceName;
                             facesAtBattle8[name] = (facesAtBattle8.ContainsKey(name) ? facesAtBattle8[name] : 0) + 1;
                             if(bot.Fits(face.definition)) buildFacesAtBattle8++;
+                            modulesAtBattle8 += face.modules.Count;
                         }
                     }
                     EnemyTier tier = config.GetTierForBattle(battle);
@@ -207,7 +219,8 @@ public static class RunSimulator
 
         string report = FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
         string gold = "avg gold entering the first Grand Market: " + (firstGrandMarketVisits > 0 ? (goldAtFirstGrandMarket / firstGrandMarketVisits).ToString("0") : "-") + "\n";
-        return report + gold + FormatDieAtBattle8(reached[8], buildFacesAtBattle8, facesAtBattle8);
+        string modules = "avg modules on the die at battle 8: " + (reached[8] > 0 ? ((float)modulesAtBattle8 / reached[8]).ToString("0.0") : "-") + "\n";
+        return report + gold + modules + FormatDieAtBattle8(reached[8], buildFacesAtBattle8, facesAtBattle8);
     }
 
     // Average number of build faces at battle 8 and the most common faces on the die there.
@@ -296,10 +309,8 @@ public static class RunSimulator
             DieFace face = run.dieFaces[Random.Range(0, run.dieFaces.Count)];
             ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain);
             EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = run.dieFaces, face = face };
-            foreach(ActionEffect effect in face.definition.effects){
-                if(effect.actionType == action && effect.effectLogic != null){
-                    effect.effectLogic.Execute(context);
-                }
+            foreach(EffectSO effect in face.GetEffects(action)){
+                effect.Execute(context);
             }
             if(player.IsDead || enemy.IsDead) break;
 
@@ -337,6 +348,11 @@ public static class RunSimulator
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash");
 
+        // A module brings an archetype onto a face outside it (e.g. Venom Coating on a Sword), so it is the face's
+        // build action, except when blocking a big hit.
+        ActionModuleSO module = face.modules.Find(m => !m.tags.Exists(tag => definition.tags.Contains(tag)));
+        if(module != null && !(bigHit && face.HasAction(ActionType.Defense))) return module.action;
+
         if(definition.faceName == "Shield"){
             if(bigHit) return ActionType.Defense;
             if(!usesFortify) return ActionType.Attack;
@@ -357,14 +373,10 @@ public static class RunSimulator
             case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
-        if(bigHit && Has(definition, ActionType.Defense)) return ActionType.Defense;
-        if(Has(definition, ActionType.Attack)) return ActionType.Attack;
-        if(Has(definition, ActionType.Defense)) return ActionType.Defense;
+        if(bigHit && face.HasAction(ActionType.Defense)) return ActionType.Defense;
+        if(face.HasAction(ActionType.Attack)) return ActionType.Attack;
+        if(face.HasAction(ActionType.Defense)) return ActionType.Defense;
         return ActionType.Magic;
-    }
-
-    private static bool Has(DieFaceSO face, ActionType action){
-        return face.effects.Exists(effect => effect.actionType == action);
     }
 
     // ---------- Run start ----------
@@ -434,16 +446,43 @@ public static class RunSimulator
                 market.Upgrade(cheapestUpgrade);
                 continue;
             }
+
+            // Modules get the gold left after upgrades.
+            if(BuyModules && BuyFittingModule(market, run, bot)){
+                continue;
+            }
             break;
         }
     }
 
-    // Replaces the weakest face outside the archetype; if the die is all archetype, only a lower-rarity one.
+    // Buys an affordable module of the archetype (the rarest one) and attaches it to the highest-value
+    // face outside the archetype with that slot empty: a module adds an alternative action, not a second
+    // effect, so it pays off by turning an off-build face (a starter Sword or Shield) into a build face.
+    private static bool BuyFittingModule(Market market, RunData run, Bot bot){
+        int bestOffer = -1;
+        for(int i = 0; i < market.moduleOffers.Count; i++){
+            if(!bot.Fits(market.moduleOffers[i].module) || !market.CanBuyModule(i)) continue;
+            if(bestOffer < 0 || market.moduleOffers[i].module.rarity > market.moduleOffers[bestOffer].module.rarity){
+                bestOffer = i;
+            }
+        }
+        if(bestOffer < 0) return false;
+
+        int slot = -1;
+        for(int i = 0; i < run.dieFaces.Count; i++){
+            if(bot.Fits(run.dieFaces[i].definition) || !market.CanAttachModule(bestOffer, i)) continue;
+            if(slot < 0 || run.dieFaces[i].value > run.dieFaces[slot].value) slot = i;
+        }
+        return slot >= 0 && market.BuyModule(bestOffer, slot);
+    }
+
+    // Replaces the weakest face outside the archetype (a face carrying an archetype module counts as inside it,
+    // since replacing it loses the module); if the die is all archetype, only a lower-rarity one.
     private static int PickSlotToReplace(RunData run, DieFaceSO incoming, Bot bot){
         int best = -1;
         for(int i = 0; i < run.dieFaces.Count; i++){
             DieFace face = run.dieFaces[i];
-            if(bot.Fits(face.definition)) continue;
+            if(bot.Fits(face.definition) || face.modules.Exists(bot.Fits)) continue;
             if(best < 0 || face.value < run.dieFaces[best].value) best = i;
         }
         if(best >= 0) return best;
@@ -467,6 +506,7 @@ public static class RunSimulator
             for(int i = 0; i < run.dieFaces.Count; i++){
                 if(market.CanUpgrade(i)) upgradable.Add(i);
             }
+            if(BuyModules && Random.value < 0.3f && BuyRandomModule(market, run)) continue;
             if(buyable.Count == 0 && upgradable.Count == 0) break;
 
             if(buyable.Count > 0 && (upgradable.Count == 0 || Random.value < 0.6f)){
@@ -476,6 +516,18 @@ public static class RunSimulator
                 market.Upgrade(upgradable[Random.Range(0, upgradable.Count)]);
             }
         }
+    }
+
+    private static bool BuyRandomModule(Market market, RunData run){
+        for(int i = 0; i < market.moduleOffers.Count; i++){
+            if(!market.CanBuyModule(i)) continue;
+            List<int> slots = new List<int>();
+            for(int slot = 0; slot < run.dieFaces.Count; slot++){
+                if(market.CanAttachModule(i, slot)) slots.Add(slot);
+            }
+            return market.BuyModule(i, slots[Random.Range(0, slots.Count)]);
+        }
+        return false;
     }
 
     // ---------- Report ----------

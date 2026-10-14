@@ -12,8 +12,8 @@ public class DieChipUI : MonoBehaviour
     public Color highlightColor = new Color(0.85f, 0.65f, 0.2f, 0.95f);
 
     public void Set(DieFace face, bool highlighted){
-        text.text = "<b>" + face.definition.faceName + "</b>\n" + face.value;
-        tooltip.text = GameText.FaceTooltip(face.definition, face.value);
+        text.text = "<b>" + face.DisplayName + "</b>\n" + face.value;
+        tooltip.text = GameText.FaceTooltip(face);
         background.color = highlighted ? highlightColor : normalColor;
     }
 }

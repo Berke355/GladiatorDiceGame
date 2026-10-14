@@ -21,6 +21,11 @@ public class EconomyConfigSO : ScriptableObject
     [Range(0f, 1f)]
     public float tagMatchChance = 0.6f;
 
+    [Header("Action Modules")]
+    // Every module the Normal Market can offer, and how many it offers per visit.
+    public List<ActionModuleSO> modulePool = new List<ActionModuleSO>();
+    public int modulesPerMarket = 2;
+
     [Header("Market Reroll")]
     // Cost of the first reroll in a visit, and how much each further reroll adds (resets every Market).
     public int rerollBaseCost = 5;

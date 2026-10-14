@@ -10,7 +10,7 @@ public class PlayerActionSelectState : BattleState
 
     public override void Enter(){
         Debug.Log("Entered Action Select state.");
-        Debug.Log("Rolled face description: " + battleManager.currentRolledFace.definition.description);
+        Debug.Log("Rolled face description: " + battleManager.currentRolledFace.FullDescription);
     }
 
     public override void Execute(){
@@ -32,12 +32,9 @@ public class PlayerActionSelectState : BattleState
             die = battleManager.currentDiceFaces,
             face = rolledFace
         };
-        foreach(ActionEffect effect in rolledFace.definition.effects){
-            if(effect.actionType == selectedAction){
-                if(effect.effectLogic != null){
-                    effect.effectLogic.Execute(context);
-                }
-            }
+        // The face's own effects and any attached module's, for the chosen action.
+        foreach(EffectSO effect in rolledFace.GetEffects(selectedAction)){
+            effect.Execute(context);
         }
 
         if(battleManager.CheckBattleOver()) return;
