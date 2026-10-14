@@ -10,22 +10,26 @@ public class ApplyStatusPerTaggedFaceEffectSO : EffectSO
 
     public override void Execute(EffectContext context)
     {
-        int taggedFaces = 1;
-        if(context.die != null){
-            taggedFaces = 0;
-            foreach(DieFace face in context.die){
-                if(face.definition.tags.Contains(tagToCount)){
-                    taggedFaces++;
-                }
-            }
-        }
-
-        int amount = context.value * taggedFaces;
-        context.target.ApplyStatus(statusToApply, amount);
-        Debug.Log(context.source.entityName + " applied " + amount + " " + statusToApply + " (" + context.value + " x " + taggedFaces + " " + tagToCount + " faces) to " + context.target.entityName + ".");
+        int taggedFaces = CountTaggedFaces(context);
+        int amount = context.ApplyToTarget(statusToApply, context.value * taggedFaces);
+        Debug.Log(context.source.entityName + " applied " + amount + " " + statusToApply + " (" + context.value + " x " + taggedFaces + " " + tagToCount + " faces).");
     }
 
-    public override string Describe(int value){
-        return value + " " + statusToApply + " per " + tagToCount + " face";
+    public override string Describe(EffectContext context){
+        int amount = context.value * CountTaggedFaces(context) + context.RitualBonus;
+        return amount + " " + statusToApply + " (" + context.value + " per " + tagToCount + " face)";
+    }
+
+    private int CountTaggedFaces(EffectContext context){
+        if(context.die == null){
+            return 1;
+        }
+        int taggedFaces = 0;
+        foreach(DieFace face in context.die){
+            if(face.definition.tags.Contains(tagToCount)){
+                taggedFaces++;
+            }
+        }
+        return taggedFaces;
     }
 }

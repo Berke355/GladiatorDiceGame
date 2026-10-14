@@ -16,7 +16,7 @@ public class EnemySO : ScriptableObject
     public string enemyName;
     public EnemyTier tier;
     public int maxHP;
-    // Added to the attack bonus after each of the enemy's turns (e.g. Essedarius gathering speed).
+    // Rage gained after each of the enemy's turns (e.g. Essedarius gathering speed).
     public int escalationPerTurn;
     public List<EnemyIntent> intents = new List<EnemyIntent>();
 }

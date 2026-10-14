@@ -16,8 +16,11 @@ public static class GameText
     private static readonly Keyword[] Keywords = {
         new Keyword{ word = "FireShield", color = "#FFC857", definition = "Attackers gain Burn equal to its stacks. Lasts until its owner's next turn." },
         new Keyword{ word = "Fortify", color = "#7FB3E6", definition = "Absorbs damage after Block. Never resets." },
-        new Keyword{ word = "Burn", color = "#FF9A3C", definition = "At the end of its owner's turn: lose HP equal to the stacks, then lose 2 stacks. Ignores Block and Fortify." },
-        new Keyword{ word = "Poison", color = "#8BD45E", definition = "At the end of its owner's turn: lose HP equal to the stacks. Never decays. Ignores Block and Fortify." },
+        new Keyword{ word = "Burn", color = "#FF9A3C", definition = "Fuel: deals no damage on its own until it is ignited. Loses 2 stacks at the end of its owner's turn (not the turn it was applied)." },
+        new Keyword{ word = "ignite", color = "#FF9A3C", definition = "Deal damage equal to the target's Burn. The Burn stays." },
+        new Keyword{ word = "Poison", color = "#8BD45E", definition = "At the end of its owner's turn: lose HP equal to the stacks, then lose 1 stack. Ignores Block and Fortify." },
+        new Keyword{ word = "Rage", color = "#FF5A5A", definition = "Every hit deals +1 damage per stack (each hit of a multi-hit). Lasts the whole battle." },
+        new Keyword{ word = "Ritual", color = "#B388FF", definition = "Every status applied to the opponent gets +1 per stack. Lasts the whole battle." },
         new Keyword{ word = "Bleed", color = "#E0435A", definition = "At the end of its owner's turn: lose 1 HP, then lose 1 stack. Stacks are how many turns it lasts. Ignores Block and Fortify." },
         new Keyword{ word = "block", color = "#B8C4CC", definition = "Absorbs damage. Resets at the start of its owner's turn." },
         new Keyword{ word = "damage", color = "#FF7A6B", definition = null },

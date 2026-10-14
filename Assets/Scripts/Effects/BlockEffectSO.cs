@@ -8,7 +8,7 @@ public class BlockEffectSO : EffectSO
         Debug.Log("Gained " + context.value + " block.");
     }
 
-    public override string Describe(int value){
-        return value + " block";
+    public override string Describe(EffectContext context){
+        return context.value + " block";
     }
 }

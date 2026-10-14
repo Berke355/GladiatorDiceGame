@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EmberFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Ember
-  description: 'Attack: Apply Burn equal to my value. Defense: Gain block equal to
-    my value.'
+  description: 'Attack: Apply Burn equal to my value, then ignite it. Defense: Gain
+    block equal to my value.'
   rarity: 0
   tags: 03000000
   baseValue: 3
@@ -22,5 +22,7 @@ MonoBehaviour:
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 6b11e72c35be2e344b7e718b742f902d, type: 2}
+  - actionType: 0
+    effectLogic: {fileID: 11400000, guid: 8b6a869f4e5efd64d824f9b5a5183b3d, type: 2}
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}

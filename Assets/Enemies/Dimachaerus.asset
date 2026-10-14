@@ -23,11 +23,9 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}
     value: 2
     weight: 2
-    attackBonusGain: 0
   - intentName: Parry
     intentType: 1
     effects:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     weight: 1
-    attackBonusGain: 0

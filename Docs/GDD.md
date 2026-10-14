@@ -245,13 +245,19 @@ The decision only works if both paths are viable.
 
 | Status | On | Effect at the end of its owner's turn | Decay | Notes |
 |---|---|---|---|---|
-| **Burn** | Target | Loses HP equal to its stacks | −2 per tick (not on the tick right after it was applied) | Can be consumed (Detonate, Cauterize) |
-| **Poison** | Target | Loses HP equal to its stacks | Never decays | Never consumed |
+| **Burn** | Target | **Nothing:** Burn is fuel and deals no damage on its own | −2 per tick (not on the tick right after it was applied) | Turned into damage by igniting it (e.g. Ember) or consuming it (Detonate, Cauterize) |
+| **Poison** | Target | Loses HP equal to its stacks | −1 per tick | Never consumed |
 | **Bleed** | Target | Loses **1** HP | −1 per tick | **Stacks are duration, not damage:** 15 Bleed means 1 damage for 15 turns |
 | **FireShield** | Self | — | Cleared at the start of its owner's turn | Attackers gain Burn equal to its stacks |
 | **Fortify** | Self | — | Never resets | Absorbs damage after Block |
+| **Rage** | Self | — | Lasts the whole battle | Every hit deals +1 damage per stack; each hit of a multi-hit gets it |
+| **Ritual** | Self | — | Lasts the whole battle | Every status applied to the opponent gets +1 per stack |
 
-- Damage over time (Burn, Poison, Bleed) bypasses Block and Fortify.
+- Damage over time (Poison, Bleed) bypasses Block and Fortify.
+- **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that shrink), Bleed is duration (always 1, for as many turns as it has stacks).
+- **Ignite:** deal damage equal to the target's Burn without consuming it. Detonate consumes Burn for one bigger hit. Small ignitions versus waiting for one big detonation is the Burn build's core decision.
+- **Rage and Ritual** are visible statuses, not hidden multipliers, so they follow the Value Is the Effect rule: the face's value stays as printed, and previews show the boosted result (e.g. a Sword with 3 Rage previews "5 damage, 1 Bleed").
+- **Ritual only boosts statuses applied to the opponent** (Burn, Poison, Bleed). Boosting self-applied statuses would break the "Fortify comes in small amounts" rule. Multiplying a status (Fuel) is not a new application, so Ritual does not apply to it.
 - **Fortify is permanent, so it must come in small amounts.** Enemy intents that grant Fortify are kept at 1. A player's Shield face can grant Fortify equal to its value because it pays for it with weaker attacks than Sword.
 
 ## Build Archetypes
@@ -282,8 +288,8 @@ Every archetype follows the same three roles. This keeps archetypes readable for
 
 Burst damage over a short time. Build Burn up, then cash it out.
 
-- **Resource:** Burn on the enemy. It deals its stacks as damage at the end of the owner's turn, bypasses block and decays by 2 (not on the tick right after it was applied).
-- **Identity:** Consume or let it tick? Detonating gives a big hit but resets the stacks.
+- **Resource:** Burn on the enemy. It deals no damage on its own and decays by 2 (not on the tick right after it was applied). Ignitions turn it into damage without consuming it; Detonate consumes it.
+- **Identity:** Ignite small and often, or stack it up and detonate? Ember applies Burn and ignites it in one action; Detonate trades all the stacks for one big hit.
 
 | Face | Role | Rarity |
 |---|---|---|
@@ -297,9 +303,9 @@ Burst damage over a short time. Build Burn up, then cash it out.
 
 Slow and inevitable. Strongest in long fights, which makes it the boss-fighting build.
 
-- **Resource:** Poison on the enemy. It deals its stacks as damage at the end of the poisoned entity's turn and bypasses block. **It never decays.**
-- **Identity:** You only apply Poison. Unlike Burn, nothing consumes or detonates it, and no face does anything extra with the stacks. The payoff is that it never goes away.
-- **Difference from Burn:** Burn is burst (decays, gets consumed). Poison is attrition (never decays, never consumed).
+- **Resource:** Poison on the enemy. It deals its stacks as damage at the end of the poisoned entity's turn, bypasses block, **then decays by 1**.
+- **Identity:** You only apply Poison. Unlike Burn, nothing consumes or detonates it, and no face does anything extra with the stacks. The payoff is that it works on its own every turn.
+- **Difference from Burn:** Burn is fuel that needs to be ignited. Poison deals damage by itself, front-loaded and slowly shrinking.
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
@@ -314,7 +320,7 @@ Plague introduces a new Epic pattern: **die-composition scaling** ("for each X f
 
 Defense that turns into offense. Stack up protection, then trade it for one big hit.
 
-- **Resource:** **Fortify**, a new status on yourself. Fortify absorbs damage like Block (Block first, then Fortify), but it **does not reset at the start of your turn**. Damage over time (Burn, Poison) bypasses it like it bypasses Block.
+- **Resource:** **Fortify**, a new status on yourself. Fortify absorbs damage like Block (Block first, then Fortify), but it **does not reset at the start of your turn**. Damage over time (Poison, Bleed) bypasses it like it bypasses Block.
 - **Identity:** High risk, high reward. Cashing out Fortify deals heavy damage but leaves you without your stored protection.
 
 | Face | Role | Rarity | Value | Actions |
@@ -334,7 +340,8 @@ Ideas to revisit after Poison and Shield.
   - **Charge:** the face gains +1 temporary value every turn it isn't rolled.
   - **Die manipulation:** reroll the die, or trigger your highest-value face.
   - Needs changes to the battle state machine.
-- **Berserker:** Power for blood. Some faces hurt you, others grow stronger as your HP drops. Since HP carries over between battles, self-damage is a real run-long cost. Fits the gladiator theme, and needs no new status.
+- **Berserker (Rage):** Power for blood. Faces that grant Rage, faces that hurt you, faces that grow stronger as your HP drops. Rage makes multi-hit faces especially strong. Since HP carries over between battles, self-damage is a real run-long cost.
+- **Ritualist (Ritual):** Faces that grant Ritual and boost every status you apply. Ritual connects Bleed, Poison and Burn, so it is a natural glue for hybrid builds.
 - **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.
 - **Die topology:** Face positions on the die matter, e.g. opposite faces (1–6, 2–5, 3–4) or adjacent faces. Turns "which face do I replace?" into "which face, in which slot?". Complex, so it stays a late idea.
 
@@ -348,7 +355,6 @@ Hybrids add variety and give players a way to pivot when they can't find the fac
 
 ### Open Questions
 
-- Poison may prove too strong if it never decays. If so, let it decay by 1 per tick.
 - How Fortify interacts with FireShield and future Block effects.
 - Second payoff faces for Poison and Shield, so each archetype has more than one Epic.
 
@@ -395,7 +401,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 | **Tiro** (recruit) | 11 | Slash 2 (×3), Guard: block 2 (×2) | The simplest enemy, teaches the basics |
 | **Murmillo** (heavy shield gladiator) | 14 | Shield Wall: block 2 (×2), Strike 2 (×2) | A defensive enemy whose block has to be broken through |
 | **Thraex** (curved dagger) | 13 | Sica Cut 1 (×2), Envenom: Poison 1 (×2), Guard: block 1 (×1) | Small Poison: the fight costs more HP the longer it lasts |
-| **Lampadarius** (torchbearer) | 13 | Torch Swing: Burn 1 (×2), Strike 2 (×2), Guard: block 1 (×1) | Small Burn |
+| **Lampadarius** (torchbearer) | 13 | Torch Swing: Burn 1 (×2), Strike 2 (×2), Guard: block 1 (×1), Ignite: ignite Burn (×1) | Small Burn, ignited now and then |
 | **Arena Wolf** | 9 | Bite 2 (×3), Howl: block 2 (×1) | Low HP but hits hard; finish it fast |
 
 **Medium (battles 5–7), each with one danger mechanic:**
@@ -404,7 +410,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 |---|---|---|---|
 | **Retiarius** (net and trident) | 18 | Jab 2 (×2), Net: block 3 (×1), Trident Thrust 5 (×1) | **Telegraphed spike:** ignore the intent and take 5 |
 | **Dimachaerus** (two swords) | 17 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
-| **Arena Lion** | 20 | Maul 4 (×2), Feast: 2 damage and heal 2 (×2) | **Self-healing:** punishes slow damage |
+| **Arena Lion** | 20 | Maul 1 (×2), Roar: gain 1 Rage (×1), Feast: 1 damage and heal by the damage (×1) | **Builds Rage:** harmless at first, deadly if the fight drags on |
 | **Venefica** (poisoner) | 17 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** Poison never decays, so long fights become deadly |
 | **Secutor** (pursuer) | 20 | Brace: Fortify 1 (×2), Shield Slam 4 (×2) | **Stacks Fortify:** its protection slowly builds up, so deal damage early |
 
@@ -412,15 +418,15 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 
 | Enemy | HP | Intents | Clock |
 |---|---|---|---|
-| **Essedarius** (chariot fighter) | 42 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1) | **Gathering speed:** all its attacks gain +1 damage every turn |
+| **Essedarius** (chariot fighter) | 42 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1) | **Gathering speed:** gains 1 Rage every turn |
 | **War Elephant** | 56 | Stomp 6 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
-| **Hoplomachus Champion** | 44 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: +1 damage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
+| **Hoplomachus Champion** | 44 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
 | **Bestiarius** (beast tamer) | 40 | Whip 2 (×2), Unleash 5 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
 
 #### New Mechanics for Enemies
 
 - **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
-- **Escalation** (Essedarius, Hoplomachus): rising damage is **enemy-only data**. An enemy's attack intents grow by a fixed amount each turn (Essedarius), or permanently after a specific intent (Hoplomachus' Battle Cry). The grown value is shown in the intent. A general "Strength" status was considered but postponed until the Berserker archetype, because it would touch every damage effect.
+- **Escalation through Rage** (Essedarius, Hoplomachus, Arena Lion): rising damage uses the same visible Rage status as the player. An enemy can gain Rage every turn (Essedarius) or from an intent (Battle Cry, Roar). Its intents show the boosted numbers, and the Rage chip's tooltip explains why.
 
 #### Balance Targets
 
@@ -428,11 +434,11 @@ Enemy numbers are tuned with the run simulator (`Tools → Gladiator Dice → Ru
 
 | Target | Result (600–1000 runs per bot) |
 |---|---|
-| An unbuilt die (no shopping) gets through the Weak tier losing about 10–15 HP | 12 HP lost, then it dies in the Medium tier (15% reach battle 8) |
-| A die bought without a plan stalls around battles 9–10 | 75% reach battle 8, 2% clear the run |
-| A well-built die mostly beats the Strong tier | Poison 87%, Burn 72% clear the run; Shield only 7% |
+| An unbuilt die (no shopping) gets through the Weak tier losing about 10–15 HP | 8 HP lost, then it dies in the Medium tier (33% reach battle 8) |
+| A die bought without a plan stalls around battles 9–10 | 89% reach battle 8, 17% reach battle 9, 0% clear the run |
+| A well-built die mostly beats the Strong tier | Poison 85%, Burn 57% clear the run; Shield only 1% |
 
-Shield misses the target because its strong-tier fights take about 17 turns versus about 5 for other builds, so escalating enemies win the race. This is an archetype problem, not an enemy one.
+Shield misses the target because its strong-tier fights take far longer than other builds' (about 24 turns versus 6), so enemies that build Rage win the race. This is an archetype problem, not an enemy one.
 
 These results use the Run Start die (2 Sword, 2 Shield, Health Potion and a chosen starting face). The starting face rarity is currently skewed toward Rare and Epic (about 60% Common instead of 85%) because only two Common faces (Ember, Venom) can be offered; more Common faces are needed.
 

@@ -100,7 +100,7 @@ public class UIManager : MonoBehaviour
 
         rollButton.interactable = false;
         for(int i = 0; i < actionButtons.Length; i++){
-            string preview = DescribeAction(face, (ActionType)i);
+            string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = preview != "";
             actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>"
                 + (preview != "" ? "\n<size=75%>" + GameText.Colorize(preview) + "</size>" : "");
@@ -125,12 +125,14 @@ public class UIManager : MonoBehaviour
         return action.ToString().ToUpperInvariant();
     }
 
-    // Short text of every effect the face runs for this action, e.g. "2 damage, 1 Bleed". Empty if it has none.
-    private static string DescribeAction(DieFace face, ActionType action){
+    // Short text of every effect the face runs for this action with the real numbers (Rage, Ritual, stacks),
+    // e.g. "5 damage, 4 Bleed". Empty if the face has no effect for this action.
+    private string DescribeAction(DieFace face, List<DieFace> die, ActionType action){
+        EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = die, face = face };
         List<string> parts = new List<string>();
         foreach(ActionEffect effect in face.definition.effects){
             if(effect.actionType != action || effect.effectLogic == null) continue;
-            string description = effect.effectLogic.Describe(face.value);
+            string description = effect.effectLogic.Describe(context);
             parts.Add(description != "" ? description : effect.effectLogic.name);
         }
         return string.Join(", ", parts);

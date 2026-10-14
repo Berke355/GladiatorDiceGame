@@ -147,7 +147,6 @@ public static class RunSimulator
             foreach(EnemyIntent intent in original.intents){
                 EnemyIntent scaled = intent;
                 scaled.value = ScaleValue(intent.value, damage);
-                scaled.attackBonusGain = ScaleValue(intent.attackBonusGain, damage);
                 copy.intents.Add(scaled);
             }
             pool.Add(copy);
@@ -185,7 +184,7 @@ public static class RunSimulator
         enemy.maxHP = enemyData.maxHP;
         enemy.currentHP = enemyData.maxHP;
         EnemyBrain brain = Reset<EnemyBrain>(enemyObject);
-        brain.Setup(enemyData);
+        brain.Setup(enemyData, enemy, player);
 
         turns = 0;
         while(turns < MaxTurnsPerBattle){
@@ -207,7 +206,7 @@ public static class RunSimulator
             if(player.IsDead || enemy.IsDead) break;
 
             enemy.OnTurnStart();
-            brain.ExecuteCurrentIntent(enemy, player);
+            brain.ExecuteCurrentIntent();
             if(player.IsDead || enemy.IsDead) break;
 
             enemy.OnTurnEnd();
@@ -232,7 +231,7 @@ public static class RunSimulator
         DieFaceSO definition = face.definition;
         int burn = enemy.GetStatus(StatusType.Burn);
         int fortify = player.GetStatus(StatusType.Fortify);
-        bool bigHit = brain.currentIntent.intentType == ActionType.Attack && brain.GetCurrentValue() >= 6;
+        bool bigHit = brain.currentIntent.intentType == ActionType.Attack && brain.currentIntent.value + enemy.GetStatus(StatusType.Rage) >= 6;
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash");
 

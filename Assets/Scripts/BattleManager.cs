@@ -28,7 +28,7 @@ public class BattleManager : MonoBehaviour
         enemy.entityName = enemyData.enemyName;
         enemy.maxHP = enemyData.maxHP;
         enemy.currentHP = enemyData.maxHP;
-        enemyBrain.Setup(enemyData);
+        enemyBrain.Setup(enemyData, enemy, player);
     }
 
     public void ChangeState(BattleState newState){

@@ -4,11 +4,11 @@ using UnityEngine;
 public class DamageEffectSO : EffectSO
 {
     public override void Execute(EffectContext context){
-        context.target.TakeDamage(context.value, context.source);
-        Debug.Log(context.source.entityName + " attacked! Dealt " + context.value + " damage.");
+        int dealt = context.Hit(context.value);
+        Debug.Log(context.source.entityName + " attacked! Dealt " + dealt + " damage.");
     }
 
-    public override string Describe(int value){
-        return value + " damage";
+    public override string Describe(EffectContext context){
+        return (context.value + context.RageBonus) + " damage";
     }
 }

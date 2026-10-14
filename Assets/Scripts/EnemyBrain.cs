@@ -11,16 +11,18 @@ public class EnemyBrain : MonoBehaviour
     public EnemySO definition;
     public EnemyIntent currentIntent;
 
+    // The enemy this brain controls and its opponent (the player).
+    private Entity self;
+    private Entity opponent;
     private int currentIndex = -1;
     private int repeatCount;
-    // Added to the value of Attack intents (escalation and Battle Cry style buffs).
-    private int attackBonus;
 
-    public void Setup(EnemySO enemy){
+    public void Setup(EnemySO enemy, Entity self, Entity opponent){
         definition = enemy;
+        this.self = self;
+        this.opponent = opponent;
         currentIndex = -1;
         repeatCount = 0;
-        attackBonus = 0;
     }
 
     public void ChooseNextIntent(){
@@ -54,51 +56,49 @@ public class EnemyBrain : MonoBehaviour
         Debug.Log(definition.enemyName + "'s new intent: " + DescribeCurrentIntent());
     }
 
-    // The value the current intent will use, including the attack bonus.
-    public int GetCurrentValue(){
-        return currentIntent.value + (currentIntent.intentType == ActionType.Attack ? attackBonus : 0);
-    }
-
-    // Readable intent text built from the effects, e.g. "Shield Slam: 4 damage" or "Shield Rush: 2 damage, 2 block".
+    // Readable intent text with the real numbers (Rage, Ritual and current stacks included),
+    // e.g. "Shield Slam: 4 damage" or "Shield Rush: 2 damage, 2 block".
     public string DescribeCurrentIntent(){
         List<string> parts = new List<string>();
-        int value = GetCurrentValue();
+        EffectContext context = CreateContext();
         if(currentIntent.effects != null){
             foreach(EffectSO effect in currentIntent.effects){
-                string description = effect != null ? effect.Describe(value) : "";
+                string description = effect != null ? effect.Describe(context) : "";
                 if(description != ""){
                     parts.Add(description);
                 }
             }
         }
-        if(currentIntent.attackBonusGain > 0){
-            parts.Add("+" + currentIntent.attackBonusGain + " damage on all attacks");
-        }
 
         if(parts.Count == 0){
-            return currentIntent.intentName + " (" + value + ")";
+            return currentIntent.intentName + " (" + currentIntent.value + ")";
         }
         return currentIntent.intentName + ": " + string.Join(", ", parts);
     }
 
     // Runs the current intent. Enemies have no die, so die and face stay null in the context.
-    public void ExecuteCurrentIntent(Entity self, Entity target){
-        EffectContext context = new EffectContext{
-            source = self,
-            target = target,
-            value = GetCurrentValue()
-        };
+    public void ExecuteCurrentIntent(){
+        EffectContext context = CreateContext();
         foreach(EffectSO effect in currentIntent.effects){
             if(effect != null){
                 effect.Execute(context);
             }
         }
-        attackBonus += currentIntent.attackBonusGain;
     }
 
-    // Called after the enemy's turn.
+    // Called after the enemy's turn: escalating enemies gain Rage, which is visible as a status.
     public void OnTurnEnd(){
-        attackBonus += definition.escalationPerTurn;
+        if(definition.escalationPerTurn > 0){
+            self.ApplyStatus(StatusType.Rage, definition.escalationPerTurn);
+        }
+    }
+
+    private EffectContext CreateContext(){
+        return new EffectContext{
+            source = self,
+            target = opponent,
+            value = currentIntent.value
+        };
     }
 
     private static int Weight(EnemyIntent intent){

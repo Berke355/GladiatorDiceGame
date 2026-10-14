@@ -23,7 +23,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 3
     weight: 2
-    attackBonusGain: 0
   - intentName: Shield Rush
     intentType: 0
     effects:
@@ -31,10 +30,9 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     weight: 1
-    attackBonusGain: 0
   - intentName: Battle Cry
     intentType: 2
-    effects: []
-    value: 0
+    effects:
+    - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+    value: 1
     weight: 1
-    attackBonusGain: 1

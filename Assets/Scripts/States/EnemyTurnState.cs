@@ -9,7 +9,7 @@ public class EnemyTurnState : BattleState
     public override void Enter(){
         battleManager.enemy.OnTurnStart();
         
-        battleManager.enemyBrain.ExecuteCurrentIntent(battleManager.enemy, battleManager.player);
+        battleManager.enemyBrain.ExecuteCurrentIntent();
         if(battleManager.CheckBattleOver()) return;
 
         battleManager.enemy.OnTurnEnd();

@@ -21,13 +21,17 @@ MonoBehaviour:
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 4
+    value: 1
     weight: 2
-    attackBonusGain: 0
+  - intentName: Roar
+    intentType: 2
+    effects:
+    - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+    value: 1
+    weight: 1
   - intentName: Feast
     intentType: 0
     effects:
     - {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}
-    value: 2
-    weight: 2
-    attackBonusGain: 0
+    value: 1
+    weight: 1

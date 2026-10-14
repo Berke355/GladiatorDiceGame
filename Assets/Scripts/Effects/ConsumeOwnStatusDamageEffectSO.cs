@@ -10,15 +10,17 @@ public class ConsumeOwnStatusDamageEffectSO : EffectSO
     public override void Execute(EffectContext context)
     {
         int consumedAmount = context.source.GetStatus(statusToConsume);
-        int totalDamage = context.value + consumedAmount * context.value;
-
         context.source.ConsumeStatus(statusToConsume);
-        context.target.TakeDamage(totalDamage, context.source);
+        int dealt = context.Hit(context.value + consumedAmount * context.value);
 
-        Debug.Log(context.source.entityName + " consumed " + consumedAmount + " of its own " + statusToConsume + " and dealt " + totalDamage + " damage.");
+        Debug.Log(context.source.entityName + " consumed " + consumedAmount + " of its own " + statusToConsume + " and dealt " + dealt + " damage.");
     }
 
-    public override string Describe(int value){
-        return value + " + " + statusToConsume + " x" + value + " damage, consume " + statusToConsume;
+    public override string Describe(EffectContext context){
+        if(context.source == null){
+            return context.value + " + " + statusToConsume + " x" + context.value + " damage, consume " + statusToConsume;
+        }
+        int damage = context.value + context.source.GetStatus(statusToConsume) * context.value + context.RageBonus;
+        return damage + " damage, consume " + statusToConsume;
     }
 }

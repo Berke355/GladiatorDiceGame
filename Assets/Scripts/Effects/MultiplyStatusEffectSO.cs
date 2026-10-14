@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Multiplies one of the target's statuses by the value (e.g. Fuel). Not a new application, so Ritual does not apply.
 [CreateAssetMenu(fileName = "NewMultiplyStatusEffect", menuName = "Dice/Effects/Multiply Status Effect")]
 public class MultiplyStatusEffectSO : EffectSO
 {
@@ -17,7 +18,7 @@ public class MultiplyStatusEffectSO : EffectSO
         }
     }
 
-    public override string Describe(int value){
-        return statusToMultiply + " x" + value;
+    public override string Describe(EffectContext context){
+        return statusToMultiply + " x" + context.value;
     }
 }

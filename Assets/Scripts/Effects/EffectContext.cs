@@ -11,4 +11,23 @@ public class EffectContext
     public List<DieFace> die;
     // The die face that triggered the effect. Null for enemy intents.
     public DieFace face;
+
+    // The source's Rage: added to every hit, so each hit of a multi-hit gets it.
+    public int RageBonus => source != null ? source.GetStatus(StatusType.Rage) : 0;
+    // The source's Ritual: added to every status applied to the opponent (never to the source itself).
+    public int RitualBonus => source != null ? source.GetStatus(StatusType.Ritual) : 0;
+
+    // Every damage effect hits through here so Rage is never forgotten. Returns the damage of the hit.
+    public int Hit(int baseDamage){
+        int total = baseDamage + RageBonus;
+        target.TakeDamage(total, source);
+        return total;
+    }
+
+    // Every status an effect puts on the opponent goes through here so Ritual is never forgotten.
+    public int ApplyToTarget(StatusType status, int baseAmount){
+        int total = baseAmount + RitualBonus;
+        target.ApplyStatus(status, total);
+        return total;
+    }
 }

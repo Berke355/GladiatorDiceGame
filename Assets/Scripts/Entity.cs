@@ -11,7 +11,11 @@ public enum StatusType {
     // Block that does not reset at turn start. Absorbs damage after Block.
     Fortify,
     // Stacks are duration: 1 damage per tick, then -1.
-    Bleed
+    Bleed,
+    // Permanent for the battle: added to every hit the owner deals (each hit of a multi-hit).
+    Rage,
+    // Permanent for the battle: added to every status the owner applies to its opponent.
+    Ritual
 }
 
 public class Entity : MonoBehaviour
@@ -118,24 +122,20 @@ public class Entity : MonoBehaviour
     }
 
     public void OnTurnEnd() {
+        // Burn deals no damage on its own: it is fuel that ignitions (IgniteEffectSO) and Detonate turn
+        // into damage. It decays by 2, except right after Burn was added.
         int burn = GetStatus(StatusType.Burn);
-        if (burn > 0) {
-            LoseHP(burn);
-
-            if (!burnAddedSinceLastTick) {
-                activeStatuses[StatusType.Burn] -= 2;
-                if (activeStatuses[StatusType.Burn] < 0) {
-                    activeStatuses[StatusType.Burn] = 0;
-                }
-            }
+        if (burn > 0 && !burnAddedSinceLastTick) {
+            activeStatuses[StatusType.Burn] = Math.Max(0, burn - 2);
             OnHealthChanged?.Invoke();
         }
         burnAddedSinceLastTick = false;
 
-        // Poison never decays and bypasses block.
+        // Poison deals its stacks as damage, bypassing block, then decays by 1.
         int poison = GetStatus(StatusType.Poison);
         if (poison > 0) {
             LoseHP(poison);
+            activeStatuses[StatusType.Poison] -= 1;
             OnHealthChanged?.Invoke();
         }
 

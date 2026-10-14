@@ -7,7 +7,7 @@ public class HealEffectSO : EffectSO
         context.source.Heal(context.value);
     }
 
-    public override string Describe(int value){
-        return "heal " + value;
+    public override string Describe(EffectContext context){
+        return "heal " + context.value;
     }
 }

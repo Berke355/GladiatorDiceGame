@@ -667,3 +667,48 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - Rework the Shield archetype and design more Common faces.
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
 - Reroll (once per roll). Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 27 - Status Rework, Rage & Ritual
+
+### Accomplished
+- **Play-test feedback:** Poison didn't behave as intended, and the Arena Lion (4 damage almost every turn) ended two runs.
+- **Status rework:**
+  - **Burn** deals no damage on its own. It is fuel that decays by 2, unless it was applied that turn.
+  - **Poison** deals its stacks, then decays by 1.
+  - **Bleed** is unchanged: 1 damage, then −1.
+- **Ignite:** added `IgniteEffectSO`, which deals damage equal to the target's Burn without consuming it. Ember's Attack now applies Burn and ignites it. Detonate still consumes Burn for one big hit.
+- **Rage** (new status, lasts the battle): +1 damage per stack on every hit, and each hit of a multi-hit gets it.
+- **Ritual** (new status, lasts the battle): +1 per stack on every status applied to the opponent.
+- **One path for damage and statuses:**
+  - Every damage effect now hits through `EffectContext.Hit` (adds Rage), and every status put on the opponent goes through `EffectContext.ApplyToTarget` (adds Ritual).
+  - Self-applied statuses and Fuel's multiply bypass Ritual on purpose.
+- **Real-number previews:** `EffectSO.Describe` now takes the `EffectContext`, so action previews and enemy intents show Rage, Ritual and current stacks (e.g. "5 damage, 1 Bleed" with 3 Rage, "7 damage, consume Burn").
+- **Enemies:**
+  - The hidden enemy attack bonus and `EnemyIntent.attackBonusGain` were removed. Escalation now uses the visible Rage status: Essedarius gains 1 Rage per turn, and Battle Cry gains Rage through `GainRageSelfEffect`.
+  - Lampadarius gained an Ignite intent.
+  - The Arena Lion now starts weak and builds Rage: Maul 1, Roar gains 1 Rage, Feast deals 1 and heals by the damage.
+  - `EnemyBrain.Setup` now takes the enemy and its opponent.
+- **Tests:** 15 rule tests passed, including Sword with 3 Rage (5 damage + 1 Bleed), Sword with 3 Ritual (2 damage + 4 Bleed), Twin Strike with 3 Rage (2 × 5), Ritual not boosting Fortify or Fuel, Plague with Ritual, and the Lion after two Roars (Maul 5).
+- **GDD and CLAUDE.md** updated (status table, archetype texts, roster, escalation through Rage, balance results).
+
+### Results (1000 runs per bot)
+| Target | Result |
+|---|---|
+| Unbuilt die loses about 10–15 HP in the Weak tier | 8 HP ⚠️ slightly low (enemy Burn/Poison hurt less now) |
+| Unplanned buyer stalls in the Strong tier | 89% reach battle 8, 0% clear ✅ |
+| Well-built die mostly wins | Poison 85%, Burn 57% ✅; Shield 1% ❌ |
+
+### Decisions
+- **Three distinct damage-over-time roles:** Burn is fuel (ignite or detonate), Poison is front-loaded attrition, Bleed is duration.
+- **Rage replaces hidden enemy escalation:** one visible mechanic for both sides. The player can see why an enemy hits harder, and the same status will power a Berserker archetype.
+- **Rage stacks per hit,** so multi-hit faces benefit the most.
+- **Ritual only boosts statuses applied to the opponent,** because boosting self-applied Fortify would break the "Fortify comes in small amounts" rule.
+- **Rage and Ritual are visible statuses, not hidden multipliers,** so Value Is the Effect still holds and previews show the boosted numbers.
+- **Lion's Roar gives 1 Rage, not 2:** at 2 the Lion alone ended about half of the unbuilt runs and most Shield runs, taking over the Strong tier's "clock" role in the Medium tier.
+
+### Next Steps
+- Design player faces that grant Rage (Berserker) and Ritual (Ritualist), and use them to help the Shield archetype.
+- Consider a small HP bump for Weak enemies (the unbuilt die loses only about 8 HP now).
+- UI phase 2: status icons from game-icons.net.
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
+- Reroll (once per roll). Center the offer cards when a Market has fewer than 3 offers.
