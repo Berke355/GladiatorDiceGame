@@ -117,9 +117,9 @@ public class Market
         return isGrand == isEpic;
     }
 
-    public bool IsMaxed(int dieSlot){
-        DieFace face = run.dieFaces[dieSlot];
-        return face.value >= face.definition.maxValue;
+    // Upgrades are unlimited; past the soft cap they just cost much more.
+    public bool IsAboveSoftCap(int dieSlot){
+        return economy.IsAboveSoftCap(run.dieFaces[dieSlot]);
     }
 
     public int GetUpgradeCost(int dieSlot){
@@ -127,7 +127,7 @@ public class Market
     }
 
     public bool CanUpgrade(int dieSlot){
-        return IsUpgradableHere(dieSlot) && !IsMaxed(dieSlot) && run.gold >= GetUpgradeCost(dieSlot);
+        return IsUpgradableHere(dieSlot) && run.gold >= GetUpgradeCost(dieSlot);
     }
 
     public bool Upgrade(int dieSlot){

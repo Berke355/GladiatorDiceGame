@@ -42,9 +42,9 @@ Code, comments, docs and commit messages are in English. Commits use Conventiona
 - Input is event-driven: UI buttons call `BattleManager.OnRolled()`, `BattleManager.OnActionSelected(int)` and `BattleManager.OnResultButton()`, which forward only if the current state is the right type. The int is cast to `ActionType` (0 Attack, 1 Defense, 2 Magic), so button wiring depends on enum order.
 
 ### Data-driven effects (ScriptableObjects)
-- `DieFaceSO` — the definition of a face: `faceName`, `description`, `rarity` (`Rarity`), `tags` (`FaceTag`), `baseValue` (starting value of a new copy), `maxValue` (upgrade cap), and a list of `ActionEffect { ActionType, EffectSO }`. A face can respond to several actions; choosing an action runs every effect tagged with it.
+- `DieFaceSO` — the definition of a face: `faceName`, `description`, `rarity` (`Rarity`), `tags` (`FaceTag`), `baseValue` (starting value of a new copy), `softCap` (renamed from `maxValue` with `[FormerlySerializedAs]`; upgrades past it are allowed but cost `aboveSoftCapFactor` (2) times more per level, see `EconomyConfigSO.GetUpgradeCost`), and a list of `ActionEffect { ActionType, EffectSO }`. A face can respond to several actions; choosing an action runs every effect tagged with it.
 - `DieFace` — an instance on the die: `definition` + its own `value`. Effects use the instance's `value`, and upgrades change only the instance. Never modify a `DieFaceSO` at runtime: two copies on the die share one asset.
-- Rarity follows value scaling (Common linear, Rare conditional/multi-effect, Epic multiplicative). Current `maxValue` rule: Common base+3, Rare base+2, Epic base+1. Design rule: the printed value is exactly what the effects use — no per-effect multipliers (removed on purpose, see DevLog Day 9).
+- Rarity follows value scaling (Common linear, Rare conditional/multi-effect, Epic multiplicative). Current soft cap rule: Common base+3, Rare base+2, Epic base+1. Design rule: the printed value is exactly what the effects use — no per-effect multipliers (removed on purpose, see DevLog Day 9).
 - ScriptableObjects are for design data only. Never store mutable run state in an SO asset: changes made in Play Mode persist in the Editor but not in builds.
 - `Effects/EffectSO` — abstract strategy: `Execute(EffectContext context)`. `EffectContext` carries `source`, `target`, `value`, `die` (the source's `List<DieFace>`) and `face` (the triggering `DieFace`). `die` and `face` are null for enemy intents, so effects that read them need a fallback. New information for effects goes into `EffectContext` instead of changing the signature. Every effect is source/target-agnostic so the same asset works for the player's die faces and for `EnemyIntent`s. Effects must not reach the die through globals such as `RunManager`.
 - `EffectSO.Describe(value)` returns short player-facing text ("4 damage", "1 Fortify"); `EnemyBrain.DescribeCurrentIntent` builds readable intents from it. New effects that enemies can use should override it.
@@ -60,7 +60,11 @@ Code, comments, docs and commit messages are in English. Commits use Conventiona
 - Enums used in assets (`StatusType`, `FaceTag`, `Rarity`, `ActionType`) are serialized as numbers: only add new values at the end, never insert or reorder.
 
 ### UI
-- `UIManager` is a Battle-scene singleton (`UIManager.Instance`, cleared in `OnDestroy`); states null-check it before calling `UpdateDiceText` / `UpdateEnemyIntentText` / `ShowBattleResult`. Entity and UI references are assigned in the Inspector.
+- All canvases use Scale With Screen Size with a 2560x1440 reference (layouts are authored in that space).
+- `UIManager` is a Battle-scene singleton (`UIManager.Instance`, cleared in `OnDestroy`); states null-check it before calling `ShowRollPhase` / `ShowRolledFace` / `UpdateEnemyIntentText` / `ShowBattleResult`. It drives `CombatantPanelUI` (name, HP bar, Block/Fortify, status chips), the intent box, the rolled face panel, the `DieChipUI` strip and the action buttons, which preview each action from `EffectSO.Describe` and are disabled when the rolled face has no effect for that action. References are assigned in the Inspector.
+- `UI/GameText` is the single source of keyword colors (`Colorize`) and keyword definitions (`Glossary`) for tooltips. Add new statuses/keywords there.
+- Tooltips: one `TooltipUI` per scene, shown by `TooltipTrigger` components (the trigger object needs a raycast-target Graphic, e.g. a transparent Image).
+- Use `ToUpperInvariant`/`ToLowerInvariant` for UI text: on a Turkish system `ToUpper()` turns "i" into "İ".
 
 ### Enemy
 - Normal enemies are `EnemySO` assets in `Assets/Enemies/` (name, `EnemyTier` Weak/Medium/Strong, HP, `escalationPerTurn`, intents). `EncounterConfigSO` (`Assets/Config/EncounterConfig.asset`) lists every enemy; the battle scene has a single generic Enemy object whose `Entity` stats and `EnemyBrain` are set from the picked `EnemySO` in `BattleManager.Awake`.

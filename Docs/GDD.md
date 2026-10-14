@@ -130,7 +130,7 @@ Every die face is defined by a common set of properties.
 - Price
 - Action Type
 - Value
-- Max Value
+- Soft Cap
 - Primary Effect
 - Secondary Effect (optional)
 - Tags
@@ -177,7 +177,7 @@ Every run starts from the same five neutral faces plus one face the player picks
 |---|---|---|---|---|
 | **Sword** | 2 | Common | 2 | Attack: deal damage equal to my value and apply 1 Bleed. Defense: gain block equal to my value. |
 | **Shield** | 2 | Common | 2 | Attack: deal damage equal to my value. Defense: gain Fortify equal to my value. |
-| **Health Potion** | 1 | Common | 3 (max 4) | Magic: heal equal to my value. No Attack or Defense. |
+| **Health Potion** | 1 | Common | 3 (soft cap 4) | Magic: heal equal to my value. No Attack or Defense. |
 | **Starting face** | 1 | Chosen | — | Picked by the player at the start of the run |
 
 - **Sword and Shield mirror each other:** Sword is stronger on offense (its attack also bleeds) and weaker on defense (temporary Block). Shield is stronger on defense (permanent Fortify) and weaker on offense. If one of them proves too strong, it will be rebalanced.
@@ -208,7 +208,7 @@ Each visit offers a limited, random selection. The player is never forced to spe
 Market services:
 
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
-- **Upgrade a face:** raise one die face's value by 1, up to that face's Max Value. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
+- **Upgrade a face:** raise one die face's value by 1. There is no hard limit; past the face's soft cap, upgrades get much more expensive. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
 
 ### Prices
 
@@ -224,7 +224,10 @@ Prices are placeholders, to be tuned through play-testing.
 | Rare | ×5 | 10 | 15 |
 | Epic | ×20 | 40 | 60 |
 
-- **Max Value:** every face has an upgrade cap. Prices make upgrading Epic faces expensive, and the cap rules out extreme cases (e.g. Fuel capped at 3, so it can never multiply Burn by 4 or more). Current placeholder rule: Common base + 3, Rare base + 2, Epic base + 1.
+- **Soft cap, not a hard cap:** upgrades are unlimited, because game-breaking runs are part of the power fantasy. Every face has a soft cap; from the soft cap on, each level costs 2× the normal formula, then 4×, 8×... Breaking past the cap is possible but takes a run's worth of gold:
+  - Ember (Common, cap 6): 6 → 7 costs 36 gold, 7 → 8 costs 84.
+  - Fuel (Epic, cap 3): 3 → 4 costs 120 gold, 4 → 5 costs 320 (a run earns about 200).
+  - Current soft cap rule: Common base + 3, Rare base + 2, Epic base + 1.
 
 ### Save vs. Tempo
 
@@ -327,7 +330,7 @@ Reworking Shield into the Shield starter also ends the Sword/Shield duplication:
 
 Ideas to revisit after Poison and Shield.
 
-- **Hammer:** Pour power into one face and set up the turn it lands for a one-turn kill. Uses in-battle growth instead of permanent upgrades, so it never needs to break Max Value:
+- **Hammer:** Pour power into one face and set up the turn it lands for a one-turn kill. Uses in-battle growth instead of permanent upgrades, so it doesn't depend on expensive upgrades past the soft cap:
   - **Charge:** the face gains +1 temporary value every turn it isn't rolled.
   - **Die manipulation:** reroll the die, or trigger your highest-value face.
   - Needs changes to the battle state machine.

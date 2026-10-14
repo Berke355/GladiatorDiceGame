@@ -12,4 +12,8 @@ public class DefenseScaledDamageEffectSO : EffectSO
         context.target.TakeDamage(totalDamage, context.source);
         Debug.Log(context.source.entityName + " bashed with " + defense + " defense and dealt " + totalDamage + " damage.");
     }
+
+    public override string Describe(int value){
+        return value + " + block + Fortify damage";
+    }
 }

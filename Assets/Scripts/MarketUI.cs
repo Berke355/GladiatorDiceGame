@@ -96,14 +96,15 @@ public class MarketUI : MonoBehaviour
             if(!hasFace) continue;
 
             DieFace dieFace = run.dieFaces[i];
-            slot.faceText.text = dieFace.definition.faceName + "\n" + dieFace.value + " / " + dieFace.definition.maxValue;
+            slot.faceText.text = dieFace.definition.faceName + "\nValue " + dieFace.value + "  (cap " + dieFace.definition.softCap + ")";
             slot.slotButton.interactable = choosingSlot;
 
             // The upgrade button only shows where this face can be upgraded (Normal: Common/Rare, Grand: Epic).
             bool upgradable = market.IsUpgradableHere(i);
             slot.upgradeButton.gameObject.SetActive(upgradable);
             if(upgradable){
-                slot.upgradeButtonText.text = market.IsMaxed(i) ? "MAX" : "Upgrade  " + market.GetUpgradeCost(i) + "g";
+                // Past the soft cap the price jumps, so the button says so.
+                slot.upgradeButtonText.text = (market.IsAboveSoftCap(i) ? "Break cap  " : "Upgrade  ") + market.GetUpgradeCost(i) + "g";
                 slot.upgradeButton.interactable = !choosingSlot && market.CanUpgrade(i);
             }
         }

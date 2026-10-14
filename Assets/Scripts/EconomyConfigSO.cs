@@ -35,6 +35,8 @@ public class EconomyConfigSO : ScriptableObject
     public int commonUpgradeMultiplier = 3;
     public int rareUpgradeMultiplier = 5;
     public int epicUpgradeMultiplier = 10;
+    // Cost factor per level once a face is at or above its soft cap.
+    public int aboveSoftCapFactor = 2;
 
     public int GetBuyPrice(Rarity rarity){
         switch(rarity){
@@ -45,6 +47,8 @@ public class EconomyConfigSO : ScriptableObject
     }
 
     // Each upgrade costs more than the last because it scales with the current value.
+    // From the soft cap on, every level costs aboveSoftCapFactor times more than the previous rule
+    // (x2, x4, x8...), so breaking past the cap is possible but takes a run's worth of gold.
     public int GetUpgradeCost(DieFace face){
         int multiplier;
         switch(face.definition.rarity){
@@ -52,6 +56,16 @@ public class EconomyConfigSO : ScriptableObject
             case Rarity.Epic: multiplier = epicUpgradeMultiplier; break;
             default: multiplier = commonUpgradeMultiplier; break;
         }
-        return multiplier * face.value;
+        long cost = (long)multiplier * face.value;
+
+        int levelsPastCap = face.value - face.definition.softCap + 1;
+        for(int i = 0; i < levelsPastCap && cost < int.MaxValue; i++){
+            cost *= aboveSoftCapFactor;
+        }
+        return (int)System.Math.Min(cost, int.MaxValue);
+    }
+
+    public bool IsAboveSoftCap(DieFace face){
+        return face.value >= face.definition.softCap;
     }
 }

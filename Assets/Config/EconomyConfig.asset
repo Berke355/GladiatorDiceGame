@@ -43,3 +43,4 @@ MonoBehaviour:
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5
   epicUpgradeMultiplier: 20
+  aboveSoftCapFactor: 2

@@ -30,6 +30,9 @@ public class Entity : MonoBehaviour
 
     public bool IsDead => currentHP <= 0;
 
+    // Read-only view of the statuses, for the UI.
+    public IEnumerable<KeyValuePair<StatusType, int>> Statuses => activeStatuses;
+
     public void ApplyStatus(StatusType type, int amount) {
         if (!activeStatuses.ContainsKey(type)) {
             activeStatuses[type] = 0;

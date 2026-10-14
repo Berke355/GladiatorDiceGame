@@ -17,4 +17,8 @@ public class ConsumeOwnStatusDamageEffectSO : EffectSO
 
         Debug.Log(context.source.entityName + " consumed " + consumedAmount + " of its own " + statusToConsume + " and dealt " + totalDamage + " damage.");
     }
+
+    public override string Describe(int value){
+        return value + " + " + statusToConsume + " x" + value + " damage, consume " + statusToConsume;
+    }
 }

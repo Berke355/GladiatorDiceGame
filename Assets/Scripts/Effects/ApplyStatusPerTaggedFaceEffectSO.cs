@@ -24,4 +24,8 @@ public class ApplyStatusPerTaggedFaceEffectSO : EffectSO
         context.target.ApplyStatus(statusToApply, amount);
         Debug.Log(context.source.entityName + " applied " + amount + " " + statusToApply + " (" + context.value + " x " + taggedFaces + " " + tagToCount + " faces) to " + context.target.entityName + ".");
     }
+
+    public override string Describe(int value){
+        return value + " " + statusToApply + " per " + tagToCount + " face";
+    }
 }

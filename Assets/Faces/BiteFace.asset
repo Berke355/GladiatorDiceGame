@@ -18,7 +18,7 @@ MonoBehaviour:
   rarity: 1
   tags: 02000000
   baseValue: 2
-  maxValue: 4
+  softCap: 4
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}

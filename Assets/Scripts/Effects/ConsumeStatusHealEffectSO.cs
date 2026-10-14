@@ -15,4 +15,8 @@ public class ConsumeStatusHealEffectSO : EffectSO
 
         Debug.Log(context.source.entityName + " consumed " + consumedAmount + " " + statusToConsume + " from " + context.target.entityName + " and healed for " + totalHeal + " HP.");
     }
+
+    public override string Describe(int value){
+        return "consume " + statusToConsume + ", heal " + value + " per stack";
+    }
 }

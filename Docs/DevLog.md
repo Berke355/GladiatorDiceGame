@@ -636,3 +636,34 @@ The difficulty curve has to produce a specific feeling at each stage of a run, a
 - Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, a boss gold reward, then re-balance with bosses in.
 - Reroll (once per roll).
 - Center the offer cards when a Market has fewer than 3 offers.
+
+## Day 26 - Soft Cap & Battle UI Readability
+
+### Accomplished
+- **Soft cap upgrades:**
+  - Face upgrades are now unlimited. `DieFaceSO.maxValue` was renamed to `softCap` with `[FormerlySerializedAs("maxValue")]`, so every face asset kept its data.
+  - From the soft cap on, each level costs `aboveSoftCapFactor` (2) times the normal formula, then 4×, 8× and so on. For example, Ember 6 → 7 costs 36 gold and Fuel 3 → 4 costs 120.
+  - The Market shows "Break cap" on those upgrades.
+- **Battle UI rebuilt:**
+  - Combatant panels: name, HP bar with numbers, Block/Fortify, and status chips with tooltips.
+  - An intent box with a detailed tooltip.
+  - A rolled-face panel.
+  - A strip with all six die faces, the rolled one highlighted.
+  - Action buttons that preview what each action does (e.g. "ATTACK — 2 damage, 1 Bleed") and are disabled when the rolled face lacks that action. The Roll button is only active when it's time to roll.
+- **Root cause of clipped text:** every canvas used Constant Pixel Size, so layouts only fit 2560×1440. All three scenes now Scale With Screen Size (2560×1440 reference), and long texts auto-size. The HP bars were sliders with a white fill and a drag handle (the old "gray block"); they are now plain fill bars.
+- **Keyword colors and glossary:** `GameText` is the single source of keyword colors and definitions (damage, block, Fortify, Burn, Poison, Bleed, FireShield, heal). It's used in battle, the Market and RunStart.
+- **Tooltips:** one `TooltipUI` per scene and a `TooltipTrigger` component for anything hoverable. Tooltips list the definitions of the keywords they mention.
+- **Effect descriptions:** every effect now overrides `Describe` (used by intents and action previews).
+- **Bug:** "MAGIC" showed as "MAGİC" because `ToUpper()` follows the system culture (on Turkish systems "i" → "İ"). Switched to `ToUpperInvariant()` and recorded the rule in CLAUDE.md.
+
+### Decisions
+- **Soft cap instead of a hard cap:** game-breaking runs are part of the power fantasy (Pillar 4), so they are made expensive rather than impossible. The cost doubles per level past the cap, and an Epic past its cap takes most of a run's gold.
+- **Readability before art:** this phase uses only text, color and layout, so play-testing improves now without waiting for icons.
+- **One source for player-facing rules text** (`GameText`), so colors and definitions can't drift between screens.
+
+### Next Steps
+- UI phase 2: status and mechanic icons from game-icons.net (an icon list to download).
+- Play-test with the new UI: tooltip placement with a real mouse, other window sizes, and the feel of Bleed and the Health Potion.
+- Rework the Shield archetype and design more Common faces.
+- Boss dice system (Minotaur, Medusa, Hydra), ending the run after the final boss, then re-balance with bosses in.
+- Reroll (once per roll). Center the offer cards when a Market has fewer than 3 offers.

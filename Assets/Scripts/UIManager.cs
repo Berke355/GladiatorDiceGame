@@ -1,7 +1,9 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
+// Battle-scene UI. States tell it what phase the turn is in; entity changes refresh the panels through OnHealthChanged.
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
@@ -9,12 +11,29 @@ public class UIManager : MonoBehaviour
     public Entity player;
     public Entity enemy;
 
-    public TextMeshProUGUI diceInfoText;
-    public TextMeshProUGUI playerText;
-    public TextMeshProUGUI enemyText;
-    public TextMeshProUGUI enemyIntentText;
-    public Slider playerHealthBar;
-    public Slider enemyHealthBar;
+    [Header("Combatants")]
+    public CombatantPanelUI playerPanel;
+    public CombatantPanelUI enemyPanel;
+
+    [Header("Enemy Intent")]
+    public TextMeshProUGUI intentText;
+    public TooltipTrigger intentTooltip;
+
+    [Header("Rolled Face")]
+    public TextMeshProUGUI rolledFaceTitle;
+    public TextMeshProUGUI rolledFaceText;
+    public TooltipTrigger rolledFaceTooltip;
+
+    [Header("Die")]
+    public DieChipUI[] dieChips;
+
+    [Header("Buttons")]
+    public Button rollButton;
+    // Indexed by ActionType (0 Attack, 1 Defense, 2 Magic), matching BattleManager.OnActionSelected.
+    public Button[] actionButtons;
+    public TextMeshProUGUI[] actionButtonTexts;
+
+    [Header("Battle Result")]
     public GameObject battleResultPanel;
     public TextMeshProUGUI battleResultText;
     public TextMeshProUGUI battleResultButtonText;
@@ -36,51 +55,6 @@ public class UIManager : MonoBehaviour
         UpdateEnemyUI();
     }
 
-    private void UpdatePlayerUI(){
-        if(playerHealthBar != null){
-            playerHealthBar.maxValue = player.maxHP;
-            playerHealthBar.value = player.currentHP;
-        }
-
-        string statusText = BuildStatusText(player);
-
-        playerText.text = "HP " + player.currentHP + " / " + player.maxHP + "\nBlock: " + player.currentBlock;
-        if (statusText != "") playerText.text += "\nStatus: " + statusText;
-    }
-
-    private void UpdateEnemyUI(){
-        if(enemyHealthBar != null){
-            enemyHealthBar.maxValue = enemy.maxHP;
-            enemyHealthBar.value = enemy.currentHP;
-        }
-
-        if(enemy == null || enemy.currentHP <= 0){
-            enemyText.text = "DEAD!";
-            return;
-        }
-
-        string statusText = BuildStatusText(enemy);
-
-        enemyText.text = enemy.entityName + "\nHP: " + enemy.currentHP + " / " + enemy.maxHP + "\nBlock: " + enemy.currentBlock;
-        if (statusText != "") enemyText.text += "\nStatus: " + statusText;
-    }
-
-    // Lists every active status. New statuses must be added here to show up.
-    private static string BuildStatusText(Entity entity){
-        string statusText = "";
-        int burn = entity.GetStatus(StatusType.Burn);
-        if (burn > 0) statusText += "Burn (" + burn + ") ";
-        int poison = entity.GetStatus(StatusType.Poison);
-        if (poison > 0) statusText += "Poison (" + poison + ") ";
-        int bleed = entity.GetStatus(StatusType.Bleed);
-        if (bleed > 0) statusText += "Bleed (" + bleed + ") ";
-        int fireShield = entity.GetStatus(StatusType.FireShield);
-        if (fireShield > 0) statusText += "FireShield (" + fireShield + ") ";
-        int fortify = entity.GetStatus(StatusType.Fortify);
-        if (fortify > 0) statusText += "Fortify (" + fortify + ") ";
-        return statusText;
-    }
-
     void OnDestroy(){
         if(Instance == this){
             Instance = null;
@@ -95,30 +69,80 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateDiceText(DieFace rolledFace){
-        if(rolledFace != null){
-            diceInfoText.text = "Face: " + rolledFace.definition.faceName + "\nValue: " + rolledFace.value + "\n" + rolledFace.definition.description;
+    private void UpdatePlayerUI(){
+        playerPanel.Refresh(player);
+    }
+
+    private void UpdateEnemyUI(){
+        enemyPanel.Refresh(enemy);
+    }
+
+    // Start of the player's turn: only the roll button is active.
+    public void ShowRollPhase(List<DieFace> die){
+        rolledFaceTitle.text = "Roll the die";
+        rolledFaceText.text = "";
+        rolledFaceTooltip.text = "";
+        UpdateDieChips(die, null);
+
+        rollButton.interactable = true;
+        for(int i = 0; i < actionButtons.Length; i++){
+            actionButtons[i].interactable = false;
+            actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>";
+        }
+    }
+
+    // After the roll: show the face and what each action would do; actions the face lacks stay disabled.
+    public void ShowRolledFace(DieFace face, List<DieFace> die){
+        rolledFaceTitle.text = face.definition.faceName + "  <size=70%>Value " + face.value + "</size>";
+        rolledFaceText.text = GameText.Colorize(face.definition.description);
+        rolledFaceTooltip.text = GameText.FaceTooltip(face.definition, face.value);
+        UpdateDieChips(die, face);
+
+        rollButton.interactable = false;
+        for(int i = 0; i < actionButtons.Length; i++){
+            string preview = DescribeAction(face, (ActionType)i);
+            actionButtons[i].interactable = preview != "";
+            actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>"
+                + (preview != "" ? "\n<size=75%>" + GameText.Colorize(preview) + "</size>" : "");
         }
     }
 
     public void UpdateEnemyIntentText(string intentDescription){
-        if(enemyIntentText != null){
-            enemyIntentText.text = "Intent:\n" + intentDescription;
-        }
+        intentText.text = GameText.Colorize(intentDescription);
+        intentTooltip.text = "<b>Enemy intent</b>\n" + GameText.Colorize(intentDescription) + GameText.Glossary(intentDescription);
     }
 
     public void ShowBattleResult(bool playerWon, int goldEarned){
-        if(battleResultPanel != null){
-            battleResultPanel.SetActive(true);
-        }
-        if(battleResultText != null){
-            battleResultText.text = playerWon
-                ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>"
-                : "DEFEAT";
-        }
-        if(battleResultButtonText != null){
-            battleResultButtonText.text = playerWon ? "Continue" : "New Run";
-        }
+        battleResultPanel.SetActive(true);
+        battleResultText.text = playerWon
+            ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>"
+            : "DEFEAT";
+        battleResultButtonText.text = playerWon ? "Continue" : "New Run";
     }
 
+    // ToUpperInvariant, not ToUpper: on a Turkish system "Magic".ToUpper() becomes "MAGİC".
+    private static string ActionLabel(ActionType action){
+        return action.ToString().ToUpperInvariant();
+    }
+
+    // Short text of every effect the face runs for this action, e.g. "2 damage, 1 Bleed". Empty if it has none.
+    private static string DescribeAction(DieFace face, ActionType action){
+        List<string> parts = new List<string>();
+        foreach(ActionEffect effect in face.definition.effects){
+            if(effect.actionType != action || effect.effectLogic == null) continue;
+            string description = effect.effectLogic.Describe(face.value);
+            parts.Add(description != "" ? description : effect.effectLogic.name);
+        }
+        return string.Join(", ", parts);
+    }
+
+    private void UpdateDieChips(List<DieFace> die, DieFace rolled){
+        for(int i = 0; i < dieChips.Length; i++){
+            bool hasFace = i < die.Count;
+            dieChips[i].gameObject.SetActive(hasFace);
+            if(hasFace){
+                dieChips[i].Set(die[i], die[i] == rolled);
+            }
+        }
+    }
 }

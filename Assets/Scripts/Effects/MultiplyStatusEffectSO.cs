@@ -16,4 +16,8 @@ public class MultiplyStatusEffectSO : EffectSO
             Debug.Log(context.source.entityName + " multiplied " + context.target.entityName + "'s " + statusToMultiply + " by " + context.value + ".");
         }
     }
+
+    public override string Describe(int value){
+        return statusToMultiply + " x" + value;
+    }
 }

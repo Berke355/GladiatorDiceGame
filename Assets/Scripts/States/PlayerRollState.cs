@@ -15,6 +15,7 @@ public class PlayerRollState : BattleState
 
         if(UIManager.Instance != null){
             UIManager.Instance.UpdateEnemyIntentText(battleManager.enemyBrain.DescribeCurrentIntent());
+            UIManager.Instance.ShowRollPhase(battleManager.currentDiceFaces);
         }
     }
 
@@ -33,7 +34,7 @@ public class PlayerRollState : BattleState
         battleManager.currentRolledFace = face;
 
         if(UIManager.Instance != null){
-            UIManager.Instance.UpdateDiceText(battleManager.currentRolledFace);
+            UIManager.Instance.ShowRolledFace(battleManager.currentRolledFace, battleManager.currentDiceFaces);
         }
 
         battleManager.ChangeState(new PlayerActionSelectState(battleManager));
