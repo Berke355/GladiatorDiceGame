@@ -1066,3 +1066,43 @@ For the first time in these balance passes, the main builds (Burn, Poison, Rage,
 - Boss reward choice and equipment sales at the Grand Market (UI included).
 - The eight item assets, equipment-aware bots, and numbers tuned by simulation.
 - Re-evaluate action modules alongside equipment.
+
+## Day 37 - Boss Rewards & Equipment in the Market
+
+### Accomplished
+- **Market model:**
+  - The Grand Market sells 2 items at 30 gold.
+  - After a boss (`RunData.bossRewardPending`), the Market offers a free pick of 1 of 3 items; it can also be skipped.
+  - With full slots, a new item replaces a chosen one. Owned items are never offered, and rerolls replace the items for sale.
+- **Market UI:**
+  - The second card row shows action modules in the Normal Market and equipment in the Grand Market.
+  - A row of 3 equipment slots sits at the bottom, and Next Battle moved to the bottom right.
+  - The boss reward panel covers the Grand Market. With full slots it hides while you pick the item to replace; Cancel brings it back. Next Battle stays locked until the reward is taken or skipped.
+- **The eight items** in `Assets/Equipment/`, added to `EconomyConfigSO.equipmentPool`.
+- **Trigger limits:** `maxPerRound` and `maxPerBattle` on each reaction (0 = no limit).
+- **Simulator:** bots take the boss reward and buy items they want (`Bot.Want`: their archetype first, then general items), and replace the item they want least when slots are full. `UseEquipment` switches this off. Reports show the items on hand at battle 8.
+
+### Tests
+- Market model checks 13/13: reward choices and sale items never overlap, the reward is free, sold or owned items can't be bought, and full slots need a replacement.
+- Play Mode, clicking through the real buttons: took a reward into a free slot, bought two items, then took a reward with full slots (Cancel, then replace slot 2).
+
+### Findings (500 runs per bot)
+| Bot | No equipment | With equipment |
+|---|---|---|
+| Burn | 28% | 41% |
+| Poison | 31% | 82% |
+| Shield | 12% | 46% |
+| Rage | 30% | 93% |
+| Bleed | 22% | 84% |
+
+- **Equipment is far too strong,** even with only 1.5 items on hand at battle 8. HP carries over and runs are lost narrowly in the last battles, so a few HP per battle compound. Even the smallest values are a lot: healing 1 per battle lifts Bleed 22% → 37%, and at most 2 Rage per battle lifts Rage 30% → 63%.
+- **The items are uneven:** alone, Iron Bracers adds about 67 points, Plague Mask 44, Berserker Torc 40, Smoldering Gauntlet 9 and Bone Fetish 0.
+- Raising Medium and Strong enemies' HP and damage by ×1.2 / ×1.3 brings the builds back to about 10–36%.
+
+### Decisions
+- **Equipment is part of the power curve** (the user's call): first even out the items against each other, then make the Medium and Strong tiers stronger so builds with equipment land in the target band.
+
+### Next Steps
+- The equipment balance pass (item values and limits, then enemy tiers).
+- Show the equipped items in the battle UI.
+- Re-evaluate action modules alongside equipment.

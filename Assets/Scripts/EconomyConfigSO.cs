@@ -26,6 +26,15 @@ public class EconomyConfigSO : ScriptableObject
     public List<ActionModuleSO> modulePool = new List<ActionModuleSO>();
     public int modulesPerMarket = 2;
 
+    [Header("Equipment")]
+    // Every item the boss reward and the Grand Market can offer.
+    public List<EquipmentSO> equipmentPool = new List<EquipmentSO>();
+    // A boss reward is a free pick of one of this many items.
+    public int bossRewardChoices = 3;
+    // The Grand Market sells this many items at this price (the Normal Market sells none).
+    public int equipmentPerGrandMarket = 2;
+    public int equipmentPrice = 30;
+
     [Header("Market Reroll")]
     // Cost of the first reroll in a visit, and how much each further reroll adds (resets every Market).
     public int rerollBaseCost = 5;

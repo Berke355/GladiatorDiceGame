@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045e8e4e1ebe37943821798a5e55da6a, type: 3}
+  m_Name: BoneFetish
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
+  equipmentName: Bone Fetish
+  description: 'At the start of each battle: gain 1 Ritual.'
+  rarity: 1
+  tags: 06000000
+  triggers:
+  - trigger: 0
+    requireFaceTag: 0
+    faceTag: 0
+    requireAction: 0
+    action: 0
+    effects:
+    - {fileID: 11400000, guid: 9040a9bae91a0e8488e90f88ee5323a9, type: 2}
+    value: 1

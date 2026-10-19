@@ -15,6 +15,10 @@ public class TriggerSystem
     // Effects run by a trigger never fire triggers, so items can never loop (e.g. an extra hit firing itself).
     private bool firing;
 
+    // How often each reaction fired this round and this battle, for maxPerRound / maxPerBattle.
+    private readonly Dictionary<TriggeredEffect, int> firedThisRound = new Dictionary<TriggeredEffect, int>();
+    private readonly Dictionary<TriggeredEffect, int> firedThisBattle = new Dictionary<TriggeredEffect, int>();
+
     private readonly Action<Entity, int> onHitDealt;
     private readonly Action<int> onHitTaken;
 
@@ -36,6 +40,11 @@ public class TriggerSystem
         player.HitTaken -= onHitTaken;
     }
 
+    // Called at the start of each player turn.
+    public void StartRound(){
+        firedThisRound.Clear();
+    }
+
     // action is only checked for ActionChosen.
     public void Fire(TriggerType trigger, ActionType action = ActionType.Attack){
         if(firing || equipment.Count == 0){
@@ -45,7 +54,9 @@ public class TriggerSystem
         try{
             foreach(EquipmentSO item in equipment){
                 foreach(TriggeredEffect reaction in item.triggers){
-                    if(reaction.trigger != trigger || !ConditionHolds(reaction, action)) continue;
+                    if(reaction.trigger != trigger || !ConditionHolds(reaction, action) || LimitReached(reaction)) continue;
+                    Count(firedThisRound, reaction);
+                    Count(firedThisBattle, reaction);
 
                     EffectContext context = new EffectContext{ source = player, target = enemy, value = reaction.value, die = die, face = currentFace };
                     foreach(EffectSO effect in reaction.effects){
@@ -58,6 +69,20 @@ public class TriggerSystem
         finally{
             firing = false;
         }
+    }
+
+    private bool LimitReached(TriggeredEffect reaction){
+        return (reaction.maxPerRound > 0 && Fired(firedThisRound, reaction) >= reaction.maxPerRound)
+            || (reaction.maxPerBattle > 0 && Fired(firedThisBattle, reaction) >= reaction.maxPerBattle);
+    }
+
+    private static int Fired(Dictionary<TriggeredEffect, int> counts, TriggeredEffect reaction){
+        int count;
+        return counts.TryGetValue(reaction, out count) ? count : 0;
+    }
+
+    private static void Count(Dictionary<TriggeredEffect, int> counts, TriggeredEffect reaction){
+        counts[reaction] = Fired(counts, reaction) + 1;
     }
 
     private bool ConditionHolds(TriggeredEffect reaction, ActionType action){

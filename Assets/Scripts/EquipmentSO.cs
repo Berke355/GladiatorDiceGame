@@ -35,6 +35,9 @@ public class TriggeredEffect
     // Conditions on the battle state ("if the enemy is bleeding") go in a ConditionalEffectSO here.
     public List<EffectSO> effects = new List<EffectSO>();
     public int value = 1;
+    // How often it may fire (0 = no limit). A round is the player's turn plus the enemy's turn after it.
+    public int maxPerRound;
+    public int maxPerBattle;
 }
 
 // A passive item in one of the run's equipment slots (see GDD "Equipment"). Design data only:

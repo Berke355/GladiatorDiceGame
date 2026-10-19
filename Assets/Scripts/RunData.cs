@@ -19,6 +19,8 @@ public class RunData
     // Passive items (see GDD "Equipment"); at most EquipmentSlots of them.
     public const int EquipmentSlots = 3;
     public List<EquipmentSO> equipment = new List<EquipmentSO>();
+    // Set by a boss victory: the next Market starts with a free equipment pick.
+    public bool bossRewardPending;
 
     public RunData(List<DieFaceSO> startingDieFaces, int startingMaxHP){
         // Each face on the die is its own instance, so upgrading one never touches the asset or other copies.

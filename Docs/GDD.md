@@ -308,6 +308,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 
 - **Effects are the existing `EffectSO` assets**, run with the item's value (source: you, target: the enemy, face: the rolled face when there is one). Rage, Ritual and FireShield apply to them like to any face.
 - **Conditions on the battle state** ("if the enemy is bleeding") use `ConditionalEffectSO`, so triggers only need the face-tag and action conditions.
+- **Limits:** a reaction can be capped per round (your turn plus the enemy's turn after it) and per battle, e.g. "the first 2 times each battle".
 - **No chains:** an effect run by a trigger does not fire triggers. Barbed Hook's extra hit does not fire Smoldering Gauntlet or Barbed Hook again, so items can never loop.
 - **One place for the turn steps:** the battle states and the balance simulator call the same turn steps, so every trigger fires at the same point in both.
 - **Future triggers:** "when you apply a status", "when the enemy dies to a tick", die manipulation ("reroll once per battle").

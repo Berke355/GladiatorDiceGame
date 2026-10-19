@@ -31,6 +31,12 @@ public static class RunSimulator
             return Fits(module.tags);
         }
 
+        // How much a focused bot wants an item: 2 for its archetype, 1 for a general item (no tags), 0 otherwise.
+        public int Want(EquipmentSO item){
+            if(Fits(item.tags)) return 2;
+            return item.tags.Count == 0 ? 1 : 0;
+        }
+
         private bool Fits(List<FaceTag> tags){
             foreach(FaceTag tag in focusTags){
                 if(tags.Contains(tag)) return true;
@@ -48,6 +54,8 @@ public static class RunSimulator
     public static int GoldToKeepAfterReroll = 40;
     // Bots buy action modules; off to measure what modules add.
     public static bool BuyModules = true;
+    // Bots take boss rewards and buy equipment; off to measure what equipment adds.
+    public static bool UseEquipment = true;
 
     // Per-battle measurements for diagnosing a build (null = off). Only battles of statsTier are counted.
     public class FightStats
@@ -194,6 +202,8 @@ public static class RunSimulator
         Dictionary<string, int> facesAtBattle8 = new Dictionary<string, int>();
         int buildFacesAtBattle8 = 0;
         int modulesAtBattle8 = 0;
+        int equipmentAtBattle8 = 0;
+        Dictionary<string, int> itemsAtBattle8 = new Dictionary<string, int>();
         float goldAtFirstGrandMarket = 0;
         int firstGrandMarketVisits = 0;
 
@@ -211,6 +221,10 @@ public static class RunSimulator
                             facesAtBattle8[name] = (facesAtBattle8.ContainsKey(name) ? facesAtBattle8[name] : 0) + 1;
                             if(bot.Fits(face.definition)) buildFacesAtBattle8++;
                             modulesAtBattle8 += face.modules.Count;
+                        }
+                        equipmentAtBattle8 += run.equipment.Count;
+                        foreach(EquipmentSO item in run.equipment){
+                            itemsAtBattle8[item.equipmentName] = (itemsAtBattle8.ContainsKey(item.equipmentName) ? itemsAtBattle8[item.equipmentName] : 0) + 1;
                         }
                     }
                     EnemyTier tier = config.GetTierForBattle(battle);
@@ -233,6 +247,7 @@ public static class RunSimulator
                     if(config.bossBattles.Contains(run.battlesWon)){
                         run.currentHP = Mathf.Min(run.maxHP, run.currentHP + Mathf.RoundToInt(run.maxHP * config.bossHealFraction));
                         run.gold += config.economy.bossVictoryBonus;
+                        run.bossRewardPending = true;
                         // Gold in hand when the first Grand Market opens.
                         if(run.battlesWon == config.bossBattles[0]){
                             goldAtFirstGrandMarket += run.gold;
@@ -251,6 +266,8 @@ public static class RunSimulator
 
                     Market market = new Market(run, config.economy, config.bossBattles.Contains(run.battlesWon));
                     Shop(bot, market, run);
+                    // The game does not let the player leave with the reward open; bots that ignore it skip it.
+                    if(market.IsRewardPending) market.SkipReward();
                 }
             }
         }
@@ -263,6 +280,11 @@ public static class RunSimulator
         string report = FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
         string gold = "avg gold entering the first Grand Market: " + (firstGrandMarketVisits > 0 ? (goldAtFirstGrandMarket / firstGrandMarketVisits).ToString("0") : "-") + "\n";
         string modules = "avg modules on the die at battle 8: " + (reached[8] > 0 ? ((float)modulesAtBattle8 / reached[8]).ToString("0.0") : "-") + "\n";
+        modules += "avg equipment at battle 8: " + (reached[8] > 0 ? ((float)equipmentAtBattle8 / reached[8]).ToString("0.0") : "-");
+        foreach(KeyValuePair<string, int> item in itemsAtBattle8){
+            modules += " | " + item.Key + " " + ((float)item.Value / reached[8]).ToString("0.00");
+        }
+        modules += "\n";
         return report + gold + modules + FormatDieAtBattle8(reached[8], buildFacesAtBattle8, facesAtBattle8);
     }
 
@@ -477,9 +499,51 @@ public static class RunSimulator
 
     private static void Shop(Bot bot, Market market, RunData run){
         switch(bot.shopping){
-            case Shopping.Focused: ShopFocused(market, run, bot); break;
-            case Shopping.Unplanned: ShopUnplanned(market, run); break;
+            case Shopping.Focused:
+                if(UseEquipment) TakeBestReward(market, run, bot);
+                ShopFocused(market, run, bot);
+                break;
+            case Shopping.Unplanned:
+                if(UseEquipment && market.IsRewardPending){
+                    int slot = market.HasFreeEquipmentSlot ? -1 : Random.Range(0, run.equipment.Count);
+                    market.ClaimReward(Random.Range(0, market.rewardChoices.Count), slot);
+                }
+                ShopUnplanned(market, run);
+                break;
         }
+    }
+
+    // Takes the reward the bot wants most. With full slots it replaces the item it wants least, if that one is worth less.
+    private static void TakeBestReward(Market market, RunData run, Bot bot){
+        if(!market.IsRewardPending) return;
+        int best = 0;
+        for(int i = 1; i < market.rewardChoices.Count; i++){
+            if(bot.Want(market.rewardChoices[i]) > bot.Want(market.rewardChoices[best])) best = i;
+        }
+        int slot = EquipmentSlotFor(run, bot, bot.Want(market.rewardChoices[best]));
+        if(slot >= -1) market.ClaimReward(best, slot);
+    }
+
+    // Buys an affordable item the bot wants (archetype first) if it has a slot for it.
+    private static bool BuyWantedEquipment(Market market, RunData run, Bot bot){
+        int best = -1;
+        for(int i = 0; i < market.equipmentOffers.Count; i++){
+            if(!market.CanBuyEquipment(i) || bot.Want(market.equipmentOffers[i].item) == 0) continue;
+            if(best < 0 || bot.Want(market.equipmentOffers[i].item) > bot.Want(market.equipmentOffers[best].item)) best = i;
+        }
+        if(best < 0) return false;
+        int slot = EquipmentSlotFor(run, bot, bot.Want(market.equipmentOffers[best].item));
+        return slot >= -1 && market.BuyEquipment(best, slot);
+    }
+
+    // -1: a free slot. Otherwise the slot of the least wanted item, if it is wanted less than the new one; -2: no slot.
+    private static int EquipmentSlotFor(RunData run, Bot bot, int newWant){
+        if(run.equipment.Count < RunData.EquipmentSlots) return -1;
+        int worst = 0;
+        for(int i = 1; i < run.equipment.Count; i++){
+            if(bot.Want(run.equipment[i]) < bot.Want(run.equipment[worst])) worst = i;
+        }
+        return bot.Want(run.equipment[worst]) < newWant ? worst : -2;
     }
 
     // Buys the best affordable face of its archetype into a face outside it, otherwise upgrades its archetype's faces.
@@ -503,6 +567,10 @@ public static class RunSimulator
                     market.Buy(bestOffer, slot);
                     continue;
                 }
+            }
+
+            if(UseEquipment && BuyWantedEquipment(market, run, bot)){
+                continue;
             }
 
             if(!fittingOfferOnShow && rerolls < MaxRerollsPerVisit && run.gold - market.GetRerollCost() >= GoldToKeepAfterReroll){

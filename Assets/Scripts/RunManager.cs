@@ -91,6 +91,8 @@ public class RunManager : MonoBehaviour
             int heal = Mathf.RoundToInt(run.maxHP * bossHealFraction);
             run.currentHP = Mathf.Min(run.maxHP, run.currentHP + heal);
             goldEarned += economy.bossVictoryBonus;
+            // The Grand Market that follows opens with a free pick of equipment.
+            run.bossRewardPending = true;
         }
         run.gold += goldEarned;
         return goldEarned;

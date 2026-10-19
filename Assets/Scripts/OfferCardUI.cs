@@ -24,6 +24,18 @@ public class OfferCardUI : MonoBehaviour
             + "<size=80%>" + GameText.Colorize(module.description) + "</size>";
     }
 
+    // Card text for an equipment item (Grand Market offers, boss reward).
+    public static string DescribeEquipment(EquipmentSO item){
+        return "<b>" + item.equipmentName + "</b>\n"
+            + RarityLabel(item.rarity) + "  ·  Equipment\n"
+            + "<size=80%>" + GameText.Colorize(item.description) + "</size>";
+    }
+
+    // One-line version for the equipment slots.
+    public static string DescribeEquipmentShort(EquipmentSO item){
+        return "<b>" + item.equipmentName + "</b>\n<size=75%>" + GameText.Colorize(item.description) + "</size>";
+    }
+
     private static string RarityLabel(Rarity rarity){
         switch(rarity){
             case Rarity.Rare: return "<color=#5DADE2>Rare</color>";

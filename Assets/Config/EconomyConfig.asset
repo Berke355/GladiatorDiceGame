@@ -58,6 +58,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5953e2c2025bcfe4dab42decf65a82c3, type: 2}
   - {fileID: 11400000, guid: cb205a6c09317df44bab952c4a9f7782, type: 2}
   modulesPerMarket: 2
+  equipmentPool:
+  - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
+  - {fileID: 11400000, guid: 551fdb623450bbb4c9a281dfa043714e, type: 2}
+  - {fileID: 11400000, guid: 4d0c4a0cc84ad8b4b8a5382e74ace14a, type: 2}
+  - {fileID: 11400000, guid: 43336519cdc97514992f47a8ae90c9e6, type: 2}
+  - {fileID: 11400000, guid: b74649e69bb6d7f4e8452a23e30f0072, type: 2}
+  - {fileID: 11400000, guid: ab713cdcddb85b840be137febae72337, type: 2}
+  - {fileID: 11400000, guid: ebdf620295601af408b57a10b2e8b68a, type: 2}
+  - {fileID: 11400000, guid: 9bd57ab875b93c44cb6828d436eec2ef, type: 2}
+  bossRewardChoices: 3
+  equipmentPerGrandMarket: 2
+  equipmentPrice: 30
   rerollBaseCost: 5
   rerollCostStep: 5
   grandRerollBaseCost: 15

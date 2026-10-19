@@ -29,6 +29,7 @@ public class BattleFlow
 
     // The player's Block resets, then TurnStart items run, then the enemy shows its intent.
     public void StartPlayerTurn(){
+        triggers.StartRound();
         player.OnTurnStart();
         triggers.Fire(TriggerType.TurnStart);
         brain.ChooseNextIntent();

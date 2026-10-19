@@ -15,6 +15,13 @@ public class ModuleOffer
     public bool sold;
 }
 
+public class EquipmentOffer
+{
+    public EquipmentSO item;
+    public int price;
+    public bool sold;
+}
+
 // Market rules: generating offers, buying and upgrading. Plain C# with no UI,
 // so MarketUI only draws this state and forwards clicks (see GDD "Market").
 public class Market
@@ -23,6 +30,9 @@ public class Market
     public readonly List<MarketOffer> offers = new List<MarketOffer>();
     // Action modules on offer (Normal Market only, see GDD "Action Modules").
     public readonly List<ModuleOffer> moduleOffers = new List<ModuleOffer>();
+    // Equipment for sale (Grand Market only) and the free boss reward choice (see GDD "Equipment").
+    public readonly List<EquipmentOffer> equipmentOffers = new List<EquipmentOffer>();
+    public readonly List<EquipmentSO> rewardChoices = new List<EquipmentSO>();
 
     private readonly RunData run;
     private readonly EconomyConfigSO economy;
@@ -31,13 +41,18 @@ public class Market
     // Faces and modules from the offers a reroll replaced; avoided by the new offers when the pool allows.
     private readonly List<DieFaceSO> replacedFaces = new List<DieFaceSO>();
     private readonly List<ActionModuleSO> replacedModules = new List<ActionModuleSO>();
+    private readonly List<EquipmentSO> replacedEquipment = new List<EquipmentSO>();
 
     public Market(RunData run, EconomyConfigSO economy, bool isGrand){
         this.run = run;
         this.economy = economy;
         this.isGrand = isGrand;
+        if(run.bossRewardPending){
+            GenerateRewardChoices();
+        }
         GenerateOffers();
         GenerateModuleOffers();
+        GenerateEquipmentOffers();
     }
 
     // ---------- Reroll ----------
@@ -66,10 +81,16 @@ public class Market
         foreach(ModuleOffer offer in moduleOffers){
             replacedModules.Add(offer.module);
         }
+        replacedEquipment.Clear();
+        foreach(EquipmentOffer offer in equipmentOffers){
+            replacedEquipment.Add(offer.item);
+        }
         offers.Clear();
         moduleOffers.Clear();
+        equipmentOffers.Clear();
         GenerateOffers();
         GenerateModuleOffers();
+        GenerateEquipmentOffers();
         return true;
     }
 
@@ -199,6 +220,97 @@ public class Market
         run.dieFaces[dieSlot].Attach(offer.module);
         offer.sold = true;
         return true;
+    }
+
+    // ---------- Equipment ----------
+
+    // The Grand Market sells a few items; the boss reward choice is never offered for sale at the same time.
+    private void GenerateEquipmentOffers(){
+        if(!isGrand){
+            return;
+        }
+        for(int i = 0; i < economy.equipmentPerGrandMarket; i++){
+            EquipmentSO item = PickEquipment();
+            if(item == null) break;
+            equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice });
+        }
+    }
+
+    private void GenerateRewardChoices(){
+        for(int i = 0; i < economy.bossRewardChoices; i++){
+            EquipmentSO item = PickEquipment();
+            if(item == null) break;
+            rewardChoices.Add(item);
+        }
+    }
+
+    // Items the player owns or that are already on show are skipped; items a reroll just replaced
+    // only come back if nothing else is left. Most of the time, items sharing a tag with the die are preferred.
+    private EquipmentSO PickEquipment(){
+        List<EquipmentSO> fresh = new List<EquipmentSO>();
+        List<EquipmentSO> repeated = new List<EquipmentSO>();
+        foreach(EquipmentSO item in economy.equipmentPool){
+            if(run.equipment.Contains(item) || rewardChoices.Contains(item) || equipmentOffers.Exists(offer => offer.item == item)) continue;
+            if(replacedEquipment.Contains(item)) repeated.Add(item);
+            else fresh.Add(item);
+        }
+        List<EquipmentSO> candidates = fresh.Count > 0 ? fresh : repeated;
+        if(candidates.Count == 0){
+            return null;
+        }
+        if(Random.value < economy.tagMatchChance){
+            List<EquipmentSO> matching = candidates.FindAll(item => SharesTagWithDie(item.tags));
+            if(matching.Count > 0) candidates = matching;
+        }
+        return candidates[Random.Range(0, candidates.Count)];
+    }
+
+    public bool IsRewardPending => run.bossRewardPending && rewardChoices.Count > 0;
+    public bool HasFreeEquipmentSlot => run.equipment.Count < RunData.EquipmentSlots;
+
+    public bool CanBuyEquipment(int offerIndex){
+        EquipmentOffer offer = equipmentOffers[offerIndex];
+        return !offer.sold && run.gold >= offer.price && !run.equipment.Contains(offer.item);
+    }
+
+    // replaceSlot -1 puts the item in a free slot; otherwise it replaces the item in that slot.
+    public bool BuyEquipment(int offerIndex, int replaceSlot){
+        if(!CanBuyEquipment(offerIndex) || !CanEquip(replaceSlot)){
+            return false;
+        }
+        EquipmentOffer offer = equipmentOffers[offerIndex];
+        run.gold -= offer.price;
+        Equip(offer.item, replaceSlot);
+        offer.sold = true;
+        return true;
+    }
+
+    // Takes the free boss reward (same slot rule as buying). The reward is gone once taken or skipped.
+    public bool ClaimReward(int choiceIndex, int replaceSlot){
+        if(!IsRewardPending || !CanEquip(replaceSlot)){
+            return false;
+        }
+        Equip(rewardChoices[choiceIndex], replaceSlot);
+        EndReward();
+        return true;
+    }
+
+    public void SkipReward(){
+        EndReward();
+    }
+
+    private void EndReward(){
+        run.bossRewardPending = false;
+        rewardChoices.Clear();
+    }
+
+    private bool CanEquip(int replaceSlot){
+        return replaceSlot < 0 ? HasFreeEquipmentSlot : replaceSlot < run.equipment.Count;
+    }
+
+    private void Equip(EquipmentSO item, int replaceSlot){
+        if(replaceSlot < 0) run.equipment.Add(item);
+        else run.equipment[replaceSlot] = item;
     }
 
     // ---------- Buying ----------
