@@ -53,10 +53,16 @@ public static class RunSimulator
     public class FightStats
     {
         public EnemyTier statsTier = EnemyTier.Strong;
+        // Optional status on the enemy to follow: stacks each face adds, and stacks when the player acts.
+        public StatusType trackedStatus = StatusType.None;
+        public long trackedStacksAtAction;
+        // Per battle turn (1, 2, 3...): summed tracked stacks at the player's action, and how many battles got that far.
+        public long[] trackedByTurn = new long[16];
+        public int[] battlesByTurn = new int[16];
         public int battles, won, turns, actions, bleedingAtAction;
         // Enemy HP lost from the player's actions vs. from ticks at the end of the enemy's turn (Poison, Bleed).
         public long actionDamage, tickDamage, hpTaken;
-        // Per face name: { times rolled, enemy HP lost from its actions }.
+        // Per face name: { times rolled, enemy HP lost from its actions, tracked stacks added }.
         public Dictionary<string, int[]> perFace = new Dictionary<string, int[]>();
 
         public string Report(){
@@ -68,9 +74,20 @@ public static class RunSimulator
             List<KeyValuePair<string, int[]>> faces = new List<KeyValuePair<string, int[]>>(perFace);
             faces.Sort((a, b) => b.Value[0].CompareTo(a.Value[0]));
             foreach(KeyValuePair<string, int[]> face in faces){
-                sb.Append(face.Key + " " + (100f * face.Value[0] / actions).ToString("0") + "% rolls, " + ((float)face.Value[1] / face.Value[0]).ToString("0.0") + " dmg/roll; ");
+                sb.Append(face.Key + " " + (100f * face.Value[0] / actions).ToString("0") + "% rolls, " + ((float)face.Value[1] / face.Value[0]).ToString("0.0") + " dmg/roll");
+                if(trackedStatus != StatusType.None) sb.Append(", +" + ((float)face.Value[2] / face.Value[0]).ToString("0.0") + " " + trackedStatus + "/roll");
+                sb.Append("; ");
             }
-            return sb.AppendLine().ToString();
+            sb.AppendLine();
+            if(trackedStatus != StatusType.None){
+                sb.Append("avg enemy " + trackedStatus + " at action " + ((float)trackedStacksAtAction / actions).ToString("0.0") + " | by turn: ");
+                for(int t = 1; t < trackedByTurn.Length; t++){
+                    if(battlesByTurn[t] == 0) break;
+                    sb.Append(t + ":" + ((float)trackedByTurn[t] / battlesByTurn[t]).ToString("0.0") + " ");
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
         }
     }
     public static FightStats Stats;
@@ -337,16 +354,23 @@ public static class RunSimulator
             ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain);
             EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = run.dieFaces, face = face };
             int enemyHP = enemy.currentHP;
+            int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? enemy.GetStatus(stats.trackedStatus) : 0;
             if(stats != null){
                 stats.actions++;
                 if(enemy.GetStatus(StatusType.Bleed) > 0) stats.bleedingAtAction++;
+                stats.trackedStacksAtAction += trackedBefore;
+                if(turns < stats.trackedByTurn.Length){
+                    stats.trackedByTurn[turns] += trackedBefore;
+                    stats.battlesByTurn[turns]++;
+                }
             }
             foreach(EffectSO effect in face.GetEffects(action)){
                 effect.Execute(context);
             }
             if(stats != null){
                 string name = face.definition.faceName;
-                if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[2];
+                if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[3];
+                if(stats.trackedStatus != StatusType.None) stats.perFace[name][2] += Mathf.Max(0, enemy.GetStatus(stats.trackedStatus) - trackedBefore);
                 stats.perFace[name][0]++;
                 stats.perFace[name][1] += enemyHP - enemy.currentHP;
                 stats.actionDamage += enemyHP - enemy.currentHP;

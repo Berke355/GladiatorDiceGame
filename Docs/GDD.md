@@ -287,7 +287,7 @@ The decision only works if both paths are viable.
 | Status | On | Effect at the end of its owner's turn | Decay | Notes |
 |---|---|---|---|---|
 | **Burn** | Target | **Nothing:** Burn is fuel and deals no damage on its own | −2 per tick (not on the tick right after it was applied) | Turned into damage by igniting it (e.g. Ember) or consuming it (Detonate, Cauterize) |
-| **Poison** | Target | Loses HP equal to its stacks | −1 per tick | Never consumed |
+| **Poison** | Target | Loses HP equal to its stacks | Halves per tick (rounded down) | Never consumed |
 | **Bleed** | Target | Loses **1** HP | −1 per tick | **Stacks are duration, not damage:** 15 Bleed means 1 damage for 15 turns |
 | **FireShield** | Self | — | Cleared at the start of its owner's turn | Attackers gain Burn equal to its stacks |
 | **Fortify** | Self | — | Never resets | Absorbs damage after Block |
@@ -295,7 +295,7 @@ The decision only works if both paths are viable.
 | **Ritual** | Self | — | Lasts the whole battle | Every status applied to the opponent gets +1 per stack |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.
-- **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that shrink), Bleed is duration (always 1, for as many turns as it has stacks).
+- **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that halve), Bleed is duration (always 1, for as many turns as it has stacks).
 - **Ignite:** deal damage equal to the target's Burn without consuming it. Detonate consumes Burn for one bigger hit. Small ignitions versus waiting for one big detonation is the Burn build's core decision.
 - **Rage and Ritual** are visible statuses, not hidden multipliers, so they follow the Value Is the Effect rule: the face's value stays as printed, and previews show the boosted result (e.g. a Sword with 3 Rage previews "5 damage, 1 Bleed").
 - **Ritual only boosts statuses applied to the opponent** (Burn, Poison, Bleed). Boosting self-applied statuses would break the "Fortify comes in small amounts" rule. Multiplying a status (Fuel) is not a new application, so Ritual does not apply to it.
@@ -351,9 +351,10 @@ Burst damage over a short time. Build Burn up, then cash it out.
 
 Slow and inevitable. Strongest in long fights, which makes it the boss-fighting build.
 
-- **Resource:** Poison on the enemy. It deals its stacks as damage at the end of the poisoned entity's turn, bypasses block, **then decays by 1**.
+- **Resource:** Poison on the enemy. It deals its stacks as damage at the end of the poisoned entity's turn, bypasses block, **then halves (rounded down)**.
 - **Identity:** You only apply Poison. Unlike Burn, nothing consumes or detonates it, and no face does anything extra with the stacks. The payoff is that it works on its own every turn.
-- **Difference from Burn:** Burn is fuel that needs to be ignited. Poison deals damage by itself, front-loaded and slowly shrinking.
+- **Difference from Burn:** Burn is fuel that needs to be ignited. Poison deals damage by itself, front-loaded and quickly fading, so it has to be reapplied.
+- **Why it halves:** with "then lose 1", one application of N Poison dealt N + (N − 1) + … + 1 = N(N + 1)/2 damage, so its damage grew with the square of the value (value 4: 10 damage, value 6: 21). That broke the "Common scales linearly" rule and made Poison clear 77% of runs, even with half a Poison die. Halving keeps one application at about twice its stacks (4 → 4 + 2 + 1 = 7, 8 → 15), which brought Poison to about 28%. A "Poison does not decay this turn" Epic could bring back the slow, boss-killing side later.
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
@@ -521,7 +522,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 | **Retiarius** (net and trident) | 18 | Jab 2 (×2), Net: block 3 (×1), Trident Thrust 5 (×1) | **Telegraphed spike:** ignore the intent and take 5 |
 | **Dimachaerus** (two swords) | 17 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
 | **Arena Lion** | 20 | Maul 1 (×2), Roar: gain 1 Rage (×1), Feast: 1 damage and heal by the damage (×1) | **Builds Rage:** harmless at first, deadly if the fight drags on |
-| **Venefica** (poisoner) | 17 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** Poison never decays, so long fights become deadly |
+| **Venefica** (poisoner) | 17 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** repeated darts keep Poison ticking, so long fights cost HP |
 | **Secutor** (pursuer) | 20 | Brace: Fortify 1 (×2), Shield Slam 4 (×2) | **Stacks Fortify:** its protection slowly builds up, so deal damage early |
 
 **Strong (battles 9–10), the build check:**

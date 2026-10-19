@@ -137,11 +137,12 @@ public class Entity : MonoBehaviour
         }
         burnAddedSinceLastTick = false;
 
-        // Poison deals its stacks as damage, bypassing block, then decays by 1.
+        // Poison deals its stacks as damage, bypassing block, then halves (rounded down, so 1 stack runs out).
+        // Halving keeps one application's total damage about 2x its stacks; losing only 1 made it grow with the square.
         int poison = GetStatus(StatusType.Poison);
         if (poison > 0) {
             LoseHP(poison);
-            activeStatuses[StatusType.Poison] -= 1;
+            activeStatuses[StatusType.Poison] = poison / 2;
             OnHealthChanged?.Invoke();
         }
 

@@ -992,3 +992,43 @@ All bots: Burn 28% · Poison 76% · Shield 13% · Rage 26% · Bleed 27% · Ritua
 - More "if the enemy is bleeding" effects (faces or modules); lift Ritual + Bleed.
 - Equipment (passive items) on a trigger system, then re-evaluate modules with it.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 35 - Poison Halves
+
+### Accomplished
+- **Poison rule:** after dealing its stacks, Poison now halves (rounded down) instead of losing 1. Updated in `Entity`, the tooltip glossary (`GameText`), the GDD and CLAUDE.md.
+- **Simulator diagnostics:** `FightStats.trackedStatus` follows one status on the enemy: stacks added per roll for each face, the average stacks when the player acts, and the stacks by battle turn.
+- **GDD:** Poison's resource, identity and a "Why it halves" note. Venefica's row said "Poison never decays", which was already wrong under the old rule.
+
+### Diagnosis (Strong tier, 300 runs, old rule)
+- Poison dealt 7.1 damage per turn from ticks and 0.3 from actions; battles lasted 6 turns, 95% won.
+- Venom made up 35% of rolls and added 4.4 Poison per roll (a cheap Common with cheap upgrades).
+- Enemy Poison by turn: 2.5, 4.9, 7.1, 8.3.
+- Poison won with half a build: 3.6 of 6 faces were Poison faces at battle 8 (other builds: 5.6–6.0).
+- **Root cause:** with "then lose 1", one application of N Poison dealt N(N + 1)/2 damage (value 4: 10, value 6: 21). Its damage grew with the square of the value, breaking the "Common scales linearly" rule.
+
+### Experiments (400 runs, a temporary knob in `Entity`, restored with git afterwards)
+| Variant | Poison | Ritual + Poison |
+|---|---|---|
+| −1 per tick (old) | 77% | 50% |
+| Venom value 1 | 73% | 48% |
+| −2 per tick | 45% | 33% |
+| **Halves per tick** | **28%** | **19%** |
+
+- Lowering Venom's value did nothing: cheap upgrades bring it back.
+- Halving keeps one application at about twice its stacks (4 → 7 damage, 8 → 15), so the damage is linear.
+
+### Results (600 runs per bot, new rule)
+Poison 76% → 32% · Ritual + Poison 49% → 23% · Burn 26% · Rage 28% · Bleed 21% · Shield + Rage 35% · Bleed + Rage 23% · Ritual + Bleed 16% · Shield 10% · Ritual 1%.
+
+For the first time in these balance passes, the main builds (Burn, Poison, Rage, Bleed) sit close together, at 21–32%.
+
+### Decisions
+- Poison is front-loaded and quickly fading, so it has to be reapplied. The slow, boss-killing side could come back later through an Epic ("Poison does not decay this turn").
+- The rule applies to everyone, including Poison the enemies apply to the player (Venefica, Thraex).
+
+### Next Steps
+- Shield on its own (10%) and Ritual on its own (1%, a hybrid glue by design).
+- More "if the enemy is bleeding" effects (faces or modules); lift Ritual + Bleed.
+- Equipment (passive items) on a trigger system, then re-evaluate modules with it.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
