@@ -282,6 +282,61 @@ The decision only works if both paths are viable.
 ### Open Questions
 
 
+## Equipment
+
+Passive items that react to what happens in battle. Equipment makes the die stronger; it never replaces it.
+
+### Design Rules
+
+- **Equipment talks to the die.** Most triggers are die events ("when you roll a Poison face", "when you choose Defense"), so equipment rewards building the die instead of building a hero ("You don't build a hero. You build a die.").
+- **Three slots.** Equipment has no slot types (no helmet or armor slots); any item fits any slot. With a fourth item, you choose which one to give up, the same decision as replacing a die face.
+- **Small, fixed numbers.** Equipment builds synergies, not raw power. Value Is the Effect still holds: the printed number is what happens.
+- **No upgrades.** Upgrading stays the die's job.
+
+### Triggers
+
+| Trigger | When | Condition |
+|---|---|---|
+| **BattleStart** | once, before the first turn | — |
+| **TurnStart** | at the start of your turn (after your Block resets) | — |
+| **FaceRolled** | when your die lands | optional: the face has a tag |
+| **ActionChosen** | when you choose an action, before the face's effects | optional: Attack, Defense or Magic |
+| **HitDealt** | each time you hit the enemy (each hit of a multi-hit) | — |
+| **HitTaken** | each time a hit makes you lose HP (not Poison or Bleed ticks) | — |
+| **TurnEnd** | at the end of your turn, before your statuses tick | — |
+| **BattleWon** | when the enemy dies, before your HP is saved to the run | — |
+
+- **Effects are the existing `EffectSO` assets**, run with the item's value (source: you, target: the enemy, face: the rolled face when there is one). Rage, Ritual and FireShield apply to them like to any face.
+- **Conditions on the battle state** ("if the enemy is bleeding") use `ConditionalEffectSO`, so triggers only need the face-tag and action conditions.
+- **No chains:** an effect run by a trigger does not fire triggers. Barbed Hook's extra hit does not fire Smoldering Gauntlet or Barbed Hook again, so items can never loop.
+- **One place for the turn steps:** the battle states and the balance simulator call the same turn steps, so every trigger fires at the same point in both.
+- **Future triggers:** "when you apply a status", "when the enemy dies to a tick", die manipulation ("reroll once per battle").
+
+### Getting Equipment
+
+- **Boss reward:** after a boss, choose 1 of 3 items for free.
+- **Grand Market:** sells 2 items at 30 gold, next to the Epic faces ("an item or an Epic face?").
+- Two bosses per run give at least two items; filling the third slot costs gold.
+
+### First Set
+
+| Item | Build | Trigger | Effect |
+|---|---|---|---|
+| **Plague Mask** | Poison | FaceRolled (Poison face) | Apply 2 Poison |
+| **Smoldering Gauntlet** | Burn | HitDealt | Apply 1 Burn |
+| **Barbed Hook** | Bleed | HitDealt | If the enemy is bleeding, hit again for 1 |
+| **Tower Helm** | Shield | ActionChosen (Defense) | Gain 1 Fortify |
+| **Berserker Torc** | Rage | HitTaken | Gain 1 Rage |
+| **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
+| **Laurel Wreath** | General | BattleWon | Heal 4 |
+| **Iron Bracers** | General | TurnStart | Gain 1 block |
+
+- **Bridges through existing rules:** Rage adds to Barbed Hook's extra hit (Bleed + Rage), Ritual adds to Plague Mask's Poison (Ritual + Poison), and Smoldering Gauntlet fires on every hit of a multi-hit (Twin Axes + Burn).
+- **Plague Mask scales with the die:** the more Poison faces on the die, the more often it fires.
+- **Berserker Torc is the risky one** (Pillar 4): it grows from damage taken, and Rage is permanent. Its numbers need the closest watch.
+- **Laurel Wreath** is worth the most in long runs, since HP carries over between battles.
+- Numbers are placeholders, to be tuned through simulation.
+
 ## Status Effects
 
 | Status | On | Effect at the end of its owner's turn | Decay | Notes |

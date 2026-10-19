@@ -26,6 +26,10 @@ public class Entity : MonoBehaviour
     public int currentBlock;
 
     public event Action OnHealthChanged;
+    // Raised on the attacker for each hit it deals (target, damage before Block), e.g. for equipment triggers.
+    public event Action<Entity, int> HitDealt;
+    // Raised when a hit makes this entity lose HP (HP lost). Damage over time and HP costs don't count.
+    public event Action<int> HitTaken;
 
     private Dictionary<StatusType, int> activeStatuses = new Dictionary<StatusType, int>();
     // Burn applied since this entity's last Burn tick does not decay on the next tick,
@@ -87,6 +91,13 @@ public class Entity : MonoBehaviour
         }
 
         OnHealthChanged?.Invoke();
+
+        if(remaining > 0){
+            HitTaken?.Invoke(remaining);
+        }
+        if(source != null){
+            source.HitDealt?.Invoke(this, damageAmount);
+        }
     }
 
     // A cost paid in HP (e.g. Bloodrage): ignores Block and Fortify and triggers nothing.

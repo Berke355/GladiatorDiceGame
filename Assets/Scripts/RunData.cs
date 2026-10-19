@@ -16,6 +16,9 @@ public class RunData
     // The faces offered at the start of the run, and whether one was picked for the die.
     public List<DieFaceSO> startingFaceOffers = new List<DieFaceSO>();
     public bool startingFaceChosen;
+    // Passive items (see GDD "Equipment"); at most EquipmentSlots of them.
+    public const int EquipmentSlots = 3;
+    public List<EquipmentSO> equipment = new List<EquipmentSO>();
 
     public RunData(List<DieFaceSO> startingDieFaces, int startingMaxHP){
         // Each face on the die is its own instance, so upgrading one never touches the asset or other copies.

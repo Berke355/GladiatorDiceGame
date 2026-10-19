@@ -9,9 +9,8 @@ public class PlayerRollState : BattleState
     public override void Enter(){
         Debug.Log("Entered the roll state.");
 
-        battleManager.player.OnTurnStart();
-
-        battleManager.enemyBrain.ChooseNextIntent();
+        battleManager.flow.StartPlayerTurn();
+        if(battleManager.CheckBattleOver()) return;
 
         if(UIManager.Instance != null){
             UIManager.Instance.UpdateEnemyIntentText(battleManager.enemyBrain.DescribeCurrentIntent());
@@ -28,14 +27,14 @@ public class PlayerRollState : BattleState
     }
 
     public void RollTheDice(){
-        int index = Random.Range(0, battleManager.currentDiceFaces.Count);
-        DieFace face = battleManager.currentDiceFaces[index];
+        DieFace face = battleManager.flow.Roll();
         Debug.Log("The dice were rolled. Face: " + face.definition.faceName);
         battleManager.currentRolledFace = face;
 
         if(UIManager.Instance != null){
             UIManager.Instance.ShowRolledFace(battleManager.currentRolledFace, battleManager.currentDiceFaces);
         }
+        if(battleManager.CheckBattleOver()) return;
 
         battleManager.ChangeState(new PlayerActionSelectState(battleManager));
     }

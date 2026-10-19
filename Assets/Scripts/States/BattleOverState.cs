@@ -11,6 +11,11 @@ public class BattleOverState : BattleState
     public override void Enter(){
         Debug.Log(playerWon ? "Battle ended. Player won." : "Battle ended. Player died.");
 
+        // BattleWon items (e.g. healing) run before the run saves the player's HP.
+        if(playerWon){
+            battleManager.flow.WinBattle();
+        }
+
         int goldEarned = RunManager.Instance.OnBattleEnded(playerWon, battleManager.player.currentHP);
 
         if(UIManager.Instance != null){

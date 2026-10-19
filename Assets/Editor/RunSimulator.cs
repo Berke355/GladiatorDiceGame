@@ -343,16 +343,19 @@ public static class RunSimulator
         EnemyBrain brain = Reset<EnemyBrain>(enemyObject);
         brain.Setup(enemyData, enemy, player);
 
+        // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
+        BattleFlow flow = new BattleFlow(player, enemy, brain, run.dieFaces, run.equipment);
         FightStats stats = Stats != null && enemyData.tier == Stats.statsTier ? Stats : null;
         turns = 0;
-        while(turns < MaxTurnsPerBattle){
+        flow.StartBattle();
+        while(turns < MaxTurnsPerBattle && !flow.IsOver){
             turns++;
-            player.OnTurnStart();
-            brain.ChooseNextIntent();
+            flow.StartPlayerTurn();
+            if(flow.IsOver) break;
 
-            DieFace face = run.dieFaces[Random.Range(0, run.dieFaces.Count)];
+            DieFace face = flow.Roll();
+            if(flow.IsOver) break;
             ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain);
-            EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = run.dieFaces, face = face };
             int enemyHP = enemy.currentHP;
             int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? enemy.GetStatus(stats.trackedStatus) : 0;
             if(stats != null){
@@ -364,9 +367,7 @@ public static class RunSimulator
                     stats.battlesByTurn[turns]++;
                 }
             }
-            foreach(EffectSO effect in face.GetEffects(action)){
-                effect.Execute(context);
-            }
+            flow.PlayAction(action);
             if(stats != null){
                 string name = face.definition.faceName;
                 if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[3];
@@ -377,24 +378,24 @@ public static class RunSimulator
             }
             if(player.IsDead || enemy.IsDead) break;
 
-            player.OnTurnEnd();
+            flow.EndPlayerTurn();
             if(player.IsDead || enemy.IsDead) break;
 
-            enemy.OnTurnStart();
             int playerHP = player.currentHP;
-            brain.ExecuteCurrentIntent();
+            flow.EnemyAct();
             if(stats != null) stats.hpTaken += playerHP - player.currentHP;
             if(player.IsDead || enemy.IsDead) break;
 
             enemyHP = enemy.currentHP;
-            enemy.OnTurnEnd();
+            flow.EndEnemyTurn();
             if(stats != null) stats.tickDamage += enemyHP - enemy.currentHP;
-            brain.OnTurnEnd();
             if(player.IsDead || enemy.IsDead) break;
         }
 
-        run.currentHP = player.currentHP;
         bool won = enemy.IsDead && !player.IsDead;
+        if(won) flow.WinBattle();
+        flow.Dispose();
+        run.currentHP = player.currentHP;
         if(stats != null){
             stats.battles++;
             stats.turns += turns;

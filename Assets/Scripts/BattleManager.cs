@@ -15,6 +15,10 @@ public class BattleManager : MonoBehaviour
     [System.NonSerialized]
     public List<DieFace> currentDiceFaces;
 
+    // The turn steps and the equipment triggers, shared with the balance simulator.
+    [System.NonSerialized]
+    public BattleFlow flow;
+
     void Awake(){
         // A run always starts by choosing the starting face. If this scene was played directly
         // (e.g. Play pressed with Battle open in the Editor), send the player to the run start screen.
@@ -37,6 +41,14 @@ public class BattleManager : MonoBehaviour
         enemy.maxHP = enemyData.maxHP;
         enemy.currentHP = enemyData.maxHP;
         enemyBrain.Setup(enemyData, enemy, player);
+
+        flow = new BattleFlow(player, enemy, enemyBrain, currentDiceFaces, run.equipment);
+    }
+
+    void OnDestroy(){
+        if(flow != null){
+            flow.Dispose();
+        }
     }
 
     public void ChangeState(BattleState newState){
@@ -59,6 +71,8 @@ public class BattleManager : MonoBehaviour
     }
 
     void Start(){
+        flow.StartBattle();
+        if(CheckBattleOver()) return;
         ChangeState(new PlayerRollState(this));
     }
 

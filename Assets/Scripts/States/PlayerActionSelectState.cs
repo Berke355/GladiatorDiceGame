@@ -24,22 +24,11 @@ public class PlayerActionSelectState : BattleState
     public void ExecuteAction(ActionType selectedAction){
         this.selectedAction=selectedAction;
 
-        DieFace rolledFace = battleManager.currentRolledFace;
-        EffectContext context = new EffectContext{
-            source = battleManager.player,
-            target = battleManager.enemy,
-            value = rolledFace.value,
-            die = battleManager.currentDiceFaces,
-            face = rolledFace
-        };
-        // The face's own effects and any attached module's, for the chosen action.
-        foreach(EffectSO effect in rolledFace.GetEffects(selectedAction)){
-            effect.Execute(context);
-        }
-
+        // ActionChosen items, then the rolled face's own effects and any attached module's.
+        battleManager.flow.PlayAction(selectedAction);
         if(battleManager.CheckBattleOver()) return;
 
-        battleManager.player.OnTurnEnd();
+        battleManager.flow.EndPlayerTurn();
         if(battleManager.CheckBattleOver()) return;
 
         battleManager.ChangeState(new EnemyTurnState(battleManager));

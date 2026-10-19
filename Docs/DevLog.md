@@ -1032,3 +1032,37 @@ For the first time in these balance passes, the main builds (Burn, Poison, Rage,
 - More "if the enemy is bleeding" effects (faces or modules); lift Ritual + Bleed.
 - Equipment (passive items) on a trigger system, then re-evaluate modules with it.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 36 - Equipment Trigger System
+
+### Accomplished
+- **GDD "Equipment" section:**
+  - Design rules: equipment talks to the die, three slots with no slot types, small fixed numbers, no upgrades.
+  - The eight triggers and the no-chain rule.
+  - How items are obtained: a free pick of 1 of 3 after a boss, and 2 items for 30 gold at the Grand Market.
+  - The first set of eight items.
+- **`EquipmentSO`:** name, description, rarity, tags and `TriggeredEffect`s. Each one has a `TriggerType`, an optional face-tag or action condition, existing `EffectSO` assets and a fixed value.
+- **`TriggerSystem`:** runs the player's items. Hits come from new `Entity` events: `HitDealt` (raised on the attacker for each hit) and `HitTaken` (a hit that cost HP). Effects run by a trigger never fire triggers, so items cannot loop.
+- **`BattleFlow`:** the turn steps in one place: battle start, turn start, roll, action, turn end, enemy turn, victory. The battle states and `RunSimulator` both call it, so the simulator no longer mirrors the states by hand.
+- **`RunData.equipment`** with `EquipmentSlots = 3`.
+- **CLAUDE.md** updated.
+
+### Tests
+- **Regression:** with the same random seed, all 12 bots gave identical results before and after the refactor (no equipment), so the turn order did not change.
+- **Trigger checks (14/14) with temporary in-memory items:**
+  - Each trigger fires at its point, and the face-tag and action conditions work.
+  - Twin Axes' two hits give 2 Burn through a HitDealt item.
+  - Barbed Hook's extra hit does not fire Smoldering Gauntlet.
+  - Fully blocked hits and Poison ticks don't count as HitTaken.
+  - After `Dispose`, items stay silent.
+- **Play Mode:** two battles played through the real input methods. One had no items. The other had a temporary Bone Fetish (Ritual at battle start) and Laurel Wreath (healing on victory, before the HP is saved).
+
+### Decisions
+- **Turn steps are shared (`BattleFlow`)** instead of firing triggers from the states. The order is explicit, and the simulator cannot drift from the game.
+- **Hits are the only Entity events;** every other trigger fires from a turn step.
+- **No chains:** simpler and loop-free. The cost is that items can't trigger each other.
+
+### Next Steps
+- Boss reward choice and equipment sales at the Grand Market (UI included).
+- The eight item assets, equipment-aware bots, and numbers tuned by simulation.
+- Re-evaluate action modules alongside equipment.
