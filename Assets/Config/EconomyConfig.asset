@@ -55,14 +55,17 @@ MonoBehaviour:
   rareWeight: 25
   epicWeight: 5
   tagMatchChance: 0.6
-  modulePool:
+  enchantmentPool:
   - {fileID: 11400000, guid: 47e20caf8a29df443924eb2a6a16da84, type: 2}
   - {fileID: 11400000, guid: 035afe2fdd3d60c48ad219c26d579d2a, type: 2}
   - {fileID: 11400000, guid: 410da042e8b769247ad108373690ce57, type: 2}
   - {fileID: 11400000, guid: a2e97de84141ea143b52d541214dad69, type: 2}
   - {fileID: 11400000, guid: 5953e2c2025bcfe4dab42decf65a82c3, type: 2}
   - {fileID: 11400000, guid: cb205a6c09317df44bab952c4a9f7782, type: 2}
-  modulesPerMarket: 2
+  - {fileID: 11400000, guid: e38bc744bc4cfde4e901c70f20dc8f0f, type: 2}
+  - {fileID: 11400000, guid: 1afa3205bfa4c13499abc274a777431c, type: 2}
+  - {fileID: 11400000, guid: a69619cd17b2a2749805e6b7cdd69ff0, type: 2}
+  enchantmentsPerMarket: 3
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
   - {fileID: 11400000, guid: 551fdb623450bbb4c9a281dfa043714e, type: 2}

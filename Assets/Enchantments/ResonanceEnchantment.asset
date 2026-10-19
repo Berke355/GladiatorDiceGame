@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7c5bbda64c36a41a213a29159dd4d8, type: 3}
+  m_Name: ResonanceEnchantment
+  m_EditorClassIdentifier: Assembly-CSharp::EnchantmentSO
+  enchantmentName: Resonance
+  description: 'Magic: Add the face''s value as Charge to every other face with Charge.
+    This face keeps its Charge.'
+  rarity: 2
+  tags: 08000000
+  effects:
+  - {fileID: 11400000, guid: b922a5ea57af4554e8fa435b057c1a91, type: 2}

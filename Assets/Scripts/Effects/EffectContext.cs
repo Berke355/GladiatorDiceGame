@@ -15,6 +15,8 @@ public class EffectContext
     public DieCharge charge;
     // Set by an effect that rerolls the die (Steady Hand); BattleFlow reads it after the action.
     public bool rerollRequested;
+    // Set by an effect after which the face keeps its Charge instead of spending it (Resonance).
+    public bool keepCharge;
 
     // A face's value in battle: its value plus its Charge.
     public int ValueOf(DieFace dieFace) => charge != null ? charge.ValueOf(dieFace) : dieFace.value;

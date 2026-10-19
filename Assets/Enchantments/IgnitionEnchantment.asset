@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d7c5bbda64c36a41a213a29159dd4d8, type: 3}
-  m_Name: VenomCoatingModule
+  m_Name: IgnitionEnchantment
   m_EditorClassIdentifier: Assembly-CSharp::ActionModuleSO
-  moduleName: Venom Coating
-  description: 'Magic: Apply Poison equal to the face''s value.'
-  rarity: 0
-  tags: 04000000
-  action: 2
+  enchantmentName: Ignition
+  description: 'Magic: Ignite the enemy''s Burn.'
+  rarity: 1
+  tags: 03000000
   effects:
-  - {fileID: 11400000, guid: 4e09dfd69596317439eded8d7ed69021, type: 2}
+  - {fileID: 11400000, guid: 8b6a869f4e5efd64d824f9b5a5183b3d, type: 2}

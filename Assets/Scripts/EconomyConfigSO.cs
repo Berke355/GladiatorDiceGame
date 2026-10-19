@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using System.Collections.Generic;
 
 // All economy numbers in one asset so they can be tuned in the Inspector (see GDD "Rarity & Economy").
@@ -21,10 +22,12 @@ public class EconomyConfigSO : ScriptableObject
     [Range(0f, 1f)]
     public float tagMatchChance = 0.6f;
 
-    [Header("Action Modules")]
-    // Every module the Normal Market can offer, and how many it offers per visit.
-    public List<ActionModuleSO> modulePool = new List<ActionModuleSO>();
-    public int modulesPerMarket = 2;
+    [Header("Enchanting Table")]
+    // Every enchantment the Enchanting Table can offer, and how many it shows per visit (same rules as face offers).
+    [FormerlySerializedAs("modulePool")]
+    public List<EnchantmentSO> enchantmentPool = new List<EnchantmentSO>();
+    [FormerlySerializedAs("modulesPerMarket")]
+    public int enchantmentsPerMarket = 3;
 
     [Header("Equipment")]
     // Every item the boss reward and the Grand Market can offer.

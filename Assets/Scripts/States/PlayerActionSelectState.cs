@@ -24,7 +24,7 @@ public class PlayerActionSelectState : BattleState
     public void ExecuteAction(ActionType selectedAction){
         this.selectedAction=selectedAction;
 
-        // ActionChosen items, then the rolled face's own effects and any attached module's.
+        // ActionChosen items, then the rolled face's own effects and its enchantment's.
         battleManager.flow.PlayAction(selectedAction);
         if(battleManager.CheckBattleOver()) return;
 

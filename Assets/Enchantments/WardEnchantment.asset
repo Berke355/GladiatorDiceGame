@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d7c5bbda64c36a41a213a29159dd4d8, type: 3}
-  m_Name: WarCryModule
+  m_Name: WardEnchantment
   m_EditorClassIdentifier: Assembly-CSharp::ActionModuleSO
-  moduleName: War Cry
-  description: 'Magic: Gain Rage equal to the face''s value.'
-  rarity: 1
-  tags: 05000000
-  action: 2
+  enchantmentName: Ward
+  description: 'Magic: Gain block equal to the face''s value.'
+  rarity: 0
+  tags: 01000000
   effects:
-  - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+  - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}

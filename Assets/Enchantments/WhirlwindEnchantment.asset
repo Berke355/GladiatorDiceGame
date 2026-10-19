@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d7c5bbda64c36a41a213a29159dd4d8, type: 3}
-  m_Name: RendModule
-  m_EditorClassIdentifier: Assembly-CSharp::ActionModuleSO
-  moduleName: Rend
-  description: 'Magic: Apply Bleed equal to the face''s value.'
-  rarity: 0
-  tags: 07000000
-  action: 2
+  m_Name: WhirlwindEnchantment
+  m_EditorClassIdentifier: Assembly-CSharp::EnchantmentSO
+  enchantmentName: Whirlwind
+  description: 'Magic: Hit twice, dealing damage equal to the face''s value each
+    time.'
+  rarity: 2
+  tags: 0500000008000000
   effects:
-  - {fileID: 11400000, guid: 9236ed9622649e74582c8c6b7b9dc1bf, type: 2}
+  - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}

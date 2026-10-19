@@ -67,7 +67,7 @@ public static class GameText
             + Glossary(face.description);
     }
 
-    // Tooltip text for a face on the die, including its attached modules.
+    // Tooltip text for a face on the die, including its enchantment.
     public static string FaceTooltip(DieFace face){
         string description = face.FullDescription;
         return "<b>" + face.DisplayName + "</b>  <size=80%>" + face.definition.rarity + " · Value " + face.value + "</size>\n"

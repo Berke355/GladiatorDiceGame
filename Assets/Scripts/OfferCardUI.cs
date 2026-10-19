@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// References for one offer card (Market faces and modules, starting face choice). The owning UI fills it.
+// References for one offer card (Market faces, enchantments and equipment, boss rewards, starting face choice). The owning UI fills it.
 public class OfferCardUI : MonoBehaviour
 {
     public TextMeshProUGUI infoText;
@@ -17,17 +17,17 @@ public class OfferCardUI : MonoBehaviour
             + "<size=80%>" + GameText.Colorize(face.description) + "</size>";
     }
 
-    // Card text for an action module offer. A module uses the value of the face it is attached to.
-    public static string DescribeModule(ActionModuleSO module){
-        return "<b>" + module.moduleName + "</b>\n"
-            + RarityLabel(module.rarity) + "  ·  " + module.action + " module\n"
-            + "<size=80%>" + GameText.Colorize(module.description) + "</size>";
+    // Card text for an enchantment offer. An enchantment uses the value of the face it is inscribed on.
+    public static string DescribeEnchantment(EnchantmentSO enchantment){
+        return "<b>" + enchantment.enchantmentName + "</b>\n"
+            + RarityLabel(enchantment.rarity) + "\n"
+            + "<size=80%>" + GameText.Colorize(enchantment.description) + "</size>";
     }
 
     // Card text for an equipment item (Grand Market offers, boss reward).
     public static string DescribeEquipment(EquipmentSO item){
         return "<b>" + item.equipmentName + "</b>\n"
-            + RarityLabel(item.rarity) + "  ·  Equipment\n"
+            + RarityLabel(item.rarity) + "\n"
             + "<size=80%>" + GameText.Colorize(item.description) + "</size>";
     }
 

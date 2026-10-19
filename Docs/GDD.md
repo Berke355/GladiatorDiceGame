@@ -200,8 +200,8 @@ Every run starts from the same five neutral faces plus one face the player picks
 
 Each visit offers a limited, random selection. The player is never forced to spend.
 
-- **Normal Market:** 3 face offers and 2 action module offers (see Action Modules), with rarity weights Common 70%, Rare 25%, Epic 5%. Epic faces can appear, but rarely.
-- **Grand Market (after a boss):** 3 offers, **all Epic**. The Grand Market is the station for Epic faces. Because Grand Markets come at known points (after bosses), saving gold for one is a plannable strategy, not a gamble.
+- **Normal Market:** 3 face offers and the Enchanting Table's 3 enchantments, with rarity weights Common 70%, Rare 25%, Epic 5%. Epic faces can appear, but rarely.
+- **Grand Market (after a boss):** 3 face offers and 3 enchantments, **all Epic**, plus 2 equipment items. The Grand Market is the station for Epic faces. Because Grand Markets come at known points (after bosses), saving gold for one is a plannable strategy, not a gamble.
 - A face is offered at most once per set of offers.
 - **Build-aware offers:** offers are weighted toward the tags already on the player's die (around 60%, not 100%). A Burn die is more likely to be offered Burn faces such as Fuel, while some offers still come from outside the build so players keep discovering new faces.
 
@@ -209,8 +209,8 @@ Market services:
 
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
 - **Upgrade a face:** raise one die face's value by 1. There is no limit: anyone who can pay can keep upgrading. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
-- **Reroll the offers:** pay gold for a new set of offers, faces and modules alike (sold offers are replaced too). The new set avoids the faces it replaced when the pool allows.
-- **Buy an action module:** attach it to an empty action slot of one die face (see Action Modules).
+- **Reroll the offers:** pay gold for a new set of offers, faces, enchantments and items alike (sold offers are replaced too). The new set avoids the faces it replaced when the pool allows.
+- **Enchant a face:** inscribe an enchantment into the empty Magic action of one die face (see Enchanting Table).
 
 **Market reroll:**
 
@@ -226,31 +226,31 @@ Market services:
 - **The Grand Market reroll is much more expensive:** it only offers Epics, so hunting for one specific Epic should cost most of a battle's reward per try.
 - Simulated bots that rerolled whenever nothing fit their build did worse, because the gold went to rerolls instead of upgrades. Bots that kept at least 40 gold after a reroll did slightly better than bots that never rerolled. The tension is real.
 
-### Action Modules
+### Enchanting Table
 
-You don't only build the die, you build its faces. An action module is a single action bought in the Market and attached to an **empty action slot** of a face on your die.
+You don't only build the die, you build its faces. Every Market has an **Enchanting Table**: pay gold and inscribe an **enchantment** onto a die face. An enchantment is a **Magic action** that the face didn't have.
 
-- **Example:** Venom Coating (Common), "Magic: apply Poison equal to my value". Attached to a Shield (Attack: damage, Defense: Fortify, Magic: empty), the Shield gains "Magic: apply Poison equal to my value".
-- **Uses the host's value:** a module's effects use the value of the face it is attached to, so Value Is the Effect still holds and **upgrading the face upgrades its modules too**. This is where creative, game-breaking combinations come from: a module on a heavily upgraded face.
-- **Empty slots only:** every face has three action slots (Attack, Defense, Magic). A slot is taken if the face itself or an earlier module has an effect for that action. This keeps faces readable (at most three actions) and turns "which face's empty slot gets which module?" into a decision.
-- **Permanent:** modules can't be removed for now. Buying a face into a slot replaces the old face together with its modules, so a moduled face is costly to swap out.
-- **A niche combo tool:** most players won't buy modules in most runs. A module shines on a face with a very high value, letting it spend that value on another action (e.g. Poison on a Hammer's Magic, or an Epic "Magic: gain Ritual equal to my value" on a high-value face, which buffs the rest of the battle in one roll). The game needs high-value face content (such as the Hammer archetype) before modules can show this, so they are judged with combo tests, not by average clear rates.
-- **An option, not an extra effect:** one roll still means one action. A module adds a new choice to a face, so its worth is "the module's action minus the face's best action": high on a face whose own actions are weak or off-build, low on a face that already does the job.
-- **Hybrids:** modules connect builds. A Sword with Venom Coating bleeds on Attack and poisons on Magic.
-- **Starting die:** most starter faces have empty slots (the Health Potion has empty Attack and Defense; Sword and Shield have an empty Magic slot), so modules can turn even the starting die into a build.
-- **Rarity** follows the same scaling rule as faces (linear Common, conditional or multi-effect Rare, multiplicative Epic).
-- **Price:** same as faces (Common 10, Rare 25, Epic 60). A module adds an action without costing a face, so it should not be cheaper.
-- **Market:** the Normal Market offers 2 modules in their own row, next to the 3 face offers. Rerolls replace them too. The Grand Market stays Epic faces only for now.
-- **Technical:** modules are stored on the `DieFace` instance, not on the `DieFaceSO` asset (the Definition / Instance split from Day 15), so only that copy of the face changes.
+- **Example:** Venom Coating (Common), "Magic: apply Poison equal to the face's value". Inscribed onto a Shield (Attack: damage, Defense: Fortify, Magic: empty), the Shield gains "Magic: apply Poison equal to my value".
+- **Magic only:** enchantments always go into the Magic action, so the rule is a single question: is the face's Magic empty? Faces that already have a Magic action (Health Potion, Fury, Plague, Anvil...) are already magical and can't be enchanted. Most weapon faces (Sword, Ember, Venom, Twin Axes, the Hammers...) can, which fits the theme of enchanting a weapon. One enchantment per face keeps faces readable.
+- **Uses the face's value:** an enchantment's effects use the value of the face it is on (its battle value, so Hammer Charge counts), so Value Is the Effect still holds and **upgrading the face upgrades its enchantment too**.
+- **Permanent:** enchantments can't be removed for now. Buying a face into a slot replaces the old face together with its enchantment.
+- **A niche combo tool:** most players won't enchant in most runs. An enchantment shines on a face with a very high value, letting it spend that value on another action (e.g. Poison on a Hammer's Magic, or Dark Rite on a charged Hammer, which buffs the rest of the battle in one roll). It is judged with combo tests, not by average clear rates.
+- **An option, not an extra effect:** one roll still means one action. An enchantment adds a new choice to a face, so on a low-value face it changes little, and on a high-value face it changes a lot.
+- **Same logic as face offers:** the table shows **3 enchantments** in every Market. The Normal Market uses the face rarity weights (Common 70%, Rare 25%, Epic 5%); the **Grand Market shows only Epic enchantments**. Build-aware tags, rerolls and prices (Common 10, Rare 25, Epic 60) work exactly as for faces.
+- **Rarity** follows the same scaling rule as faces (linear Common, conditional or multi-effect Rare, multiplicative Epic). Permanent self-buffs scaled by the value (Rage, Ritual) are Epic: on a high-value face they multiply the rest of the battle.
+- **Technical:** the enchantment is stored on the `DieFace` instance, not on the `DieFaceSO` asset (the Definition / Instance split from Day 15), so only that copy of the face changes.
 
-| Module | Rarity | Action | Build |
+| Enchantment | Rarity | Magic action | Build |
 |---|---|---|---|
-| **Venom Coating** | Common | Magic: apply Poison equal to my value | Poison |
-| **Kindling** | Common | Magic: apply Burn equal to my value | Burn |
-| **Rend** | Common | Magic: apply Bleed equal to my value | Bleed |
-| **Iron Skin** | Common | Defense: gain block equal to my value | Shield / general |
-| **War Cry** | Rare | Magic: gain Rage equal to my value | Berserker (Rare because Rage is permanent and a high-value host makes it strong) |
-| **Ignition** | Rare | Attack: ignite the enemy's Burn | Burn (turns any face into an igniter) |
+| **Venom Coating** | Common | Apply Poison equal to my value | Poison |
+| **Kindling** | Common | Apply Burn equal to my value | Burn |
+| **Rend** | Common | Apply Bleed equal to my value | Bleed |
+| **Ward** | Common | Gain block equal to my value | Shield / general (was Iron Skin, a Defense module) |
+| **Ignition** | Rare | Ignite the enemy's Burn | Burn (was an Attack module) |
+| **War Cry** | Epic | Gain Rage equal to my value | Berserker (was Rare: permanent Rage on a high-value face is as strong as Dark Rite) |
+| **Dark Rite** | Epic | Gain Ritual equal to my value | Ritualist: on a charged Hammer, one roll boosts every later status |
+| **Whirlwind** | Epic | Hit twice for my value | Rage / Hammer: Rage counts on both hits |
+| **Resonance** | Epic | Add my value as Charge to every other face with the Charge rule (each up to +5); this face keeps its Charge | Hammer: fills every Hammer at once, scales with how many are on the die |
 
 ### Prices
 
@@ -510,7 +510,7 @@ Pour power into one face and set up the turn it lands. Hammer stores its resourc
 - **The cost (Pillar 4):** War Hammer and Earthshaker only have Attack. When a charged Hammer lands, you swing even if the enemy is about to hit hard.
 - **Grows in battle, not through upgrades** (the "Common that grows during a fight" rule).
 - **Any face can hold Charge** (Anvil adds it to any face), but only faces with the Charge rule gain it every turn.
-- **Modules:** charged Hammers are the high-value faces action modules were made for. A module on a War Hammer uses its charged value.
+- **Enchantments:** charged Hammers are the high-value faces enchantments were made for. War Hammer, Maul and Earthshaker have an empty Magic action, and an enchantment on them uses the charged value.
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|

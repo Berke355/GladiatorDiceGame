@@ -8,9 +8,9 @@ public class MarketOffer
     public bool sold;
 }
 
-public class ModuleOffer
+public class EnchantmentOffer
 {
-    public ActionModuleSO module;
+    public EnchantmentSO enchantment;
     public int price;
     public bool sold;
 }
@@ -28,8 +28,8 @@ public class Market
 {
     public readonly bool isGrand;
     public readonly List<MarketOffer> offers = new List<MarketOffer>();
-    // Action modules on offer (Normal Market only, see GDD "Action Modules").
-    public readonly List<ModuleOffer> moduleOffers = new List<ModuleOffer>();
+    // The Enchanting Table's offers (see GDD "Enchanting Table"): same rules as face offers, Epic only in the Grand Market.
+    public readonly List<EnchantmentOffer> enchantmentOffers = new List<EnchantmentOffer>();
     // Equipment for sale (Grand Market only) and the free boss reward choice (see GDD "Equipment").
     public readonly List<EquipmentOffer> equipmentOffers = new List<EquipmentOffer>();
     public readonly List<EquipmentSO> rewardChoices = new List<EquipmentSO>();
@@ -38,9 +38,9 @@ public class Market
     private readonly EconomyConfigSO economy;
     // Rerolls bought during this visit; each one costs more than the last (resets next Market).
     private int rerollCount;
-    // Faces and modules from the offers a reroll replaced; avoided by the new offers when the pool allows.
+    // Faces, enchantments and items from the offers a reroll replaced; avoided by the new offers when the pool allows.
     private readonly List<DieFaceSO> replacedFaces = new List<DieFaceSO>();
-    private readonly List<ActionModuleSO> replacedModules = new List<ActionModuleSO>();
+    private readonly List<EnchantmentSO> replacedEnchantments = new List<EnchantmentSO>();
     private readonly List<EquipmentSO> replacedEquipment = new List<EquipmentSO>();
 
     public Market(RunData run, EconomyConfigSO economy, bool isGrand){
@@ -51,7 +51,7 @@ public class Market
             GenerateRewardChoices();
         }
         GenerateOffers();
-        GenerateModuleOffers();
+        GenerateEnchantmentOffers();
         GenerateEquipmentOffers();
     }
 
@@ -77,19 +77,19 @@ public class Market
         foreach(MarketOffer offer in offers){
             replacedFaces.Add(offer.face);
         }
-        replacedModules.Clear();
-        foreach(ModuleOffer offer in moduleOffers){
-            replacedModules.Add(offer.module);
+        replacedEnchantments.Clear();
+        foreach(EnchantmentOffer offer in enchantmentOffers){
+            replacedEnchantments.Add(offer.enchantment);
         }
         replacedEquipment.Clear();
         foreach(EquipmentOffer offer in equipmentOffers){
             replacedEquipment.Add(offer.item);
         }
         offers.Clear();
-        moduleOffers.Clear();
+        enchantmentOffers.Clear();
         equipmentOffers.Clear();
         GenerateOffers();
-        GenerateModuleOffers();
+        GenerateEnchantmentOffers();
         GenerateEquipmentOffers();
         return true;
     }
@@ -166,58 +166,56 @@ public class Market
         return false;
     }
 
-    // ---------- Module offers ----------
+    // ---------- Enchanting Table ----------
 
-    // Same rules as face offers: rarity weights, build-aware tags, no repeats in a set,
-    // and modules a reroll just replaced are avoided when possible. The Grand Market sells no modules.
-    private void GenerateModuleOffers(){
-        if(isGrand){
-            return;
-        }
-        for(int i = 0; i < economy.modulesPerMarket; i++){
-            List<ActionModuleSO> candidates = GetUnofferedModules(RollRarity());
-            if(candidates.Count == 0) candidates = GetUnofferedModules(null);
+    // Same rules as face offers: rarity weights (Epic only in the Grand Market), build-aware tags,
+    // no repeats in a set, and enchantments a reroll just replaced are avoided when possible.
+    private void GenerateEnchantmentOffers(){
+        for(int i = 0; i < economy.enchantmentsPerMarket; i++){
+            Rarity rarity = isGrand ? Rarity.Epic : RollRarity();
+            List<EnchantmentSO> candidates = GetUnofferedEnchantments(rarity);
+            if(candidates.Count == 0 && !isGrand) candidates = GetUnofferedEnchantments(null);
             if(candidates.Count == 0) break;
 
             if(Random.value < economy.tagMatchChance){
-                List<ActionModuleSO> matching = candidates.FindAll(module => SharesTagWithDie(module.tags));
+                List<EnchantmentSO> matching = candidates.FindAll(enchantment => SharesTagWithDie(enchantment.tags));
                 if(matching.Count > 0) candidates = matching;
             }
-            ActionModuleSO picked = candidates[Random.Range(0, candidates.Count)];
-            moduleOffers.Add(new ModuleOffer{ module = picked, price = economy.GetBuyPrice(picked.rarity) });
+            EnchantmentSO picked = candidates[Random.Range(0, candidates.Count)];
+            enchantmentOffers.Add(new EnchantmentOffer{ enchantment = picked, price = economy.GetBuyPrice(picked.rarity) });
         }
     }
 
-    private List<ActionModuleSO> GetUnofferedModules(Rarity? rarity){
-        List<ActionModuleSO> fresh = new List<ActionModuleSO>();
-        List<ActionModuleSO> repeated = new List<ActionModuleSO>();
-        foreach(ActionModuleSO module in economy.modulePool){
-            if(rarity.HasValue && module.rarity != rarity.Value) continue;
-            if(moduleOffers.Exists(offer => offer.module == module)) continue;
-            if(replacedModules.Contains(module)) repeated.Add(module);
-            else fresh.Add(module);
+    private List<EnchantmentSO> GetUnofferedEnchantments(Rarity? rarity){
+        List<EnchantmentSO> fresh = new List<EnchantmentSO>();
+        List<EnchantmentSO> repeated = new List<EnchantmentSO>();
+        foreach(EnchantmentSO enchantment in economy.enchantmentPool){
+            if(rarity.HasValue && enchantment.rarity != rarity.Value) continue;
+            if(enchantmentOffers.Exists(offer => offer.enchantment == enchantment)) continue;
+            if(replacedEnchantments.Contains(enchantment)) repeated.Add(enchantment);
+            else fresh.Add(enchantment);
         }
         return fresh.Count > 0 ? fresh : repeated;
     }
 
-    // A module can be bought only if some die face has its slot free.
-    public bool CanBuyModule(int offerIndex){
-        ModuleOffer offer = moduleOffers[offerIndex];
-        return !offer.sold && run.gold >= offer.price && run.dieFaces.Exists(face => face.CanAttach(offer.module));
+    // An enchantment can be bought only if some die face has an empty Magic action.
+    public bool CanBuyEnchantment(int offerIndex){
+        EnchantmentOffer offer = enchantmentOffers[offerIndex];
+        return !offer.sold && run.gold >= offer.price && run.dieFaces.Exists(face => face.CanEnchant);
     }
 
-    public bool CanAttachModule(int offerIndex, int dieSlot){
-        return run.dieFaces[dieSlot].CanAttach(moduleOffers[offerIndex].module);
+    public bool CanEnchant(int dieSlot){
+        return run.dieFaces[dieSlot].CanEnchant;
     }
 
-    // Attaches the bought module to the die face in dieSlot (its slot for that action must be empty).
-    public bool BuyModule(int offerIndex, int dieSlot){
-        if(!CanBuyModule(offerIndex) || !CanAttachModule(offerIndex, dieSlot)){
+    // Inscribes the bought enchantment into the Magic action of the die face in dieSlot.
+    public bool BuyEnchantment(int offerIndex, int dieSlot){
+        if(!CanBuyEnchantment(offerIndex) || !CanEnchant(dieSlot)){
             return false;
         }
-        ModuleOffer offer = moduleOffers[offerIndex];
+        EnchantmentOffer offer = enchantmentOffers[offerIndex];
         run.gold -= offer.price;
-        run.dieFaces[dieSlot].Attach(offer.module);
+        run.dieFaces[dieSlot].Enchant(offer.enchantment);
         offer.sold = true;
         return true;
     }

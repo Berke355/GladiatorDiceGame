@@ -27,8 +27,8 @@ public static class RunSimulator
             return Fits(face.tags);
         }
 
-        public bool Fits(ActionModuleSO module){
-            return Fits(module.tags);
+        public bool Fits(EnchantmentSO enchantment){
+            return Fits(enchantment.tags);
         }
 
         // How much a focused bot wants an item: 2 for its archetype, 1 for a general item (no tags), 0 otherwise.
@@ -52,10 +52,10 @@ public static class RunSimulator
     public static int RageToStartAttacking = 3;
     // 40 measured best: rerolling down to little gold costs the upgrades a build needs (DevLog Day 29).
     public static int GoldToKeepAfterReroll = 40;
-    // Bots buy action modules; off to measure what modules add.
-    public static bool BuyModules = true;
-    // Bots play the actions of the modules they bought; off to separate the gold cost from playing them.
-    public static bool PlayModules = true;
+    // Bots buy enchantments; off to measure what enchantments add.
+    public static bool BuyEnchantments = true;
+    // Bots play the enchantments they bought; off to separate the gold cost from playing them.
+    public static bool PlayEnchantments = true;
     // Bots take boss rewards and buy equipment; off to measure what equipment adds.
     public static bool UseEquipment = true;
 
@@ -70,9 +70,9 @@ public static class RunSimulator
         public long[] trackedByTurn = new long[16];
         public int[] battlesByTurn = new int[16];
         public int battles, won, turns, actions, bleedingAtAction;
-        // Actions that came from an attached module (the face itself has no effect for that action), and their damage.
-        public int moduleActions;
-        public long moduleDamage;
+        // Turns where an enchantment was played (the face's Magic came from it), and their damage.
+        public int enchantmentActions;
+        public long enchantmentDamage;
         // Enemy HP lost from the player's actions vs. from ticks at the end of the enemy's turn (Poison, Bleed).
         public long actionDamage, tickDamage, hpTaken;
         // Per face name: { times rolled, enemy HP lost from its actions, tracked stacks added }.
@@ -81,7 +81,7 @@ public static class RunSimulator
         public string Report(){
             if(battles == 0) return "no " + statsTier + " battles";
             StringBuilder sb = new StringBuilder();
-            if(moduleActions > 0) sb.AppendLine("module actions " + (100f * moduleActions / actions).ToString("0.0") + "% of turns, " + ((float)moduleDamage / moduleActions).ToString("0.0") + " dmg each");
+            if(enchantmentActions > 0) sb.AppendLine("enchantments played " + (100f * enchantmentActions / actions).ToString("0.0") + "% of turns, " + ((float)enchantmentDamage / enchantmentActions).ToString("0.0") + " dmg each");
             sb.AppendLine(statsTier + " battles " + battles + ", won " + (100f * won / battles).ToString("0") + "%, avg turns " + ((float)turns / battles).ToString("0.0"));
             sb.AppendLine("per player turn: action dmg " + ((float)actionDamage / actions).ToString("0.00") + ", tick dmg " + ((float)tickDamage / actions).ToString("0.00")
                 + ", HP taken " + ((float)hpTaken / actions).ToString("0.00") + ", enemy bleeding at action " + (100f * bleedingAtAction / actions).ToString("0") + "%");
@@ -105,6 +105,10 @@ public static class RunSimulator
         }
     }
     public static FightStats Stats;
+    // Optional change to every run's starting state (e.g. a combo on the die), for combo tests. Null = off.
+    public static System.Action<RunData> RunSetup;
+    // Optional change before each battle (run, battle number), e.g. a combo that arrives at the first Grand Market.
+    public static System.Action<RunData, int> BeforeBattle;
 
     private const int MaxTurnsPerBattle = 100;
     private const int BattlesPerRun = 11;
@@ -204,7 +208,7 @@ public static class RunSimulator
         // What the die looks like when a run reaches the Strong tier (battle 8): is the build actually there?
         Dictionary<string, int> facesAtBattle8 = new Dictionary<string, int>();
         int buildFacesAtBattle8 = 0;
-        int modulesAtBattle8 = 0;
+        int enchantedAtBattle8 = 0;
         int equipmentAtBattle8 = 0;
         Dictionary<string, int> itemsAtBattle8 = new Dictionary<string, int>();
         float goldAtFirstGrandMarket = 0;
@@ -214,16 +218,18 @@ public static class RunSimulator
             for(int r = 0; r < runs; r++){
                 RunData run = new RunData(config.startingDieFaces, config.startingMaxHP);
                 run.dieFaces.Add(new DieFace(ChooseStartingFace(bot, StartingFaceOffers.Generate(config.economy, config.startingDieFaces))));
+                if(RunSetup != null) RunSetup(run);
                 int hpBeforeWeak = run.currentHP;
 
                 for(int battle = 1; battle <= BattlesPerRun; battle++){
                     reached[battle]++;
+                    if(BeforeBattle != null) BeforeBattle(run, battle);
                     if(battle == 8){
                         foreach(DieFace face in run.dieFaces){
                             string name = face.definition.faceName;
                             facesAtBattle8[name] = (facesAtBattle8.ContainsKey(name) ? facesAtBattle8[name] : 0) + 1;
                             if(bot.Fits(face.definition)) buildFacesAtBattle8++;
-                            modulesAtBattle8 += face.modules.Count;
+                            if(face.enchantment != null) enchantedAtBattle8++;
                         }
                         equipmentAtBattle8 += run.equipment.Count;
                         foreach(EquipmentSO item in run.equipment){
@@ -282,13 +288,13 @@ public static class RunSimulator
 
         string report = FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
         string gold = "avg gold entering the first Grand Market: " + (firstGrandMarketVisits > 0 ? (goldAtFirstGrandMarket / firstGrandMarketVisits).ToString("0") : "-") + "\n";
-        string modules = "avg modules on the die at battle 8: " + (reached[8] > 0 ? ((float)modulesAtBattle8 / reached[8]).ToString("0.0") : "-") + "\n";
-        modules += "avg equipment at battle 8: " + (reached[8] > 0 ? ((float)equipmentAtBattle8 / reached[8]).ToString("0.0") : "-");
+        string onHand = "avg enchanted faces at battle 8: " + (reached[8] > 0 ? ((float)enchantedAtBattle8 / reached[8]).ToString("0.0") : "-") + "\n";
+        onHand += "avg equipment at battle 8: " + (reached[8] > 0 ? ((float)equipmentAtBattle8 / reached[8]).ToString("0.0") : "-");
         foreach(KeyValuePair<string, int> item in itemsAtBattle8){
-            modules += " | " + item.Key + " " + ((float)item.Value / reached[8]).ToString("0.00");
+            onHand += " | " + item.Key + " " + ((float)item.Value / reached[8]).ToString("0.00");
         }
-        modules += "\n";
-        return report + gold + modules + FormatDieAtBattle8(reached[8], buildFacesAtBattle8, facesAtBattle8);
+        onHand += "\n";
+        return report + gold + onHand + FormatDieAtBattle8(reached[8], buildFacesAtBattle8, facesAtBattle8);
     }
 
     // Average number of build faces at battle 8 and the most common faces on the die there.
@@ -403,9 +409,9 @@ public static class RunSimulator
                     stats.perFace[name][0]++;
                     stats.perFace[name][1] += enemyHP - enemy.currentHP;
                     stats.actionDamage += enemyHP - enemy.currentHP;
-                    if(!face.definition.effects.Exists(e => e.actionType == action)){
-                        stats.moduleActions++;
-                        stats.moduleDamage += enemyHP - enemy.currentHP;
+                    if(action == ActionType.Magic && face.enchantment != null){
+                        stats.enchantmentActions++;
+                        stats.enchantmentDamage += enemyHP - enemy.currentHP;
                     }
                 }
             } while(flow.RerollPending && !flow.IsOver && ++rerolls < 10);
@@ -455,10 +461,7 @@ public static class RunSimulator
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash" || f.definition.faceName == "Spiked Shield");
 
-        // A module brings an archetype onto a face outside it (e.g. Venom Coating on a Sword), so it is the face's
-        // build action, except when blocking a big hit.
-        ActionModuleSO module = face.modules.Find(m => !m.tags.Exists(tag => definition.tags.Contains(tag)));
-        if(PlayModules && module != null && !(bigHit && face.HasAction(ActionType.Defense))) return module.action;
+        if(PlayEnchantments && face.enchantment != null && PlaysEnchantment(face, die, player, flow, bigHit, rage)) return ActionType.Magic;
 
         if(definition.faceName == "Shield"){
             if(bigHit) return ActionType.Defense;
@@ -490,6 +493,27 @@ public static class RunSimulator
         if(face.HasAction(ActionType.Attack)) return ActionType.Attack;
         if(face.HasAction(ActionType.Defense)) return ActionType.Defense;
         return ActionType.Magic;
+    }
+
+    // When to play an enchantment. Epic ones are combo pieces with their own timing; the others bring an
+    // archetype onto a face outside it (e.g. Venom Coating on a Sword), so they are that face's build action.
+    private static bool PlaysEnchantment(DieFace face, List<DieFace> die, Entity player, BattleFlow flow, bool bigHit, int rage){
+        EnchantmentSO enchantment = face.enchantment;
+        switch(enchantment.enchantmentName){
+            case "War Cry": return !bigHit && rage < RageToStartAttacking;
+            case "Dark Rite": return player.GetStatus(StatusType.Ritual) == 0;
+            case "Whirlwind": return !bigHit || !face.HasAction(ActionType.Defense);
+            // A turn without a hit, so only when this face has little Charge to swing with and the other
+            // Charge faces have plenty of room to fill (Charge stops at the cap).
+            case "Resonance":
+                int room = 0;
+                foreach(DieFace other in die){
+                    if(other != face && other.definition.charges) room += DieCharge.MaxCharge - flow.charge.Get(other);
+                }
+                return flow.charge.Get(face) <= 1 && room >= 2 * face.value;
+        }
+        bool offBuild = !enchantment.tags.Exists(tag => face.definition.tags.Contains(tag));
+        return offBuild && !(bigHit && face.HasAction(ActionType.Defense));
     }
 
     // ---------- Run start ----------
@@ -606,42 +630,48 @@ public static class RunSimulator
                 continue;
             }
 
-            // Modules get the gold left after upgrades.
-            if(BuyModules && BuyFittingModule(market, run, bot)){
+            // Enchantments get the gold left after upgrades.
+            if(BuyEnchantments && BuyFittingEnchantment(market, run, bot)){
                 continue;
             }
             break;
         }
     }
 
-    // Buys an affordable module of the archetype (the rarest one) and attaches it to the highest-value
-    // face outside the archetype with that slot empty: a module adds an alternative action, not a second
-    // effect, so it pays off by turning an off-build face (a starter Sword or Shield) into a build face.
-    private static bool BuyFittingModule(Market market, RunData run, Bot bot){
+    // Buys an affordable enchantment of the archetype (the rarest one). Epic enchantments are combo pieces, so
+    // they go on the face with the highest value (a Charge face counts as +3, its usual Charge); the others go on
+    // the highest-value face outside the archetype, which they turn into a build face.
+    private static bool BuyFittingEnchantment(Market market, RunData run, Bot bot){
         int bestOffer = -1;
-        for(int i = 0; i < market.moduleOffers.Count; i++){
-            if(!bot.Fits(market.moduleOffers[i].module) || !market.CanBuyModule(i)) continue;
-            if(bestOffer < 0 || market.moduleOffers[i].module.rarity > market.moduleOffers[bestOffer].module.rarity){
+        for(int i = 0; i < market.enchantmentOffers.Count; i++){
+            if(!bot.Fits(market.enchantmentOffers[i].enchantment) || !market.CanBuyEnchantment(i)) continue;
+            if(bestOffer < 0 || market.enchantmentOffers[i].enchantment.rarity > market.enchantmentOffers[bestOffer].enchantment.rarity){
                 bestOffer = i;
             }
         }
         if(bestOffer < 0) return false;
 
+        bool epic = market.enchantmentOffers[bestOffer].enchantment.rarity == Rarity.Epic;
         int slot = -1;
         for(int i = 0; i < run.dieFaces.Count; i++){
-            if(bot.Fits(run.dieFaces[i].definition) || !market.CanAttachModule(bestOffer, i)) continue;
-            if(slot < 0 || run.dieFaces[i].value > run.dieFaces[slot].value) slot = i;
+            DieFace face = run.dieFaces[i];
+            if(!market.CanEnchant(i) || (!epic && bot.Fits(face.definition))) continue;
+            if(slot < 0 || HostValue(face) > HostValue(run.dieFaces[slot])) slot = i;
         }
-        return slot >= 0 && market.BuyModule(bestOffer, slot);
+        return slot >= 0 && market.BuyEnchantment(bestOffer, slot);
     }
 
-    // Replaces the weakest face outside the archetype (a face carrying an archetype module counts as inside it,
-    // since replacing it loses the module); if the die is all archetype, only a lower-rarity one.
+    private static int HostValue(DieFace face){
+        return face.value + (face.definition.charges ? 3 : 0);
+    }
+
+    // Replaces the weakest face outside the archetype (a face carrying an archetype enchantment counts as inside it,
+    // since replacing it loses the enchantment); if the die is all archetype, only a lower-rarity one.
     private static int PickSlotToReplace(RunData run, DieFaceSO incoming, Bot bot){
         int best = -1;
         for(int i = 0; i < run.dieFaces.Count; i++){
             DieFace face = run.dieFaces[i];
-            if(bot.Fits(face.definition) || face.modules.Exists(bot.Fits)) continue;
+            if(bot.Fits(face.definition) || (face.enchantment != null && bot.Fits(face.enchantment))) continue;
             if(best < 0 || face.value < run.dieFaces[best].value) best = i;
         }
         if(best >= 0) return best;
@@ -665,7 +695,7 @@ public static class RunSimulator
             for(int i = 0; i < run.dieFaces.Count; i++){
                 if(market.CanUpgrade(i)) upgradable.Add(i);
             }
-            if(BuyModules && Random.value < 0.3f && BuyRandomModule(market, run)) continue;
+            if(BuyEnchantments && Random.value < 0.3f && BuyRandomEnchantment(market, run)) continue;
             if(buyable.Count == 0 && upgradable.Count == 0) break;
 
             if(buyable.Count > 0 && (upgradable.Count == 0 || Random.value < 0.6f)){
@@ -677,14 +707,14 @@ public static class RunSimulator
         }
     }
 
-    private static bool BuyRandomModule(Market market, RunData run){
-        for(int i = 0; i < market.moduleOffers.Count; i++){
-            if(!market.CanBuyModule(i)) continue;
+    private static bool BuyRandomEnchantment(Market market, RunData run){
+        for(int i = 0; i < market.enchantmentOffers.Count; i++){
+            if(!market.CanBuyEnchantment(i)) continue;
             List<int> slots = new List<int>();
             for(int slot = 0; slot < run.dieFaces.Count; slot++){
-                if(market.CanAttachModule(i, slot)) slots.Add(slot);
+                if(market.CanEnchant(slot)) slots.Add(slot);
             }
-            return market.BuyModule(i, slots[Random.Range(0, slots.Count)]);
+            return market.BuyEnchantment(i, slots[Random.Range(0, slots.Count)]);
         }
         return false;
     }

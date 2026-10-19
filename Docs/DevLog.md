@@ -1261,3 +1261,54 @@ All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 2
 - Combo tests for action modules on charged Hammers, and Epic modules (e.g. "Magic: gain Ritual equal to my value").
 - Ritual + Bleed (17%).
 - UI phase 2 (icons), the boss dice system, centering offer cards.
+
+## Day 42 - The Enchanting Table
+
+### Accomplished
+- **Action modules became enchantments** (the user's idea): a Market station, the **Enchanting Table**, where you pay to inscribe an enchantment into a die face's **Magic** action. GDD "Action Modules" was rewritten as "Enchanting Table".
+  - **Magic only, one per face:** a face can be enchanted only if its Magic action is empty. Faces with their own Magic (Health Potion, Fury, Plague, Anvil...) are already magical. Most weapon faces, including the Hammers, can be enchanted.
+  - **Same logic as face offers:** 3 enchantments in every Market. The Normal Market uses the face rarity weights (70/25/5), and the Grand Market shows only Epic enchantments. Build-aware tags, rerolls and prices (10/25/60) are the same as for faces.
+- **Code:**
+  - `ActionModuleSO` → `EnchantmentSO` and `Assets/Modules` → `Assets/Enchantments`. Renamed through Unity, so GUIDs, asset references and the economy config's pool were kept (`[FormerlySerializedAs]` for renamed fields).
+  - `DieFace` holds a single `enchantment` (`CanEnchant`, `Enchant`), and enchanted faces show their name in purple.
+  - `Market` has `enchantmentOffers` / `BuyEnchantment`, generated like face offers.
+- **Market scene:** the card row is a layout group of three sections: FACES (3), ENCHANTING TABLE (3) and EQUIPMENT (2, Grand Market only). In the Normal Market the equipment section is hidden and the row re-centers. Die slots say "Can be enchanted", "Has its own Magic" or "Enchanted: X".
+- **Enchantments:**
+  - Common: Venom Coating, Kindling, Rend, and Ward (the former Defense module Iron Skin, now Magic).
+  - Rare: Ignition (now Magic).
+  - Epic: War Cry (was Rare: permanent Rage on a high-value face is as strong as Dark Rite), and the new **Dark Rite** (Ritual equal to the value), **Whirlwind** (hit twice for the value) and **Resonance** (the value as Charge to every other Charge face, keeping this face's Charge).
+- **Simulator:**
+  - Epic enchantments go on the highest-value face (Charge faces count +3), with per-enchantment play rules (`PlaysEnchantment`).
+  - Combo hooks: `RunSetup` (change the starting die) and `BeforeBattle` (e.g. enchant at the first Grand Market).
+  - Knobs renamed to `BuyEnchantments` / `PlayEnchantments`.
+
+### Tests
+- **Play Mode:** the Grand Market showed 3 Epic enchantments, faces and items. While enchanting, only faces with an empty Magic action were clickable (not the Health Potion). The War Hammer was enchanted with Dark Rite for 60 gold.
+- **Resonance:** with value 3, it filled another War Hammer from +2 to the +5 cap while the host kept its +2. Attacking with the host still spends its Charge.
+
+### Combo tests (the bot's own face enchanted from battle 5, right after the first Grand Market)
+| Combo | Without | With |
+|---|---|---|
+| Hammer + Whirlwind | 31% | 64% |
+| Hammer + War Cry | 30% | 60% |
+| Rage + Whirlwind | 24% | 44% |
+| Rage + War Cry | 32% | 38% |
+| Ritual + Poison + Dark Rite | 30% | 33% |
+| Hammer + Resonance (first version) | 31% | 25% |
+| Hammer + Resonance (keeps its Charge, with a better play rule) | 32% | 30% |
+
+### Findings
+- **Whirlwind and War Cry on a charged Hammer are the run-changing combos the user described.** On a charged Hammer at about 8, Whirlwind hits 2 × 8.
+- **Resonance stays neutral.** The +5 Charge cap limits it: other Hammers fill up on their own anyway. Keeping its own Charge removed the harm, but not the limit.
+- **Dark Rite has no high-value host yet.** The Ritual + Poison bot's best face is about 3.6, so it adds little.
+- **In real runs, bots never reach an Epic enchantment:** none had 60 gold at battle 5, since they spend everything at the Grand Market. An Epic enchantment is a real save-vs-tempo decision.
+- Buying Common enchantments drains the Burn and Poison bots' gold. That is the bots buying every enchantment that fits, not the enchantments themselves.
+
+### Decisions
+- Whirlwind and War Cry stay as they are (the user's call): they are the intended game-breaking combos, they cost 60 gold saved for a Grand Market, and most players won't buy them.
+- Resonance keeps its host's Charge. It is still a weak Epic and is the first candidate to revisit.
+
+### Next Steps
+- Revisit Resonance, or replace it with another Epic.
+- Ritual + Bleed (17%).
+- UI phase 2 (icons), the boss dice system, centering offer cards.
