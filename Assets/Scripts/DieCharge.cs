@@ -14,8 +14,11 @@ public class DieCharge
         return face != null && charge.TryGetValue(face, out amount) ? amount : 0;
     }
 
-    public void Add(DieFace face, int amount){
-        charge[face] = Mathf.Min(MaxCharge, Get(face) + amount);
+    // Capped Charge stops at MaxCharge but never lowers Charge that is already above it.
+    // Uncapped Charge (Resonance) can go past the cap.
+    public void Add(DieFace face, int amount, bool capped = true){
+        int current = Get(face);
+        charge[face] = capped ? Mathf.Max(current, Mathf.Min(MaxCharge, current + amount)) : current + amount;
     }
 
     public void Reset(DieFace face){

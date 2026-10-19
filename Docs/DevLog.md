@@ -1312,3 +1312,34 @@ All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 2
 - Revisit Resonance, or replace it with another Epic.
 - Ritual + Bleed (17%).
 - UI phase 2 (icons), the boss dice system, centering offer cards.
+
+## Day 43 - Resonance Breaks the Charge Cap
+
+### Accomplished
+- **Resonance's Charge ignores the +5 cap** (the user's call). `DieCharge.Add` has a `capped` flag. Capped Charge (the +1 every turn, and Anvil) stops at +5 but never pulls Charge that is already above the cap back down.
+- **Simulator:** Resonance is played when the Charge it hands out (its battle value to each other Charge face) is more than the hit it would deal now.
+- **GDD:** the Resonance row and the Charge cap rule.
+
+### Tests
+- **Rule checks (5/5):**
+  - A War Hammer at the +4 cap went to +11 from a value-7 Resonance (3 + 4 Charge).
+  - The Resonance face kept its +4.
+  - The next turn didn't pull the +11 back to the cap.
+  - That Hammer then hit for 3 + 11 = 14 and reset.
+
+### Combo tests
+| Setup | Without | With Resonance |
+|---|---|---|
+| The bot's own die, enchanted from battle 5 | 32% | 26% |
+| 3 War Hammers from the start, one with Resonance | 33% | 42% |
+
+### Findings
+- **Resonance is a die-density payoff,** like Plague: it rewards a die full of Hammers (+9 points with three).
+- In the bot's normal runs, the enchanted face has only 0.8 other Charge faces next to it at battle 5, so Resonance has little to fill, and the result is neutral within noise.
+
+### Decisions
+- Resonance stays as an Epic for players who build deep into Hammer.
+
+### Next Steps
+- Ritual + Bleed (17%).
+- UI phase 2 (icons), the boss dice system, centering offer cards.

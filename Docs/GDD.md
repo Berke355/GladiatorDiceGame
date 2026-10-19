@@ -250,7 +250,7 @@ You don't only build the die, you build its faces. Every Market has an **Enchant
 | **War Cry** | Epic | Gain Rage equal to my value | Berserker (was Rare: permanent Rage on a high-value face is as strong as Dark Rite) |
 | **Dark Rite** | Epic | Gain Ritual equal to my value | Ritualist: on a charged Hammer, one roll boosts every later status |
 | **Whirlwind** | Epic | Hit twice for my value | Rage / Hammer: Rage counts on both hits |
-| **Resonance** | Epic | Add my value as Charge to every other face with the Charge rule (each up to +5); this face keeps its Charge | Hammer: fills every Hammer at once, scales with how many are on the die |
+| **Resonance** | Epic | Add my value as Charge to every other face with the Charge rule, past the +5 cap; this face keeps its Charge | Hammer: fills every Hammer at once, scales with how many are on the die |
 
 ### Prices
 
@@ -506,7 +506,7 @@ Pour power into one face and set up the turn it lands. Hammer stores its resourc
 - **Resource:** **Charge**, temporary value on a die face for the current battle. A Hammer face gains **+1 Charge every turn it isn't the face you act with**, up to **+5**. When you act with a face, its Charge is used and then resets to 0.
 - **Value Is the Effect still holds:** a face's value in battle is its value plus its Charge, the number shown on the die, and its effects use exactly that number.
 - **Math:** on a six-sided die, a face comes up about once every six turns, so a value-2 War Hammer usually lands at 5–7. Strong for a Common, but you don't know when it will land.
-- **The cap (+5)** keeps "when will it land?" more important than "how big has it grown?"; without it, one roll in a long fight could deal 15+.
+- **The cap (+5)** applies to Charge gained every turn and from Anvil; only Resonance can push past it. It keeps "when will it land?" more important than "how big has it grown?"; without it, one roll in a long fight could deal 15+.
 - **The cost (Pillar 4):** War Hammer and Earthshaker only have Attack. When a charged Hammer lands, you swing even if the enemy is about to hit hard.
 - **Grows in battle, not through upgrades** (the "Common that grows during a fight" rule).
 - **Any face can hold Charge** (Anvil adds it to any face), but only faces with the Charge rule gain it every turn.

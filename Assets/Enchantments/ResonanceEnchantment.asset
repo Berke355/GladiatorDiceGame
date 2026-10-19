@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ResonanceEnchantment
   m_EditorClassIdentifier: Assembly-CSharp::EnchantmentSO
   enchantmentName: Resonance
-  description: 'Magic: Add the face''s value as Charge to every other face with Charge.
-    This face keeps its Charge.'
+  description: 'Magic: Add the face''s value as Charge to every other face with Charge,
+    past the usual limit. This face keeps its Charge.'
   rarity: 2
   tags: 08000000
   effects:

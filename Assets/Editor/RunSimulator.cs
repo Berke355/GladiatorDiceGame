@@ -503,14 +503,11 @@ public static class RunSimulator
             case "War Cry": return !bigHit && rage < RageToStartAttacking;
             case "Dark Rite": return player.GetStatus(StatusType.Ritual) == 0;
             case "Whirlwind": return !bigHit || !face.HasAction(ActionType.Defense);
-            // A turn without a hit, so only when this face has little Charge to swing with and the other
-            // Charge faces have plenty of room to fill (Charge stops at the cap).
+            // A turn without a hit: worth it when the Charge it hands out (my battle value to each other Charge
+            // face, past the cap) is more than the hit I'd deal now. This face keeps its Charge either way.
             case "Resonance":
-                int room = 0;
-                foreach(DieFace other in die){
-                    if(other != face && other.definition.charges) room += DieCharge.MaxCharge - flow.charge.Get(other);
-                }
-                return flow.charge.Get(face) <= 1 && room >= 2 * face.value;
+                int others = die.FindAll(f => f != face && f.definition.charges).Count;
+                return others > 0 && flow.charge.ValueOf(face) * others > flow.charge.ValueOf(face) + player.GetStatus(StatusType.Rage);
         }
         bool offBuild = !enchantment.tags.Exists(tag => face.definition.tags.Contains(tag));
         return offBuild && !(bigHit && face.HasAction(ActionType.Defense));
