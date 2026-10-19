@@ -54,6 +54,8 @@ public static class RunSimulator
     public static int GoldToKeepAfterReroll = 40;
     // Bots buy action modules; off to measure what modules add.
     public static bool BuyModules = true;
+    // Bots play the actions of the modules they bought; off to separate the gold cost from playing them.
+    public static bool PlayModules = true;
     // Bots take boss rewards and buy equipment; off to measure what equipment adds.
     public static bool UseEquipment = true;
 
@@ -68,6 +70,9 @@ public static class RunSimulator
         public long[] trackedByTurn = new long[16];
         public int[] battlesByTurn = new int[16];
         public int battles, won, turns, actions, bleedingAtAction;
+        // Actions that came from an attached module (the face itself has no effect for that action), and their damage.
+        public int moduleActions;
+        public long moduleDamage;
         // Enemy HP lost from the player's actions vs. from ticks at the end of the enemy's turn (Poison, Bleed).
         public long actionDamage, tickDamage, hpTaken;
         // Per face name: { times rolled, enemy HP lost from its actions, tracked stacks added }.
@@ -76,6 +81,7 @@ public static class RunSimulator
         public string Report(){
             if(battles == 0) return "no " + statsTier + " battles";
             StringBuilder sb = new StringBuilder();
+            if(moduleActions > 0) sb.AppendLine("module actions " + (100f * moduleActions / actions).ToString("0.0") + "% of turns, " + ((float)moduleDamage / moduleActions).ToString("0.0") + " dmg each");
             sb.AppendLine(statsTier + " battles " + battles + ", won " + (100f * won / battles).ToString("0") + "%, avg turns " + ((float)turns / battles).ToString("0.0"));
             sb.AppendLine("per player turn: action dmg " + ((float)actionDamage / actions).ToString("0.00") + ", tick dmg " + ((float)tickDamage / actions).ToString("0.00")
                 + ", HP taken " + ((float)hpTaken / actions).ToString("0.00") + ", enemy bleeding at action " + (100f * bleedingAtAction / actions).ToString("0") + "%");
@@ -397,6 +403,10 @@ public static class RunSimulator
                 stats.perFace[name][0]++;
                 stats.perFace[name][1] += enemyHP - enemy.currentHP;
                 stats.actionDamage += enemyHP - enemy.currentHP;
+                if(!face.definition.effects.Exists(e => e.actionType == action)){
+                    stats.moduleActions++;
+                    stats.moduleDamage += enemyHP - enemy.currentHP;
+                }
             }
             if(player.IsDead || enemy.IsDead) break;
 
@@ -447,7 +457,7 @@ public static class RunSimulator
         // A module brings an archetype onto a face outside it (e.g. Venom Coating on a Sword), so it is the face's
         // build action, except when blocking a big hit.
         ActionModuleSO module = face.modules.Find(m => !m.tags.Exists(tag => definition.tags.Contains(tag)));
-        if(module != null && !(bigHit && face.HasAction(ActionType.Defense))) return module.action;
+        if(PlayModules && module != null && !(bigHit && face.HasAction(ActionType.Defense))) return module.action;
 
         if(definition.faceName == "Shield"){
             if(bigHit) return ActionType.Defense;

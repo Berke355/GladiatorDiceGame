@@ -1178,3 +1178,33 @@ A real run with Iron Bracers, Smoldering Gauntlet and Barbed Hook:
 - Re-evaluate action modules alongside equipment.
 - Shield on its own and Ritual + Bleed.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 40 - Action Modules Re-measured
+
+### Accomplished
+- **Simulator diagnostics:** `FightStats` counts the turns where a module's action was played and its damage. `RunSimulator.PlayModules` (off: bots buy modules but never play them) separates the gold cost of modules from the value of playing them.
+- **GDD:** modules are a niche combo tool for very high-value faces.
+
+### Measurements (600 runs, with equipment)
+| | Burn | Poison | Ritual + Poison |
+|---|---|---|---|
+| No modules | 46% | 30% | 34% |
+| Buy, never play | 41% | 23% | 29% |
+| Buy and play | 32% | 22% | 33% |
+
+- Buying modules costs gold that upgrades and equipment need (Burn −5, Poison −7).
+- Playing them added nothing or less. Kindling replaced a Sword hit, and with Smoldering Gauntlet a hit is now worth 3 Burn more. 2 Poison from a value-2 Sword is no better than the Sword's own action.
+- Module actions were played on 8–13% of turns. Rage, Bleed and Shield dice hardly have off-build faces, so those bots bought almost none (0.0–0.2).
+
+### Findings
+- **The simulation measured the wrong use.** The bots attach modules to low-value starter faces (Sword, Shield at value 2), where an alternative action changes nothing. Modules are meant for faces with a very high value, which spend that value on another action. The user's examples: Poison on a Hammer's Magic, or an Epic "Magic: gain Ritual equal to my value", a permanent buff from one roll.
+- Average clear rates can't measure a niche combo tool: if most players never buy modules, they won't move the average.
+- **The content isn't there yet:** base values are 3–4 at most, soft caps 5–7, and breaking past them is expensive. There are no high-value faces (the planned Hammer archetype) for modules to shine on.
+
+### Decisions
+- Modules stay as they are (the user's call). Revisit them once high-value face content exists, with combo tests (a high-value face with and without the module) instead of average bot results.
+
+### Next Steps
+- Shield on its own and Ritual + Bleed.
+- The Hammer archetype (high-value faces), and Epic modules with it.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
