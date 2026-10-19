@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BerserkerTorc
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Berserker Torc
-  description: 'Each time a hit makes you lose HP: gain 1 Rage.'
+  description: 'The first time each battle a hit makes you lose HP: gain 1 Rage.'
   rarity: 1
   tags: 05000000
   triggers:
@@ -25,3 +25,5 @@ MonoBehaviour:
     effects:
     - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
     value: 1
+    maxPerRound: 0
+    maxPerBattle: 1

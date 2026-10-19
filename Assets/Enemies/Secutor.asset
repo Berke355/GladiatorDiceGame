@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Secutor
   tier: 1
-  maxHP: 20
+  maxHP: 22
   escalationPerTurn: 0
   intents:
   - intentName: Brace

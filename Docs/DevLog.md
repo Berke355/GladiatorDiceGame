@@ -1106,3 +1106,52 @@ For the first time in these balance passes, the main builds (Burn, Poison, Rage,
 - The equipment balance pass (item values and limits, then enemy tiers).
 - Show the equipped items in the battle UI.
 - Re-evaluate action modules alongside equipment.
+
+## Day 38 - Equipment Balance Pass
+
+### Accomplished
+- **Items evened out:** measured one at a time (only that item in the pool, on its own build's bot). Every item now adds about +13 to +21 points to its build, instead of +0 to +67. Items that fire often got limits instead of smaller numbers, since numbers can't go below 1.
+
+| Item | New rule | Before | Now |
+|---|---|---|---|
+| Plague Mask | First 2 Poison face rolls each battle: 1 Poison | +44 | +18 |
+| Smoldering Gauntlet | Each hit: 3 Burn | +9 | +13 |
+| Barbed Hook | Unchanged | +20 | +19 |
+| Tower Helm | Defense: 1 Fortify, up to 5 times each battle | +22 | +15 |
+| Berserker Torc | First HP-losing hit each battle: 1 Rage | +40 | +19 |
+| Bone Fetish | Unchanged (measured on Ritual + Poison) | — | +21 |
+| Laurel Wreath | Heal 1 on victory | +47 | +13 |
+| Iron Bracers | 1 Fortify at battle start | +67 | +15 |
+
+- **Enemies made stronger:** Medium ×1.1 and Strong ×1.15 (HP and intent values, rounded the same way the simulator rounds).
+  - Medium HP +2, and Retiarius's Trident Thrust 5 → 6.
+  - Strong: Essedarius 42 → 48, War Elephant 56 → 64 (Stomp 6 → 7), Hoplomachus Champion 44 → 51, Bestiarius 40 → 46 (Unleash 5 → 6).
+- **GDD:** new item values, the "equipment is part of the power curve" note with the tuning rule, and the enemy roster.
+
+### Results (500 runs per bot, with equipment, final assets)
+| Bot | No equipment (Day 35) | First item set | Now |
+|---|---|---|---|
+| Burn | 26% | 41% | 35% |
+| Poison | 32% | 82% | 23% |
+| Rage | 28% | 93% | 26% |
+| Bleed | 21% | 84% | 30% |
+| Ritual + Poison | 23% | 63% | 33% |
+| Shield + Rage | 35% | 82% | 41% |
+| Bleed + Rage | 23% | 93% | 38% |
+| Ritual + Bleed | 16% | 62% | 16% |
+| Shield | 10% | 46% | 10% |
+
+### Findings
+- The enemy scale is very sensitive. With equipment on, Strong ×1.2 drops the builds to 13–28%, and ×1.25 to 7–26%.
+- Hybrids sit a little higher (38–41%), since they can use two archetypes' items.
+- Shield alone (10%) and Ritual + Bleed (16%) are still weak, independent of equipment.
+
+### Decisions
+- Each item alone should add about +15 to +20 points to its build. Limits ("first 2 times each battle") are preferred over smaller numbers.
+- The enemy tiers carry the power that equipment adds.
+
+### Next Steps
+- Show the equipped items in the battle UI.
+- Re-evaluate action modules alongside equipment.
+- Shield on its own and Ritual + Bleed.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.

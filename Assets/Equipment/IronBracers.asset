@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: IronBracers
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Iron Bracers
-  description: 'At the start of your turn: gain 1 block.'
+  description: 'At the start of each battle: gain 1 Fortify.'
   rarity: 1
   tags: 
   triggers:
-  - trigger: 1
+  - trigger: 0
     requireFaceTag: 0
     faceTag: 0
     requireAction: 0
     action: 0
     effects:
-    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
     value: 1
+    maxPerRound: 0
+    maxPerBattle: 0

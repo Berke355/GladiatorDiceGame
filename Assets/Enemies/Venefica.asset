@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Venefica
   tier: 1
-  maxHP: 17
+  maxHP: 19
   escalationPerTurn: 0
   intents:
   - intentName: Poison Dart

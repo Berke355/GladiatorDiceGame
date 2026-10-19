@@ -323,20 +323,21 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 
 | Item | Build | Trigger | Effect |
 |---|---|---|---|
-| **Plague Mask** | Poison | FaceRolled (Poison face) | Apply 2 Poison |
-| **Smoldering Gauntlet** | Burn | HitDealt | Apply 1 Burn |
+| **Plague Mask** | Poison | FaceRolled (Poison face), first 2 per battle | Apply 1 Poison |
+| **Smoldering Gauntlet** | Burn | HitDealt | Apply 3 Burn |
 | **Barbed Hook** | Bleed | HitDealt | If the enemy is bleeding, hit again for 1 |
-| **Tower Helm** | Shield | ActionChosen (Defense) | Gain 1 Fortify |
-| **Berserker Torc** | Rage | HitTaken | Gain 1 Rage |
+| **Tower Helm** | Shield | ActionChosen (Defense), up to 5 per battle | Gain 1 Fortify |
+| **Berserker Torc** | Rage | HitTaken, first per battle | Gain 1 Rage |
 | **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
-| **Laurel Wreath** | General | BattleWon | Heal 4 |
-| **Iron Bracers** | General | TurnStart | Gain 1 block |
+| **Laurel Wreath** | General | BattleWon | Heal 1 |
+| **Iron Bracers** | General | BattleStart | Gain 1 Fortify |
 
 - **Bridges through existing rules:** Rage adds to Barbed Hook's extra hit (Bleed + Rage), Ritual adds to Plague Mask's Poison (Ritual + Poison), and Smoldering Gauntlet fires on every hit of a multi-hit (Twin Axes + Burn).
 - **Plague Mask scales with the die:** the more Poison faces on the die, the more often it fires.
 - **Berserker Torc is the risky one** (Pillar 4): it grows from damage taken, and Rage is permanent. Its numbers need the closest watch.
 - **Laurel Wreath** is worth the most in long runs, since HP carries over between battles.
-- Numbers are placeholders, to be tuned through simulation.
+- **Equipment is part of the power curve.** Even the smallest numbers are a lot of power: HP carries over and runs are lost narrowly in the last battles, so a few HP per battle compound (healing 1 per battle lifts the Bleed bot from 22% to 37% of runs cleared). The first set first made the run far too easy (Rage 93%, Bleed 84%), and the items were uneven (alone, +0 to +67 points for their build).
+- **Tuning rule:** each item alone should add about +15 to +20 points to its build. Items that fire often get limits ("first 2 times each battle") instead of smaller numbers, since numbers can't go below 1. The Medium and Strong tiers were then made stronger (HP and intents ×1.1 and ×1.15), so builds with equipment land back in the target band.
 
 ## Status Effects
 
@@ -575,20 +576,20 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 
 | Enemy | HP | Intents | Danger |
 |---|---|---|---|
-| **Retiarius** (net and trident) | 18 | Jab 2 (×2), Net: block 3 (×1), Trident Thrust 5 (×1) | **Telegraphed spike:** ignore the intent and take 5 |
-| **Dimachaerus** (two swords) | 17 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
-| **Arena Lion** | 20 | Maul 1 (×2), Roar: gain 1 Rage (×1), Feast: 1 damage and heal by the damage (×1) | **Builds Rage:** harmless at first, deadly if the fight drags on |
-| **Venefica** (poisoner) | 17 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** repeated darts keep Poison ticking, so long fights cost HP |
-| **Secutor** (pursuer) | 20 | Brace: Fortify 1 (×2), Shield Slam 4 (×2) | **Stacks Fortify:** its protection slowly builds up, so deal damage early |
+| **Retiarius** (net and trident) | 20 | Jab 2 (×2), Net: block 3 (×1), Trident Thrust 6 (×1) | **Telegraphed spike:** ignore the intent and take 6 |
+| **Dimachaerus** (two swords) | 19 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
+| **Arena Lion** | 22 | Maul 1 (×2), Roar: gain 1 Rage (×1), Feast: 1 damage and heal by the damage (×1) | **Builds Rage:** harmless at first, deadly if the fight drags on |
+| **Venefica** (poisoner) | 19 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** repeated darts keep Poison ticking, so long fights cost HP |
+| **Secutor** (pursuer) | 22 | Brace: Fortify 1 (×2), Shield Slam 4 (×2) | **Stacks Fortify:** its protection slowly builds up, so deal damage early |
 
 **Strong (battles 9–10), the build check:**
 
 | Enemy | HP | Intents | Clock |
 |---|---|---|---|
-| **Essedarius** (chariot fighter) | 42 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1), Battle Cry: 1 Rage (×1) | **Gathering speed:** builds Rage with Battle Cry |
-| **War Elephant** | 56 | Stomp 6 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
-| **Hoplomachus Champion** | 44 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
-| **Bestiarius** (beast tamer) | 40 | Whip 2 (×2), Unleash 5 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
+| **Essedarius** (chariot fighter) | 48 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1), Battle Cry: 1 Rage (×1) | **Gathering speed:** builds Rage with Battle Cry |
+| **War Elephant** | 64 | Stomp 7 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
+| **Hoplomachus Champion** | 51 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
+| **Bestiarius** (beast tamer) | 46 | Whip 2 (×2), Unleash 6 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
 
 #### New Mechanics for Enemies
 

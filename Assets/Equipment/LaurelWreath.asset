@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LaurelWreath
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Laurel Wreath
-  description: 'When you win a battle: heal 4.'
+  description: 'When you win a battle: heal 1.'
   rarity: 1
   tags: 
   triggers:
@@ -24,4 +24,6 @@ MonoBehaviour:
     action: 0
     effects:
     - {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
-    value: 4
+    value: 1
+    maxPerRound: 0
+    maxPerBattle: 0

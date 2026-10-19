@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SmolderingGauntlet
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Smoldering Gauntlet
-  description: 'Each time you hit the enemy: apply 1 Burn.'
+  description: 'Each time you hit the enemy: apply 3 Burn.'
   rarity: 1
   tags: 03000000
   triggers:
@@ -24,4 +24,6 @@ MonoBehaviour:
     action: 0
     effects:
     - {fileID: 11400000, guid: 6b11e72c35be2e344b7e718b742f902d, type: 2}
-    value: 1
+    value: 3
+    maxPerRound: 0
+    maxPerBattle: 0

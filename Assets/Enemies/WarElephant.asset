@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: War Elephant
   tier: 2
-  maxHP: 56
+  maxHP: 64
   escalationPerTurn: 0
   intents:
   - intentName: Stomp
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 6
+    value: 7
     weight: 1
   - intentName: Trunk Swat
     intentType: 0

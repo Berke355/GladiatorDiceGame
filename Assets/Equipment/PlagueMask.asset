@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlagueMask
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Plague Mask
-  description: 'When you roll a Poison face: apply 2 Poison.'
+  description: 'The first 2 times each battle you roll a Poison face: apply 1 Poison.'
   rarity: 1
   tags: 04000000
   triggers:
@@ -24,4 +24,6 @@ MonoBehaviour:
     action: 0
     effects:
     - {fileID: 11400000, guid: 4e09dfd69596317439eded8d7ed69021, type: 2}
-    value: 2
+    value: 1
+    maxPerRound: 0
+    maxPerBattle: 2
