@@ -42,6 +42,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 586c78516ded4dc4f995e6f5c4525b9d, type: 2}
   - {fileID: 11400000, guid: 6d855f03b97310d40975c245d6080b69, type: 2}
   - {fileID: 11400000, guid: b5ed649ad3a133a4aa64bab13759758d, type: 2}
+  - {fileID: 11400000, guid: 2478bc65745e6d040957be4372ef006e, type: 2}
+  - {fileID: 11400000, guid: ed0b55d9d72d9b440884e5b367b9547e, type: 2}
+  - {fileID: 11400000, guid: 4bc08ec953d10054e858f9f490a68b62, type: 2}
   offersPerMarket: 3
   commonWeight: 70
   rareWeight: 25

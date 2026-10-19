@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Essedarius
   tier: 2
   maxHP: 42
-  escalationPerTurn: 1
+  escalationPerTurn: 0
   intents:
   - intentName: Ride Down
     intentType: 0
@@ -34,4 +34,10 @@ MonoBehaviour:
     effects:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 3
+    weight: 1
+  - intentName: Battle Cry
+    intentType: 2
+    effects:
+    - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+    value: 1
     weight: 1

@@ -905,3 +905,45 @@ Without / with modules: Burn 32% / 26% · Poison 73% / 72% · Ritual + Poison 39
 - Equipment (passive items) on a trigger system ("at turn start", "when hit"...), then re-evaluate modules with it.
 - Give Bleed, Rage and Shield Commons that grow during a fight.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 33 - Growing Commons & Essedarius
+
+### Accomplished
+- **Design rule (GDD "Build Archetypes"):** every archetype needs a Common that turns its accumulated resource into results during a fight, additively (multiplying stays Epic), with its value as a floor.
+- **`StatusStacksDamageEffectSO`:** damage from a status's stacks without consuming them, counted on the target or on yourself, as value + stacks or as stacks with the value as a minimum.
+- **Three new Commons** (value 2, soft cap 5), added to the Market pool (27 → 30 faces):
+  - **Lacerate** (Bleed): Attack: my value + the enemy's Bleed as damage. Defense: block.
+  - **Frenzy** (Rage): Attack: deal my value, then gain 1 Rage.
+  - **Spiked Shield** (Shield): Attack: damage equal to your Fortify, at least my value. Defense: Fortify.
+- **Essedarius:** its Rage every turn (`escalationPerTurn` 1) was replaced with a Battle Cry intent (1 Rage, weight 1, the same as Hoplomachus Champion's).
+- **Simulator:** Spiked Shield rule (stack Fortify to 6, then hit; block big hits).
+- **GDD and CLAUDE.md** updated.
+
+### Results (500 runs per bot)
+| Bot | Before | New faces | + Essedarius |
+|---|---|---|---|
+| Burn | 26% | 13% | 30% |
+| Poison | 72% | 64% | 76% |
+| Shield | 2% | 2% | 21% |
+| Rage | 6% | 6% | 30% |
+| Bleed | 0% | 0% | 6% |
+| Ritual + Poison | 40% | 34% | 55% |
+| Shield + Rage | 2% | 5% | 36% |
+| Bleed + Rage | 2% | 2% | 12% |
+
+### Findings
+- **The new faces alone changed almost nothing,** even at +4 value (Lacerate at 6 lifted Bleed only to 4%). The bottleneck was elsewhere.
+- **Essedarius was a wall:** the only Strong enemy with permanent Rage every turn. Slow builds fight Strong enemies for about 11 turns, by which point it hit for 2 + 11. It caused about half of the Bleed, Rage and Shield deaths and was the top killer of every bot. Lowering its HP to 34 did not help; removing the unbounded growth did.
+- With Battle Cry, deaths spread across the Strong tier, and the new faces are used (about 1.4 Spiked Shield and 1.5 Frenzy per die at battle 8).
+- Bleed is still weak (6%), and Lacerate's value barely matters (+2 value: +2 points). The problem is the archetype as a whole.
+- Poison (76%) and Ritual + Poison (55%) are now well above the other builds.
+
+### Decisions
+- Visible, intent-based escalation (Battle Cry) instead of a hidden per-turn counter, which matches the game's readable-threat style. `escalationPerTurn` stays in code but no enemy uses it.
+- The new Commons keep value 2 for now.
+
+### Next Steps
+- Find Bleed's structural problem.
+- Bring Poison and Ritual + Poison down towards the other builds.
+- Equipment (passive items) on a trigger system, then re-evaluate modules with it.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.

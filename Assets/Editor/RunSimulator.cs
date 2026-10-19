@@ -346,7 +346,7 @@ public static class RunSimulator
         int rage = player.GetStatus(StatusType.Rage);
         bool bigHit = brain.currentIntent.intentType == ActionType.Attack && brain.currentIntent.value + enemy.GetStatus(StatusType.Rage) >= 6;
         // Stacking Fortify only pays off if the die has a face that spends it.
-        bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash");
+        bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash" || f.definition.faceName == "Spiked Shield");
 
         // A module brings an archetype onto a face outside it (e.g. Venom Coating on a Sword), so it is the face's
         // build action, except when blocking a big hit.
@@ -365,6 +365,8 @@ public static class RunSimulator
             case "Detonate": return burn >= 3 ? ActionType.Attack : ActionType.Magic;
             case "Plague": return ActionType.Magic;
             case "Shield Burst": return fortify >= 3 ? ActionType.Attack : ActionType.Defense;
+            // Fortify never resets, so stack it first; blocking a big hit also builds it.
+            case "Spiked Shield": return !bigHit && fortify >= 6 ? ActionType.Attack : ActionType.Defense;
             case "Bite": return player.currentHP < player.maxHP / 2 ? ActionType.Magic : ActionType.Attack;
             // Rage and Ritual last the battle, so build some early, then start hitting with it.
             case "Fury": return rage < RageToStartAttacking ? ActionType.Magic : ActionType.Attack;

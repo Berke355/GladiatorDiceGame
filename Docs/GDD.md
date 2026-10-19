@@ -325,6 +325,13 @@ Every archetype follows the same three roles. This keeps archetypes readable for
 | **Engine / Bridge** | Grows the resource, or connects the build to another one | Rare |
 | **Payoff** | Turns the resource into results, multiplicatively | Epic |
 
+#### Every archetype needs a Common that grows during a fight
+
+Builds are made of Commons: the simulator's dice at battle 8 hold mostly Commons, and Rares and Epics show up a few times per run. Archetypes win when their Common gets stronger every turn of a fight (Ember applies Burn and ignites the growing total; Venom's Poison stacks and ticks), and lose when it does the same small thing every turn, because strong enemies gain Rage every turn ("clock, not lock").
+
+- So every archetype gets at least one Common that **turns its accumulated resource into results, additively**: value plus (or at least) the resource. Multiplying by the resource stays Epic.
+- These Commons keep a floor (their value), so they still pass the Standalone Faces test.
+
 ### Burn (implemented)
 
 Burst damage over a short time. Build Burn up, then cash it out.
@@ -367,11 +374,14 @@ Defense that turns into offense. Stack up protection, then trade it for one big 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
 | **Shield** (reworked) | Starter | Common | 2 | Attack: deal damage equal to my value. Defense: gain Fortify equal to my value. |
+| **Spiked Shield** | Starter (grows) | Common | 2 | Attack: deal damage equal to your Fortify, at least my value (nothing is consumed). Defense: gain Fortify equal to my value. |
 | **Shield Bash** | Engine | Rare | 2 | Attack: deal damage equal to my value plus your Block and Fortify (nothing is consumed). Defense: gain block equal to my value. |
 | **Flame Ward** | Bridge (Burn + Block) | Rare | 2 | (existing face) |
 | **Shield Burst** | Payoff | Epic | 2 | Attack: consume all Fortify and deal my value plus Fortify × my value as damage. Defense: gain Fortify equal to my value. |
 
 Reworking Shield into the Shield starter also ends the Sword/Shield duplication: Sword stays the plain Physical face.
+
+- **Spiked Shield vs. Shield Bash:** Spiked Shield's hit is just your Fortify (at least its value), while Shield Bash adds its value and your Block on top. Fortify never resets, so Spiked Shield's hit only grows during a fight.
 
 ### Berserker (implemented)
 
@@ -384,10 +394,12 @@ Power that keeps growing. Build Rage, then hit often or hit once with everything
 |---|---|---|---|---|
 | **Fury** | Starter | Common | 1 | Magic: gain Rage equal to my value. Attack: deal damage equal to my value. |
 | **Bloodrage** | Starter (risky) | Common | 2 | Magic: lose HP and gain Rage equal to my value. Attack: deal damage equal to my value. |
+| **Frenzy** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value, then gain 1 Rage. |
 | **Twin Axes** | Engine | Rare | 1 | Attack: hit twice for my value. |
 | **Iron Rage** | Bridge (Rage + Block) | Rare | 2 | Defense: gain Fortify equal to my value and 1 Rage. |
 | **Unleash** | Payoff | Epic | 2 | Attack: deal my value × your Rage as damage (at least my value). |
 
+- **Frenzy builds Rage without losing a turn:** Fury and Bloodrage trade an attack for Rage; Frenzy attacks and grows every later hit by 1. The Rage comes after the hit, so it never boosts its own hit.
 - **Twin Axes hits twice, not three times:** with Rage counted on every hit, three hits would scale like a multiplier and belong in Epic. Two hits keep it a Rare (+1 value improves two hits).
 - **Iron Rage** is the bridge to the Shield archetype: defending also builds permanent damage, which shortens Shield's slow fights.
 
@@ -418,11 +430,13 @@ A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder 
 |---|---|---|---|---|
 | **Sword** | Starter (starting die) | Common | 2 | Attack: deal damage and apply 2 Bleed. Defense: gain block. |
 | **Serrated Blade** | Starter | Common | 3 | Attack: apply Bleed equal to my value. Defense: gain block equal to my value. |
+| **Lacerate** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the enemy's Bleed (nothing is consumed). Defense: gain block equal to my value. |
 | **Open Wound** | Engine | Rare | 2 | Attack: deal damage equal to my value; if the enemy is bleeding, hit again for my value. |
 | **Bloodscent** | Bridge (Bleed + Rage) | Rare | 2 | Defense: gain block equal to my value; if the enemy is bleeding, heal equal to my value. |
 | **Exsanguinate** | Payoff | Epic | 1 | Attack: consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
 
 - **Bleed timing:** Bleed applied on your turn ticks at the end of the enemy's turn, so N Bleed keeps the enemy marked for N − 1 of your turns. Bleed sources therefore apply at least 2 (Sword 2, Serrated Blade 3, Blood Rite 3, Witch's Curse 2); 1 Bleed would never reach your next turn.
+- **Lacerate keeps Bleed a mark:** Bleed still deals its 1 per tick; Lacerate hits harder the longer the enemy stays marked. Unlike Exsanguinate it consumes nothing and adds instead of multiplying, which keeps it a Common.
 - **Conditional faces keep a floor:** without Bleed, Open Wound still hits once and Bloodscent still blocks (Standalone Faces rule).
 - **Exsanguinate vs. Detonate:** Detonate is additive (value + Burn), Exsanguinate is multiplicative (value × Bleed) and consumes the whole remaining duration. "Keep the mark for the conditional effects, or cash it in now?" is the Bleed build's core decision.
 - **The life loop (Bleed + Berserker bridge):** Berserker uses HP as a resource. Bloodrage spends HP for Rage, and Bloodscent heals it back while the enemy bleeds: lose HP, apply strong effects, heal back. Open Wound's second hit also benefits from Rage. Bloodscent's healing is kept as is for now and will be revisited if it proves too strong.
@@ -512,7 +526,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 
 | Enemy | HP | Intents | Clock |
 |---|---|---|---|
-| **Essedarius** (chariot fighter) | 42 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1) | **Gathering speed:** gains 1 Rage every turn |
+| **Essedarius** (chariot fighter) | 42 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1), Battle Cry: 1 Rage (×1) | **Gathering speed:** builds Rage with Battle Cry |
 | **War Elephant** | 56 | Stomp 6 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
 | **Hoplomachus Champion** | 44 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
 | **Bestiarius** (beast tamer) | 40 | Whip 2 (×2), Unleash 5 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
@@ -520,7 +534,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 #### New Mechanics for Enemies
 
 - **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
-- **Escalation through Rage** (Essedarius, Hoplomachus, Arena Lion): rising damage uses the same visible Rage status as the player. An enemy can gain Rage every turn (Essedarius) or from an intent (Battle Cry, Roar). Its intents show the boosted numbers, and the Rage chip's tooltip explains why.
+- **Escalation through Rage** (Essedarius, Hoplomachus, Arena Lion): rising damage uses the same visible Rage status as the player. An enemy can gain Rage from an intent (Battle Cry, Roar), which the player sees coming. Rage every turn (`escalationPerTurn`) is still supported but no enemy uses it: on Essedarius it became a wall that slow builds could not get past (Essedarius alone caused about half of the Bleed, Rage and Shield deaths), so it was replaced with Battle Cry. Its intents show the boosted numbers, and the Rage chip's tooltip explains why.
 
 #### Balance Targets
 
