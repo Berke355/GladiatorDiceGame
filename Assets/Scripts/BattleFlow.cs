@@ -11,8 +11,12 @@ public class BattleFlow
     public readonly EnemyBrain brain;
     public readonly List<DieFace> die;
     public readonly TriggerSystem triggers;
+    // Charge on the die faces for this battle (Hammer).
+    public readonly DieCharge charge = new DieCharge();
 
     public DieFace RolledFace { get; private set; }
+    // The last action asked to reroll the die and act again (Steady Hand). Cleared by the next roll.
+    public bool RerollPending { get; private set; }
     public bool IsOver => player.IsDead || enemy.IsDead;
 
     public BattleFlow(Entity player, Entity enemy, EnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment){
@@ -20,7 +24,7 @@ public class BattleFlow
         this.enemy = enemy;
         this.brain = brain;
         this.die = die;
-        triggers = new TriggerSystem(player, enemy, die, equipment);
+        triggers = new TriggerSystem(player, enemy, die, equipment, charge);
     }
 
     public void StartBattle(){
@@ -35,7 +39,9 @@ public class BattleFlow
         brain.ChooseNextIntent();
     }
 
+    // Also used for a reroll within the same turn, which is not a new turn (no turn start, no Block reset).
     public DieFace Roll(){
+        RerollPending = false;
         RolledFace = die[Random.Range(0, die.Count)];
         triggers.currentFace = RolledFace;
         triggers.Fire(TriggerType.FaceRolled);
@@ -47,16 +53,22 @@ public class BattleFlow
         triggers.Fire(TriggerType.ActionChosen, action);
         if(IsOver) return;
 
-        EffectContext context = new EffectContext{ source = player, target = enemy, value = RolledFace.value, die = die, face = RolledFace };
+        EffectContext context = new EffectContext{ source = player, target = enemy, value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
+        RerollPending = context.rerollRequested;
     }
 
     // TurnEnd items run before the player's statuses tick.
+    // The face you acted with spends its Charge; every other charging face gains 1.
     public void EndPlayerTurn(){
         triggers.Fire(TriggerType.TurnEnd);
         player.OnTurnEnd();
+        foreach(DieFace face in die){
+            if(face == RolledFace) charge.Reset(face);
+            else if(face.definition.charges) charge.Add(face, 1);
+        }
         triggers.currentFace = null;
     }
 

@@ -45,6 +45,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2478bc65745e6d040957be4372ef006e, type: 2}
   - {fileID: 11400000, guid: ed0b55d9d72d9b440884e5b367b9547e, type: 2}
   - {fileID: 11400000, guid: 4bc08ec953d10054e858f9f490a68b62, type: 2}
+  - {fileID: 11400000, guid: a22ae0eebfe6cc2448e76fd85ca9debe, type: 2}
+  - {fileID: 11400000, guid: 57bde7965a078c641b4e1d4133b8caeb, type: 2}
+  - {fileID: 11400000, guid: 483734601c84c4f4b80520c708536dba, type: 2}
+  - {fileID: 11400000, guid: 7250def467ca5d14bb3b5ca91581dc13, type: 2}
+  - {fileID: 11400000, guid: bbd1bb1acc0a6dd469205a9d30f0cab9, type: 2}
   offersPerMarket: 3
   commonWeight: 70
   rareWeight: 25
@@ -84,4 +89,3 @@ MonoBehaviour:
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5
   epicUpgradeMultiplier: 20
-  aboveSoftCapFactor: 2

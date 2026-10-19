@@ -130,7 +130,6 @@ Every die face is defined by a common set of properties.
 - Price
 - Action Type
 - Value
-- Soft Cap
 - Primary Effect
 - Secondary Effect (optional)
 - Tags
@@ -178,7 +177,7 @@ Every run starts from the same five neutral faces plus one face the player picks
 |---|---|---|---|---|
 | **Sword** | 2 | Common | 2 | Attack: deal damage equal to my value and apply 2 Bleed. Defense: gain block equal to my value. |
 | **Shield** | 2 | Common | 2 | Attack: deal damage equal to my value. Defense: gain Fortify equal to my value. |
-| **Health Potion** | 1 | Common | 3 (soft cap 4) | Magic: heal equal to my value. No Attack or Defense. |
+| **Health Potion** | 1 | Common | 3 | Magic: heal equal to my value. No Attack or Defense. |
 | **Starting face** | 1 | Chosen | — | Picked by the player at the start of the run |
 
 - **Sword and Shield mirror each other:** Sword is stronger on offense (its attack also bleeds) and weaker on defense (temporary Block). Shield is stronger on defense (permanent Fortify) and weaker on offense. If one of them proves too strong, it will be rebalanced.
@@ -209,7 +208,7 @@ Each visit offers a limited, random selection. The player is never forced to spe
 Market services:
 
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
-- **Upgrade a face:** raise one die face's value by 1. There is no hard limit; past the face's soft cap, upgrades get much more expensive. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
+- **Upgrade a face:** raise one die face's value by 1. There is no limit: anyone who can pay can keep upgrading. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
 - **Reroll the offers:** pay gold for a new set of offers, faces and modules alike (sold offers are replaced too). The new set avoids the faces it replaced when the pool allows.
 - **Buy an action module:** attach it to an empty action slot of one die face (see Action Modules).
 
@@ -267,10 +266,7 @@ Prices are placeholders, to be tuned through play-testing.
 | Rare | ×5 | 10 | 15 |
 | Epic | ×20 | 40 | 60 |
 
-- **Soft cap, not a hard cap:** upgrades are unlimited, because game-breaking runs are part of the power fantasy. Every face has a soft cap; from the soft cap on, each level costs 2× the normal formula, then 4×, 8×... Breaking past the cap is possible but takes a run's worth of gold:
-  - Ember (Common, cap 6): 6 → 7 costs 36 gold, 7 → 8 costs 84.
-  - Fuel (Epic, cap 3): 3 → 4 costs 120 gold, 4 → 5 costs 320 (a run earns about 200).
-  - Current soft cap rule: Common base + 3, Rare base + 2, Epic base + 1.
+- **No cap:** upgrades are unlimited and never jump in price, because game-breaking runs are part of the power fantasy. The only brake is the price itself, which grows with the value (an Ember at 8 costs 24 gold to raise to 9). An earlier soft cap (2×, 4×, 8×... per level past a cap) was removed: it only mattered to players with a lot of gold, and removing it moved the simulated builds by 0–8 points.
 
 ### Save vs. Tempo
 
@@ -503,14 +499,37 @@ A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder 
 - **The life loop (Bleed + Berserker bridge):** Berserker uses HP as a resource. Bloodrage spends HP for Rage, and Bloodscent heals it back while the enemy bleeds: lose HP, apply strong effects, heal back. Open Wound's second hit also benefits from Rage. Bloodscent's healing is kept as is for now and will be revisited if it proves too strong.
 - **"If" effects are one reusable box** (`ConditionalEffectSO`), so future conditions ("if the enemy is poisoned", "if you have Fortify") need no new code.
 
+### Hammer (implemented)
+
+Pour power into one face and set up the turn it lands. Hammer stores its resource on the die itself, the purest form of "You build a die".
+
+- **Resource:** **Charge**, temporary value on a die face for the current battle. A Hammer face gains **+1 Charge every turn it isn't the face you act with**, up to **+5**. When you act with a face, its Charge is used and then resets to 0.
+- **Value Is the Effect still holds:** a face's value in battle is its value plus its Charge, the number shown on the die, and its effects use exactly that number.
+- **Math:** on a six-sided die, a face comes up about once every six turns, so a value-2 War Hammer usually lands at 5–7. Strong for a Common, but you don't know when it will land.
+- **The cap (+5)** keeps "when will it land?" more important than "how big has it grown?"; without it, one roll in a long fight could deal 15+.
+- **The cost (Pillar 4):** War Hammer and Earthshaker only have Attack. When a charged Hammer lands, you swing even if the enemy is about to hit hard.
+- **Grows in battle, not through upgrades** (the "Common that grows during a fight" rule).
+- **Any face can hold Charge** (Anvil adds it to any face), but only faces with the Charge rule gain it every turn.
+- **Modules:** charged Hammers are the high-value faces action modules were made for. A module on a War Hammer uses its charged value.
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **War Hammer** | Starter | Common | 3 | Attack: deal damage equal to my value. Charge. |
+| **Maul** | Starter (safe) | Common | 3 | Attack: deal damage equal to my value. Defense: gain block equal to my value. Charge. |
+| **Anvil** | Bridge (Hammer + Block) | Rare | 2 | Defense: gain block equal to my value. Magic: add my value as Charge to your highest-value other face. |
+| **Steady Hand** | Engine (die manipulation) | Rare | 1 | Magic: reroll the die and act again. Defense: gain block equal to my value. |
+| **Earthshaker** | Payoff | Epic | 1 | Attack: deal damage equal to your highest-value other face's value times my value. Its Charge is kept. |
+
+- **Maul is the safe Hammer:** when it lands charged, you choose between the big swing and a big block. It exists because the first set (War Hammer at value 2 as the only Common) cleared 7% of runs: the Hammer bot lost the most HP per turn of any build (2.0), and a second Attack-only Common didn't help (7%), while a Charge face with Defense doubled it. With Maul and War Hammer at 3, the Hammer bot clears about 32%. Maul's Block tag also gives the Shield archetype a growing face (Shield bot 6% → 20%).
+- **Anvil** aims the Charge: it builds up the face you want to land, and bridges to the Shield archetype.
+- **Steady Hand** is the control tool: spend a weak roll fishing for the charged Hammer. Rerolling is not a new turn (Block doesn't reset, turn-start items don't fire), and a reroll can land on Steady Hand again.
+- **Earthshaker** is the multiplicative payoff: it hits with a charged face's value without using its Charge, so you can strike twice from one build-up.
+- **Standalone floor:** War Hammer hits without Charge, Anvil and Steady Hand block, and Earthshaker hits for at least its value.
+
 ### Future Archetypes
 
 Ideas to revisit after Poison and Shield.
 
-- **Hammer:** Pour power into one face and set up the turn it lands for a one-turn kill. Uses in-battle growth instead of permanent upgrades, so it doesn't depend on expensive upgrades past the soft cap:
-  - **Charge:** the face gains +1 temporary value every turn it isn't rolled.
-  - **Die manipulation:** reroll the die, or trigger your highest-value face.
-  - Needs changes to the battle state machine.
 - **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.
 - **Die topology:** Face positions on the die matter, e.g. opposite faces (1–6, 2–5, 3–4) or adjacent faces. Turns "which face do I replace?" into "which face, in which slot?". Complex, so it stays a late idea.
 

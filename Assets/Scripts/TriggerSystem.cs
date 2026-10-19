@@ -10,6 +10,7 @@ public class TriggerSystem
     private readonly Entity enemy;
     private readonly List<DieFace> die;
     private readonly List<EquipmentSO> equipment;
+    private readonly DieCharge charge;
     // The face rolled this turn (null outside the player's turn), passed to effects like a face's own effects.
     public DieFace currentFace;
     // Effects run by a trigger never fire triggers, so items can never loop (e.g. an extra hit firing itself).
@@ -25,8 +26,9 @@ public class TriggerSystem
     private readonly Action<Entity, int> onHitDealt;
     private readonly Action<int> onHitTaken;
 
-    public TriggerSystem(Entity player, Entity enemy, List<DieFace> die, List<EquipmentSO> equipment){
+    public TriggerSystem(Entity player, Entity enemy, List<DieFace> die, List<EquipmentSO> equipment, DieCharge charge = null){
         this.player = player;
+        this.charge = charge;
         this.enemy = enemy;
         this.die = die;
         this.equipment = equipment ?? new List<EquipmentSO>();
@@ -61,7 +63,7 @@ public class TriggerSystem
                     Count(firedThisRound, reaction);
                     Count(firedThisBattle, reaction);
 
-                    EffectContext context = new EffectContext{ source = player, target = enemy, value = reaction.value, die = die, face = currentFace };
+                    EffectContext context = new EffectContext{ source = player, target = enemy, value = reaction.value, die = die, face = currentFace, charge = charge };
                     foreach(EffectSO effect in reaction.effects){
                         effect.Execute(context);
                     }

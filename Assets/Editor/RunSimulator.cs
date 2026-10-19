@@ -124,6 +124,7 @@ public static class RunSimulator
             new Bot("Focused: Rage", Shopping.Focused, FaceTag.Rage),
             new Bot("Focused: Ritual", Shopping.Focused, FaceTag.Ritual),
             new Bot("Focused: Bleed", Shopping.Focused, FaceTag.Bleed),
+            new Bot("Focused: Hammer", Shopping.Focused, FaceTag.Hammer),
             // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
             new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
             new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
@@ -146,20 +147,17 @@ public static class RunSimulator
         return string.Join(" / ", parts);
     }
 
-    // Runs measure() with some faces' base value and soft cap temporarily changed by the given amounts
+    // Runs measure() with some faces' base value temporarily changed by the given amounts
     // (keys are face names, e.g. "Open Wound"), then always restores them. The assets are never saved.
     public static string WithFaceValueChanges(Dictionary<string, int> valueDeltas, System.Func<string> measure){
         List<DieFaceSO> changed = new List<DieFaceSO>();
         List<int> oldBase = new List<int>();
-        List<int> oldCap = new List<int>();
         foreach(string guid in AssetDatabase.FindAssets("t:DieFaceSO", new[]{ "Assets/Faces" })){
             DieFaceSO face = AssetDatabase.LoadAssetAtPath<DieFaceSO>(AssetDatabase.GUIDToAssetPath(guid));
             if(face == null || !valueDeltas.ContainsKey(face.faceName)) continue;
             changed.Add(face);
             oldBase.Add(face.baseValue);
-            oldCap.Add(face.softCap);
             face.baseValue += valueDeltas[face.faceName];
-            face.softCap += valueDeltas[face.faceName];
         }
         try{
             return measure();
@@ -167,7 +165,6 @@ public static class RunSimulator
         finally{
             for(int i = 0; i < changed.Count; i++){
                 changed[i].baseValue = oldBase[i];
-                changed[i].softCap = oldCap[i];
             }
         }
     }
@@ -381,33 +378,37 @@ public static class RunSimulator
             flow.StartPlayerTurn();
             if(flow.IsOver) break;
 
-            DieFace face = flow.Roll();
-            if(flow.IsOver) break;
-            ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain);
-            int enemyHP = enemy.currentHP;
-            int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? enemy.GetStatus(stats.trackedStatus) : 0;
-            if(stats != null){
-                stats.actions++;
-                if(enemy.GetStatus(StatusType.Bleed) > 0) stats.bleedingAtAction++;
-                stats.trackedStacksAtAction += trackedBefore;
-                if(turns < stats.trackedByTurn.Length){
-                    stats.trackedByTurn[turns] += trackedBefore;
-                    stats.battlesByTurn[turns]++;
+            // Steady Hand rerolls within the same turn, so a turn can hold several rolls and actions.
+            int rerolls = 0;
+            do{
+                DieFace face = flow.Roll();
+                if(flow.IsOver) break;
+                ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain, flow);
+                int enemyHP = enemy.currentHP;
+                int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? enemy.GetStatus(stats.trackedStatus) : 0;
+                if(stats != null){
+                    stats.actions++;
+                    if(enemy.GetStatus(StatusType.Bleed) > 0) stats.bleedingAtAction++;
+                    stats.trackedStacksAtAction += trackedBefore;
+                    if(turns < stats.trackedByTurn.Length){
+                        stats.trackedByTurn[turns] += trackedBefore;
+                        stats.battlesByTurn[turns]++;
+                    }
                 }
-            }
-            flow.PlayAction(action);
-            if(stats != null){
-                string name = face.definition.faceName;
-                if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[3];
-                if(stats.trackedStatus != StatusType.None) stats.perFace[name][2] += Mathf.Max(0, enemy.GetStatus(stats.trackedStatus) - trackedBefore);
-                stats.perFace[name][0]++;
-                stats.perFace[name][1] += enemyHP - enemy.currentHP;
-                stats.actionDamage += enemyHP - enemy.currentHP;
-                if(!face.definition.effects.Exists(e => e.actionType == action)){
-                    stats.moduleActions++;
-                    stats.moduleDamage += enemyHP - enemy.currentHP;
+                flow.PlayAction(action);
+                if(stats != null){
+                    string name = face.definition.faceName;
+                    if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[3];
+                    if(stats.trackedStatus != StatusType.None) stats.perFace[name][2] += Mathf.Max(0, enemy.GetStatus(stats.trackedStatus) - trackedBefore);
+                    stats.perFace[name][0]++;
+                    stats.perFace[name][1] += enemyHP - enemy.currentHP;
+                    stats.actionDamage += enemyHP - enemy.currentHP;
+                    if(!face.definition.effects.Exists(e => e.actionType == action)){
+                        stats.moduleActions++;
+                        stats.moduleDamage += enemyHP - enemy.currentHP;
+                    }
                 }
-            }
+            } while(flow.RerollPending && !flow.IsOver && ++rerolls < 10);
             if(player.IsDead || enemy.IsDead) break;
 
             flow.EndPlayerTurn();
@@ -418,9 +419,9 @@ public static class RunSimulator
             if(stats != null) stats.hpTaken += playerHP - player.currentHP;
             if(player.IsDead || enemy.IsDead) break;
 
-            enemyHP = enemy.currentHP;
+            int enemyHPBeforeTicks = enemy.currentHP;
             flow.EndEnemyTurn();
-            if(stats != null) stats.tickDamage += enemyHP - enemy.currentHP;
+            if(stats != null) stats.tickDamage += enemyHPBeforeTicks - enemy.currentHP;
             if(player.IsDead || enemy.IsDead) break;
         }
 
@@ -445,7 +446,7 @@ public static class RunSimulator
     }
 
     // A simple, reasonable player: uses payoffs when their resource is ready, blocks big telegraphed hits.
-    private static ActionType ChooseAction(DieFace face, List<DieFace> die, Entity player, Entity enemy, EnemyBrain brain){
+    private static ActionType ChooseAction(DieFace face, List<DieFace> die, Entity player, Entity enemy, EnemyBrain brain, BattleFlow flow){
         DieFaceSO definition = face.definition;
         int burn = enemy.GetStatus(StatusType.Burn);
         int fortify = player.GetStatus(StatusType.Fortify);
@@ -478,6 +479,10 @@ public static class RunSimulator
             case "Fury": return rage < RageToStartAttacking ? ActionType.Magic : ActionType.Attack;
             case "Incantation": return ActionType.Magic;
             // Paying HP for Rage is only worth it with HP to spare and while Rage is still low.
+            // Aim the Charge unless a big hit needs blocking.
+            case "Anvil": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // Fish for a charged face; otherwise block.
+            case "Steady Hand": return !bigHit && die.Exists(f => f != face && flow.charge.Get(f) >= 2) ? ActionType.Magic : ActionType.Defense;
             case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 

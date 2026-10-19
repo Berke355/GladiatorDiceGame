@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class PlayerRollState : BattleState
 {
-    public PlayerRollState(BattleManager manager) : base(manager){
+    // False for a reroll within the same turn (Steady Hand): no turn start, the intent stays.
+    private readonly bool startsTurn;
 
+    public PlayerRollState(BattleManager manager, bool startsTurn = true) : base(manager){
+        this.startsTurn = startsTurn;
     }
 
     public override void Enter(){
         Debug.Log("Entered the roll state.");
 
-        battleManager.flow.StartPlayerTurn();
-        if(battleManager.CheckBattleOver()) return;
+        if(startsTurn){
+            battleManager.flow.StartPlayerTurn();
+            if(battleManager.CheckBattleOver()) return;
+        }
 
         if(UIManager.Instance != null){
             UIManager.Instance.UpdateEnemyIntentText(battleManager.enemyBrain.DescribeCurrentIntent());

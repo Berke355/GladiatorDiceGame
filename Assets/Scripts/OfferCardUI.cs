@@ -13,7 +13,7 @@ public class OfferCardUI : MonoBehaviour
     public static string DescribeFace(DieFaceSO face){
         return "<b>" + face.faceName + "</b>\n"
             + RarityLabel(face.rarity) + "\n"
-            + "Value " + face.baseValue + "  (cap " + face.softCap + ")\n"
+            + "Value " + face.baseValue + "\n"
             + "<size=80%>" + GameText.Colorize(face.description) + "</size>";
     }
 

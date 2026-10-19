@@ -27,6 +27,10 @@ public class UIManager : MonoBehaviour
     [Header("Die")]
     public DieChipUI[] dieChips;
 
+    // This battle's Charge (set by BattleManager), so the die and the previews show battle values.
+    [System.NonSerialized]
+    public DieCharge charge;
+
     [Header("Equipment")]
     public EquipmentChipUI[] equipmentChips;
 
@@ -115,7 +119,7 @@ public class UIManager : MonoBehaviour
 
     // After the roll: show the face and what each action would do; actions the face lacks stay disabled.
     public void ShowRolledFace(DieFace face, List<DieFace> die){
-        rolledFaceTitle.text = face.DisplayName + "  <size=70%>Value " + face.value + "</size>";
+        rolledFaceTitle.text = face.DisplayName + "  <size=70%>Value " + ValueOf(face) + "</size>";
         rolledFaceText.text = GameText.Colorize(face.FullDescription);
         rolledFaceTooltip.text = GameText.FaceTooltip(face);
         UpdateDieChips(die, face);
@@ -150,7 +154,7 @@ public class UIManager : MonoBehaviour
     // Short text of every effect the face runs for this action with the real numbers (Rage, Ritual, stacks),
     // e.g. "5 damage, 4 Bleed". Empty if the face has no effect for this action.
     private string DescribeAction(DieFace face, List<DieFace> die, ActionType action){
-        EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = die, face = face };
+        EffectContext context = new EffectContext{ source = player, target = enemy, value = ValueOf(face), die = die, face = face, charge = charge };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);
@@ -159,12 +163,16 @@ public class UIManager : MonoBehaviour
         return string.Join(", ", parts);
     }
 
+    private int ValueOf(DieFace face){
+        return charge != null ? charge.ValueOf(face) : face.value;
+    }
+
     private void UpdateDieChips(List<DieFace> die, DieFace rolled){
         for(int i = 0; i < dieChips.Length; i++){
             bool hasFace = i < die.Count;
             dieChips[i].gameObject.SetActive(hasFace);
             if(hasFace){
-                dieChips[i].Set(die[i], die[i] == rolled);
+                dieChips[i].Set(die[i], die[i] == rolled, charge != null ? charge.Get(die[i]) : 0);
             }
         }
     }

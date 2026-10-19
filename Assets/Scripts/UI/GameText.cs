@@ -62,7 +62,7 @@ public static class GameText
 
     // Tooltip text for a face definition (e.g. a Market offer): name, rarity, value, colored description, keywords.
     public static string FaceTooltip(DieFaceSO face, int value){
-        return "<b>" + face.faceName + "</b>  <size=80%>" + face.rarity + " · Value " + value + " (cap " + face.softCap + ")</size>\n"
+        return "<b>" + face.faceName + "</b>  <size=80%>" + face.rarity + " · Value " + value + "</size>\n"
             + Colorize(face.description)
             + Glossary(face.description);
     }
@@ -70,7 +70,7 @@ public static class GameText
     // Tooltip text for a face on the die, including its attached modules.
     public static string FaceTooltip(DieFace face){
         string description = face.FullDescription;
-        return "<b>" + face.DisplayName + "</b>  <size=80%>" + face.definition.rarity + " · Value " + face.value + " (cap " + face.definition.softCap + ")</size>\n"
+        return "<b>" + face.DisplayName + "</b>  <size=80%>" + face.definition.rarity + " · Value " + face.value + "</size>\n"
             + Colorize(description)
             + Glossary(description);
     }

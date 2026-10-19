@@ -186,7 +186,7 @@ public class MarketUI : MonoBehaviour
             if(!hasFace) continue;
 
             DieFace dieFace = run.dieFaces[i];
-            slot.faceText.text = dieFace.DisplayName + "\nValue " + dieFace.value + "  (cap " + dieFace.definition.softCap + ")"
+            slot.faceText.text = dieFace.DisplayName + "\nValue " + dieFace.value
                 + "\n<size=75%>" + ActionSlots(dieFace) + "</size>";
             // A module can only go on a face whose slot for its action is still empty.
             slot.slotButton.interactable = pendingOffer >= 0 || (pendingModule >= 0 && market.CanAttachModule(pendingModule, i));
@@ -195,8 +195,7 @@ public class MarketUI : MonoBehaviour
             bool upgradable = market.IsUpgradableHere(i);
             slot.upgradeButton.gameObject.SetActive(upgradable);
             if(upgradable){
-                // Past the soft cap the price jumps, so the button says so.
-                slot.upgradeButtonText.text = (market.IsAboveSoftCap(i) ? "Break cap  " : "Upgrade  ") + market.GetUpgradeCost(i) + "g";
+                slot.upgradeButtonText.text = "Upgrade  " + market.GetUpgradeCost(i) + "g";
                 slot.upgradeButton.interactable = !Choosing && market.CanUpgrade(i);
             }
         }

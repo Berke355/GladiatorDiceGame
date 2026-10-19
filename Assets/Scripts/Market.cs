@@ -340,11 +340,6 @@ public class Market
         return isGrand == isEpic;
     }
 
-    // Upgrades are unlimited; past the soft cap they just cost much more.
-    public bool IsAboveSoftCap(int dieSlot){
-        return economy.IsAboveSoftCap(run.dieFaces[dieSlot]);
-    }
-
     public int GetUpgradeCost(int dieSlot){
         return economy.GetUpgradeCost(run.dieFaces[dieSlot]);
     }

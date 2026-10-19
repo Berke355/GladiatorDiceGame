@@ -1208,3 +1208,56 @@ A real run with Iron Bracers, Smoldering Gauntlet and Barbed Hook:
 - Shield on its own and Ritual + Bleed.
 - The Hammer archetype (high-value faces), and Epic modules with it.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 41 - Hammer Archetype & No Upgrade Cap
+
+### Accomplished
+- **Hammer archetype (GDD "Hammer"):** power stored on the die itself.
+  - **Charge:** `DieCharge` holds battle-only temporary value per die face, owned by `BattleFlow`. At the end of the player's turn, the face you acted with spends its Charge, and every other face with the `charges` rule gains +1 (up to +5).
+  - Effects get the battle value (value + Charge), so Value Is the Effect holds. Previews and die chips show it, e.g. "3 +4".
+  - **Faces:**
+    - War Hammer (Common, value 3): Attack only, Charge.
+    - Maul (Common, value 3): Attack and Defense, Charge.
+    - Anvil (Rare): block, or add its value as Charge to the highest other face.
+    - Steady Hand (Rare): reroll and act again, or block.
+    - Earthshaker (Epic): hit for the highest other face's value × its value, keeping that face's Charge.
+  - **New effects:** `AddChargeToHighestEffectSO`, `RerollEffectSO` and `HighestFaceDamageEffectSO`, plus `FaceTag.Hammer`. `EffectContext` gained `charge`, `ValueOf(face)` and `rerollRequested`.
+  - **Rerolls:** a reroll sends `PlayerActionSelectState` back to `PlayerRollState` without starting a new turn, so Block stays and the intent doesn't change. The simulator loops the same way.
+  - **Simulator:** a focused Hammer bot, and rules for Anvil (aim Charge unless a big hit is coming) and Steady Hand (fish when another face has 2+ Charge).
+- **No upgrade cap (the user's call):** `softCap`, `aboveSoftCapFactor` and the "Break cap" button are gone. An upgrade costs the rarity multiplier × the current value, with no jumps, and the "(cap N)" texts were removed from cards, tooltips and slots.
+- **GDD and CLAUDE.md** updated.
+
+### Tests
+- **BattleFlow checks (9/9):**
+  - Charge +1 per turn, capped at +5.
+  - The Hammer hits for 2 + 5 = 7, then resets.
+  - Earthshaker hits for the charged Hammer's 7 and keeps its Charge.
+  - Anvil adds +2 Charge, and Steady Hand requests a reroll.
+  - Venom Coating on a Hammer with +5 Charge applies 7 Poison: the module combo the user described.
+- **Play Mode:** a War Hammer / Maul / Steady Hand / Anvil / Earthshaker die.
+  - The chips showed growing Charge, and Earthshaker's preview followed it (6, then 7 damage).
+  - Steady Hand's reroll reactivated the roll button with the same intent and Block kept.
+
+### Results
+| Hammer set | Hammer bot |
+|---|---|
+| First set (War Hammer 2, the only Common) | 7% |
+| War Hammer +2 | 15% |
+| + a second Attack-only Common | 7% |
+| + a Charge face with Defense | 16% |
+| **Maul 3 + War Hammer 3** | **32%** |
+
+- The first set's problem was defenselessness: the Hammer bot lost the most HP per turn of any build (2.0) and filled only 3.2 of 6 faces with Hammer faces.
+- Removing the soft cap moved the builds by 0–8 points (Burn and Rage +8).
+
+All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 26% · Hammer 32% · Ritual + Poison 30% · Ritual + Bleed 17% · Shield + Rage 35% · Bleed + Rage 39%. For the first time, every main build sits at 20–39%.
+
+### Decisions
+- War Hammer and Earthshaker stay Attack-only (the archetype's cost). Maul is the safe Hammer.
+- Maul's Block tag gives the Shield archetype a face that grows during a fight (Shield bot 6% → 20%).
+- Upgrades have no cap; the price growing with the value is the only brake.
+
+### Next Steps
+- Combo tests for action modules on charged Hammers, and Epic modules (e.g. "Magic: gain Ritual equal to my value").
+- Ritual + Bleed (17%).
+- UI phase 2 (icons), the boss dice system, centering offer cards.

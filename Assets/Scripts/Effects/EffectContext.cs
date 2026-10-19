@@ -11,6 +11,13 @@ public class EffectContext
     public List<DieFace> die;
     // The die face that triggered the effect. Null for enemy intents.
     public DieFace face;
+    // The source's Charge for this battle (Hammer). Null for enemies.
+    public DieCharge charge;
+    // Set by an effect that rerolls the die (Steady Hand); BattleFlow reads it after the action.
+    public bool rerollRequested;
+
+    // A face's value in battle: its value plus its Charge.
+    public int ValueOf(DieFace dieFace) => charge != null ? charge.ValueOf(dieFace) : dieFace.value;
 
     // The source's Rage: added to every hit, so each hit of a multi-hit gets it.
     public int RageBonus => source != null ? source.GetStatus(StatusType.Rage) : 0;

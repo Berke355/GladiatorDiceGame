@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewDieFace", menuName = "Dice/Die Face")]
@@ -11,17 +10,11 @@ public class DieFaceSO : ScriptableObject
     public List<FaceTag> tags = new List<FaceTag>();
 
     // The value a new copy of this face starts with. Upgrades raise a DieFace's value, never this.
+    // There is no upper limit: anyone who can pay can keep upgrading (see EconomyConfigSO.GetUpgradeCost).
     public int baseValue;
-    // Soft cap: upgrades past this value are still possible but get exponentially more expensive
-    // (see EconomyConfigSO.GetUpgradeCost). Renamed from maxValue; existing assets keep their data.
-    [FormerlySerializedAs("maxValue")]
-    public int softCap;
 
     public List<ActionEffect> effects = new List<ActionEffect>();
 
-    void OnValidate(){
-        if(softCap < baseValue){
-            softCap = baseValue;
-        }
-    }
+    // Charge rule (Hammer): every turn this face isn't the one you act with, it gains +1 value for the battle.
+    public bool charges;
 }

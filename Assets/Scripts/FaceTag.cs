@@ -9,5 +9,6 @@ public enum FaceTag
     Poison,
     Rage,
     Ritual,
-    Bleed
+    Bleed,
+    Hammer
 }

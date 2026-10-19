@@ -28,6 +28,12 @@ public class PlayerActionSelectState : BattleState
         battleManager.flow.PlayAction(selectedAction);
         if(battleManager.CheckBattleOver()) return;
 
+        // Steady Hand: roll again within the same turn.
+        if(battleManager.flow.RerollPending){
+            battleManager.ChangeState(new PlayerRollState(battleManager, false));
+            return;
+        }
+
         battleManager.flow.EndPlayerTurn();
         if(battleManager.CheckBattleOver()) return;
 
