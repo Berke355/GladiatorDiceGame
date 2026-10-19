@@ -19,6 +19,9 @@ public class TriggerSystem
     private readonly Dictionary<TriggeredEffect, int> firedThisRound = new Dictionary<TriggeredEffect, int>();
     private readonly Dictionary<TriggeredEffect, int> firedThisBattle = new Dictionary<TriggeredEffect, int>();
 
+    // Raised after an item's effects ran, e.g. for the battle UI to show which item triggered.
+    public event Action<EquipmentSO> ItemTriggered;
+
     private readonly Action<Entity, int> onHitDealt;
     private readonly Action<int> onHitTaken;
 
@@ -63,6 +66,7 @@ public class TriggerSystem
                         effect.Execute(context);
                     }
                     Debug.Log(item.equipmentName + " triggered on " + trigger + ".");
+                    ItemTriggered?.Invoke(item);
                 }
             }
         }

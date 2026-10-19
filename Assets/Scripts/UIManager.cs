@@ -27,6 +27,9 @@ public class UIManager : MonoBehaviour
     [Header("Die")]
     public DieChipUI[] dieChips;
 
+    [Header("Equipment")]
+    public EquipmentChipUI[] equipmentChips;
+
     [Header("Buttons")]
     public Button rollButton;
     // Indexed by ActionType (0 Attack, 1 Defense, 2 Magic), matching BattleManager.OnActionSelected.
@@ -68,6 +71,25 @@ public class UIManager : MonoBehaviour
             enemy.OnHealthChanged -= UpdateEnemyUI;
         }
     }
+
+    // The run's items, one chip each; unused chips are hidden.
+    public void ShowEquipment(List<EquipmentSO> equipment){
+        for(int i = 0; i < equipmentChips.Length; i++){
+            bool filled = i < equipment.Count;
+            equipmentChips[i].gameObject.SetActive(filled);
+            if(filled) equipmentChips[i].Set(equipment[i]);
+        }
+        shownEquipment = equipment;
+    }
+
+    // Called when an item triggers.
+    public void FlashEquipment(EquipmentSO item){
+        if(shownEquipment == null) return;
+        int index = shownEquipment.IndexOf(item);
+        if(index >= 0 && index < equipmentChips.Length) equipmentChips[index].Flash();
+    }
+
+    private List<EquipmentSO> shownEquipment;
 
     private void UpdatePlayerUI(){
         playerPanel.Refresh(player);

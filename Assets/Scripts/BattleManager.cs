@@ -71,6 +71,11 @@ public class BattleManager : MonoBehaviour
     }
 
     void Start(){
+        // Hook the UI up before the battle starts, so BattleStart items flash too.
+        if(UIManager.Instance != null){
+            UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
+            flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
+        }
         flow.StartBattle();
         if(CheckBattleOver()) return;
         ChangeState(new PlayerRollState(this));

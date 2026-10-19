@@ -1155,3 +1155,26 @@ For the first time in these balance passes, the main builds (Burn, Poison, Rage,
 - Re-evaluate action modules alongside equipment.
 - Shield on its own and Ritual + Bleed.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 39 - Equipment in the Battle UI
+
+### Accomplished
+- **Equipment strip:** three `EquipmentChipUI` chips under the player panel, mirroring the intent box under the enemy panel. Empty slots are hidden.
+- **Tooltips:** `GameText.EquipmentTooltip` shows the name, rarity, colored description and the definitions of its keywords.
+- **Flash on trigger:** an item's chip fades from gold back to normal over 0.6 seconds when it fires, using the same highlight color as the rolled face in the die strip.
+- **Wiring:**
+  - `TriggerSystem.ItemTriggered` is raised after an item's effects run.
+  - `BattleManager.Start` connects it to `UIManager.FlashEquipment` before `StartBattle`, so BattleStart items (Iron Bracers, Bone Fetish) flash too.
+  - The simulator doesn't listen, so simulations are unchanged.
+- **CLAUDE.md** updated.
+
+### Tests (Play Mode)
+A real run with Iron Bracers, Smoldering Gauntlet and Barbed Hook:
+- Iron Bracers gave 1 Fortify at battle start.
+- A Sword hit added 3 Burn, and the Gauntlet's chip flashed.
+- A Shield hit on a bleeding enemy fired Barbed Hook's extra hit, and its chip flashed. Enemy HP 10 → 6: Shield 2, Hook 1, and 1 Bleed tick at the end of the enemy's turn.
+
+### Next Steps
+- Re-evaluate action modules alongside equipment.
+- Shield on its own and Ritual + Bleed.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.

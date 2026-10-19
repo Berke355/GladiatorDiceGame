@@ -75,6 +75,13 @@ public static class GameText
             + Glossary(description);
     }
 
+    // Tooltip text for an equipped item: name, rarity, colored description, keywords.
+    public static string EquipmentTooltip(EquipmentSO item){
+        return "<b>" + item.equipmentName + "</b>  <size=80%>" + item.rarity + " · Equipment</size>\n"
+            + Colorize(item.description)
+            + Glossary(item.description);
+    }
+
     private static string Capitalize(string word){
         return char.ToUpper(word[0]) + word.Substring(1);
     }
