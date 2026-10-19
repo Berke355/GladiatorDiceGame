@@ -947,3 +947,48 @@ Without / with modules: Burn 32% / 26% · Poison 73% / 72% · Ritual + Poison 39
 - Bring Poison and Ritual + Poison down towards the other builds.
 - Equipment (passive items) on a trigger system, then re-evaluate modules with it.
 - UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.
+
+## Day 34 - Bleed Diagnosis & Serrated Blade
+
+### Accomplished
+- **Simulator diagnostics:** `RunSimulator.Stats` (`FightStats`, off when null) records, for one enemy tier, damage per player turn from actions vs. ticks, HP taken, how often the enemy is bleeding when the player acts, and damage per roll for each face.
+- **Serrated Blade:** Attack: if the enemy is already bleeding, deal damage equal to my value; then apply Bleed equal to my value. Value 3 → 4 (soft cap 6 → 7), set by simulation.
+- **GDD and CLAUDE.md** updated (Bleed's identity: the faces deal the damage, Bleed powers them).
+
+### Diagnosis (Strong tier, 300 runs)
+| Build | Damage per turn | HP taken per turn | Battle length | Won |
+|---|---|---|---|---|
+| Poison | 7.2 (6.9 from ticks) | 1.85 | 6.2 turns | 95% |
+| Rage | 5.7 | 1.71 | 7.3 turns | 77% |
+| Burn | 4.9 | 1.64 | 8.6 turns | 84% |
+| Bleed (before) | 4.0 | 1.72 | 9.6 turns | 61% |
+| Shield | 1.7 | 0.65 | 24 turns | 71% |
+
+- Bleed's problem was damage, not survival: it lost HP as fast as the other attack builds but killed slowest.
+- The mark was not the problem either: the enemy was bleeding at 71% of the player's actions.
+- **Serrated Blade was a dead roll:** 18% of the Bleed die's rolls dealt 0 damage. Sword already keeps the mark up, so its extra duration was mostly wasted.
+
+### Results (600 runs per bot)
+| Serrated Blade | Bleed | Ritual + Bleed | Bleed + Rage |
+|---|---|---|---|
+| Before (apply Bleed only) | 8% | 4% | 12% |
+| With the hit, value 2 | 17% | 12% | 16% |
+| With the hit, value 3 | 17% | 13% | 19% |
+| **With the hit, value 4** | **26%** | **20%** | **23%** |
+
+All bots: Burn 28% · Poison 76% · Shield 13% · Rage 26% · Bleed 27% · Ritual + Poison 49% · Ritual + Bleed 16% · Shield + Rage 41% · Bleed + Rage 26%.
+
+### Findings
+- **"Bots play Bleed like Poison" did not hold up.** Most Bleed faces have one damaging action, so there is little to misplay in battle. Letting bots replace their starting Swords made them worse (Bleed + Rage 23% → 9%): Sword deals damage and applies Bleed, and replacing it loses its upgrades. The experiment was reverted.
+- The real cause matches the design intent: **the faces should deal the damage, and Bleed should power them.** A face that only applies Bleed does nothing, because Bleed's own 1 damage per tick is a token.
+
+### Decisions
+- Bleed grows through more "if the enemy is bleeding" effects and faces that scale with its stacks, not through Bleed ticking harder.
+- Serrated Blade is a conditional Common on purpose (conditions are normally Rare), because the condition is Bleed's identity.
+- If new "if bleeding" faces push Bleed above the target band, Serrated Blade goes back to value 3.
+
+### Next Steps
+- Bring Poison (76%) and Ritual + Poison (49%) down towards the other builds.
+- More "if the enemy is bleeding" effects (faces or modules); lift Ritual + Bleed.
+- Equipment (passive items) on a trigger system, then re-evaluate modules with it.
+- UI phase 2 (icons), the boss dice system, die reroll, centering offer cards.

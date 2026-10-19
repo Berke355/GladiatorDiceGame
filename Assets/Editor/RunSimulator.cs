@@ -49,6 +49,32 @@ public static class RunSimulator
     // Bots buy action modules; off to measure what modules add.
     public static bool BuyModules = true;
 
+    // Per-battle measurements for diagnosing a build (null = off). Only battles of statsTier are counted.
+    public class FightStats
+    {
+        public EnemyTier statsTier = EnemyTier.Strong;
+        public int battles, won, turns, actions, bleedingAtAction;
+        // Enemy HP lost from the player's actions vs. from ticks at the end of the enemy's turn (Poison, Bleed).
+        public long actionDamage, tickDamage, hpTaken;
+        // Per face name: { times rolled, enemy HP lost from its actions }.
+        public Dictionary<string, int[]> perFace = new Dictionary<string, int[]>();
+
+        public string Report(){
+            if(battles == 0) return "no " + statsTier + " battles";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(statsTier + " battles " + battles + ", won " + (100f * won / battles).ToString("0") + "%, avg turns " + ((float)turns / battles).ToString("0.0"));
+            sb.AppendLine("per player turn: action dmg " + ((float)actionDamage / actions).ToString("0.00") + ", tick dmg " + ((float)tickDamage / actions).ToString("0.00")
+                + ", HP taken " + ((float)hpTaken / actions).ToString("0.00") + ", enemy bleeding at action " + (100f * bleedingAtAction / actions).ToString("0") + "%");
+            List<KeyValuePair<string, int[]>> faces = new List<KeyValuePair<string, int[]>>(perFace);
+            faces.Sort((a, b) => b.Value[0].CompareTo(a.Value[0]));
+            foreach(KeyValuePair<string, int[]> face in faces){
+                sb.Append(face.Key + " " + (100f * face.Value[0] / actions).ToString("0") + "% rolls, " + ((float)face.Value[1] / face.Value[0]).ToString("0.0") + " dmg/roll; ");
+            }
+            return sb.AppendLine().ToString();
+        }
+    }
+    public static FightStats Stats;
+
     private const int MaxTurnsPerBattle = 100;
     private const int BattlesPerRun = 11;
 
@@ -300,6 +326,7 @@ public static class RunSimulator
         EnemyBrain brain = Reset<EnemyBrain>(enemyObject);
         brain.Setup(enemyData, enemy, player);
 
+        FightStats stats = Stats != null && enemyData.tier == Stats.statsTier ? Stats : null;
         turns = 0;
         while(turns < MaxTurnsPerBattle){
             turns++;
@@ -309,8 +336,20 @@ public static class RunSimulator
             DieFace face = run.dieFaces[Random.Range(0, run.dieFaces.Count)];
             ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain);
             EffectContext context = new EffectContext{ source = player, target = enemy, value = face.value, die = run.dieFaces, face = face };
+            int enemyHP = enemy.currentHP;
+            if(stats != null){
+                stats.actions++;
+                if(enemy.GetStatus(StatusType.Bleed) > 0) stats.bleedingAtAction++;
+            }
             foreach(EffectSO effect in face.GetEffects(action)){
                 effect.Execute(context);
+            }
+            if(stats != null){
+                string name = face.definition.faceName;
+                if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[2];
+                stats.perFace[name][0]++;
+                stats.perFace[name][1] += enemyHP - enemy.currentHP;
+                stats.actionDamage += enemyHP - enemy.currentHP;
             }
             if(player.IsDead || enemy.IsDead) break;
 
@@ -318,16 +357,26 @@ public static class RunSimulator
             if(player.IsDead || enemy.IsDead) break;
 
             enemy.OnTurnStart();
+            int playerHP = player.currentHP;
             brain.ExecuteCurrentIntent();
+            if(stats != null) stats.hpTaken += playerHP - player.currentHP;
             if(player.IsDead || enemy.IsDead) break;
 
+            enemyHP = enemy.currentHP;
             enemy.OnTurnEnd();
+            if(stats != null) stats.tickDamage += enemyHP - enemy.currentHP;
             brain.OnTurnEnd();
             if(player.IsDead || enemy.IsDead) break;
         }
 
         run.currentHP = player.currentHP;
-        return enemy.IsDead && !player.IsDead;
+        bool won = enemy.IsDead && !player.IsDead;
+        if(stats != null){
+            stats.battles++;
+            stats.turns += turns;
+            if(won) stats.won++;
+        }
+        return won;
     }
 
     private static T Reset<T>(GameObject target) where T : Component{

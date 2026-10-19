@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: SerratedBladeFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Serrated Blade
-  description: 'Attack: Apply Bleed equal to my value. Defense: Gain block equal
-    to my value.'
+  description: 'Attack: If the enemy is already bleeding, deal damage equal to my
+    value. Then apply Bleed equal to my value. Defense: Gain block equal to my value.'
   rarity: 0
   tags: 07000000
-  baseValue: 3
-  softCap: 6
+  baseValue: 4
+  softCap: 7
   effects:
+  - actionType: 0
+    effectLogic: {fileID: 11400000, guid: e4921089410ef5249b3f9004de6c6ce4, type: 2}
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 9236ed9622649e74582c8c6b7b9dc1bf, type: 2}
   - actionType: 1

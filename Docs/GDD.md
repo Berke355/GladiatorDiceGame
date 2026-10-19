@@ -425,18 +425,20 @@ A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder 
 
 - **Resource:** Bleed on the enemy. It always deals 1 damage per tick and loses 1 stack, so its stacks are how many turns the enemy stays marked. The rule stays as it is: Bleed's value is the duration, not the damage.
 - **Identity:** faces with "if the enemy is bleeding" effects. Keep Bleed going to keep those effects on, or cash in the remaining duration with Exsanguinate.
+- **The faces deal the damage, not Bleed.** Bleed's 1 damage per tick is a token; the build's power comes from building Bleed up and the faces getting stronger from it. So the archetype grows by adding more "if the enemy is bleeding" effects and faces that scale with its stacks (Lacerate), not by making Bleed tick harder.
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
 | **Sword** | Starter (starting die) | Common | 2 | Attack: deal damage and apply 2 Bleed. Defense: gain block. |
-| **Serrated Blade** | Starter | Common | 3 | Attack: apply Bleed equal to my value. Defense: gain block equal to my value. |
+| **Serrated Blade** | Starter | Common | 4 | Attack: if the enemy is already bleeding, deal damage equal to my value; then apply Bleed equal to my value. Defense: gain block equal to my value. |
 | **Lacerate** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the enemy's Bleed (nothing is consumed). Defense: gain block equal to my value. |
 | **Open Wound** | Engine | Rare | 2 | Attack: deal damage equal to my value; if the enemy is bleeding, hit again for my value. |
 | **Bloodscent** | Bridge (Bleed + Rage) | Rare | 2 | Defense: gain block equal to my value; if the enemy is bleeding, heal equal to my value. |
 | **Exsanguinate** | Payoff | Epic | 1 | Attack: consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
 
-- **Bleed timing:** Bleed applied on your turn ticks at the end of the enemy's turn, so N Bleed keeps the enemy marked for N − 1 of your turns. Bleed sources therefore apply at least 2 (Sword 2, Serrated Blade 3, Blood Rite 3, Witch's Curse 2); 1 Bleed would never reach your next turn.
+- **Bleed timing:** Bleed applied on your turn ticks at the end of the enemy's turn, so N Bleed keeps the enemy marked for N − 1 of your turns. Bleed sources therefore apply at least 2 (Sword 2, Serrated Blade 4, Blood Rite 3, Witch's Curse 2); 1 Bleed would never reach your next turn.
 - **Lacerate keeps Bleed a mark:** Bleed still deals its 1 per tick; Lacerate hits harder the longer the enemy stays marked. Unlike Exsanguinate it consumes nothing and adds instead of multiplying, which keeps it a Common.
+- **Serrated Blade is a conditional Common on purpose:** conditions are normally Rare, but Bleed's whole identity is "if the enemy is bleeding", so its Starter has one. When it only applied Bleed, its rolls dealt no damage (Sword already keeps the mark up, so the extra duration was mostly wasted) and the Bleed bot cleared 0–8% of runs. With the hit and value 4 it clears about 27%. Its own Bleed comes after the check, so on an unmarked enemy it marks first and hits on later rolls.
 - **Conditional faces keep a floor:** without Bleed, Open Wound still hits once and Bloodscent still blocks (Standalone Faces rule).
 - **Exsanguinate vs. Detonate:** Detonate is additive (value + Burn), Exsanguinate is multiplicative (value × Bleed) and consumes the whole remaining duration. "Keep the mark for the conditional effects, or cash it in now?" is the Bleed build's core decision.
 - **The life loop (Bleed + Berserker bridge):** Berserker uses HP as a resource. Bloodrage spends HP for Rage, and Bloodscent heals it back while the enemy bleeds: lose HP, apply strong effects, heal back. Open Wound's second hit also benefits from Rage. Bloodscent's healing is kept as is for now and will be revisited if it proves too strong.
