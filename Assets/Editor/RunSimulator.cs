@@ -237,13 +237,16 @@ public static class RunSimulator
                         }
                     }
                     EnemyTier tier = config.GetTierForBattle(battle);
-                    EnemySO enemyData = PickEnemy(pool, run, tier);
+                    // Boss slots with a boss fight it; the others (and boss slots without a boss yet) use a normal enemy.
+                    BossSO boss = config.encounters.PickBoss(battle);
+                    EnemySO enemyData = boss == null ? PickEnemy(pool, run, tier) : null;
+                    string enemyName = boss != null ? boss.bossName : enemyData.enemyName;
 
                     int turns;
-                    bool won = FightBattle(run, enemyData, playerObject, enemyObject, out turns);
+                    bool won = FightBattle(run, enemyData, boss, playerObject, enemyObject, out turns);
                     if(!won){
                         deathsAt[battle]++;
-                        deathsByEnemy[enemyData.enemyName] = (deathsByEnemy.ContainsKey(enemyData.enemyName) ? deathsByEnemy[enemyData.enemyName] : 0) + 1;
+                        deathsByEnemy[enemyName] = (deathsByEnemy.ContainsKey(enemyName) ? deathsByEnemy[enemyName] : 0) + 1;
                         break;
                     }
 
@@ -361,22 +364,31 @@ public static class RunSimulator
     // ---------- Battle ----------
 
     // Mirrors the battle states: player turn (roll, act, OnTurnEnd), then enemy turn.
-    private static bool FightBattle(RunData run, EnemySO enemyData, GameObject playerObject, GameObject enemyObject, out int turns){
+    // A normal enemy (enemyData) or a boss (boss); exactly one of them is set.
+    private static bool FightBattle(RunData run, EnemySO enemyData, BossSO boss, GameObject playerObject, GameObject enemyObject, out int turns){
         Entity player = Reset<Entity>(playerObject);
         player.entityName = "Player";
         player.maxHP = run.maxHP;
         player.currentHP = run.currentHP;
 
         Entity enemy = Reset<Entity>(enemyObject);
-        enemy.entityName = enemyData.enemyName;
-        enemy.maxHP = enemyData.maxHP;
-        enemy.currentHP = enemyData.maxHP;
-        EnemyBrain brain = Reset<EnemyBrain>(enemyObject);
-        brain.Setup(enemyData, enemy, player);
+        enemy.entityName = boss != null ? boss.bossName : enemyData.enemyName;
+        enemy.maxHP = boss != null ? boss.maxHP : enemyData.maxHP;
+        enemy.currentHP = enemy.maxHP;
+        IEnemyBrain brain;
+        if(boss != null){
+            brain = new BossBrain(boss, enemy, player, run.dieFaces);
+        }
+        else{
+            EnemyBrain intentBrain = Reset<EnemyBrain>(enemyObject);
+            intentBrain.Setup(enemyData, enemy, player);
+            brain = intentBrain;
+        }
 
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
         BattleFlow flow = new BattleFlow(player, enemy, brain, run.dieFaces, run.equipment);
-        FightStats stats = Stats != null && enemyData.tier == Stats.statsTier ? Stats : null;
+        EnemyTier statsTier = boss != null ? EnemyTier.Boss : enemyData.tier;
+        FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;
         flow.StartBattle();
         while(turns < MaxTurnsPerBattle && !flow.IsOver){
@@ -452,12 +464,12 @@ public static class RunSimulator
     }
 
     // A simple, reasonable player: uses payoffs when their resource is ready, blocks big telegraphed hits.
-    private static ActionType ChooseAction(DieFace face, List<DieFace> die, Entity player, Entity enemy, EnemyBrain brain, BattleFlow flow){
+    private static ActionType ChooseAction(DieFace face, List<DieFace> die, Entity player, Entity enemy, IEnemyBrain brain, BattleFlow flow){
         DieFaceSO definition = face.definition;
         int burn = enemy.GetStatus(StatusType.Burn);
         int fortify = player.GetStatus(StatusType.Fortify);
         int rage = player.GetStatus(StatusType.Rage);
-        bool bigHit = brain.currentIntent.intentType == ActionType.Attack && brain.currentIntent.value + enemy.GetStatus(StatusType.Rage) >= 6;
+        bool bigHit = brain.IncomingDamage >= 6;
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash" || f.definition.faceName == "Spiked Shield");
 
@@ -641,7 +653,10 @@ public static class RunSimulator
     private static bool BuyFittingEnchantment(Market market, RunData run, Bot bot){
         int bestOffer = -1;
         for(int i = 0; i < market.enchantmentOffers.Count; i++){
-            if(!bot.Fits(market.enchantmentOffers[i].enchantment) || !market.CanBuyEnchantment(i)) continue;
+            // Only Epic ones: Common and Rare enchantments are sidegrades on the low-value faces bots have, and
+            // buying them made bots play Kindling instead of hitting (Burn died at battle 4 twice as often).
+            EnchantmentSO offered = market.enchantmentOffers[i].enchantment;
+            if(offered.rarity != Rarity.Epic || !bot.Fits(offered) || !market.CanBuyEnchantment(i)) continue;
             if(bestOffer < 0 || market.enchantmentOffers[i].enchantment.rarity > market.enchantmentOffers[bestOffer].enchantment.rarity){
                 bestOffer = i;
             }

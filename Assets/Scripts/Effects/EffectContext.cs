@@ -17,6 +17,10 @@ public class EffectContext
     public bool rerollRequested;
     // Set by an effect after which the face keeps its Charge instead of spending it (Resonance).
     public bool keepCharge;
+    // The target's die, for effects that act on it (Medusa). Null if the target has no die.
+    public List<DieFace> targetDie;
+    // Set by an effect that starts a boss countdown to a hit of this much damage (Stampede); BossBrain runs it.
+    public int countdownDamage;
 
     // A face's value in battle: its value plus its Charge.
     public int ValueOf(DieFace dieFace) => charge != null ? charge.ValueOf(dieFace) : dieFace.value;

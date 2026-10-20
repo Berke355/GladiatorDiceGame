@@ -18,7 +18,8 @@ public class PlayerRollState : BattleState
         }
 
         if(UIManager.Instance != null){
-            UIManager.Instance.UpdateEnemyIntentText(battleManager.enemyBrain.DescribeCurrentIntent());
+            UIManager.Instance.UpdateEnemyIntentText(battleManager.brain.DescribeCurrentIntent());
+            UIManager.Instance.ShowBossDie(battleManager.brain.Die, battleManager.brain.RolledFace);
             UIManager.Instance.ShowRollPhase(battleManager.currentDiceFaces);
         }
     }

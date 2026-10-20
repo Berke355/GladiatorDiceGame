@@ -15,6 +15,10 @@ public class BattleManager : MonoBehaviour
     [System.NonSerialized]
     public List<DieFace> currentDiceFaces;
 
+    // The intent brain of a normal enemy (enemyBrain) or the dice brain of a boss.
+    [System.NonSerialized]
+    public IEnemyBrain brain;
+
     // The turn steps and the equipment triggers, shared with the balance simulator.
     [System.NonSerialized]
     public BattleFlow flow;
@@ -35,14 +39,25 @@ public class BattleManager : MonoBehaviour
         player.maxHP = run.maxHP;
         player.currentHP = run.currentHP;
 
-        // The run picks this battle's enemy; the scene's Enemy object takes its stats.
-        EnemySO enemyData = RunManager.Instance.PickEnemyForNextBattle();
-        enemy.entityName = enemyData.enemyName;
-        enemy.maxHP = enemyData.maxHP;
-        enemy.currentHP = enemyData.maxHP;
-        enemyBrain.Setup(enemyData, enemy, player);
+        // The run picks this battle's boss or enemy; the scene's Enemy object takes its stats.
+        BossSO boss = RunManager.Instance.PickBossForNextBattle();
+        if(boss != null){
+            enemy.entityName = boss.bossName;
+            enemy.maxHP = boss.maxHP;
+            enemy.currentHP = boss.maxHP;
+            enemyBrain.enabled = false;
+            brain = new BossBrain(boss, enemy, player, currentDiceFaces);
+        }
+        else{
+            EnemySO enemyData = RunManager.Instance.PickEnemyForNextBattle();
+            enemy.entityName = enemyData.enemyName;
+            enemy.maxHP = enemyData.maxHP;
+            enemy.currentHP = enemyData.maxHP;
+            enemyBrain.Setup(enemyData, enemy, player);
+            brain = enemyBrain;
+        }
 
-        flow = new BattleFlow(player, enemy, enemyBrain, currentDiceFaces, run.equipment);
+        flow = new BattleFlow(player, enemy, brain, currentDiceFaces, run.equipment);
     }
 
     void OnDestroy(){

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Picks and runs a normal enemy's telegraphed intents (see GDD "Normal Enemies").
-public class EnemyBrain : MonoBehaviour
+public class EnemyBrain : MonoBehaviour, IEnemyBrain
 {
     // The same intent can be picked at most this many turns in a row.
     private const int MaxRepeats = 2;
@@ -100,6 +100,11 @@ public class EnemyBrain : MonoBehaviour
             value = currentIntent.value
         };
     }
+
+    public int IncomingDamage => currentIntent.intentType == ActionType.Attack ? currentIntent.value + self.GetStatus(StatusType.Rage) : 0;
+    // Normal enemies have no die.
+    public List<DieFace> Die => null;
+    public DieFace RolledFace => null;
 
     private static int Weight(EnemyIntent intent){
         return intent.weight > 0 ? intent.weight : 1;

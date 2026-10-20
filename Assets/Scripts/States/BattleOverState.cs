@@ -19,13 +19,13 @@ public class BattleOverState : BattleState
         int goldEarned = RunManager.Instance.OnBattleEnded(playerWon, battleManager.player.currentHP);
 
         if(UIManager.Instance != null){
-            UIManager.Instance.ShowBattleResult(playerWon, goldEarned);
+            UIManager.Instance.ShowBattleResult(playerWon, goldEarned, playerWon && RunManager.Instance.IsRunComplete);
         }
     }
 
-    // Victory continues to the market; defeat ends the run and starts a new one.
+    // Victory continues to the market; defeat, or beating the final boss, ends the run and starts a new one.
     public void Continue(){
-        if(playerWon){
+        if(playerWon && !RunManager.Instance.IsRunComplete){
             RunManager.Instance.GoToMarket();
         }
         else{

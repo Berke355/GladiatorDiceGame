@@ -6,7 +6,9 @@ public enum EnemyTier
 {
     Weak,
     Medium,
-    Strong
+    Strong,
+    // Only used to label boss battles (e.g. in the simulator's statistics); bosses are BossSO assets.
+    Boss
 }
 
 // A normal enemy definition (see GDD "Enemy Roster").

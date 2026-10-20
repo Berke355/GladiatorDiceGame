@@ -646,30 +646,33 @@ Bosses appear at battles 4, 8 and 11 (the final boss). They are what players rem
 - **Each boss has a 6-face die** built from boss-only faces. Boss faces use the same rule as the player's: the printed value is the effect.
 - **Telegraphed roll:** the boss rolls its die at the start of the player's turn, and the result is shown as its intent (e.g. "Charge: 25 damage in 3 turns"). Luck still matters, since the boss's strongest face can come up, but the player always sees it coming and can react.
 - **Fixed actions:** each boss face has one fixed action chosen by the designer. Bosses don't need an AI: the player makes the decisions, and the boss's job is to be a readable threat.
-- **Visible die:** the boss's 6 faces are shown for the whole battle, so players can read the odds ("1 Charge face: a 1 in 6 chance each turn"). Reading the boss's die is a skill to master.
+- **Visible die:** the boss's 6 faces are shown for the whole battle, so players can read the odds ("1 Stampede face: a 1 in 6 chance each turn"). Reading the boss's die is a skill to master.
+- **Boss faces are normal die faces** (`DieFaceSO`) with one action each, so the effect system, Rage, Ritual and Value Is the Effect work for bosses exactly as for the player.
+- **The run ends after the final boss:** winning battle 11 completes the run.
 
 #### Minotaur (battle 4)
 
 A raging bull of the labyrinth. The first boss teaches players to read a boss die and plan around a countdown.
 
 - **Tests:** planning ahead.
-- **Mechanic: Charge countdown.** When the Charge face is rolled, the Minotaur lowers its horns and a visible countdown starts: in 3 turns, it deals one huge hit.
-- **Counterplay:** be ready with block when the charge lands, or **stagger** it: if the Minotaur takes enough damage during the countdown, the charge is cancelled. Defensive and aggressive builds both have an answer.
+- **Mechanic: Stampede countdown.** When the Stampede face is rolled, the Minotaur lowers its horns and a visible countdown starts: at the end of its third turn after that, it deals one huge hit. (Named Stampede, not Charge, so it doesn't clash with the Hammer's Charge.)
+- **It keeps rolling during the countdown,** so the countdown is pressure, not free turns. A second Stampede rolled while one is running counts as a Gore.
+- **Counterplay:** be ready with block when the hit lands, or **stagger** it: if the Minotaur loses enough HP from hits during the countdown, the Stampede is cancelled. Damage over time (Poison, Bleed) doesn't stagger, so status builds answer it with block. Defensive and aggressive builds both have an answer.
 
 | Face | Count | Action |
 |---|---|---|
 | Gore | 2 | Attack: deal heavy damage |
 | Trample | 2 | Attack: deal damage and gain block |
 | Hide | 1 | Defense: gain a lot of block |
-| Charge | 1 | Start the charge countdown (huge hit in 3 turns, cancelled by stagger) |
+| Stampede | 1 | Start the Stampede countdown (huge hit in 3 turns, cancelled by stagger) |
 
 #### Medusa (battle 8)
 
 The gorgon whose gaze turns gladiators to stone. Medusa attacks the player's die itself.
 
 - **Tests:** reliance on single faces. Dice with backup faces (duplicates, several faces that do the same job) hold up better.
-- **Mechanic: Petrify.** Medusa's gaze petrifies the player's **highest-value face**. The target is shown in the intent, so the player knows which face is in danger.
-- **Stone faces:** a petrified face still exists on the die, but when it is rolled it only gives a little block, so the player is never left with nothing to do. Petrify wears off after **2–3 turns** (exact number to tune), but Medusa can petrify again.
+- **Mechanic: Petrify.** Medusa's gaze petrifies the player's **highest-value face**, by battle value (value plus Charge), so a charged Hammer is her natural target. The target is shown in the intent, so the player knows which face is in danger.
+- **Stone faces:** a petrified face still exists on the die, but when it is rolled it only gives a little block, so the player is never left with nothing to do. Its enchantment doesn't work while it is stone. Petrify wears off after **2 turns**, but Medusa can petrify again.
 - Petrify lasts only for the battle and never changes the run's die.
 
 | Face | Count | Action |
@@ -687,17 +690,20 @@ The many-headed serpent: cut off one head and two grow back, unless the wound is
 - **Mechanic: Heads.** The Hydra starts with a few heads. Its Bite face attacks once per head.
   - **Cutting heads:** a single big hit cuts off a head.
   - **Regrowth:** at the start of its turn, every cut head grows back as two, **unless the Hydra has Burn**.
-  - **Regeneration:** the Hydra also heals every turn based on its head count, and Burn stops this too.
+  - **Regeneration:** the Hydra also heals every turn based on its head count. Burn stops this, and so does **Bleed** (an open wound doesn't close).
 - **Every build has a path:**
   - **Burn** cuts heads safely and stops regeneration.
-  - **Poison** never cuts heads (so no regrowth) and, since it never decays, eventually outpaces regeneration.
-  - **Burst** builds (e.g. Shield Burst) deal big hits but grow more heads, a risk/reward decision about when to strike.
+  - **Bleed** stops regeneration, so its many medium hits wear the Hydra down; only Burn stops regrowth.
+  - **Poison** never cuts heads (so no regrowth) and keeps being reapplied to outpace regeneration.
+  - **Rage** deals many small hits that don't cut heads.
+  - **Shield** survives the bites: block absorbs each head's bite.
+  - **Burst** builds (Hammer, Shield Burst) deal big hits but grow more heads, a risk/reward decision about when to strike.
 
 | Face | Count | Action |
 |---|---|---|
 | Bite | 3 | Attack: deal damage once per head |
 | Thrash | 1 | Attack: deal heavy damage |
-| Regrow | 1 | Magic: heal a large amount (blocked by Burn) |
+| Regrow | 1 | Magic: heal a large amount (blocked by Burn or Bleed) |
 | Hiss | 1 | Defense: gain block |
 
 All boss numbers (HP, damage, countdown length, stagger threshold, head count) are placeholders, to be tuned through play-testing.
@@ -707,7 +713,10 @@ All boss numbers (HP, damage, countdown length, stagger threshold, head count) a
 - Bosses reuse `DieFace` and `EffectSO`, with boss-only mechanics written as new `EffectSO` subclasses.
 - **`EffectContext` needs a `targetDie` field:** `die` is the source's die, but Medusa acts on the target's die. This is a new field, not a signature change.
 - **Battle-scoped face states** (e.g. Petrified) live in battle data, never in `RunData`.
-- **Brains:** normal enemies use the intent brain, and bosses need a dice brain that rolls at the start of the player's turn and exposes the rolled face as the intent.
+- **Brains:** normal enemies use the intent brain, and bosses use a dice brain that rolls at the start of the player's turn and exposes the rolled face as the intent. Both share one brain interface, so the battle flow and the simulator don't care which one they run.
+- **Boss data:** a boss asset holds its name, HP, its 6 faces and its mechanic's numbers. Boss slots are listed per battle number, each with a pool of bosses, which is ready for several bosses per slot.
+- **Boss mechanics live in battle data** (the Stampede countdown, petrified faces, the Hydra's heads), never in `RunData`.
+- **Built in stages:** the architecture, the Minotaur and the end of the run first; then Medusa; then the Hydra. Until a slot's boss exists, that slot keeps using the next enemy tier.
 
 ### Future
 
@@ -719,5 +728,4 @@ All boss numbers (HP, damage, countdown length, stagger threshold, head count) a
 
 ### Open Questions
 
-- Exact Petrify duration (2 or 3 turns).
 - Healing amount after a boss (50% of max HP is a placeholder).

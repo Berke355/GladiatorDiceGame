@@ -28,6 +28,9 @@ public class RunManager : MonoBehaviour
     public float bossHealFraction = 0.5f;
 
     public bool IsGrandMarket => bossBattles.Contains(run.battlesWon);
+    // Winning this battle (the final boss's) completes the run.
+    public int finalBattle = 11;
+    public bool IsRunComplete => run.battlesWon >= finalBattle;
 
     [Header("Scenes")]
     public string runStartSceneName = "RunStart";
@@ -108,6 +111,11 @@ public class RunManager : MonoBehaviour
             }
         }
         return (EnemyTier)Mathf.Min(bossesReached, (int)EnemyTier.Strong);
+    }
+
+    // The boss for the upcoming battle, or null if it is a normal battle (or its boss isn't built yet).
+    public BossSO PickBossForNextBattle(){
+        return encounters.PickBoss(run.battlesWon + 1);
     }
 
     // Picks the enemy for the upcoming battle and remembers it so it won't appear again this run.

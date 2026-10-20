@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d5f966b0584c854b953d6e2a364fa2f, type: 3}
+  m_Name: Minotaur
+  m_EditorClassIdentifier: Assembly-CSharp::BossSO
+  bossName: Minotaur
+  maxHP: 26
+  faces:
+  - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
+  - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
+  - {fileID: 11400000, guid: 42b3cc0d4c9f12748b5e20fd4343a480, type: 2}
+  - {fileID: 11400000, guid: 42b3cc0d4c9f12748b5e20fd4343a480, type: 2}
+  - {fileID: 11400000, guid: 2b1a59e6cc3e6884eae3d5abf84bd9fb, type: 2}
+  - {fileID: 11400000, guid: 8d1b990eb1fe98b4aadf4a9e082340be, type: 2}
+  countdownTurns: 3
+  staggerDamage: 8
+  whileCountingDown: {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}

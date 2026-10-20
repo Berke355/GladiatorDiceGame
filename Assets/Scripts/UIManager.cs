@@ -27,6 +27,11 @@ public class UIManager : MonoBehaviour
     [Header("Die")]
     public DieChipUI[] dieChips;
 
+    [Header("Boss Die")]
+    // Shown only in boss battles: the boss's 6 faces, with the rolled one highlighted.
+    public GameObject bossDieStrip;
+    public DieChipUI[] bossDieChips;
+
     // This battle's Charge (set by BattleManager), so the die and the previews show battle values.
     [System.NonSerialized]
     public DieCharge charge;
@@ -138,12 +143,24 @@ public class UIManager : MonoBehaviour
         intentTooltip.text = "<b>Enemy intent</b>\n" + GameText.Colorize(intentDescription) + GameText.Glossary(intentDescription);
     }
 
-    public void ShowBattleResult(bool playerWon, int goldEarned){
+    // runComplete: the final boss was beaten, which ends the run.
+    public void ShowBattleResult(bool playerWon, int goldEarned, bool runComplete = false){
         battleResultPanel.SetActive(true);
-        battleResultText.text = playerWon
-            ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>"
-            : "DEFEAT";
-        battleResultButtonText.text = playerWon ? "Continue" : "New Run";
+        battleResultText.text = runComplete
+            ? "RUN COMPLETE\n<size=50%>The arena is yours</size>"
+            : playerWon ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>" : "DEFEAT";
+        battleResultButtonText.text = playerWon && !runComplete ? "Continue" : "New Run";
+    }
+
+    // die is null for normal enemies, which hides the strip.
+    public void ShowBossDie(List<DieFace> die, DieFace rolled){
+        bossDieStrip.SetActive(die != null);
+        if(die == null) return;
+        for(int i = 0; i < bossDieChips.Length; i++){
+            bool hasFace = i < die.Count;
+            bossDieChips[i].gameObject.SetActive(hasFace);
+            if(hasFace) bossDieChips[i].Set(die[i], die[i] == rolled);
+        }
     }
 
     // ToUpperInvariant, not ToUpper: on a Turkish system "Magic".ToUpper() becomes "MAGİC".

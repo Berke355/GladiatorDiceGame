@@ -1343,3 +1343,47 @@ All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 2
 ### Next Steps
 - Ritual + Bleed (17%).
 - UI phase 2 (icons), the boss dice system, centering offer cards.
+
+## Day 44 - Boss Dice: The Minotaur
+
+### Accomplished
+- **GDD (boss design brought up to date):**
+  - The Minotaur's Charge became **Stampede**, so it doesn't clash with the Hammer's Charge. It keeps rolling during the countdown, and a second Stampede counts as a Gore.
+  - Medusa targets the highest **battle value** (charged Hammers). Petrify lasts 2 turns, and a stone face's enchantment doesn't work.
+  - The Hydra: Bleed also stops regeneration, and every archetype has a path.
+  - The run ends after the final boss, and bosses are built in stages.
+- **Architecture:**
+  - `IEnemyBrain`, implemented by `EnemyBrain` (intents) and `BossBrain` (dice); `BattleFlow`, `BattleManager.brain` and the simulator only use the interface.
+  - `BossSO`: name, HP, 6 faces and countdown settings. Boss faces are normal `DieFaceSO` assets with one action each.
+  - `EncounterConfigSO.bossSlots` (`BossSlot { battle, bosses }`): a slot without a boss keeps using normal enemies of the next tier.
+  - `EffectContext.targetDie` is ready for Medusa.
+- **The Minotaur (battle 4):**
+  - Die: Gore ×2 (3 damage), Trample ×2 (2 damage, 2 block), Hide (4 block) and Stampede.
+  - Stampede (`StartCountdownEffectSO`) starts a 3-turn countdown to 12 damage. Losing 8 HP from hits during it staggers the Minotaur and cancels it; blocked damage and Poison or Bleed ticks don't count.
+- **UI:**
+  - The boss's 6 faces sit under the intent box, with the rolled one highlighted.
+  - The intent shows the countdown and the stagger still needed, e.g. "Stampede: 12 damage in 2 turns (stagger: 6 more damage)".
+- **End of the run:** winning battle 11 shows RUN COMPLETE, and New Run starts a new run.
+- **Simulator:** fights bosses in their slots (`EnemyTier.Boss` labels them in `FightStats`), and bots block big hits through `IEnemyBrain.IncomingDamage`.
+
+### Tests
+- **BossBrain checks:**
+  - The Stampede lands exactly at the end of the third turn.
+  - Stagger works; blocked hits and Poison ticks don't stagger.
+  - No second Stampede is rolled during a countdown.
+  - The forecast includes the Stampede on its last turn.
+  - One check failed at first because the Minotaur still had block from earlier Hide turns, an error in the test, and passed when rerun with the block reset.
+- **Play Mode:**
+  - A real Minotaur battle showed the boss die strip and the countdown text (3 → 2 → "at the end of this turn"), with the stagger meter shrinking with each hit.
+  - Winning battle 11 showed RUN COMPLETE, and New Run went back to RunStart with a fresh run.
+
+### Balance
+- The first numbers (HP 40, Gore 5, Stampede 18) killed 58–97% of runs at battle 4. Simulation brought them to HP 26, Gore 3, Trample 2, Hide 4, Stampede 12 and stagger 8.
+- **Bot fix:** bots inscribed Common enchantments on starter faces and played Kindling instead of hitting, so the Burn bot died at battle 4 twice as often (52% → 23% without them). Bots now only buy Epic enchantments, which also matches the design: most players won't enchant in most runs.
+- Results (400 runs): Burn 25% · Poison 22% · Shield 20% · Rage 26% · Bleed 21% · Hammer 24% · Ritual + Poison 25% · Ritual + Bleed 13% · Shield + Rage 30% · Bleed + Rage 31%.
+- Deaths at battle 4 range from 1% to 32% by build (0–10% against the Medium enemy before). Burn struggles most (32%): it starts slowly and has to block the Stampede.
+
+### Next Steps
+- Medusa (battle 8): Petrify through `targetDie`, battle-scoped stone faces.
+- The Hydra (battle 11): heads, regrowth and regeneration.
+- Ritual + Bleed (13%), UI phase 2 (icons).

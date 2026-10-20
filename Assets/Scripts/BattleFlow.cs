@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 // The steps of a battle turn, shared by the battle states and the balance simulator, so both run the same
@@ -8,7 +9,7 @@ public class BattleFlow
 {
     public readonly Entity player;
     public readonly Entity enemy;
-    public readonly EnemyBrain brain;
+    public readonly IEnemyBrain brain;
     public readonly List<DieFace> die;
     public readonly TriggerSystem triggers;
     // Charge on the die faces for this battle (Hammer).
@@ -21,7 +22,7 @@ public class BattleFlow
     private bool keepRolledCharge;
     public bool IsOver => player.IsDead || enemy.IsDead;
 
-    public BattleFlow(Entity player, Entity enemy, EnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment){
+    public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment){
         this.player = player;
         this.enemy = enemy;
         this.brain = brain;
@@ -45,7 +46,7 @@ public class BattleFlow
     public DieFace Roll(){
         RerollPending = false;
         keepRolledCharge = false;
-        RolledFace = die[Random.Range(0, die.Count)];
+        RolledFace = die[UnityEngine.Random.Range(0, die.Count)];
         triggers.currentFace = RolledFace;
         triggers.Fire(TriggerType.FaceRolled);
         return RolledFace;
@@ -95,5 +96,7 @@ public class BattleFlow
 
     public void Dispose(){
         triggers.Dispose();
+        IDisposable disposableBrain = brain as IDisposable;
+        if(disposableBrain != null) disposableBrain.Dispose();
     }
 }

@@ -27,3 +27,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 57b70612c7653a449b166a8d4b2739e8, type: 2}
   - {fileID: 11400000, guid: 1a62f2611d4e52b4d9831c63e1c217bb, type: 2}
   - {fileID: 11400000, guid: 4a710d8b17df78944a831efa88a13359, type: 2}
+  bossSlots:
+  - battle: 4
+    bosses:
+    - {fileID: 11400000, guid: f3c0cb257b3413d458478e5139cdd3a7, type: 2}
