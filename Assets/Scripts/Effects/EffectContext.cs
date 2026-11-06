@@ -24,6 +24,8 @@ public class EffectContext
     // A face of the target's die chosen in advance (the target shown in a boss intent), so the effect hits it
     // even if the die's values changed since. Null: the effect picks its own target when it runs.
     public DieFace targetFace;
+    // The source's heads (the Hydra); 0 for everyone else.
+    public int heads;
     // Set by an effect that starts a boss countdown to a hit of this much damage (Stampede); BossBrain runs it.
     public int countdownDamage;
 

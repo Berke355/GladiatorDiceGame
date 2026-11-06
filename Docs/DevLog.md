@@ -1427,3 +1427,57 @@ All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 2
 ### Next Steps
 - The Hydra (battle 11, final boss): heads, regrowth (stopped by Burn), regeneration (stopped by Burn or Bleed).
 - Ritual + Bleed (16%), UI phase 2 (icons).
+
+## Day 46 - The Hydra, Final Boss
+
+### Accomplished
+- **The Hydra (battle 11, the final boss), HP 50.** All three bosses now exist, and beating the Hydra completes the run.
+  - **Heads:** starts with 2, at most 3.
+  - **Cutting:** a single hit that costs it 10+ HP cuts a head, never the last one.
+  - **Regrowth:** cut heads grow back as two at the start of its turn, unless it has Burn (cauterized).
+  - **Regeneration:** it heals 1 per head at the end of its turn, unless it has Burn or Bleed.
+  - **Die:** Bite ×3 (1 damage per head), Thrash (3), Regrow (heal 5, blocked by Burn or Bleed) and Hiss (3 block).
+  - **Intent text** shows the heads, what happens to cut ones and the regeneration, e.g. "Heads: 2 | a hit of 10+ cuts a head | regenerates 2 (blocked)".
+- **Architecture:**
+  - The heads rules live in `BossBrain` and are configured on `BossSO` (`startingHeads`, `maxHeads`, `cutDamage`, `regenPerHead`, `regrowthBlockedBy`, `regenBlockedBy`). Bosses without heads (`startingHeads` 0) are unaffected.
+  - `EffectContext.heads` passes the head count after regrowth.
+  - New effects: `PerHeadHitEffectSO` (Bite) and `HealUnlessStatusEffectSO` (Regrow).
+- **GDD and CLAUDE.md** updated.
+
+### Tests
+- **Rule checks:**
+  - Bite hits once per head, and the forecast includes regrowing heads.
+  - A 5 hit doesn't cut and a 9 hit does (tested with the earlier cut-at-8 threshold).
+  - A cut head grows back as two, and doesn't under Burn.
+  - Burn and Bleed block regeneration, and Burn blocks Regrow.
+  - The last head is never cut, and regrowth stops at the head cap.
+  - The two failures in the first run were in the test script (a wrong expectation, then a string-parsing error), not in the code.
+- **Play Mode:** a charged War Hammer cut a head while the Hydra had Burn, so it didn't grow back (2 → 1). Beating the Hydra showed RUN COMPLETE.
+
+### Balance
+- **First numbers** (HP 60, 3 heads up to 6, cut at 8+, Bite 2): the Hydra killed 75–81% of the runs that reached it, against 37% for the Strong enemy that used to be in that slot.
+- **Cause:** players reach the last battle worn down, and the many bites plus grown heads dealt about 3.4 damage per turn (Strong enemies: about 1.7). Lowering HP, regeneration or the head count one at a time didn't fix it; damage and the head cap had to come down.
+- **Final numbers:** the Hydra kills about 37% of the runs that reach it, as hard as the old Strong enemy overall.
+
+| Build | Dies to the Hydra | Clears the run |
+|---|---|---|
+| Burn | 3% | 30% |
+| Poison | 52% | 16% |
+| Shield | 41% | 27% |
+| Rage | 42% | 31% |
+| Bleed | 42% | 31% |
+| Hammer | 54% | 21% |
+| Ritual + Poison | 47% | 18% |
+| Ritual + Bleed | 39% | 19% |
+| Shield + Rage | 30% | 35% |
+| Bleed + Rage | 31% | 43% |
+
+### Open point
+- **The paths are uneven.** Burn barely ever dies to the Hydra, since it stops both regrowth and regeneration (the Heracles path, as designed, but too easy).
+- Hammer and Poison struggle most: Hammer's big hits keep cutting heads, and Poison's hits are too small to cut and too slow against regeneration.
+- Bots always attack, while a player can wait (e.g. Burn first, then the big Hammer hit). This is recorded in the GDD as a known open point, to revisit with play-testing.
+
+### Next Steps
+- Even out the Hydra's paths (options: Poison also stops regeneration; Burn stops only regrowth), after play-testing.
+- Ritual + Bleed (19%) and Poison (16%) clear rates.
+- UI phase 2 (icons), centering offer cards.

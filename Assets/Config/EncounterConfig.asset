@@ -34,3 +34,6 @@ MonoBehaviour:
   - battle: 8
     bosses:
     - {fileID: 11400000, guid: 755e5e583f6d92448877e87a8ac11a5c, type: 2}
+  - battle: 11
+    bosses:
+    - {fileID: 11400000, guid: 10c2107ca2b4e11449cb8293644187db, type: 2}

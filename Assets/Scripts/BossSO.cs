@@ -18,6 +18,18 @@ public class BossSO : ScriptableObject
     public int staggerDamage = 12;
     // Rolled instead of the countdown face while a countdown is already running (e.g. Gore).
     public DieFaceSO whileCountingDown;
+
+    [Header("Heads (Hydra)")]
+    // 0 = no heads mechanic.
+    public int startingHeads;
+    public int maxHeads = 6;
+    // A single hit that costs the boss at least this much HP cuts off a head (it never drops below 1 head).
+    public int cutDamage = 8;
+    // At the start of the boss's turn, every cut head grows back as two, unless it has one of these (Burn).
+    public List<StatusType> regrowthBlockedBy = new List<StatusType>{ StatusType.Burn };
+    // At the end of the boss's turn it heals this much per head, unless it has one of these (Burn, Bleed).
+    public int regenPerHead = 1;
+    public List<StatusType> regenBlockedBy = new List<StatusType>{ StatusType.Burn, StatusType.Bleed };
 }
 
 // A boss battle in the run and the bosses that can appear in it (one is picked per run).

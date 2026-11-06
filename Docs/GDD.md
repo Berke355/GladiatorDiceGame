@@ -688,8 +688,8 @@ The gorgon whose gaze turns gladiators to stone. Medusa attacks the player's die
 The many-headed serpent: cut off one head and two grow back, unless the wound is burned. In the myth, Heracles cauterized the necks with fire.
 
 - **Tests:** how the player deals damage.
-- **Mechanic: Heads.** The Hydra starts with a few heads. Its Bite face attacks once per head.
-  - **Cutting heads:** a single big hit cuts off a head.
+- **Mechanic: Heads.** The Hydra starts with **2 heads** (at most **3**). Its Bite face attacks once per head.
+  - **Cutting heads:** a single hit that costs it **10+ HP** cuts off a head (never the last one).
   - **Regrowth:** at the start of its turn, every cut head grows back as two, **unless the Hydra has Burn**.
   - **Regeneration:** the Hydra also heals every turn based on its head count. Burn stops this, and so does **Bleed** (an open wound doesn't close).
 - **Every build has a path:**
@@ -702,12 +702,16 @@ The many-headed serpent: cut off one head and two grow back, unless the wound is
 
 | Face | Count | Action |
 |---|---|---|
-| Bite | 3 | Attack: deal damage once per head |
-| Thrash | 1 | Attack: deal heavy damage |
-| Regrow | 1 | Magic: heal a large amount (blocked by Burn or Bleed) |
-| Hiss | 1 | Defense: gain block |
+| Bite | 3 | Attack: deal 1 damage once per head |
+| Thrash | 1 | Attack: deal 3 damage |
+| Regrow | 1 | Magic: heal 5 (blocked by Burn or Bleed) |
+| Hiss | 1 | Defense: gain 3 block |
 
-All boss numbers (HP, damage, countdown length, stagger threshold, head count) are placeholders, to be tuned through play-testing.
+- **HP 50, regeneration 1 per head** at the end of its turn.
+- **Tuned by simulation:** the first numbers (HP 60, 3 heads up to 6, cut at 8+, Bite 2) killed 75–81% of the runs that reached it, against 37% for the Strong enemy that used to be in this slot. Players reach the last battle worn down, so the Hydra's many bites and grown heads were the main cause. With the numbers above it kills about 37% of the runs that reach it, as hard as the old Strong enemy overall.
+- **The paths are uneven, and that is a known open point:** Burn barely ever dies to the Hydra (about 3%), because Burn stops both regrowth and regeneration (the Heracles path). Hammer (about 54%) and Poison (about 52%) struggle most: Hammer's big hits keep cutting heads, and Poison deals no hits big enough to matter. Simulation bots also always attack, while a player can choose when to strike.
+
+All boss numbers were set by simulation (DevLog Days 44–46) and are still to be confirmed by play-testing.
 
 ### Technical Notes
 
