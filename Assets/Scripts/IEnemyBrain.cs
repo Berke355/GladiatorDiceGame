@@ -4,6 +4,8 @@ using System.Collections.Generic;
 // the intent brain of normal enemies (EnemyBrain) or the dice brain of bosses (BossBrain).
 public interface IEnemyBrain
 {
+    // Called once by BattleFlow, so boss effects can reach the battle's player-side state (stone faces, Charge).
+    void Bind(BattleFlow flow);
     // Start of the player's turn: pick (or roll) what the enemy will do, so it can be shown.
     void ChooseNextIntent();
     string DescribeCurrentIntent();

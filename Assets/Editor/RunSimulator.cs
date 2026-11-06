@@ -473,6 +473,8 @@ public static class RunSimulator
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash" || f.definition.faceName == "Spiked Shield");
 
+        // A stone face can only defend.
+        if(flow.petrification.IsStone(face)) return ActionType.Defense;
         if(PlayEnchantments && face.enchantment != null && PlaysEnchantment(face, die, player, flow, bigHit, rage)) return ActionType.Magic;
 
         if(definition.faceName == "Shield"){

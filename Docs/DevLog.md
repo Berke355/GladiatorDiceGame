@@ -1387,3 +1387,43 @@ All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 2
 - Medusa (battle 8): Petrify through `targetDie`, battle-scoped stone faces.
 - The Hydra (battle 11): heads, regrowth and regeneration.
 - Ritual + Bleed (13%), UI phase 2 (icons).
+
+## Day 45 - Medusa
+
+### Accomplished
+- **Medusa (battle 8), HP 50.** Die: Gaze ×2, Serpent Bite ×2 (4 damage), Coil (4 + 3 per stone face) and Stone Skin (8 block).
+- **Petrify:**
+  - Gaze petrifies the player's highest battle-value face (value plus Charge) that isn't stone yet, for its value in turns (Gaze has value 2, so Value Is the Effect holds).
+  - A stone face's only action is **Defense: gain 2 block**; its own actions and its enchantment don't work. It wears off after the player's next 2 turns.
+  - A stone Hammer keeps its Charge, but rolling it while it is stone spends it.
+- **Architecture:**
+  - `Petrification` is battle-only, owned by `BattleFlow` like `DieCharge`. `BattleFlow.CanAct` and `PlayAction` handle stone faces.
+  - `IEnemyBrain.Bind(flow)` gives boss effects the player's die, stone faces and Charge (`EffectContext.targetDie`, `targetPetrification`, `targetCharge`).
+  - New effects: `PetrifyHighestFaceEffectSO` and `PetrifiedFacesDamageEffectSO` (Coil).
+- **UI:** stone faces show "STONE N" in grey on the die strip, with a tooltip line. The rolled-face title says Petrified, and only the Defense button stays active ("2 block (petrified)"). `UIManager.charge` became `UIManager.flow`, so previews see both Charge and stone faces.
+- **GDD and CLAUDE.md** updated.
+
+### Bug found in Play Mode
+- The intent said "petrify War Hammer", but other faces turned to stone. Medusa showed a target at the start of the player's turn and picked again when she acted; attacking with the War Hammer spent its Charge in between, which changed the highest face.
+- **Fix:** `BossBrain` locks the target (`context.targetFace`) when it rolls the intent, so the telegraphed face is always the one that turns to stone, as the GDD promises.
+
+### Tests
+- **Checks (15/15):**
+  - The charged War Hammer (3 + 5) is targeted before a value-6 Venom, and a second Gaze takes Venom.
+  - Coil's forecast and hit with 2 stone faces are right.
+  - A stone face gives 2 block, its hit and enchantment do nothing, and it wears off after 2 turns.
+  - The locked target holds even after the Hammer spends its Charge.
+- **Play Mode:** in a real Medusa battle, both Gazes petrified the face named in the intent (screenshot: "STONE 2" War Hammer, next Gaze aiming at the charged Maul).
+
+### Balance (400 runs)
+| Coil bonus per stone face | +1 | +2 | +3 | +4 |
+|---|---|---|---|---|
+| Average deaths at battle 8 | 20% | 20% | 20% | 21% |
+
+- The bonus barely matters: Coil is one face of six, and usually lands with 1–2 stone faces. **+3** was chosen (the user's call) for a clearer "don't let two faces turn to stone" threat (4 + 6 = 10).
+- With Medusa: Burn 26% · Poison 22% · Shield 35% · Rage 31% · Bleed 26% · Hammer 28% · Ritual + Poison 24% · Ritual + Bleed 16% · Shield + Rage 37% · Bleed + Rage 37%.
+- Deaths at battle 8 are 10–29%, about the same as the Strong enemy it replaced. Shield handles her best (10%): its faces have low values, and a stone face's 2 block suits it.
+
+### Next Steps
+- The Hydra (battle 11, final boss): heads, regrowth (stopped by Burn), regeneration (stopped by Burn or Bleed).
+- Ritual + Bleed (16%), UI phase 2 (icons).

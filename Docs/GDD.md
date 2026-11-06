@@ -672,14 +672,15 @@ The gorgon whose gaze turns gladiators to stone. Medusa attacks the player's die
 
 - **Tests:** reliance on single faces. Dice with backup faces (duplicates, several faces that do the same job) hold up better.
 - **Mechanic: Petrify.** Medusa's gaze petrifies the player's **highest-value face**, by battle value (value plus Charge), so a charged Hammer is her natural target. The target is shown in the intent, so the player knows which face is in danger.
-- **Stone faces:** a petrified face still exists on the die, but when it is rolled it only gives a little block, so the player is never left with nothing to do. Its enchantment doesn't work while it is stone. Petrify wears off after **2 turns**, but Medusa can petrify again.
+- **Stone faces:** a petrified face still exists on the die, but when it is rolled its only action is **Defense: gain 2 block**, so the player is never left with nothing to do. Its own actions and its enchantment don't work while it is stone. Petrify lasts for the player's next **2 turns**, then wears off, but Medusa can petrify again (always the highest-value face that isn't stone yet).
+- **Stone and Charge:** a petrified Hammer keeps its Charge, but if it is rolled while stone, the stone turn spends it. Petrifying the charged Hammer is Medusa's answer to Hammer builds.
 - Petrify lasts only for the battle and never changes the run's die.
 
 | Face | Count | Action |
 |---|---|---|
 | Gaze | 2 | Petrify the player's highest-value face |
 | Serpent Bite | 2 | Attack: deal damage |
-| Coil | 1 | Attack: deal damage, plus extra damage for each petrified face the player has |
+| Coil | 1 | Attack: deal damage, plus 3 damage for each petrified face the player has (simulation showed the bonus barely changes the balance, so it was chosen for a clear threat) |
 | Stone Skin | 1 | Defense: gain a lot of block |
 
 #### Hydra (battle 11, final boss)

@@ -102,6 +102,9 @@ public class EnemyBrain : MonoBehaviour, IEnemyBrain
     }
 
     public int IncomingDamage => currentIntent.intentType == ActionType.Attack ? currentIntent.value + self.GetStatus(StatusType.Rage) : 0;
+    // Normal enemies don't act on the player's die.
+    public void Bind(BattleFlow flow){ }
+
     // Normal enemies have no die.
     public List<DieFace> Die => null;
     public DieFace RolledFace => null;

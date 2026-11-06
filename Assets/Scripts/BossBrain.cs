@@ -12,6 +12,8 @@ public class BossBrain : IEnemyBrain, IDisposable
     private readonly Entity opponent;
     private readonly List<DieFace> playerDie;
     private readonly List<DieFace> die = new List<DieFace>();
+    // The battle, for the player's stone faces and Charge (set by BattleFlow.Bind).
+    private BattleFlow flow;
 
     public List<DieFace> Die => die;
     public DieFace RolledFace { get; private set; }
@@ -21,6 +23,9 @@ public class BossBrain : IEnemyBrain, IDisposable
     public int CountdownDamage { get; private set; }
     public int StaggerTaken { get; private set; }
     public bool CountdownRunning => CountdownTurnsLeft > 0;
+    // The player's face this turn's intent aims at (Medusa's Gaze), locked when the die is rolled so the
+    // telegraphed target is the one hit, even if the player's values change before the enemy acts.
+    private DieFace lockedTarget;
     // The countdown started this turn, so this turn's end doesn't count down yet.
     private bool countdownJustStarted;
 
@@ -35,6 +40,10 @@ public class BossBrain : IEnemyBrain, IDisposable
         self.HitTaken += OnHitTaken;
     }
 
+    public void Bind(BattleFlow flow){
+        this.flow = flow;
+    }
+
     public void Dispose(){
         self.HitTaken -= OnHitTaken;
     }
@@ -45,6 +54,10 @@ public class BossBrain : IEnemyBrain, IDisposable
         // A second countdown face while one is running counts as the fallback face (a Gore).
         if(CountdownRunning && StartsCountdown(RolledFace) && definition.whileCountingDown != null){
             RolledFace = die.Find(face => face.definition == definition.whileCountingDown) ?? new DieFace(definition.whileCountingDown);
+        }
+        lockedTarget = null;
+        if(RolledFace.definition.effects.Exists(effect => effect.effectLogic is PetrifyHighestFaceEffectSO)){
+            lockedTarget = PetrifyHighestFaceEffectSO.Target(CreateContext(RolledFace));
         }
         Debug.Log(definition.bossName + " rolled " + RolledFace.definition.faceName + ": " + DescribeCurrentIntent());
     }
@@ -94,6 +107,12 @@ public class BossBrain : IEnemyBrain, IDisposable
             int damage = 0;
             if(RolledFace != null && ActionOf(RolledFace) == ActionType.Attack){
                 damage += RolledFace.value + self.GetStatus(StatusType.Rage);
+                // Coil: the bonus for the player's stone faces.
+                EffectContext context = CreateContext(RolledFace);
+                foreach(EffectSO effect in RolledFace.GetEffects(ActionType.Attack)){
+                    PetrifiedFacesDamageEffectSO coil = effect as PetrifiedFacesDamageEffectSO;
+                    if(coil != null) damage += coil.BaseDamage(context) - RolledFace.value;
+                }
             }
             if(CountdownTurnsLeft == 1 && !countdownJustStarted){
                 damage += CountdownDamage + self.GetStatus(StatusType.Rage);
@@ -133,6 +152,12 @@ public class BossBrain : IEnemyBrain, IDisposable
     }
 
     private EffectContext CreateContext(DieFace face){
-        return new EffectContext{ source = self, target = opponent, value = face != null ? face.value : 0, die = die, face = face, targetDie = playerDie };
+        return new EffectContext{
+            source = self, target = opponent, value = face != null ? face.value : 0, die = die, face = face,
+            targetDie = playerDie,
+            targetPetrification = flow != null ? flow.petrification : null,
+            targetCharge = flow != null ? flow.charge : null,
+            targetFace = lockedTarget
+        };
     }
 }

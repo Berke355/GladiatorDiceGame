@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
 
     // This battle's Charge (set by BattleManager), so the die and the previews show battle values.
     [System.NonSerialized]
-    public DieCharge charge;
+    public BattleFlow flow;
 
     [Header("Equipment")]
     public EquipmentChipUI[] equipmentChips;
@@ -124,7 +124,8 @@ public class UIManager : MonoBehaviour
 
     // After the roll: show the face and what each action would do; actions the face lacks stay disabled.
     public void ShowRolledFace(DieFace face, List<DieFace> die){
-        rolledFaceTitle.text = face.DisplayName + "  <size=70%>Value " + ValueOf(face) + "</size>";
+        bool stone = flow != null && flow.petrification.IsStone(face);
+        rolledFaceTitle.text = face.DisplayName + "  <size=70%>" + (stone ? "<color=#A8B0B8>Petrified</color>" : "Value " + ValueOf(face)) + "</size>";
         rolledFaceText.text = GameText.Colorize(face.FullDescription);
         rolledFaceTooltip.text = GameText.FaceTooltip(face);
         UpdateDieChips(die, face);
@@ -171,7 +172,10 @@ public class UIManager : MonoBehaviour
     // Short text of every effect the face runs for this action with the real numbers (Rage, Ritual, stacks),
     // e.g. "5 damage, 4 Bleed". Empty if the face has no effect for this action.
     private string DescribeAction(DieFace face, List<DieFace> die, ActionType action){
-        EffectContext context = new EffectContext{ source = player, target = enemy, value = ValueOf(face), die = die, face = face, charge = charge };
+        if(flow != null && flow.petrification.IsStone(face)){
+            return action == ActionType.Defense ? Petrification.StoneBlock + " block (petrified)" : "";
+        }
+        EffectContext context = new EffectContext{ source = player, target = enemy, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);
@@ -181,7 +185,7 @@ public class UIManager : MonoBehaviour
     }
 
     private int ValueOf(DieFace face){
-        return charge != null ? charge.ValueOf(face) : face.value;
+        return flow != null ? flow.charge.ValueOf(face) : face.value;
     }
 
     private void UpdateDieChips(List<DieFace> die, DieFace rolled){
@@ -189,7 +193,7 @@ public class UIManager : MonoBehaviour
             bool hasFace = i < die.Count;
             dieChips[i].gameObject.SetActive(hasFace);
             if(hasFace){
-                dieChips[i].Set(die[i], die[i] == rolled, charge != null ? charge.Get(die[i]) : 0);
+                dieChips[i].Set(die[i], die[i] == rolled, flow != null ? flow.charge.Get(die[i]) : 0, flow != null ? flow.petrification.TurnsLeft(die[i]) : 0);
             }
         }
     }

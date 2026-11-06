@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d5f966b0584c854b953d6e2a364fa2f, type: 3}
+  m_Name: Medusa
+  m_EditorClassIdentifier: Assembly-CSharp::BossSO
+  bossName: Medusa
+  maxHP: 50
+  faces:
+  - {fileID: 11400000, guid: 84b696bf3f512694da98406c9e5587f8, type: 2}
+  - {fileID: 11400000, guid: 84b696bf3f512694da98406c9e5587f8, type: 2}
+  - {fileID: 11400000, guid: 14f942e381d7fb74d9036e66144e99c2, type: 2}
+  - {fileID: 11400000, guid: 14f942e381d7fb74d9036e66144e99c2, type: 2}
+  - {fileID: 11400000, guid: acfb162bad4199d4d866fe39c68bedf8, type: 2}
+  - {fileID: 11400000, guid: 8cd5b3998e4b3f0419eba40cda48bb98, type: 2}
+  countdownTurns: 3
+  staggerDamage: 12
+  whileCountingDown: {fileID: 0}

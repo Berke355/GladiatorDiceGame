@@ -14,6 +14,8 @@ public class BattleFlow
     public readonly TriggerSystem triggers;
     // Charge on the die faces for this battle (Hammer).
     public readonly DieCharge charge = new DieCharge();
+    // Stone faces on the die for this battle (Medusa's Petrify).
+    public readonly Petrification petrification = new Petrification();
 
     public DieFace RolledFace { get; private set; }
     // The last action asked to reroll the die and act again (Steady Hand). Cleared by the next roll.
@@ -28,6 +30,12 @@ public class BattleFlow
         this.brain = brain;
         this.die = die;
         triggers = new TriggerSystem(player, enemy, die, equipment, charge);
+        brain.Bind(this);
+    }
+
+    // Whether the face can take this action now: a stone face can only defend (for StoneBlock block).
+    public bool CanAct(DieFace face, ActionType action){
+        return petrification.IsStone(face) ? action == ActionType.Defense : face.HasAction(action);
     }
 
     public void StartBattle(){
@@ -57,6 +65,14 @@ public class BattleFlow
         triggers.Fire(TriggerType.ActionChosen, action);
         if(IsOver) return;
 
+        // A stone face only gives a little block; its own actions and its enchantment don't work.
+        if(petrification.IsStone(RolledFace)){
+            if(action == ActionType.Defense) player.GainBlock(Petrification.StoneBlock);
+            RerollPending = false;
+            keepRolledCharge = false;
+            return;
+        }
+
         EffectContext context = new EffectContext{ source = player, target = enemy, value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
@@ -76,6 +92,7 @@ public class BattleFlow
             }
             else if(face.definition.charges) charge.Add(face, 1);
         }
+        petrification.EndPlayerTurn();
         triggers.currentFace = null;
     }
 

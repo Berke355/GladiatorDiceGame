@@ -22,6 +22,7 @@ public static class GameText
         new Keyword{ word = "Rage", color = "#FF5A5A", definition = "Every hit deals +1 damage per stack (each hit of a multi-hit). Lasts the whole battle." },
         new Keyword{ word = "Ritual", color = "#B388FF", definition = "Every status applied to the opponent gets +1 per stack. Lasts the whole battle." },
         new Keyword{ word = "Bleed", color = "#E0435A", definition = "At the end of its owner's turn: lose 1 HP, then lose 1 stack. Stacks are how many turns it lasts. Ignores Block and Fortify." },
+        new Keyword{ word = "petrify", color = "#A8B0B8", definition = "A petrified face is stone for the player's next 2 turns: when rolled, its only action is Defense: gain 2 block. Its other actions and its enchantment don't work." },
         new Keyword{ word = "block", color = "#B8C4CC", definition = "Absorbs damage. Resets at the start of its owner's turn." },
         new Keyword{ word = "damage", color = "#FF7A6B", definition = null },
         new Keyword{ word = "heal", color = "#6EE7A0", definition = null },

@@ -17,8 +17,13 @@ public class EffectContext
     public bool rerollRequested;
     // Set by an effect after which the face keeps its Charge instead of spending it (Resonance).
     public bool keepCharge;
-    // The target's die, for effects that act on it (Medusa). Null if the target has no die.
+    // The target's die, its stone faces and its Charge, for effects that act on it (Medusa). Null if the target has no die.
     public List<DieFace> targetDie;
+    public Petrification targetPetrification;
+    public DieCharge targetCharge;
+    // A face of the target's die chosen in advance (the target shown in a boss intent), so the effect hits it
+    // even if the die's values changed since. Null: the effect picks its own target when it runs.
+    public DieFace targetFace;
     // Set by an effect that starts a boss countdown to a hit of this much damage (Stampede); BossBrain runs it.
     public int countdownDamage;
 
