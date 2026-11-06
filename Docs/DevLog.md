@@ -1541,3 +1541,57 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - The reroll content set above.
 - Reactive enemy intents (Slay the Spire style).
 - Difficulty and gold pass (bots about 5–15%).
+
+## Day 48 - Fortune: Reroll Content
+
+### Accomplished
+- **Fortune content** (new `FaceTag.Fortune`, so the Market offers it to a player building around rerolls):
+  - Patient Blade (Common, value 3): Attack: my value + 1 per reroll left; Defense: block.
+  - Lucky Buckler (Common, value 2): Attack: damage; Defense: block and 1 reroll.
+  - Gambler's Strike (Rare, value 3): hit, and hit again if you rerolled this turn.
+  - Fate's Edge (Epic, value 2): my value × rerolls used this battle.
+  - Loaded Die (Epic item): +1 reroll at battle start.
+  - Lucky Charm (Rare enchantment): Magic: gain 1 reroll.
+- **New effects:** `GainRerollEffectSO` (`fixedAmount`), `RerollScaledDamageEffectSO` (`RerollsLeft` / `UsedThisBattle`) and `IfRerolledEffectSO`.
+- **UI:** action previews now get the reroll pool, so Patient Blade shows its real damage, and it drops as rerolls are spent.
+- **Simulator:**
+  - A focused Fortune bot.
+  - Lucky Buckler defends (filling the pool).
+  - A die with Patient Blade only rerolls to survive (stone faces, big incoming hits).
+- **GDD and CLAUDE.md** updated.
+
+### Tests
+- **Checks (6/6):**
+  - Loaded Die starts the battle with 3 rerolls.
+  - Patient Blade hits 2 + 3 with 3 left (at its first value of 2).
+  - Gambler's Strike hits 3, or 3 + 3 after a reroll.
+  - Fate's Edge hits 2 × 4 used = 8.
+  - Lucky Charm on a Sword gives +1 reroll.
+- **Play Mode:** with the real buttons, Patient Blade's preview dropped from 5 to 3 as rerolls were spent, and Gambler's Strike's preview showed both hits after a reroll.
+
+### Balance (400 runs, Fortune bot)
+| Patient Blade | Lucky Buckler | Fortune |
+|---|---|---|
+| 2 | — (none yet) | 1–3% |
+| 2 | 2 | 7% |
+| **3** | **2** | **15%** |
+| 3 | 3 | 11% |
+| 4 | 2 | 13% |
+| 4 | 3 | 13% |
+
+- Rerun with 500 runs, the chosen setting (Patient Blade 3, Lucky Buckler 2) gave 8%, so Fortune is about 10% with wide noise.
+- All bots (500 runs): Burn 26% · Poison 22% · Shield 18% · Rage 32% · Bleed 40% · Hammer 18% · Fortune 8% · Ritual + Poison 22% · Ritual + Bleed 26% · Shield + Rage 30% · Bleed + Rage 49%.
+
+### Findings
+- **With only Patient Blade as a Common, Fortune cleared 1–3%,** like Hammer before Maul.
+- **Lucky Buckler's value barely mattered (2–4) until the bot played it right.** The bot attacked with Buckler instead of defending to fill the pool, and spent the rerolls Patient Blade wants kept. Fixing that lifted Patient Blade to 6.4 damage per roll.
+- **Fortune dies most at the bosses:** the Minotaur (28%; a slow start like Burn's) and Medusa (26%; she petrifies the grown Patient Blade, a nice interaction).
+- "Save or spend" is the hardest decision for a simple bot, so Fortune likely plays stronger for a person than the simulation shows.
+
+### Decisions
+- Lucky Buckler is Fortune's second Common (the user's call): Defense fills the reroll pool, which is how Fortune grows during a fight.
+- Fortune stays at about 10% for now; it gets balanced with every other build in the Phase A difficulty pass.
+
+### Next Steps
+- Reactive enemy intents (Slay the Spire style), Phase A step 2.
+- Difficulty and gold pass (bots about 5–15%).

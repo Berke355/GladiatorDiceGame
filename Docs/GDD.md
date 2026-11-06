@@ -148,7 +148,20 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
 - **Only the player's die is rerolled:** the enemy's intent stays the same, so the player rerolls to answer a known threat (e.g. hunting for a Defense face when a big hit is coming).
 - **Not a new turn:** Block doesn't reset and turn-start items don't fire. FaceRolled items fire again for the new face.
 - **Why (Pillar 2, Meaningful Decisions Every Turn):** before rerolls, a turn was one obvious choice between the rolled face's one or two actions. Now every turn asks "keep this face, or spend a reroll and have none left when I need it?"
-- **Content around it** (to design next): an Epic item for +1 reroll per battle, faces that reward unused rerolls or rerolling, and a new role for Steady Hand.
+- **Fortune content** (tag `Fortune`, so the Market offers it to a player building around rerolls):
+
+| Content | Kind | Rarity | Value | Effect |
+|---|---|---|---|---|
+| **Patient Blade** | Face | Common | 3 | Attack: deal my value + 1 per reroll you have left. Defense: gain block equal to my value. |
+| **Lucky Buckler** | Face | Common | 2 | Attack: deal damage equal to my value. Defense: gain block equal to my value and 1 reroll. |
+| **Gambler's Strike** | Face | Rare | 3 | Attack: deal my value; if you rerolled this turn, hit again for my value. |
+| **Fate's Edge** | Face | Epic | 2 | Attack: deal my value × the rerolls you used this battle (at least my value). |
+| **Loaded Die** | Item | Epic | — | At the start of each battle: gain 1 reroll. |
+| **Lucky Charm** | Enchantment | Rare | — | Magic: gain 1 reroll. |
+
+- **Save or spend:** Patient Blade rewards keeping rerolls, while Gambler's Strike and Fate's Edge reward spending them, so the same die pulls both ways.
+- **How Fortune grows during a fight:** Lucky Buckler's Defense fills the reroll pool, and Patient Blade hits harder for every reroll kept (the "Common that grows during a fight" rule). With only Patient Blade as a Common, the Fortune bot cleared 1–3% of runs; with Lucky Buckler and bots that defend with it and keep their rerolls, about 8–15%. Fortune dies most at the Minotaur (slow start, like Burn) and at Medusa (she petrifies the grown Patient Blade).
+- **Steady Hand stays as it is:** it rerolls without spending the pool, so it is still its own thing.
 
 ## Rarity & Economy
 

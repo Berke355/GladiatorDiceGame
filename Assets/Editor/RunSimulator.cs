@@ -131,6 +131,7 @@ public static class RunSimulator
             new Bot("Focused: Ritual", Shopping.Focused, FaceTag.Ritual),
             new Bot("Focused: Bleed", Shopping.Focused, FaceTag.Bleed),
             new Bot("Focused: Hammer", Shopping.Focused, FaceTag.Hammer),
+            new Bot("Focused: Fortune", Shopping.Focused, FaceTag.Fortune),
             // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
             new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
             new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
@@ -506,6 +507,8 @@ public static class RunSimulator
             case "Anvil": return bigHit ? ActionType.Defense : ActionType.Magic;
             // Fish for a charged face; otherwise block.
             case "Steady Hand": return !bigHit && die.Exists(f => f != face && flow.charge.Get(f) >= 2) ? ActionType.Magic : ActionType.Defense;
+            // Defending fills the reroll pool (block + 1 reroll), which is what Fortune dice grow on.
+            case "Lucky Buckler": return ActionType.Defense;
             case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
@@ -522,6 +525,8 @@ public static class RunSimulator
         bool bigHit = brain.IncomingDamage >= 6;
         if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
         if(flow.rerolls.Left <= 1) return false;
+        // Patient Blade hits harder for every reroll kept, so a die with one only rerolls to survive.
+        if(die.Exists(f => f.definition.faceName == "Patient Blade")) return false;
         float average = 0;
         foreach(DieFace f in die) average += flow.charge.ValueOf(f);
         average /= die.Count;

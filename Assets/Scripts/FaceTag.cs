@@ -10,5 +10,7 @@ public enum FaceTag
     Rage,
     Ritual,
     Bleed,
-    Hammer
+    Hammer,
+    // Faces and items built around rerolls.
+    Fortune
 }
