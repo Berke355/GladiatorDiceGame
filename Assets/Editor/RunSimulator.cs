@@ -408,7 +408,7 @@ public static class RunSimulator
                     face = flow.RerollFace();
                 }
                 if(flow.IsOver) break;
-                ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain, flow);
+                ActionType action = AvoidThreat(ChooseAction(face, run.dieFaces, player, enemy, brain, flow), face, brain, flow);
                 int enemyHP = enemy.currentHP;
                 int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? enemy.GetStatus(stats.trackedStatus) : 0;
                 if(stats != null){
@@ -518,10 +518,26 @@ public static class RunSimulator
         return ActionType.Magic;
     }
 
+    // Switches to another action the face can take if the chosen one sets off a threat (e.g. Lash on Attack).
+    private static ActionType AvoidThreat(ActionType chosen, DieFace face, IEnemyBrain brain, BattleFlow flow){
+        int value = flow.charge.ValueOf(face);
+        if(brain.ThreatAgainst(face, value, chosen) == 0) return chosen;
+        foreach(ActionType action in new[]{ ActionType.Defense, ActionType.Attack, ActionType.Magic }){
+            if(action != chosen && flow.CanAct(face, action) && brain.ThreatAgainst(face, value, action) == 0) return action;
+        }
+        return chosen;
+    }
+
     // A simple reroll policy: reroll a stone face, a face that can't block a big incoming hit, or a face whose
     // battle value is well below the die's average. Keeps the last reroll for big hits.
     private static bool ShouldReroll(DieFace face, List<DieFace> die, IEnemyBrain brain, BattleFlow flow){
         if(flow.petrification.IsStone(face)) return true;
+        // A threat on this face (e.g. Run Down on a low face) that no action avoids.
+        bool safeAction = false;
+        foreach(ActionType action in new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }){
+            if(flow.CanAct(face, action) && brain.ThreatAgainst(face, flow.charge.ValueOf(face), action) == 0) safeAction = true;
+        }
+        if(!safeAction) return true;
         bool bigHit = brain.IncomingDamage >= 6;
         if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
         if(flow.rerolls.Left <= 1) return false;

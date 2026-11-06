@@ -21,4 +21,8 @@ public class EnemySO : ScriptableObject
     // Rage gained after each of the enemy's turns (e.g. Essedarius gathering speed).
     public int escalationPerTurn;
     public List<EnemyIntent> intents = new List<EnemyIntent>();
+    // Always-on rules that react to the player (see GDD "Enemy Traits").
+    public List<EnemyTrait> traits = new List<EnemyTrait>();
+    // Second Wind: below half HP the enemy switches to these intents for the rest of the battle (empty = never).
+    public List<EnemyIntent> secondWindIntents = new List<EnemyIntent>();
 }

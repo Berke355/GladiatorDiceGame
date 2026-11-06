@@ -8,4 +8,6 @@ public class EquipmentSlotUI : MonoBehaviour
     // Clicked to choose which item a new one replaces when every slot is full.
     public Button slotButton;
     public TextMeshProUGUI text;
+    // The item's description on hover.
+    public TooltipTrigger tooltip;
 }

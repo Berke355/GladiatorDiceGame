@@ -27,6 +27,11 @@ public class UIManager : MonoBehaviour
     [Header("Die")]
     public DieChipUI[] dieChips;
 
+    [Header("Enemy Traits")]
+    // Shown only for normal enemies with traits, in the spot the boss die uses.
+    public GameObject traitStrip;
+    public EquipmentChipUI[] traitChips;
+
     [Header("Boss Die")]
     // Shown only in boss battles: the boss's 6 faces, with the rolled one highlighted.
     public GameObject bossDieStrip;
@@ -92,6 +97,20 @@ public class UIManager : MonoBehaviour
             if(filled) equipmentChips[i].Set(equipment[i]);
         }
         shownEquipment = equipment;
+    }
+
+    public void ShowTraits(List<EnemyTrait> traits){
+        int count = traits != null ? traits.Count : 0;
+        traitStrip.SetActive(count > 0);
+        for(int i = 0; i < traitChips.Length; i++){
+            bool has = i < count;
+            traitChips[i].gameObject.SetActive(has);
+            if(has) traitChips[i].SetTrait(traits[i]);
+        }
+    }
+
+    public void FlashTrait(int index){
+        if(index >= 0 && index < traitChips.Length) traitChips[index].Flash();
     }
 
     // Called when an item triggers.

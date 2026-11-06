@@ -1595,3 +1595,112 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 ### Next Steps
 - Reactive enemy intents (Slay the Spire style), Phase A step 2.
 - Difficulty and gold pass (bots about 5–15%).
+
+## Day 49 - Enemy Traits
+
+### Accomplished
+- **Enemy traits (GDD "Enemy Traits"),** inspired by Slay the Spire: always-on rules that react to the player's choices.
+  - `EnemySO.traits` lists `EnemyTrait`s. The triggers are `HitByPlayer`, `LostHPFromHit`, `PlayerChoseAction` (with an optional action and a "while it has block" condition), `PlayerRerolled`, and `Passive` (shown only).
+  - `EnemyTraitSystem` runs them: the equipment trigger idea from the enemy's side. Effects run by a trait never fire traits.
+  - Traits show as reddish chips with tooltips where the boss die strip sits (bosses show their die instead), and flash when they fire.
+- **New statuses:** Vulnerable (+1 per hit taken), Weak (−1 per hit dealt) and Entangled (no rerolls). Each loses 1 stack at its owner's turn end.
+- **New effect:** `RetaliateDamageEffectSO` (Thorns/Parry damage, no Rage, no source, so it can't loop).
+- **Assignment:**
+
+| Enemy | Change |
+|---|---|
+| Murmillo | Curl Up: the first HP-losing hit gives it 3 block |
+| Retiarius | Net also Entangles |
+| Dimachaerus | Parry: choosing Attack while it has block deals you 2 |
+| Arena Lion | Enrage: +1 Rage on the first 2 HP-losing hits each battle; Roar removed |
+| Venefica | New Hamstring intent (Weak 2) |
+| Secutor | Second Wind: below half HP it drops its shield and switches to Frenzied Slam 6 and Wild Swing 3 (`EnemySO.secondWindIntents`) |
+| Essedarius | Momentum: +1 Rage per reroll you spend |
+| War Elephant | Thorns: 1 damage per hit you land |
+| Hoplomachus Champion | Challenge: +1 Rage when you choose Defense |
+| Bestiarius | Whip also applies Vulnerable |
+
+- Parry was first written as "each hit while it has block". Block is gone by the time the hit lands, so it became "choosing Attack while it has block".
+
+### Tests
+- **Checks (15/15):** Thorns, Enrage (and Poison ticks not counting), Curl Up once, Challenge, Parry (only with block), Momentum, Entangled (one turn), Weak, Vulnerable and Second Wind.
+- **Play Mode:** War Elephant's Thorns dealt 2 back to Twin Axes, and its chip flashed. A single chip stretched across the row, so the chips got a fixed width.
+
+### Balance
+| Arena Lion setting | Deaths to the Lion (5-bot sample) |
+|---|---|
+| No trait | 88 |
+| Enrage, no cap, with Roar | 431 |
+| Enrage, at most 4, no Roar | 280 |
+| Enrage, at most 3, no Roar | 203 |
+| Enrage, at most 2, with Roar | 231 |
+| **Enrage, at most 2, no Roar** | **106** |
+
+- Uncapped Enrage made the Arena Lion the deadliest enemy in the game, more than any boss.
+- **Traits became the first difficulty step:** bot clear rates fell from 8–49% to 2–19%, close to the Phase A target for bots (5–15%). The bots don't play around traits; a player who reads them does better.
+
+## Day 50 - Market Locks, Hover Help, Grand Market Upgrades
+
+### Accomplished (the user's play-test requests)
+- **Market locks:**
+  - 5 gold (15 in the Grand Market). A locked face, enchantment or item survives rerolls and waits in the next Market that sells that kind (items only in a Grand Market).
+  - Unlocking is free, without a refund; buying releases the lock.
+  - `RunData.lockedFaces` / `lockedEnchantments` / `lockedEquipment`, placed first by the next Market.
+  - Every sale card has a Lock button.
+- **Hover help:**
+  - Die faces and equipment slots in the Market show their full description.
+  - Every highlighted keyword (Ritual, Bleed, Poison...) shows its definition when the pointer is over the word. `GameText.Colorize` now wraps keywords in TMP links in one pass, and `KeywordLinkTooltip` shows the hovered one.
+  - This works in the Market, RunStart and Battle (rolled face, intent, action buttons). The tooltip panel became `Assets/UI/Tooltip.prefab`, shared by all three scenes.
+- **The Grand Market upgrades every face** (the Normal Market still can't upgrade Epics).
+- **Boss healing 50% → 30% of max HP:** at 50%, boss fights felt safe in play-tests ("my HP will come back anyway").
+
+### Tests
+- **Checks (11/11):**
+  - Lock costs (5/15).
+  - Locked offers survive a reroll and appear in the next Market.
+  - Unlocking is free; buying releases the lock; sold offers can't be locked.
+  - A locked item skips Normal Markets and appears in the next Grand Market.
+  - The Grand Market upgrades every face, while the Normal Market still can't upgrade Epics.
+- **Play Mode:**
+  - A locked card stayed through a reroll, and a die face's tooltip was right.
+  - Pointer hit-testing at the position of "Fortify" on a card found the link and showed its definition (screenshot).
+- **Simulation:** with 30% healing and Grand Market upgrades, bots clear 1–14%.
+
+## Day 51 - Essedarius: Threats and Momentum
+
+### Accomplished
+- **The user's design** (Slay the Spire's Gremlin Nob as the reference): an enemy whose own difficulty pushes the player to reroll, while rerolling makes it stronger. The first Momentum version had weak attacks, so without rerolls it never grew and was no threat.
+- **Threat intents** (`PunishChoiceEffectSO`) hit on the enemy's turn only if the player's action this turn met a condition. `BattleFlow` records the player's last action for them.
+  - Essedarius: Run Down (7 damage if you act with a face below 5, ×2), Lash (4 damage if you choose Attack, ×1), Wheel Spikes 3, Rein In: block 3. Battle Cry was removed, since Momentum is now its Rage source.
+- **Faces without a numeric value** (`DieFaceSO.hasNoValue`, for future special faces) count as below any threshold.
+- **Bots:**
+  - Threat intents don't count as incoming damage; `IEnemyBrain.ThreatAgainst` reports them.
+  - Bots reroll a face that no action can keep safe, and switch to a safe action when they can.
+
+### Tests
+- **Checks (8/8):**
+  - Run Down's text is right, and it doesn't count as incoming damage.
+  - A value-2 Sword is punished and a value-4 Serrated Blade isn't (at the first threshold, 3).
+  - Lash punishes Attack, not Defense.
+  - Rerolling to dodge gives Essedarius 1 Rage, which raises the threat from 6 to 7.
+
+### Balance
+| Run Down | Deaths to Essedarius (7-bot sample) |
+|---|---|
+| Below 3 for 6 | 20 |
+| Below 4 for 6 | 30 |
+| Below 4 for 8 | 34 |
+| **Below 5 for 7** | **62** |
+
+- Bots dodge threats perfectly, so Essedarius was the least deadly enemy at first. "Below 5" puts most faces under threat, so the pressure to reroll (and feed Momentum) is real.
+- All bots: 0–12%.
+
+### Next Steps
+- **Multiple enemies (Roadmap Phase C),** agreed design:
+  - Click an enemy to target it; the default target is the front living enemy.
+  - Enemy groups of up to 3.
+  - Each enemy has its own intent and traits.
+  - Area-effect architecture first, content later.
+  - The Hydra becomes a body plus head enemies: killing a head cuts it, and cut heads regrow as two unless the body has Burn.
+- **In stages:** infrastructure with a single-enemy regression test, then targeting UI and groups, then the Hydra.
+- After that, the difficulty and gold pass (Phase A step 3).

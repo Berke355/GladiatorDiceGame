@@ -190,7 +190,7 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 - Example layout: battles 1–3 → **boss (4)** → battles 5–7 → **boss (8)** → battles 9–10 → **final boss (11)**.
 - After every battle except the final boss, the player visits the Market. After a boss, it is a **Grand Market** instead.
 - **Player HP:** 50 max. HP carries over between battles.
-- **Healing after bosses:** winning a boss battle restores 50% of max HP (placeholder). Without it, runs would end from slow HP loss instead of from how good the build is.
+- **Healing after bosses:** winning a boss battle restores 30% of max HP. Without it, runs would end from slow HP loss instead of from how good the build is. It was 50%, but in play-tests that made boss fights feel safe ("my HP will come back anyway"), so HP stays a resource to manage through the boss.
 - **Gold after bosses:** winning a boss battle pays a 30 gold bonus on top of the normal reward, so the player reaches the Grand Market able to afford about one Epic (simulated bots arrive with about 60 gold; without the bonus they had about 25, less than any Epic).
 
 ### Run Start
@@ -232,8 +232,10 @@ Each visit offers a limited, random selection. The player is never forced to spe
 Market services:
 
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
-- **Upgrade a face:** raise one die face's value by 1. There is no limit: anyone who can pay can keep upgrading. The Normal Market upgrades Common and Rare faces; **Epic faces can only be upgraded at the Grand Market**.
-- **Reroll the offers:** pay gold for a new set of offers, faces, enchantments and items alike (sold offers are replaced too). The new set avoids the faces it replaced when the pool allows.
+- **Upgrade a face:** raise one die face's value by 1. There is no limit: anyone who can pay can keep upgrading. The Normal Market upgrades Common and Rare faces; **the Grand Market upgrades every face**, and Epic faces can only be upgraded there.
+- **Reroll the offers:** pay gold for a new set of offers, faces, enchantments and items alike (sold offers are replaced too). Locked offers stay. The new set avoids the faces it replaced when the pool allows.
+- **Lock an offer** (5 gold, 15 in the Grand Market): a locked face, enchantment or item survives rerolls and waits in the next Market that sells that kind (items only in a Grand Market), so the player can save up for it. Unlocking is free, without a refund; buying it releases the lock.
+- **Hover help:** every die face and item shows its full description on hover, and every highlighted keyword (Ritual, Bleed, Poison...) shows its definition when the pointer is over the word.
 - **Enchant a face:** inscribe an enchantment into the empty Magic action of one die face (see Enchanting Table).
 
 **Market reroll:**
@@ -371,12 +373,16 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 | **Fortify** | Self | — | Never resets | Absorbs damage after Block |
 | **Rage** | Self | — | Lasts the whole battle | Every hit deals +1 damage per stack; each hit of a multi-hit gets it |
 | **Ritual** | Self | — | Lasts the whole battle | Every status applied to the opponent gets +1 per stack |
+| **Vulnerable** | Target | — | −1 per tick (stacks are turns) | Every hit it takes deals +1 damage |
+| **Weak** | Target | — | −1 per tick (stacks are turns) | Every hit it deals deals −1 damage |
+| **Entangled** | Target | — | −1 per tick (stacks are turns) | Can't reroll |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.
 - **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that halve), Bleed is duration (always 1, for as many turns as it has stacks).
 - **Ignite:** deal damage equal to the target's Burn without consuming it. Detonate consumes Burn for one bigger hit. Small ignitions versus waiting for one big detonation is the Burn build's core decision.
 - **Rage and Ritual** are visible statuses, not hidden multipliers, so they follow the Value Is the Effect rule: the face's value stays as printed, and previews show the boosted result (e.g. a Sword with 3 Rage previews "5 damage, 1 Bleed").
 - **Ritual only boosts statuses applied to the opponent** (Burn, Poison, Bleed). Boosting self-applied statuses would break the "Fortify comes in small amounts" rule. Multiplying a status (Fuel) is not a new application, so Ritual does not apply to it.
+- **Vulnerable, Weak and Entangled** are debuffs enemies put on the player (inspired by Slay the Spire's Vulnerable and Weak). Applied on the enemy's turn, N stacks last the player's next N turns. They make some enemy turns worse for the player and interact with rerolls (e.g. Weak: is it worth rerolling for a bigger hit?).
 - **Fortify is permanent, so it must come in small amounts.** Enemy intents that grant Fortify are kept at 1. A player's Shield face can grant Fortify equal to its value because it pays for it with weaker attacks than Sword.
 
 ## Build Archetypes
@@ -630,7 +636,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 
 | Enemy | HP | Intents | Clock |
 |---|---|---|---|
-| **Essedarius** (chariot fighter) | 48 | Ride Down 2 (×2), Wheel Spikes 2 (×1), Rein In: block 3 (×1), Battle Cry: 1 Rage (×1) | **Gathering speed:** builds Rage with Battle Cry |
+| **Essedarius** (chariot fighter) | 48 | Run Down: 7 damage if you act with a face below 5 (×2), Lash: 4 damage if you choose Attack (×1), Wheel Spikes 3 (×1), Rein In: block 3 (×1) | **Threats and Momentum:** its threats push you to reroll, and every reroll gives it Rage |
 | **War Elephant** | 64 | Stomp 7 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
 | **Hoplomachus Champion** | 51 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
 | **Bestiarius** (beast tamer) | 46 | Whip 2 (×2), Unleash 6 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
@@ -639,6 +645,39 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 
 - **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
 - **Escalation through Rage** (Essedarius, Hoplomachus, Arena Lion): rising damage uses the same visible Rage status as the player. An enemy can gain Rage from an intent (Battle Cry, Roar), which the player sees coming. Rage every turn (`escalationPerTurn`) is still supported but no enemy uses it: on Essedarius it became a wall that slow builds could not get past (Essedarius alone caused about half of the Bleed, Rage and Shield deaths), so it was replaced with Battle Cry. Its intents show the boosted numbers, and the Rage chip's tooltip explains why.
+
+#### Enemy Traits
+
+Inspired by Slay the Spire: enemies have always-on **traits** that react to what the player does, so every turn becomes a small puzzle ("which action is safe against this enemy with this face?"). Traits are shown next to the enemy with a tooltip and flash when they trigger.
+
+| Trait | Rule | Tests | Hard on | Answer |
+|---|---|---|---|---|
+| **Thorns** | Each time you hit it, you take 1 damage | Multi-hit play | Rage, Twin Axes, Smoldering Gauntlet | One big hit, statuses |
+| **Enrage** | Each hit that costs it HP gives it 1 Rage | Long, many-hit fights | Rage, Bleed (Lacerate) | Status ticks (not hits), finishing fast |
+| **Curl Up** | The first hit that costs it HP gives it block (once per battle) | The opening move | Hammer's first big hit | Open with a small hit, then strike |
+| **Challenge** | Each time you choose Defense, it gains 1 Rage | Passive Shield play | Shield, Fortify | Defending by attacking, Spiked Shield |
+| **Parry** | Each time you choose Attack while it has block, you take damage | Attacking into its block | Multi-hit builds | Waiting for its block to reset, statuses |
+| **Second Wind** | Below half HP it changes its intents | Burst timing | Slow builds | Crossing the threshold on purpose |
+| **Momentum** | Each reroll you spend gives it 1 Rage | The reroll decision | Fortune, heavy rerollers | Rerolling only when it matters |
+
+- **Assignment (one trait or one new intent per enemy, Weak enemies stay simple):**
+  - Murmillo: Curl Up (3 block). The gentle introduction to traits.
+  - Retiarius: Net now also Entangles (no rerolls next turn).
+  - Dimachaerus: Parry (2 damage).
+  - Arena Lion: Enrage, capped at the first 2 HP-losing hits each battle, replacing its Roar intent (see the balance note below).
+  - Venefica: a new Hamstring intent (Weak 2).
+  - Secutor: Second Wind (drops its shield and attacks wildly).
+  - Essedarius: Momentum, plus threat intents (see below).
+  - War Elephant: Thorns (thick hide).
+  - Hoplomachus Champion: Challenge.
+  - Bestiarius: Whip also applies Vulnerable.
+- **Threat intents** (Essedarius): telegraphed threats on the player's choice this turn. Run Down: "7 damage if you act with a face below 5"; Lash: "4 damage if you choose Attack". They hit on the enemy's turn only if the player's action set them off. With Momentum they make the dilemma the user asked for (inspired by Slay the Spire's Gremlin Nob): take the hit, or reroll for a safer face and give it permanent Rage. Faces whose value isn't a number (`hasNoValue`, for future special faces) count as below any threshold.
+  - The first version (Momentum alone, weak attacks) was no threat: without rerolls it never grew. Run Down started at "below 3 for 6", which only caught starter faces; "below 5 for 7" catches most faces.
+- **Rule: test, don't lock.** Every trait hurts some builds more, but every build keeps a way to win.
+- **Balance note:** uncapped Enrage made the Arena Lion the deadliest enemy in the game (431 deaths in a 5-bot sample, against 88 without the trait, more than any boss). Capped at 2 per battle and without Roar, it is a little harder than before (106).
+- **Traits doubled as the first difficulty step:** bot clear rates fell from 8–49% to 2–19%, close to the Phase A target of 5–15% for bots. The bots don't play around traits (e.g. they keep defending against Hoplomachus), so a player who reads them does better.
+- **Second round (later):** punishing Magic, status resistance (e.g. ignore the first 2 statuses), splitting (needs multiple enemies, Phase C).
+- **Technical:** traits reuse the equipment trigger system from the enemy's side: an `EnemySO` lists `EnemyTrait`s (a trigger such as "hit by the player", "lost HP from a hit", "the player chose an action", "the player rerolled", plus existing effect assets). Second Wind is a second intent list the brain switches to below half HP.
 
 #### Balance Targets
 

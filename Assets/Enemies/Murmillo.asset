@@ -29,3 +29,15 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 2
     weight: 2
+  traits:
+  - traitName: Curl Up
+    description: 'The first time a hit costs it HP: gain 3 block.'
+    trigger: 2
+    requireAction: 0
+    action: 0
+    requireBlock: 0
+    effects:
+    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    value: 3
+    maxPerBattle: 1
+  secondWindIntents: []

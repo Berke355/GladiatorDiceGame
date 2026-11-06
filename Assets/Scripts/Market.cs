@@ -6,6 +6,7 @@ public class MarketOffer
     public DieFaceSO face;
     public int price;
     public bool sold;
+    public bool locked;
 }
 
 public class EnchantmentOffer
@@ -13,6 +14,7 @@ public class EnchantmentOffer
     public EnchantmentSO enchantment;
     public int price;
     public bool sold;
+    public bool locked;
 }
 
 public class EquipmentOffer
@@ -20,6 +22,7 @@ public class EquipmentOffer
     public EquipmentSO item;
     public int price;
     public bool sold;
+    public bool locked;
 }
 
 // Market rules: generating offers, buying and upgrading. Plain C# with no UI,
@@ -47,6 +50,22 @@ public class Market
         this.run = run;
         this.economy = economy;
         this.isGrand = isGrand;
+        // Locked offers from earlier visits come first and keep their slots.
+        foreach(DieFaceSO face in run.lockedFaces.ToArray()){
+            if(offers.Count >= economy.offersPerMarket) break;
+            offers.Add(new MarketOffer{ face = face, price = economy.GetBuyPrice(face.rarity), locked = true });
+        }
+        foreach(EnchantmentSO enchantment in run.lockedEnchantments.ToArray()){
+            if(enchantmentOffers.Count >= economy.enchantmentsPerMarket) break;
+            enchantmentOffers.Add(new EnchantmentOffer{ enchantment = enchantment, price = economy.GetBuyPrice(enchantment.rarity), locked = true });
+        }
+        if(isGrand){
+            run.lockedEquipment.RemoveAll(item => run.equipment.Contains(item));
+            foreach(EquipmentSO item in run.lockedEquipment.ToArray()){
+                if(equipmentOffers.Count >= economy.equipmentPerGrandMarket) break;
+                equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice, locked = true });
+            }
+        }
         if(run.bossRewardPending){
             GenerateRewardChoices();
         }
@@ -65,7 +84,7 @@ public class Market
         return run.gold >= GetRerollCost();
     }
 
-    // Pays for a fresh set of offers, all of them replaced (sold ones included).
+    // Pays for a fresh set of offers: everything is replaced (sold ones included) except locked offers.
     public bool Reroll(){
         if(!CanReroll()){
             return false;
@@ -75,19 +94,19 @@ public class Market
 
         replacedFaces.Clear();
         foreach(MarketOffer offer in offers){
-            replacedFaces.Add(offer.face);
+            if(!offer.locked) replacedFaces.Add(offer.face);
         }
         replacedEnchantments.Clear();
         foreach(EnchantmentOffer offer in enchantmentOffers){
-            replacedEnchantments.Add(offer.enchantment);
+            if(!offer.locked) replacedEnchantments.Add(offer.enchantment);
         }
         replacedEquipment.Clear();
         foreach(EquipmentOffer offer in equipmentOffers){
-            replacedEquipment.Add(offer.item);
+            if(!offer.locked) replacedEquipment.Add(offer.item);
         }
-        offers.Clear();
-        enchantmentOffers.Clear();
-        equipmentOffers.Clear();
+        offers.RemoveAll(offer => !offer.locked);
+        enchantmentOffers.RemoveAll(offer => !offer.locked);
+        equipmentOffers.RemoveAll(offer => !offer.locked);
         GenerateOffers();
         GenerateEnchantmentOffers();
         GenerateEquipmentOffers();
@@ -96,8 +115,9 @@ public class Market
 
     // ---------- Offers ----------
 
+    // Fills the face offers up to offersPerMarket (locked offers already hold their slots).
     private void GenerateOffers(){
-        for(int i = 0; i < economy.offersPerMarket; i++){
+        while(offers.Count < economy.offersPerMarket){
             DieFaceSO face = PickOfferFace();
             if(face == null){
                 // The pool ran out of faces for this market (e.g. fewer Epic faces than offers).
@@ -171,7 +191,7 @@ public class Market
     // Same rules as face offers: rarity weights (Epic only in the Grand Market), build-aware tags,
     // no repeats in a set, and enchantments a reroll just replaced are avoided when possible.
     private void GenerateEnchantmentOffers(){
-        for(int i = 0; i < economy.enchantmentsPerMarket; i++){
+        while(enchantmentOffers.Count < economy.enchantmentsPerMarket){
             Rarity rarity = isGrand ? Rarity.Epic : RollRarity();
             List<EnchantmentSO> candidates = GetUnofferedEnchantments(rarity);
             if(candidates.Count == 0 && !isGrand) candidates = GetUnofferedEnchantments(null);
@@ -217,6 +237,7 @@ public class Market
         run.gold -= offer.price;
         run.dieFaces[dieSlot].Enchant(offer.enchantment);
         offer.sold = true;
+        if(offer.locked){ offer.locked = false; run.lockedEnchantments.Remove(offer.enchantment); }
         return true;
     }
 
@@ -227,7 +248,7 @@ public class Market
         if(!isGrand){
             return;
         }
-        for(int i = 0; i < economy.equipmentPerGrandMarket; i++){
+        while(equipmentOffers.Count < economy.equipmentPerGrandMarket){
             EquipmentSO item = PickEquipment();
             if(item == null) break;
             equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice });
@@ -280,6 +301,7 @@ public class Market
         run.gold -= offer.price;
         Equip(offer.item, replaceSlot);
         offer.sold = true;
+        if(offer.locked){ offer.locked = false; run.lockedEquipment.Remove(offer.item); }
         return true;
     }
 
@@ -327,15 +349,59 @@ public class Market
         run.gold -= offer.price;
         run.dieFaces[dieSlot] = new DieFace(offer.face);
         offer.sold = true;
+        if(offer.locked){ offer.locked = false; run.lockedFaces.Remove(offer.face); }
         return true;
     }
 
     // ---------- Upgrading ----------
 
-    // The Normal Market upgrades Common and Rare faces; the Grand Market upgrades Epic faces.
+    // The Normal Market upgrades Common and Rare faces; the Grand Market upgrades every face, Epic ones included.
     public bool IsUpgradableHere(int dieSlot){
-        bool isEpic = run.dieFaces[dieSlot].definition.rarity == Rarity.Epic;
-        return isGrand == isEpic;
+        return isGrand || run.dieFaces[dieSlot].definition.rarity != Rarity.Epic;
+    }
+
+    // ---------- Locking ----------
+
+    public int GetLockCost(){
+        return isGrand ? economy.grandLockCost : economy.lockCost;
+    }
+
+    // Locking costs gold; unlocking is free (the gold isn't refunded). Sold offers can't be locked.
+    public bool CanToggleFaceLock(int i){ return CanToggle(offers[i].sold, offers[i].locked); }
+    public bool CanToggleEnchantmentLock(int i){ return CanToggle(enchantmentOffers[i].sold, enchantmentOffers[i].locked); }
+    public bool CanToggleEquipmentLock(int i){ return CanToggle(equipmentOffers[i].sold, equipmentOffers[i].locked); }
+
+    public void ToggleFaceLock(int i){
+        MarketOffer offer = offers[i];
+        if(!CanToggleFaceLock(i)) return;
+        offer.locked = Toggle(offer.locked, run.lockedFaces, offer.face);
+    }
+
+    public void ToggleEnchantmentLock(int i){
+        EnchantmentOffer offer = enchantmentOffers[i];
+        if(!CanToggleEnchantmentLock(i)) return;
+        offer.locked = Toggle(offer.locked, run.lockedEnchantments, offer.enchantment);
+    }
+
+    public void ToggleEquipmentLock(int i){
+        EquipmentOffer offer = equipmentOffers[i];
+        if(!CanToggleEquipmentLock(i)) return;
+        offer.locked = Toggle(offer.locked, run.lockedEquipment, offer.item);
+    }
+
+    private bool CanToggle(bool sold, bool locked){
+        return !sold && (locked || run.gold >= GetLockCost());
+    }
+
+    // Returns the new locked state and keeps the run's locked list in step.
+    private bool Toggle<T>(bool locked, List<T> runList, T thing){
+        if(locked){
+            runList.Remove(thing);
+            return false;
+        }
+        run.gold -= GetLockCost();
+        runList.Add(thing);
+        return true;
     }
 
     public int GetUpgradeCost(int dieSlot){

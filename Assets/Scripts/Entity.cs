@@ -15,7 +15,12 @@ public enum StatusType {
     // Permanent for the battle: added to every hit the owner deals (each hit of a multi-hit).
     Rage,
     // Permanent for the battle: added to every status the owner applies to its opponent.
-    Ritual
+    Ritual,
+    // Debuffs enemies put on the player (stacks are turns, -1 at the owner's turn end):
+    // every hit taken deals +1, every hit dealt deals -1, can't reroll.
+    Vulnerable,
+    Weak,
+    Entangled
 }
 
 public class Entity : MonoBehaviour
@@ -70,6 +75,9 @@ public class Entity : MonoBehaviour
 
     // Damage is absorbed by Block first, then Fortify, and only the rest reaches HP.
     public void TakeDamage(int damageAmount, Entity source = null){
+        if(damageAmount > 0 && GetStatus(StatusType.Vulnerable) > 0){
+            damageAmount += 1;
+        }
         int remaining = damageAmount;
 
         int blocked = Math.Min(currentBlock, remaining);
@@ -162,6 +170,14 @@ public class Entity : MonoBehaviour
             LoseHP(1);
             activeStatuses[StatusType.Bleed] -= 1;
             OnHealthChanged?.Invoke();
+        }
+
+        // Debuffs count down their turns.
+        foreach (StatusType debuff in new[]{ StatusType.Vulnerable, StatusType.Weak, StatusType.Entangled }) {
+            if (GetStatus(debuff) > 0) {
+                activeStatuses[debuff] -= 1;
+                OnHealthChanged?.Invoke();
+            }
         }
     }
 }

@@ -51,14 +51,17 @@ public class MarketUI : MonoBehaviour
         for(int i = 0; i < offerCards.Length; i++){
             int index = i;
             offerCards[i].buyButton.onClick.AddListener(() => OnBuyClicked(index));
+            offerCards[i].lockButton.onClick.AddListener(() => { market.ToggleFaceLock(index); Refresh(); });
         }
         for(int i = 0; i < enchantmentCards.Length; i++){
             int index = i;
             enchantmentCards[i].buyButton.onClick.AddListener(() => OnEnchantmentClicked(index));
+            enchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEnchantmentLock(index); Refresh(); });
         }
         for(int i = 0; i < equipmentCards.Length; i++){
             int index = i;
             equipmentCards[i].buyButton.onClick.AddListener(() => OnEquipmentClicked(index));
+            equipmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEquipmentLock(index); Refresh(); });
         }
         for(int i = 0; i < dieSlots.Length; i++){
             int index = i;
@@ -177,6 +180,7 @@ public class MarketUI : MonoBehaviour
             card.infoText.text = OfferCardUI.DescribeFace(offer.face);
             card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingOffer ? "Selected" : "Buy  " + offer.price + "g");
             card.buyButton.interactable = !Choosing && market.CanBuy(i);
+            DrawLock(card, offer.sold, offer.locked, market.CanToggleFaceLock(i));
         }
 
         for(int i = 0; i < enchantmentCards.Length; i++){
@@ -189,6 +193,7 @@ public class MarketUI : MonoBehaviour
             card.infoText.text = OfferCardUI.DescribeEnchantment(offer.enchantment);
             card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingEnchantment ? "Selected" : "Buy  " + offer.price + "g");
             card.buyButton.interactable = !Choosing && market.CanBuyEnchantment(i);
+            DrawLock(card, offer.sold, offer.locked, market.CanToggleEnchantmentLock(i));
         }
 
         for(int i = 0; i < equipmentCards.Length; i++){
@@ -201,6 +206,7 @@ public class MarketUI : MonoBehaviour
             card.infoText.text = OfferCardUI.DescribeEquipment(offer.item);
             card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingEquipment ? "Selected" : "Buy  " + offer.price + "g");
             card.buyButton.interactable = !Choosing && market.CanBuyEquipment(i);
+            DrawLock(card, offer.sold, offer.locked, market.CanToggleEquipmentLock(i));
         }
 
         for(int i = 0; i < dieSlots.Length; i++){
@@ -211,6 +217,7 @@ public class MarketUI : MonoBehaviour
 
             DieFace dieFace = run.dieFaces[i];
             slot.faceText.text = dieFace.DisplayName + "\nValue " + dieFace.value + "\n<size=75%>" + MagicStatus(dieFace) + "</size>";
+            slot.tooltip.text = GameText.FaceTooltip(dieFace);
             // An enchantment can only go on a face whose Magic action is still empty.
             slot.slotButton.interactable = pendingOffer >= 0 || (pendingEnchantment >= 0 && market.CanEnchant(i));
 
@@ -228,6 +235,7 @@ public class MarketUI : MonoBehaviour
             EquipmentSlotUI slot = equipmentSlots[i];
             bool filled = i < run.equipment.Count;
             slot.text.text = filled ? OfferCardUI.DescribeEquipmentShort(run.equipment[i]) : "<color=#7F8C8D>Empty slot</color>";
+            slot.tooltip.text = filled ? GameText.EquipmentTooltip(run.equipment[i]) : "";
             slot.slotButton.interactable = ChoosingEquipmentSlot && filled;
         }
 
@@ -255,7 +263,14 @@ public class MarketUI : MonoBehaviour
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingEquipment >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.equipmentOffers[pendingEquipment].item.equipmentName;
         if(pendingReward >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.rewardChoices[pendingReward].equipmentName;
-        return market.isGrand ? "Epic faces can be bought and upgraded here." : "Epic faces are upgraded at the Grand Market.";
+        return market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market. Lock an offer to keep it for later.";
+    }
+
+    // A locked offer survives rerolls and waits in the next Market; unlocking is free, locking costs gold.
+    private void DrawLock(OfferCardUI card, bool sold, bool locked, bool canToggle){
+        card.lockButton.gameObject.SetActive(!sold);
+        card.lockButtonText.text = locked ? "Locked" : "Lock " + market.GetLockCost() + "g";
+        card.lockButton.interactable = !Choosing && canToggle;
     }
 
     // Whether the face can take an enchantment, or which one it has.

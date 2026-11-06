@@ -23,6 +23,11 @@ public class EffectContext
     public List<DieFace> targetDie;
     public Petrification targetPetrification;
     public DieCharge targetCharge;
+    // The player's last action this turn (the face, its battle value then, and the action), for enemy threats on
+    // the player's choice (PunishChoiceEffectSO). Null face when the player hasn't acted.
+    public DieFace targetLastFace;
+    public int targetLastValue;
+    public ActionType targetLastAction;
     // A face of the target's die chosen in advance (the target shown in a boss intent), so the effect hits it
     // even if the die's values changed since. Null: the effect picks its own target when it runs.
     public DieFace targetFace;
@@ -41,7 +46,9 @@ public class EffectContext
 
     // Every damage effect hits through here so Rage is never forgotten. Returns the damage of the hit.
     public int Hit(int baseDamage){
-        int total = baseDamage + RageBonus;
+        // Weak takes 1 off every hit the source deals.
+        int weak = source != null && source.GetStatus(StatusType.Weak) > 0 ? 1 : 0;
+        int total = System.Math.Max(0, baseDamage + RageBonus - weak);
         target.TakeDamage(total, source);
         return total;
     }

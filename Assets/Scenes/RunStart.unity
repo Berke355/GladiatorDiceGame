@@ -212,6 +212,8 @@ MonoBehaviour:
   infoText: {fileID: 1637696319}
   buyButton: {fileID: 282775812}
   buyButtonText: {fileID: 404246433}
+  lockButton: {fileID: 0}
+  lockButtonText: {fileID: 0}
 --- !u!1 &137367385
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,6 +1048,7 @@ GameObject:
   - component: {fileID: 494026680}
   - component: {fileID: 494026681}
   - component: {fileID: 494026682}
+  - component: {fileID: 494026683}
   m_Layer: 5
   m_Name: InfoText
   m_TagString: Untagged
@@ -1172,6 +1175,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &494026683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494026679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54079a7cb8c26b04aad03440cbe0f4b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeywordLinkTooltip
 --- !u!1 &913635822
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,6 +1300,7 @@ RectTransform:
   - {fileID: 328672605}
   - {fileID: 403316380}
   - {fileID: 1541842697}
+  - {fileID: 1447802771}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1367,6 +1383,7 @@ GameObject:
   - component: {fileID: 1074148867}
   - component: {fileID: 1074148869}
   - component: {fileID: 1074148868}
+  - component: {fileID: 1074148870}
   m_Layer: 5
   m_Name: InfoText
   m_TagString: Untagged
@@ -1493,6 +1510,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074148866}
   m_CullTransparentMesh: 1
+--- !u!114 &1074148870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074148866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54079a7cb8c26b04aad03440cbe0f4b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeywordLinkTooltip
 --- !u!1 &1204201385
 GameObject:
   m_ObjectHideFlags: 0
@@ -1801,6 +1830,8 @@ MonoBehaviour:
   infoText: {fileID: 494026682}
   buyButton: {fileID: 385680275}
   buyButtonText: {fileID: 1664450946}
+  lockButton: {fileID: 0}
+  lockButtonText: {fileID: 0}
 --- !u!224 &1413989865
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1860,6 +1891,108 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413989863}
   m_CullTransparentMesh: 1
+--- !u!1001 &1447802770
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 989329025}
+    m_Modifications:
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4972414473341199108, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+      propertyPath: m_Name
+      value: Tooltip
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+--- !u!224 &1447802771 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 43696251278393675, guid: 7b125c380297d504abbfc61593f41519, type: 3}
+  m_PrefabInstance: {fileID: 1447802770}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1541842696
 GameObject:
   m_ObjectHideFlags: 0
@@ -1909,6 +2042,7 @@ GameObject:
   - component: {fileID: 1637696318}
   - component: {fileID: 1637696320}
   - component: {fileID: 1637696319}
+  - component: {fileID: 1637696321}
   m_Layer: 5
   m_Name: InfoText
   m_TagString: Untagged
@@ -2035,6 +2169,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1637696317}
   m_CullTransparentMesh: 1
+--- !u!114 &1637696321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637696317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54079a7cb8c26b04aad03440cbe0f4b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeywordLinkTooltip
 --- !u!1 &1664450945
 GameObject:
   m_ObjectHideFlags: 0
@@ -2265,6 +2411,8 @@ MonoBehaviour:
   infoText: {fileID: 1074148868}
   buyButton: {fileID: 137367387}
   buyButtonText: {fileID: 1204201387}
+  lockButton: {fileID: 0}
+  lockButtonText: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

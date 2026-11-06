@@ -29,3 +29,27 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 4
     weight: 2
+  traits:
+  - traitName: Second Wind
+    description: 'Below half HP it drops its shield: no more Fortify, but it attacks
+      with Frenzied Slam (6) and Wild Swing (3).'
+    trigger: 0
+    requireAction: 0
+    action: 0
+    requireBlock: 0
+    effects: []
+    value: 1
+    maxPerBattle: 0
+  secondWindIntents:
+  - intentName: Frenzied Slam
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    value: 6
+    weight: 2
+  - intentName: Wild Swing
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    value: 3
+    weight: 2

@@ -19,6 +19,11 @@ public class RunData
     // Passive items (see GDD "Equipment"); at most EquipmentSlots of them.
     public const int EquipmentSlots = 3;
     public List<EquipmentSO> equipment = new List<EquipmentSO>();
+    // Market offers the player locked: they survive rerolls and wait in the next Market that sells that kind
+    // (equipment only in a Grand Market). See GDD "Market".
+    public List<DieFaceSO> lockedFaces = new List<DieFaceSO>();
+    public List<EnchantmentSO> lockedEnchantments = new List<EnchantmentSO>();
+    public List<EquipmentSO> lockedEquipment = new List<EquipmentSO>();
     // Rerolls the player gets at the start of every battle (see GDD "Rerolls").
     public int rerollsPerBattle = 2;
     // Set by a boss victory: the next Market starts with a free equipment pick.

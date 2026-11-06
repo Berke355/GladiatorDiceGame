@@ -10,4 +10,6 @@ public class DieSlotUI : MonoBehaviour
     public TextMeshProUGUI faceText;
     public Button upgradeButton;
     public TextMeshProUGUI upgradeButtonText;
+    // The face's full description on hover.
+    public TooltipTrigger tooltip;
 }

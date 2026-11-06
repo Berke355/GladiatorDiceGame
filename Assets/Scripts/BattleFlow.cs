@@ -16,10 +16,16 @@ public class BattleFlow
     public readonly DieCharge charge = new DieCharge();
     // The player's rerolls for this battle (see GDD "Rerolls").
     public readonly RerollPool rerolls;
+    // The enemy's traits, reacting to the player's hits, actions and rerolls (see GDD "Enemy Traits").
+    public readonly EnemyTraitSystem enemyTraits;
     // Stone faces on the die for this battle (Medusa's Petrify).
     public readonly Petrification petrification = new Petrification();
 
     public DieFace RolledFace { get; private set; }
+    // The player's action this turn (cleared at the start of each player turn), for enemy threats on that choice.
+    public DieFace LastActedFace { get; private set; }
+    public int LastActedValue { get; private set; }
+    public ActionType LastAction { get; private set; }
     // The last action asked to reroll the die and act again (Steady Hand). Cleared by the next roll.
     public bool RerollPending { get; private set; }
     // The last action asked for the rolled face to keep its Charge (Resonance).
@@ -34,6 +40,7 @@ public class BattleFlow
         this.die = die;
         triggers = new TriggerSystem(player, enemy, die, equipment, charge, rerolls);
         brain.Bind(this);
+        enemyTraits = new EnemyTraitSystem(enemy, player, brain.Traits);
     }
 
     // Whether the face can take this action now: a stone face can only defend (for StoneBlock block).
@@ -48,6 +55,7 @@ public class BattleFlow
     // The player's Block resets, then TurnStart items run, then the enemy shows its intent.
     public void StartPlayerTurn(){
         rerolls.UsedThisTurn = 0;
+        LastActedFace = null;
         triggers.StartRound();
         player.OnTurnStart();
         triggers.Fire(TriggerType.TurnStart);
@@ -65,19 +73,26 @@ public class BattleFlow
     }
 
     // A reroll can be spent once the die has landed and before an action is chosen; the new face must be used.
-    public bool CanReroll => RolledFace != null && rerolls.Left > 0 && !IsOver;
+    public bool CanReroll => RolledFace != null && rerolls.Left > 0 && !IsOver && player.GetStatus(StatusType.Entangled) == 0;
 
     // Spends a reroll and rolls again. Not a new turn: Block stays, the intent stays; FaceRolled items fire again.
     public DieFace RerollFace(){
         rerolls.Left--;
         rerolls.UsedThisTurn++;
         rerolls.UsedThisBattle++;
-        return Roll();
+        DieFace face = Roll();
+        enemyTraits.PlayerRerolled();
+        return face;
     }
 
     // ActionChosen items run first, then the rolled face's effects (and its enchantment's) for the action.
     public void PlayAction(ActionType action){
+        LastActedFace = RolledFace;
+        LastActedValue = charge.ValueOf(RolledFace);
+        LastAction = action;
         triggers.Fire(TriggerType.ActionChosen, action);
+        if(IsOver) return;
+        enemyTraits.PlayerChoseAction(action);
         if(IsOver) return;
 
         // A stone face only gives a little block; its own actions and its enchantment don't work.
@@ -128,6 +143,7 @@ public class BattleFlow
 
     public void Dispose(){
         triggers.Dispose();
+        enemyTraits.Dispose();
         IDisposable disposableBrain = brain as IDisposable;
         if(disposableBrain != null) disposableBrain.Dispose();
     }

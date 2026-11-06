@@ -54,7 +54,8 @@ MonoBehaviour:
   economy: {fileID: 11400000, guid: 7c6729f1722a84a4a8373d47c7c57e9d, type: 2}
   encounters: {fileID: 11400000, guid: 0c03be810ca835746ad6247037d6106a, type: 2}
   bossBattles: 0400000008000000
-  bossHealFraction: 0.5
+  bossHealFraction: 0.3
+  finalBattle: 11
   runStartSceneName: RunStart
   battleSceneName: Battle
   marketSceneName: Market
@@ -67,3 +68,9 @@ MonoBehaviour:
     metEnemies: []
     startingFaceOffers: []
     startingFaceChosen: 0
+    equipment: []
+    lockedFaces: []
+    lockedEnchantments: []
+    lockedEquipment: []
+    rerollsPerBattle: 0
+    bossRewardPending: 0

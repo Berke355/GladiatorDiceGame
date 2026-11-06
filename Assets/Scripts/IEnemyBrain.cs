@@ -14,6 +14,10 @@ public interface IEnemyBrain
     void OnTurnEnd();
     // Damage the enemy is about to deal this turn, with its Rage (0 if it isn't attacking). Used by bots to block big hits.
     int IncomingDamage { get; }
+    // Damage the current intent's threats would deal if the player acted with this face and action (0 if none).
+    int ThreatAgainst(DieFace face, int battleValue, ActionType action);
+    // The enemy's traits (empty for bosses, whose mechanics live in their brain).
+    List<EnemyTrait> Traits { get; }
     // The boss's die and the face it rolled this turn; null for normal enemies.
     List<DieFace> Die { get; }
     DieFace RolledFace { get; }

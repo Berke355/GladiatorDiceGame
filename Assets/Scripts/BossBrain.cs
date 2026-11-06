@@ -16,6 +16,8 @@ public class BossBrain : IEnemyBrain, IDisposable
     private BattleFlow flow;
 
     public List<DieFace> Die => die;
+    public List<EnemyTrait> Traits => new List<EnemyTrait>();
+    public int ThreatAgainst(DieFace face, int battleValue, ActionType action){ return 0; }
     public DieFace RolledFace { get; private set; }
 
     // The running countdown (Stampede): enemy turns left until the hit, its damage, and HP lost from hits since it started.

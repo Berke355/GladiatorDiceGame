@@ -90,6 +90,8 @@ public class BattleManager : MonoBehaviour
         if(UIManager.Instance != null){
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
+            UIManager.Instance.ShowTraits(brain.Traits);
+            flow.enemyTraits.TraitTriggered += UIManager.Instance.FlashTrait;
             flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
         }
         flow.StartBattle();

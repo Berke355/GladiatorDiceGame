@@ -17,17 +17,23 @@ MonoBehaviour:
   maxHP: 48
   escalationPerTurn: 0
   intents:
-  - intentName: Ride Down
+  - intentName: Run Down
     intentType: 0
     effects:
-    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 2
+    - {fileID: 11400000, guid: 86ce53da172ad1145a0ef2b57ca4160b, type: 2}
+    value: 7
     weight: 2
+  - intentName: Lash
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 5f18f5ec1c6846c46bab131c17ba5c0e, type: 2}
+    value: 4
+    weight: 1
   - intentName: Wheel Spikes
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 2
+    value: 3
     weight: 1
   - intentName: Rein In
     intentType: 1
@@ -35,9 +41,15 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 3
     weight: 1
-  - intentName: Battle Cry
-    intentType: 2
+  traits:
+  - traitName: Momentum
+    description: 'Each reroll you spend: it gains 1 Rage.'
+    trigger: 4
+    requireAction: 0
+    action: 0
+    requireBlock: 0
     effects:
-    - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+    - {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
     value: 1
-    weight: 1
+    maxPerBattle: 0
+  secondWindIntents: []

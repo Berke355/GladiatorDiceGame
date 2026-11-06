@@ -29,3 +29,15 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     weight: 1
+  traits:
+  - traitName: Parry
+    description: 'Each time you choose Attack while it has block: you take 2 damage.'
+    trigger: 3
+    requireAction: 1
+    action: 0
+    requireBlock: 1
+    effects:
+    - {fileID: 11400000, guid: eb3494da333260a4f83d86adba089264, type: 2}
+    value: 2
+    maxPerBattle: 0
+  secondWindIntents: []

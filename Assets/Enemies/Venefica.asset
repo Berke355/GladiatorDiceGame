@@ -35,3 +35,11 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     weight: 1
+  - intentName: Hamstring
+    intentType: 2
+    effects:
+    - {fileID: 11400000, guid: e2592283818478b47afaaeeceff6ae1f, type: 2}
+    value: 2
+    weight: 1
+  traits: []
+  secondWindIntents: []

@@ -8,6 +8,9 @@ public class OfferCardUI : MonoBehaviour
     public TextMeshProUGUI infoText;
     public Button buyButton;
     public TextMeshProUGUI buyButtonText;
+    // Optional (Market cards only): keeps the offer through rerolls and into the next Market.
+    public Button lockButton;
+    public TextMeshProUGUI lockButtonText;
 
     // Card text shared by every screen that offers a face.
     public static string DescribeFace(DieFaceSO face){

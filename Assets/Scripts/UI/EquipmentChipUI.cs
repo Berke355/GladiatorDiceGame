@@ -22,6 +22,13 @@ public class EquipmentChipUI : MonoBehaviour
         background.color = normalColor;
     }
 
+    // Also used for enemy traits, which show the same way (name, tooltip, flash when they fire).
+    public void SetTrait(EnemyTrait trait){
+        text.text = "<b>" + trait.traitName + "</b>";
+        tooltip.text = "<b>" + trait.traitName + "</b>  <size=80%>Trait</size>\n" + GameText.Colorize(trait.description) + GameText.Glossary(trait.description);
+        background.color = normalColor;
+    }
+
     public void Flash(){
         if(!isActiveAndEnabled) return;
         if(flashing != null) StopCoroutine(flashing);

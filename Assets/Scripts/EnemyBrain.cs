@@ -23,10 +23,17 @@ public class EnemyBrain : MonoBehaviour, IEnemyBrain
         this.opponent = opponent;
         currentIndex = -1;
         repeatCount = 0;
+        InSecondWind = false;
     }
 
     public void ChooseNextIntent(){
-        List<EnemyIntent> intents = definition.intents;
+        if(!InSecondWind && definition.secondWindIntents.Count > 0 && self.currentHP * 2 <= self.maxHP){
+            InSecondWind = true;
+            currentIndex = -1;
+            repeatCount = 0;
+            Debug.Log(definition.enemyName + " gets a second wind.");
+        }
+        List<EnemyIntent> intents = InSecondWind ? definition.secondWindIntents : definition.intents;
         if(intents.Count == 0){
             return;
         }
@@ -97,13 +104,37 @@ public class EnemyBrain : MonoBehaviour, IEnemyBrain
         return new EffectContext{
             source = self,
             target = opponent,
-            value = currentIntent.value
+            value = currentIntent.value,
+            targetLastFace = flow != null ? flow.LastActedFace : null,
+            targetLastValue = flow != null ? flow.LastActedValue : 0,
+            targetLastAction = flow != null ? flow.LastAction : ActionType.Attack
         };
     }
 
-    public int IncomingDamage => currentIntent.intentType == ActionType.Attack ? currentIntent.value + self.GetStatus(StatusType.Rage) : 0;
+    // Threat intents (PunishChoiceEffectSO) only hit if the player's choice sets them off, so they don't count here.
+    public int IncomingDamage => currentIntent.intentType == ActionType.Attack && !IsThreat(currentIntent) ? currentIntent.value + self.GetStatus(StatusType.Rage) : 0;
+
+    public int ThreatAgainst(DieFace face, int battleValue, ActionType action){
+        int damage = 0;
+        if(currentIntent.effects == null) return 0;
+        foreach(EffectSO effect in currentIntent.effects){
+            PunishChoiceEffectSO threat = effect as PunishChoiceEffectSO;
+            if(threat != null && threat.Triggers(face, battleValue, action)) damage += currentIntent.value + self.GetStatus(StatusType.Rage);
+        }
+        return damage;
+    }
+
+    private static bool IsThreat(EnemyIntent intent){
+        return intent.effects != null && intent.effects.Exists(effect => effect is PunishChoiceEffectSO);
+    }
     // Normal enemies don't act on the player's die.
-    public void Bind(BattleFlow flow){ }
+    // The battle, for the player's last action (threats on the player's choice).
+    private BattleFlow flow;
+    public void Bind(BattleFlow flow){ this.flow = flow; }
+
+    public List<EnemyTrait> Traits => definition.traits;
+    // Second Wind: true once the enemy dropped below half HP and switched to its second intent list.
+    public bool InSecondWind { get; private set; }
 
     // Normal enemies have no die.
     public List<DieFace> Die => null;

@@ -38,6 +38,11 @@ public class EconomyConfigSO : ScriptableObject
     public int equipmentPerGrandMarket = 2;
     public int equipmentPrice = 30;
 
+    [Header("Market Lock")]
+    // Locking an offer keeps it through rerolls and into the next Market (Grand Market locks cost more).
+    public int lockCost = 5;
+    public int grandLockCost = 15;
+
     [Header("Market Reroll")]
     // Cost of the first reroll in a visit, and how much each further reroll adds (resets every Market).
     public int rerollBaseCost = 5;

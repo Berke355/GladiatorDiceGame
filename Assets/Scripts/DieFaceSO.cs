@@ -17,4 +17,7 @@ public class DieFaceSO : ScriptableObject
 
     // Charge rule (Hammer): every turn this face isn't the one you act with, it gains +1 value for the battle.
     public bool charges;
+    // A special face whose value isn't a number (none exist yet). Rules that compare values treat it as lowest,
+    // e.g. it counts as below any threshold (see PunishChoiceEffectSO).
+    public bool hasNoValue;
 }
