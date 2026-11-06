@@ -21,6 +21,18 @@ public class PlayerActionSelectState : BattleState
         Debug.Log("Exited Action Select state.");
     }
 
+    // Spends a reroll: the new face replaces the rolled one and must be used.
+    public void Reroll(){
+        if(!battleManager.flow.CanReroll) return;
+        DieFace face = battleManager.flow.RerollFace();
+        battleManager.currentRolledFace = face;
+        Debug.Log("Rerolled. Face: " + face.definition.faceName);
+        if(UIManager.Instance != null){
+            UIManager.Instance.ShowRolledFace(face, battleManager.currentDiceFaces);
+        }
+        battleManager.CheckBattleOver();
+    }
+
     public void ExecuteAction(ActionType selectedAction){
         this.selectedAction=selectedAction;
 

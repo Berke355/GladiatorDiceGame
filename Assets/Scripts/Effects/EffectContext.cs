@@ -13,6 +13,8 @@ public class EffectContext
     public DieFace face;
     // The source's Charge for this battle (Hammer). Null for enemies.
     public DieCharge charge;
+    // The source's rerolls for this battle. Null for enemies.
+    public RerollPool rerolls;
     // Set by an effect that rerolls the die (Steady Hand); BattleFlow reads it after the action.
     public bool rerollRequested;
     // Set by an effect after which the face keeps its Charge instead of spending it (Resonance).

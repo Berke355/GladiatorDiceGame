@@ -41,6 +41,9 @@ public class UIManager : MonoBehaviour
 
     [Header("Buttons")]
     public Button rollButton;
+    // Spends one of the battle's rerolls; active only after the die has landed.
+    public Button rerollButton;
+    public TextMeshProUGUI rerollButtonText;
     // Indexed by ActionType (0 Attack, 1 Defense, 2 Magic), matching BattleManager.OnActionSelected.
     public Button[] actionButtons;
     public TextMeshProUGUI[] actionButtonTexts;
@@ -116,6 +119,7 @@ public class UIManager : MonoBehaviour
         UpdateDieChips(die, null);
 
         rollButton.interactable = true;
+        UpdateRerollButton(false);
         for(int i = 0; i < actionButtons.Length; i++){
             actionButtons[i].interactable = false;
             actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>";
@@ -131,6 +135,7 @@ public class UIManager : MonoBehaviour
         UpdateDieChips(die, face);
 
         rollButton.interactable = false;
+        UpdateRerollButton(flow != null && flow.CanReroll);
         for(int i = 0; i < actionButtons.Length; i++){
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = preview != "";
@@ -182,6 +187,12 @@ public class UIManager : MonoBehaviour
             parts.Add(description != "" ? description : effect.name);
         }
         return string.Join(", ", parts);
+    }
+
+    private void UpdateRerollButton(bool canReroll){
+        if(rerollButton == null) return;
+        rerollButton.interactable = canReroll;
+        rerollButtonText.text = "Reroll (" + (flow != null ? flow.rerolls.Left : 0) + ")";
     }
 
     private int ValueOf(DieFace face){

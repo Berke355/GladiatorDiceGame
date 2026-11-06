@@ -57,7 +57,7 @@ public class BattleManager : MonoBehaviour
             brain = enemyBrain;
         }
 
-        flow = new BattleFlow(player, enemy, brain, currentDiceFaces, run.equipment);
+        flow = new BattleFlow(player, enemy, brain, currentDiceFaces, run.equipment, run.rerollsPerBattle);
     }
 
     void OnDestroy(){
@@ -115,6 +115,13 @@ public class BattleManager : MonoBehaviour
     public void OnResultButton(){
         if(currentState is BattleOverState overState){
             overState.Continue();
+        }
+    }
+
+    // Called by the Reroll button.
+    public void OnRerollClicked(){
+        if(currentState is PlayerActionSelectState actionState){
+            actionState.Reroll();
         }
     }
 

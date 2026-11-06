@@ -139,6 +139,17 @@ Every die face is defined by a common set of properties.
 
 The number printed on a face is exactly what its effects use. There are no hidden multipliers: a face showing 4 never secretly deals 8. Players should be able to trust the big number on a face at a glance. Faces differ through which actions and effects they support, not through hidden scaling.
 
+### Rerolls
+
+Every battle gives the player a small pool of **rerolls** (2 for now), refilled at the start of each battle.
+
+- **When:** after the die lands, before choosing an action, the player may spend a reroll to roll the die again. A reroll can be spent on any turn, and several can be spent on the same turn.
+- **The new face must be used:** there is no going back to the face before the reroll. That is where the risk comes from: a reroll can land on something worse.
+- **Only the player's die is rerolled:** the enemy's intent stays the same, so the player rerolls to answer a known threat (e.g. hunting for a Defense face when a big hit is coming).
+- **Not a new turn:** Block doesn't reset and turn-start items don't fire. FaceRolled items fire again for the new face.
+- **Why (Pillar 2, Meaningful Decisions Every Turn):** before rerolls, a turn was one obvious choice between the rolled face's one or two actions. Now every turn asks "keep this face, or spend a reroll and have none left when I need it?"
+- **Content around it** (to design next): an Epic item for +1 reroll per battle, faces that reward unused rerolls or rerolling, and a new role for Steady Hand.
+
 ## Rarity & Economy
 
 ### Goals

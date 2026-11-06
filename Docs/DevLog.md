@@ -1481,3 +1481,63 @@ All bots (500 runs): Burn 29% · Poison 25% · Shield 20% · Rage 31% · Bleed 2
 - Even out the Hydra's paths (options: Poison also stops regeneration; Burn stops only regrowth), after play-testing.
 - Ritual + Bleed (19%) and Poison (16%) clear rates.
 - UI phase 2 (icons), centering offer cards.
+
+## Day 47 - Roadmap & Rerolls
+
+### Accomplished
+- **Play-test feedback (the user, two runs: Poison and Bleed):**
+  - The game felt too easy, as if it played itself.
+  - Battles offered little choice beyond the rolled face's one or two actions.
+  - Choices rarely mattered and rarely carried risk.
+- **Roadmap (`Docs/Roadmap.md`),** inspired by Slay the Spire, in this order:
+  - A. Battle depth: rerolls, reactive enemy intents, then difficulty and gold.
+  - B. Run structure: a branching map with elites, rests, events and the Market as nodes.
+  - C. Multiple enemies.
+  - D. Heroes and meta progression: the current die is the Knight; a main menu and menu market; difficulty levels; a save system.
+  - Principles: unlocks add variety, not power; no hero's starting die may be stronger than another.
+- **Rerolls (GDD "Rerolls"):**
+  - 2 rerolls per battle, refilled every battle (`RunData.rerollsPerBattle`). They are spent after the die lands and before an action; several can be spent on the same turn.
+  - The new face must be used. The enemy's intent stays and Block stays, since it isn't a new turn. FaceRolled items fire again.
+  - `RerollPool` (`Left`, `UsedThisTurn`, `UsedThisBattle`) is owned by `BattleFlow` and passed to effects as `context.rerolls`, ready for the reroll content.
+  - A "Reroll (N)" button sits next to Roll, active only after the die lands.
+  - Bots reroll stone faces, faces that can't block a big incoming hit, and faces well below the die's average value (keeping their last reroll for big hits).
+- **GDD and CLAUDE.md** updated.
+
+### Tests
+- **Checks (7/7):**
+  - 2 rerolls at battle start; no reroll before the die lands or once they run out.
+  - Block and the intent stay.
+  - The per-turn count resets each turn while the pool doesn't refill; a new battle refills it.
+  - Plague Mask fires on rerolls too.
+- **Play Mode:** the real button rerolled Ember → Shield → Sword (2 → 1 → 0), then a third click did nothing.
+
+### Results (400 runs per bot)
+| Bot | No rerolls | 2 rerolls |
+|---|---|---|
+| Burn | 30% | 33% |
+| Poison | 21% | 27% |
+| Shield | 26% | 28% |
+| Rage | 28% | 29% |
+| Bleed | 34% | 37% |
+| Hammer | 21% | 21% |
+| Ritual + Poison | 19% | 23% |
+| Ritual + Bleed | 20% | 21% |
+| Shield + Rage | 37% | 38% |
+| Bleed + Rage | 42% | 50% |
+
+Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass comes later in Phase A.
+
+### Decisions
+- Rerolls don't change the enemy's intent, and the rerolled face must be used (the user's call).
+- Steady Hand stays as it is: it rerolls without spending the pool, so it is still its own thing.
+- **Approved reroll content set:**
+  - Loaded Die (Epic item: +1 reroll at battle start).
+  - Patient Blade (Common: value + 1 per reroll left).
+  - Gambler's Strike (Rare: hits again if you rerolled this turn).
+  - Fate's Edge (Epic: value × rerolls used this battle).
+  - Lucky Charm (Rare enchantment: gain 1 reroll).
+
+### Next Steps
+- The reroll content set above.
+- Reactive enemy intents (Slay the Spire style).
+- Difficulty and gold pass (bots about 5–15%).

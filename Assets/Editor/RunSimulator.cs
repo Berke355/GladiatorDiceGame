@@ -58,6 +58,8 @@ public static class RunSimulator
     public static bool PlayEnchantments = true;
     // Bots take boss rewards and buy equipment; off to measure what equipment adds.
     public static bool UseEquipment = true;
+    // Bots spend rerolls on bad rolls; off to measure what rerolls add.
+    public static bool UseRerolls = true;
 
     // Per-battle measurements for diagnosing a build (null = off). Only battles of statsTier are counted.
     public class FightStats
@@ -386,7 +388,7 @@ public static class RunSimulator
         }
 
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
-        BattleFlow flow = new BattleFlow(player, enemy, brain, run.dieFaces, run.equipment);
+        BattleFlow flow = new BattleFlow(player, enemy, brain, run.dieFaces, run.equipment, run.rerollsPerBattle);
         EnemyTier statsTier = boss != null ? EnemyTier.Boss : enemyData.tier;
         FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;
@@ -400,6 +402,10 @@ public static class RunSimulator
             int rerolls = 0;
             do{
                 DieFace face = flow.Roll();
+                if(flow.IsOver) break;
+                while(UseRerolls && flow.CanReroll && ShouldReroll(face, run.dieFaces, brain, flow)){
+                    face = flow.RerollFace();
+                }
                 if(flow.IsOver) break;
                 ActionType action = ChooseAction(face, run.dieFaces, player, enemy, brain, flow);
                 int enemyHP = enemy.currentHP;
@@ -507,6 +513,19 @@ public static class RunSimulator
         if(face.HasAction(ActionType.Attack)) return ActionType.Attack;
         if(face.HasAction(ActionType.Defense)) return ActionType.Defense;
         return ActionType.Magic;
+    }
+
+    // A simple reroll policy: reroll a stone face, a face that can't block a big incoming hit, or a face whose
+    // battle value is well below the die's average. Keeps the last reroll for big hits.
+    private static bool ShouldReroll(DieFace face, List<DieFace> die, IEnemyBrain brain, BattleFlow flow){
+        if(flow.petrification.IsStone(face)) return true;
+        bool bigHit = brain.IncomingDamage >= 6;
+        if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
+        if(flow.rerolls.Left <= 1) return false;
+        float average = 0;
+        foreach(DieFace f in die) average += flow.charge.ValueOf(f);
+        average /= die.Count;
+        return flow.charge.ValueOf(face) < average - 1;
     }
 
     // When to play an enchantment. Epic ones are combo pieces with their own timing; the others bring an

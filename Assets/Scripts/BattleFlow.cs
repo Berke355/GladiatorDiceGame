@@ -14,6 +14,8 @@ public class BattleFlow
     public readonly TriggerSystem triggers;
     // Charge on the die faces for this battle (Hammer).
     public readonly DieCharge charge = new DieCharge();
+    // The player's rerolls for this battle (see GDD "Rerolls").
+    public readonly RerollPool rerolls;
     // Stone faces on the die for this battle (Medusa's Petrify).
     public readonly Petrification petrification = new Petrification();
 
@@ -24,12 +26,13 @@ public class BattleFlow
     private bool keepRolledCharge;
     public bool IsOver => player.IsDead || enemy.IsDead;
 
-    public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment){
+    public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0){
+        rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
         this.enemy = enemy;
         this.brain = brain;
         this.die = die;
-        triggers = new TriggerSystem(player, enemy, die, equipment, charge);
+        triggers = new TriggerSystem(player, enemy, die, equipment, charge, rerolls);
         brain.Bind(this);
     }
 
@@ -44,6 +47,7 @@ public class BattleFlow
 
     // The player's Block resets, then TurnStart items run, then the enemy shows its intent.
     public void StartPlayerTurn(){
+        rerolls.UsedThisTurn = 0;
         triggers.StartRound();
         player.OnTurnStart();
         triggers.Fire(TriggerType.TurnStart);
@@ -60,6 +64,17 @@ public class BattleFlow
         return RolledFace;
     }
 
+    // A reroll can be spent once the die has landed and before an action is chosen; the new face must be used.
+    public bool CanReroll => RolledFace != null && rerolls.Left > 0 && !IsOver;
+
+    // Spends a reroll and rolls again. Not a new turn: Block stays, the intent stays; FaceRolled items fire again.
+    public DieFace RerollFace(){
+        rerolls.Left--;
+        rerolls.UsedThisTurn++;
+        rerolls.UsedThisBattle++;
+        return Roll();
+    }
+
     // ActionChosen items run first, then the rolled face's effects (and its enchantment's) for the action.
     public void PlayAction(ActionType action){
         triggers.Fire(TriggerType.ActionChosen, action);
@@ -73,7 +88,7 @@ public class BattleFlow
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = enemy, value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge };
+        EffectContext context = new EffectContext{ source = player, target = enemy, value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
