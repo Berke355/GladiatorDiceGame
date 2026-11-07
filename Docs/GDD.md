@@ -175,6 +175,7 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
   - Threats on the player's choice (Essedarius's Run Down) look at the action that ends the turn, not at Change.
 - **At most 5 Changes per turn,** a safety net against endless loops; in practice only a die that is nearly all used Consumables can reach it.
 - **Die thinning is accepted as a strategy for now:** once used, a Consumable face works like a face removed from the die for the rest of the battle (like Slay the Spire's Exhaust). A die full of Consumables is a build path: use them, then play a die made only of build faces. This competes with Fortune, so Consumable content stays small at first (only Health Potion). If it proves too strong, the fix is a limit on Change per battle or making it spend a reroll.
+- **Simulation (DevLog Day 58, 6 focused bots, 800 runs):** the old potion (heal 3 every time) cleared Burn 15%, Poison 19%, Shield 17%, Rage 8%, Bleed 6%, Hammer 4%. Consumable 4 with Change: 19%, 25%, 16%, 10%, 8%, 4%. Consumable 3 with Change: 16%, 16%, 19%, 6%, 7%, 3%, about the same as the old potion. So Change's die thinning costs little; the extra point of healing is most of the gain. The value stays 4 (one strong drink), and the difficulty and gold pass will balance the total.
 
 ## Rarity & Economy
 

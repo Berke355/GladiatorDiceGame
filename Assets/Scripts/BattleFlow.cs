@@ -18,6 +18,13 @@ public class BattleFlow
     public readonly RerollPool rerolls;
     // Stone faces on the die for this battle (Medusa's Petrify).
     public readonly Petrification petrification = new Petrification();
+    // Consumable actions used this battle; a used one is Change (see GDD "Consumable and Change").
+    public readonly Consumables consumables = new Consumables();
+    // A safety net against endless Change loops (only a die of used Consumables can get near it).
+    public const int MaxChangesPerTurn = 5;
+    public int ChangesThisTurn { get; private set; }
+    // The last action was Change: the die is rolled again at once and the turn goes on.
+    public bool LastWasChange { get; private set; }
 
     public DieFace RolledFace { get; private set; }
     // The player's action this turn (cleared at the start of each player turn), for enemy threats on that choice.
@@ -120,9 +127,17 @@ public class BattleFlow
         return damage;
     }
 
-    // Whether the face can take this action now: a stone face can only defend (for StoneBlock block).
+    // Whether the face can take this action now: a stone face can only defend (for StoneBlock block); a used
+    // Consumable action is Change, until this turn's Changes run out.
     public bool CanAct(DieFace face, ActionType action){
-        return petrification.IsStone(face) ? action == ActionType.Defense : face.HasAction(action);
+        if(petrification.IsStone(face)) return action == ActionType.Defense;
+        if(IsChange(face, action)) return ChangesThisTurn < MaxChangesPerTurn;
+        return face.HasAction(action);
+    }
+
+    // A Consumable action already used this battle: it now rolls the die again (Change).
+    public bool IsChange(DieFace face, ActionType action){
+        return face != null && !petrification.IsStone(face) && consumables.IsUsed(face, action);
     }
 
     public void StartBattle(){
@@ -132,6 +147,7 @@ public class BattleFlow
     // The player's Block resets, then TurnStart items run, then every living enemy shows its intent.
     public void StartPlayerTurn(){
         rerolls.UsedThisTurn = 0;
+        ChangesThisTurn = 0;
         LastActedFace = null;
         triggers.StartRound();
         player.OnTurnStart();
@@ -144,6 +160,7 @@ public class BattleFlow
     // Also used for a reroll within the same turn, which is not a new turn (no turn start, no Block reset).
     public DieFace Roll(){
         RerollPending = false;
+        LastWasChange = false;
         keepRolledCharge = false;
         RolledFace = die[UnityEngine.Random.Range(0, die.Count)];
         triggers.currentFace = RolledFace;
@@ -169,6 +186,15 @@ public class BattleFlow
     // ActionChosen items run first, then the enemies' traits, then the rolled face's effects (and its enchantment's)
     // on the selected target.
     public void PlayAction(ActionType action){
+        // Change: not an action for items, traits or threats, and not a reroll; the die just rolls again.
+        if(IsChange(RolledFace, action)){
+            if(ChangesThisTurn >= MaxChangesPerTurn) return;
+            ChangesThisTurn++;
+            LastWasChange = true;
+            RerollPending = true;
+            keepRolledCharge = false;
+            return;
+        }
         LastActedFace = RolledFace;
         LastActedValue = charge.ValueOf(RolledFace);
         LastAction = action;
@@ -192,6 +218,7 @@ public class BattleFlow
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
+        if(RolledFace.definition.IsConsumable(action)) consumables.MarkUsed(RolledFace, action);
         RerollPending = context.rerollRequested;
         keepRolledCharge = context.keepCharge;
     }

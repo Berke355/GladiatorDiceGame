@@ -20,4 +20,8 @@ public class DieFaceSO : ScriptableObject
     // A special face whose value isn't a number (none exist yet). Rules that compare values treat it as lowest,
     // e.g. it counts as below any threshold (see PunishChoiceEffectSO).
     public bool hasNoValue;
+    // Consumable actions (see GDD "Consumable and Change"): each can be used once per battle, then it becomes Change.
+    public List<ActionType> consumableActions = new List<ActionType>();
+
+    public bool IsConsumable(ActionType action) => consumableActions != null && consumableActions.Contains(action);
 }

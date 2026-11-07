@@ -40,6 +40,19 @@ public class PlayerActionSelectState : BattleState
         battleManager.flow.PlayAction(selectedAction);
         if(battleManager.CheckBattleOver()) return;
 
+        // Change: the die is rolled again at once, and the new face must be used.
+        if(battleManager.flow.LastWasChange){
+            DieFace face = battleManager.flow.Roll();
+            battleManager.currentRolledFace = face;
+            Debug.Log("Change. Face: " + face.definition.faceName);
+            if(UIManager.Instance != null){
+                UIManager.Instance.ShowRolledFace(face, battleManager.currentDiceFaces);
+            }
+            if(battleManager.CheckBattleOver()) return;
+            battleManager.ChangeState(new PlayerActionSelectState(battleManager));
+            return;
+        }
+
         // Steady Hand: roll again within the same turn.
         if(battleManager.flow.RerollPending){
             battleManager.ChangeState(new PlayerRollState(battleManager, false));

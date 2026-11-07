@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: HealthPotionFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Health Potion
-  description: 'Magic: Heal equal to my value.'
+  description: 'Magic (Consumable): Heal equal to my value. Once used, it becomes
+    Change.'
   rarity: 0
   tags: 
-  baseValue: 3
-  softCap: 4
+  baseValue: 4
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
+  charges: 0
+  hasNoValue: 0
+  consumableActions: 02000000

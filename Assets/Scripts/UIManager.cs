@@ -172,7 +172,7 @@ public class UIManager : MonoBehaviour
         UpdateRerollButton(flow != null && flow.CanReroll);
         for(int i = 0; i < actionButtons.Length; i++){
             string preview = DescribeAction(face, die, (ActionType)i);
-            actionButtons[i].interactable = preview != "";
+            actionButtons[i].interactable = preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
             actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>"
                 + (preview != "" ? "\n<size=75%>" + GameText.Colorize(preview) + "</size>" : "");
         }
@@ -209,13 +209,17 @@ public class UIManager : MonoBehaviour
         if(flow != null && flow.petrification.IsStone(face)){
             return action == ActionType.Defense ? Petrification.StoneBlock + " block (petrified)" : "";
         }
+        if(flow != null && flow.IsChange(face, action)){
+            return flow.ChangesThisTurn < BattleFlow.MaxChangesPerTurn ? "Change: roll again" : "";
+        }
         EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);
             parts.Add(description != "" ? description : effect.name);
         }
-        return string.Join(", ", parts);
+        string text = string.Join(", ", parts);
+        return text != "" && face.definition.IsConsumable(action) ? text + " (Consumable)" : text;
     }
 
     private void UpdateRerollButton(bool canReroll){
@@ -233,7 +237,7 @@ public class UIManager : MonoBehaviour
             bool hasFace = i < die.Count;
             dieChips[i].gameObject.SetActive(hasFace);
             if(hasFace){
-                dieChips[i].Set(die[i], die[i] == rolled, flow != null ? flow.charge.Get(die[i]) : 0, flow != null ? flow.petrification.TurnsLeft(die[i]) : 0);
+                dieChips[i].Set(die[i], die[i] == rolled, flow != null ? flow.charge.Get(die[i]) : 0, flow != null ? flow.petrification.TurnsLeft(die[i]) : 0, flow != null && flow.consumables.AnyUsed(die[i]));
             }
         }
     }

@@ -568,6 +568,15 @@ public static class RunSimulator
 
         // A stone face can only defend.
         if(flow.petrification.IsStone(face)) return ActionType.Defense;
+        // A face whose only actions are used Consumables: Change (roll again).
+        ActionType? change = null;
+        bool realAction = false;
+        foreach(ActionType each in new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }){
+            if(!flow.CanAct(face, each)) continue;
+            if(flow.IsChange(face, each)){ if(change == null) change = each; }
+            else realAction = true;
+        }
+        if(!realAction && change != null) return change.Value;
         if(PlayEnchantments && face.enchantment != null && PlaysEnchantment(face, die, player, flow, bigHit, rage)) return ActionType.Magic;
 
         if(definition.faceName == "Shield"){
@@ -630,6 +639,9 @@ public static class RunSimulator
         bool bigHit = flow.IncomingDamage >= 6;
         if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
         if(flow.rerolls.Left <= 1) return false;
+        // Don't waste a once-per-battle heal at (nearly) full HP.
+        if(face.definition.IsConsumable(ActionType.Magic) && !flow.IsChange(face, ActionType.Magic)
+            && flow.player.maxHP - flow.player.currentHP < flow.charge.ValueOf(face)) return true;
         // Patient Blade hits harder for every reroll kept, so a die with one only rerolls to survive.
         if(die.Exists(f => f.definition.faceName == "Patient Blade")) return false;
         float average = 0;

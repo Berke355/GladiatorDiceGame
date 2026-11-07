@@ -2031,3 +2031,51 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Consumable + Change + Health Potion** (Magic: heal 4, Consumable).
 - **The Healer** in the Market, then the difficulty and gold pass.
 - **Encourage:** its content set is to be discussed.
+
+## Day 58 - Consumable and Change
+
+### Accomplished
+- **Consumable** (a keyword on an action, GDD "Consumable and Change"):
+  - `DieFaceSO.consumableActions` lists actions that can be used once per battle.
+  - `BattleFlow.consumables` (`Consumables`, battle-only) records the used ones per face instance, so every copy has its own use.
+- **Change:** a used Consumable action becomes Change, which rolls the die again at once while the turn goes on.
+  - It is not a reroll: it spends no rerolls, doesn't trigger Momentum or "if you rerolled" effects, and Entangled doesn't stop it.
+  - Items, traits and threats don't see it as the turn's action.
+  - At most 5 per turn (`MaxChangesPerTurn`).
+  - A petrified face is never Change.
+  - `PlayerActionSelectState` rolls again right away; the simulator loops like Steady Hand.
+- **Health Potion:** Magic (Consumable): heal 4 (was a repeatable heal of 3). Once drunk, it is Change for the rest of the battle, so rolling it later is never a dead roll.
+- **UI:**
+  - Action previews show "(Consumable)" and "Change: roll again".
+  - The die strip marks a used face "used: Change".
+  - Consumable and Change are keywords with hover definitions.
+- **Bots:** they skip a near-full-HP drink with a reroll and press Change on a used potion.
+- **Why Change, not a small extra action:** the user pointed out that a potion with "Defense: 1 block" is as dead as one with nothing, since the player rerolls it either way. A dead roll goes against the design: the player always has something to do.
+
+### Tests
+- **Checks (11/11):**
+  - The drink heals 4; afterwards the action is Change.
+  - Change doesn't heal, rolls again, spends no reroll and doesn't add Momentum Rage.
+  - Change leaves `LastActedFace` empty (threats ignore it), and Entangled doesn't block it.
+  - The 5-per-turn cap holds and resets the next turn.
+  - Each copy has its own use; a stone potion only defends; a new battle restores the potion.
+- **Play Mode:**
+  - The Magic button read "heal 4 (Consumable)", then "Change: roll again"; the chip showed "used: Change".
+  - Two Changes in one turn rolled again each time (the second landed on Serrated Blade) with 2 rerolls still left.
+  - No Console errors.
+
+### Balance (6 focused bots, 800 runs)
+
+| Potion | Burn | Poison | Shield | Rage | Bleed | Hammer |
+|---|---|---|---|---|---|---|
+| Old (heal 3 every time) | 15% | 19% | 17% | 8% | 6% | 4% |
+| Consumable 4 + Change | 19% | 25% | 16% | 10% | 8% | 4% |
+| Consumable 3 + Change | 16% | 16% | 19% | 6% | 7% | 3% |
+
+- Change's die thinning costs little; the extra point of healing is most of the gain.
+- The value stays 4 (one strong drink). The difficulty and gold pass will balance the total.
+
+### Next Steps
+- **The Healer** in the Market (10 HP, 15 then 25 gold, at most 2 per visit).
+- **Then the difficulty and gold pass.**
+- **Encourage:** its content set is to be discussed.
