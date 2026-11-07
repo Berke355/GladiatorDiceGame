@@ -277,6 +277,7 @@ You don't only build the die, you build its faces. Every Market has an **Enchant
 | **Dark Rite** | Epic | Gain Ritual equal to my value | Ritualist: on a charged Hammer, one roll boosts every later status |
 | **Whirlwind** | Epic | Hit twice for my value | Rage / Hammer: Rage counts on both hits |
 | **Resonance** | Epic | Add my value as Charge to every other face with the Charge rule, past the +5 cap; this face keeps its Charge | Hammer: fills every Hammer at once, scales with how many are on the die |
+| **Sweep** | Epic | Deal my value to every enemy | Any high-value face: a group answer (see "Area Effects") |
 
 ### Prices
 
@@ -354,6 +355,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 | **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
 | **Laurel Wreath** | General | BattleWon | Heal 1 |
 | **Iron Bracers** | General | BattleStart | Gain 1 Fortify |
+| **Censer** | Poison | TurnEnd | Apply 1 Poison to every enemy (see "Area Effects") |
 
 - **Bridges through existing rules:** Rage adds to Barbed Hook's extra hit (Bleed + Rage), Ritual adds to Plague Mask's Poison (Ritual + Poison), and Smoldering Gauntlet fires on every hit of a multi-hit (Twin Axes + Burn).
 - **Plague Mask scales with the die:** the more Poison faces on the die, the more often it fires.
@@ -713,7 +715,45 @@ Some battles are fought against a group (Roadmap Phase C). Target choice adds a 
 
   - Secutor + Retiarius (the first idea) lost 29% even at ×0.35: two of the hardest Medium enemies are too much together. A tank in front (Murmillo) of a dangerous back-liner works better: kill the front one, or reach past it.
 - **The battle is won** when every enemy is dead (the Hydra's body is the exception, see below).
-- **Area effects:** the rules support effects that hit every enemy; area content (faces, enchantments, items) comes later.
+- **Area effects:** see "Area Effects" below.
+
+### Area Effects
+
+Faces, enchantments and items that act on several enemies.
+
+- **Value Is the Effect:** an area effect applies its full value to every enemy, never a split. "3 damage to every enemy" deals 3 to each.
+- **Faces work standalone:** about a quarter of normal battles are groups, so every area face is a normal face against one enemy and raises its ceiling against groups.
+- **Each enemy is a separate target:** every hit gets Rage and fires hit triggers (items, Thorns), and every status gets Ritual. This makes area effects a natural bridge for Berserker and Ritualist.
+- **No exceptions:** area effects hit the Hydra's heads too, so killing them grows more heads unless the body has Burn.
+- **Three kinds:**
+  - **Direct:** the same effect on every enemy (Cleave, Wildfire, Sweep, Censer).
+  - **Spread:** copy the target's stacks to the others (Contagion).
+  - **Carry:** a killing hit's leftover damage goes to the next enemy (Follow Through).
+
+| Name | Kind | Rarity | Build | Effect |
+|---|---|---|---|---|
+| **Cleave** | Face, value 3 | Common | Rage | Attack: deal my value to every enemy. Defense: block |
+| **Wildfire** | Face, value 2 | Rare | Burn | Magic: apply my value as Burn to every enemy. Defense: block |
+| **Contagion** | Face, value 2 | Rare | Poison | Magic: apply my value as Poison, then copy the target's Poison to every other enemy. Defense: block |
+| **Follow Through** | Face, value 3, Charge | Rare | Hammer | Attack: deal my value; if it kills the target, the excess hits the next enemy |
+| **Sweep** | Enchantment | Epic | Any | Magic: deal the face's value to every enemy |
+| **Censer** | Item | Rare | Poison | End of your turn: 1 Poison to every enemy |
+
+- **Tuned by simulation (DevLog Day 56).** The test swapped one Sword on the starter die for the face and measured HP taken in Weak battles (400 runs each):
+
+| Face | Lone Tiro | Tiro Pair | Lone Arena Wolf | Wolf Pack |
+|---|---|---|---|---|
+| Sword | 6.7 | 8.2 | 5.7 | 9.0 |
+| Cleave at 2 | 7.9 | 8.3 | 6.8 | 8.9 |
+| **Cleave at 3** | **6.8** | **7.5** | **5.8** | **8.1** |
+| War Hammer | 5.6 | 7.4 | 5.1 | 8.3 |
+| Follow Through | 5.7 | 7.2 | 5.2 | 7.8 |
+
+  - Cleave at 2 was weaker than Sword alone and only equal in groups, because Sword's Bleed is worth a lot. At 3 it plays like Sword alone and is better against groups.
+  - Follow Through plays like War Hammer alone and a little better against groups.
+- **Whole runs:** the focused Burn, Poison, Rage and Hammer bots clear the same share with or without the new faces in the pool (within 1 point). Area effects are a situational tool, not a power jump. Most deaths happen at the bosses, where area effects matter little.
+- **The Hydra:** with Cleave in the pool, the Rage bot's Hydra deaths are unchanged (44%). Cleave's 3 damage rarely kills an 8 HP head by accident.
+- **Later:** area content for Bleed and Shield.
 - **The Hydra** is a body plus head enemies (see "Hydra" under Bosses). When more than 3 cards are on screen, all of them shrink to fit.
 - **Bots** focus fire: they target the living enemy with the lowest HP.
 - **Screen:** each enemy has a card at the top right (name, HP, defense, statuses, intent, traits); the target's card has a gold TARGET frame, and a defeated enemy's card is dimmed. The rolled face sits in the middle of the screen.

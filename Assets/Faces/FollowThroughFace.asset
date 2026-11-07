@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
+  m_Name: FollowThroughFace
+  m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
+  faceName: Follow Through
+  description: 'Attack: Deal damage equal to my value; if it kills the target, the
+    excess hits the next enemy. Charge: every turn I''m not rolled, I gain +1 value.'
+  rarity: 1
+  tags: 08000000
+  baseValue: 3
+  effects:
+  - actionType: 0
+    effectLogic: {fileID: 11400000, guid: fd0d98d1eb01faa44a2e51efa3133981, type: 2}
+  charges: 1
+  hasNoValue: 0

@@ -459,7 +459,8 @@ public static class RunSimulator
                 flow.SelectTarget(ChooseTarget(flow));
                 Entity target = flow.Target.entity;
                 ActionType action = AvoidThreat(ChooseAction(face, run.dieFaces, player, target, flow), face, flow);
-                int enemyHP = target.currentHP;
+                // Every enemy's HP, so area damage and Follow Through's carry count too.
+                int enemyHP = TotalHP(flow);
                 int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? target.GetStatus(stats.trackedStatus) : 0;
                 if(stats != null){
                     stats.actions++;
@@ -476,11 +477,11 @@ public static class RunSimulator
                     if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[3];
                     if(stats.trackedStatus != StatusType.None) stats.perFace[name][2] += Mathf.Max(0, target.GetStatus(stats.trackedStatus) - trackedBefore);
                     stats.perFace[name][0]++;
-                    stats.perFace[name][1] += enemyHP - target.currentHP;
-                    stats.actionDamage += enemyHP - target.currentHP;
+                    stats.perFace[name][1] += enemyHP - TotalHP(flow);
+                    stats.actionDamage += enemyHP - TotalHP(flow);
                     if(action == ActionType.Magic && face.enchantment != null){
                         stats.enchantmentActions++;
-                        stats.enchantmentDamage += enemyHP - target.currentHP;
+                        stats.enchantmentDamage += enemyHP - TotalHP(flow);
                     }
                 }
             } while(flow.RerollPending && !flow.IsOver && ++rerolls < 10);
@@ -584,6 +585,9 @@ public static class RunSimulator
             case "Steady Hand": return !bigHit && die.Exists(f => f != face && flow.charge.Get(f) >= 2) ? ActionType.Magic : ActionType.Defense;
             // Defending fills the reroll pool (block + 1 reroll), which is what Fortune dice grow on.
             case "Lucky Buckler": return ActionType.Defense;
+            // Area Magic faces: spread the status unless a big hit needs blocking.
+            case "Wildfire":
+            case "Contagion": return bigHit ? ActionType.Defense : ActionType.Magic;
             case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
@@ -630,6 +634,8 @@ public static class RunSimulator
         EnchantmentSO enchantment = face.enchantment;
         switch(enchantment.enchantmentName){
             case "War Cry": return !bigHit && rage < RageToStartAttacking;
+            // Worth more than the face's own action only against a group.
+            case "Sweep": return !bigHit && flow.LivingEnemies.Count >= 2;
             case "Dark Rite": return player.GetStatus(StatusType.Ritual) == 0;
             case "Whirlwind": return !bigHit || !face.HasAction(ActionType.Defense);
             // A turn without a hit: worth it when the Charge it hands out (my battle value to each other Charge

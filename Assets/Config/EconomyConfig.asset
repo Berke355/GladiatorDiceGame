@@ -54,6 +54,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5865252c4ee623c43abfe3f9198312bc, type: 2}
   - {fileID: 11400000, guid: c5caf8de0d1f0244a81cf0eac93d416e, type: 2}
   - {fileID: 11400000, guid: 16f1d15780d7adc4885ded06f4abb1d6, type: 2}
+  - {fileID: 11400000, guid: ba9bc2e1bbcca6a4993acf842bed906a, type: 2}
+  - {fileID: 11400000, guid: 846526a994009cc46b702cdc802a1cfd, type: 2}
+  - {fileID: 11400000, guid: b689fccde34f87649a1121438e361450, type: 2}
+  - {fileID: 11400000, guid: bd3c59d0173dfb64694d46171500aff0, type: 2}
   offersPerMarket: 3
   commonWeight: 70
   rareWeight: 25
@@ -70,6 +74,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1afa3205bfa4c13499abc274a777431c, type: 2}
   - {fileID: 11400000, guid: a69619cd17b2a2749805e6b7cdd69ff0, type: 2}
   - {fileID: 11400000, guid: 87bcda076086d734c8f5f00d7fd4ef76, type: 2}
+  - {fileID: 11400000, guid: 04dc3e9042871cc4f94849f0720fcbda, type: 2}
   enchantmentsPerMarket: 3
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
@@ -81,9 +86,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ebdf620295601af408b57a10b2e8b68a, type: 2}
   - {fileID: 11400000, guid: 9bd57ab875b93c44cb6828d436eec2ef, type: 2}
   - {fileID: 11400000, guid: a8f6f30dd87522544bc60bbaa0ae0038, type: 2}
+  - {fileID: 11400000, guid: 0781d27898a1da843ade9a3c7c04adb0, type: 2}
   bossRewardChoices: 3
   equipmentPerGrandMarket: 2
   equipmentPrice: 30
+  lockCost: 5
+  grandLockCost: 15
   rerollBaseCost: 5
   rerollCostStep: 5
   grandRerollBaseCost: 15

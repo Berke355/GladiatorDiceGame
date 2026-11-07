@@ -1910,3 +1910,72 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test of Phase C:** targeting, groups and the Hydra.
 - **Area-effect content** (faces, enchantments, items) on top of `EffectContext.opponents`.
 - **Then the difficulty and gold pass** (Phase A step 3), or the map (Phase B).
+
+## Day 56 - Area Effects: The First Set
+
+### Accomplished
+- **Design (GDD "Area Effects"):**
+  - An area effect applies its full value to every enemy (Value Is the Effect, no split).
+  - Area faces work as normal faces against one enemy.
+  - Each enemy is a separate target: Rage per hit, hit triggers per enemy, Ritual per status.
+  - Area effects hit the Hydra's heads too.
+- **Three shared effects; all content reuses the existing damage, Burn and Poison assets:**
+  - `ForEachOpponentEffectSO` runs its inner effects once per living opponent, with the target swapped.
+  - `SpreadStatusEffectSO` copies the target's stacks to the other enemies.
+  - `OverkillDamageEffectSO` carries a killing hit's excess (beyond HP, Block and Fortify) to the next living enemy.
+- **New content, added to the Market, Enchanting Table and Grand Market pools:**
+
+| Name | Kind | Rarity | Effect |
+|---|---|---|---|
+| Cleave | Face, value 3 | Common | Rage: every enemy |
+| Wildfire | Face, value 2 | Rare | Burn: Burn on every enemy |
+| Contagion | Face, value 2 | Rare | Poison: Poison, then copied to every other enemy |
+| Follow Through | Face, value 3, Charge | Rare | Hammer: excess carries |
+| Sweep | Enchantment | Epic | Every enemy |
+| Censer | Item | Rare | 1 Poison on every enemy at turn end |
+
+- **Bots:** Wildfire and Contagion use Magic unless a big hit needs blocking. Sweep is played against 2+ enemies.
+- **Simulator:** damage per face now counts every enemy's HP, so area damage and Follow Through's carry are measured too.
+
+### Tests
+- **Checks (11/11):**
+  - Cleave hits each of 3 enemies for value + Rage, with 3 hit events; against one enemy it is a normal hit, and its text is "3 damage to every enemy".
+  - Wildfire puts value + Ritual Burn on each enemy.
+  - Contagion takes the target from 4 to 6 Poison and copies 6 to the others; alone it applies 2 Poison.
+  - Follow Through: 8 damage into 3 HP + 2 Block carries 3; without a kill nothing carries.
+  - Sweep on a value-6 War Hammer deals 6 to each enemy.
+  - Censer puts 1 Poison on each enemy at turn end.
+  - Cleave at 8 kills both Hydra heads (2 cut) and hits the body.
+
+### Balance
+- **Method:** one Sword on the starter die was swapped for the face; HP taken was measured in Weak battles (no-shopping bot, 400 runs each):
+
+| Face | Lone Tiro | Tiro Pair | Lone Arena Wolf | Wolf Pack |
+|---|---|---|---|---|
+| Sword | 6.7 | 8.2 | 5.7 | 9.0 |
+| Cleave at 2 | 7.9 | 8.3 | 6.8 | 8.9 |
+| Cleave at 3 | 6.8 | 7.5 | 5.8 | 8.1 |
+| War Hammer | 5.6 | 7.4 | 5.1 | 8.3 |
+| Follow Through | 5.7 | 7.2 | 5.2 | 7.8 |
+
+- **Cleave 2 → 3:** at 2 it lost to Sword alone (Sword's Bleed is worth a lot) and only tied in groups. At 3 it plays like Sword alone and is better against groups.
+- **Follow Through** plays like War Hammer alone and a little better against groups.
+- **Whole runs (focused bots, 1000 runs):**
+
+| Bot | With the new faces in the pool | Without them |
+|---|---|---|
+| Burn | 6% | 7% |
+| Poison | 10% | 10% |
+| Rage | 5% | 6% |
+| Hammer | 2% | 3% |
+
+  The new faces are a situational tool, not a power jump; most deaths are at the bosses.
+- **The Hydra:** the Rage bot dies in 44% of its Hydra fights with or without Cleave in the pool. 3 damage rarely kills an 8 HP head by accident.
+
+### Findings
+- Bots only buy enchantments tagged with their archetype, so the untagged Sweep is never bought in simulation. Wildfire deals no damage alone (Burn is fuel), so its value only shows in Burn runs. Both need the user's play-test.
+
+### Next Steps
+- **The user's play-test** of the area content against groups.
+- **Area content for Bleed and Shield** (second round).
+- **Then the difficulty and gold pass** (Phase A step 3), or the map (Phase B).
