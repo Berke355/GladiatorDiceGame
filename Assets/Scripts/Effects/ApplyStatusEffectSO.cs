@@ -14,7 +14,7 @@ public class ApplyStatusEffectSO : EffectSO
     {
         int amount = Amount(context.value);
         if(applyToSelf){
-            context.source.ApplyStatus(statusToApply, amount);
+            amount = context.GainSelf(statusToApply, amount);
         }
         else{
             amount = context.ApplyToTarget(statusToApply, amount);
@@ -23,7 +23,7 @@ public class ApplyStatusEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        int amount = Amount(context.value) + (applyToSelf ? 0 : context.RitualBonus);
+        int amount = Amount(context.value) + (applyToSelf ? (EffectContext.IsEncouraged(statusToApply) ? context.EncourageBonus : 0) : context.RitualBonus);
         return (applyToSelf ? "gain " : "") + amount + " " + statusToApply;
     }
 

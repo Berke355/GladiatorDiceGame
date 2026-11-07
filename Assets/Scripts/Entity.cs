@@ -20,7 +20,9 @@ public enum StatusType {
     // every hit taken deals +1, every hit dealt deals -1, can't reroll.
     Vulnerable,
     Weak,
-    Entangled
+    Entangled,
+    // Permanent for the battle: added to every Rage, Fortify and FireShield the owner gains on itself (Ritual's mirror).
+    Encourage
 }
 
 public class Entity : MonoBehaviour

@@ -47,6 +47,21 @@ public class EffectContext
     // The source's Ritual: added to every status applied to the opponent (never to the source itself).
     public int RitualBonus => source != null ? source.GetStatus(StatusType.Ritual) : 0;
 
+    // The source's Encourage: added to every buff it gains on itself (Rage, Fortify, FireShield), never to Block,
+    // Ritual or Encourage itself.
+    public int EncourageBonus => source != null ? source.GetStatus(StatusType.Encourage) : 0;
+
+    public static bool IsEncouraged(StatusType status){
+        return status == StatusType.Rage || status == StatusType.Fortify || status == StatusType.FireShield;
+    }
+
+    // Every status an effect gives its own source goes through here so Encourage is never forgotten.
+    public int GainSelf(StatusType status, int baseAmount){
+        int total = baseAmount + (IsEncouraged(status) ? EncourageBonus : 0);
+        source.ApplyStatus(status, total);
+        return total;
+    }
+
     // Every damage effect hits through here so Rage is never forgotten. Returns the damage of the hit.
     public int Hit(int baseDamage){
         // Weak takes 1 off every hit the source deals.

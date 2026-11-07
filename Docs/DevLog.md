@@ -2308,3 +2308,61 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test** of the new economy and the balance passes (Days 57–62).
 - **Encourage:** its content set is to be discussed.
 - **If the game still feels easy:** harden the Weak tier.
+
+## Day 64 - Encourage
+
+### Accomplished
+- **Encourage** (GDD "Status Effects" and "Encourage"): Ritual's bright mirror, the crowd's favor.
+  - Encourage N adds N to every Rage, Fortify and FireShield its owner gains on itself. It never boosts Block, Ritual or itself.
+  - It is permanent for the battle and appended to `StatusType`; it is also a keyword with a hover definition.
+- **One path for self-buffs:** every buff an effect gives its own source now goes through `EffectContext.GainSelf`, the mirror of `ApplyToTarget`. Existing content (Shield, Fury, Tower Helm, Flame Ward...) is boosted automatically.
+- **`GainStatusPerOpponentStatusEffectSO.countOwn`** counts the source's own buff types (Crowd's Favor).
+- **The set** carries the Rage and Block tags, so it is a bridge, not a new archetype:
+
+| Name | Kind | Rarity | Value | Effect | Ritual's counterpart |
+|---|---|---|---|---|---|
+| Rally | Face | Common | 1 | Magic: gain Encourage; Defense: block | Incantation |
+| Battle Hymn | Face | Rare | 2 | Defense: Fortify equal to my value; if you have Encourage, also 1 Rage | (the bridge) |
+| Crowd's Favor | Face | Epic | 1 | Magic: Encourage per buff type you have | Dark Communion |
+| Inspire | Enchantment | Epic | | Magic: Encourage equal to the face's value | Dark Rite |
+
+- **Bot rules:** Rally builds Encourage to 2, then defends. Crowd's Favor uses Magic. Battle Hymn defends. Inspire is played when there is no Encourage yet.
+
+### Tests
+- **Checks:**
+  - Rally gives 1 Encourage, and Encourage doesn't boost itself (2 after two Rallies) or Block.
+  - With Encourage 2, Battle Hymn's preview and result are 4 Fortify and 3 Rage; without Encourage, 2 Fortify and no Rage.
+  - Crowd's Favor gives at least 1, and 3 in total with Rage and Fortify.
+  - Herald's Horn and Tower Helm sum correctly (5 Fortify).
+  - Ritual and statuses on the enemy aren't boosted.
+  - One check first failed because the test itself was wrong (Ritual was gained before the Poison it boosted); in the right order it passes.
+
+### Balance (simulation)
+
+| Set | Shield | Rage | Shield + Rage |
+|---|---|---|---|
+| Without Encourage | 18% | 12% | 14% |
+| First set | 28% | 23% | 26% |
+
+- **Removing one piece at a time:**
+
+| Change | Shield | Rage | Shield + Rage |
+|---|---|---|---|
+| No Battle Hymn | 30% | 19% | 27% |
+| No Rally | 28% | 25% | 22% |
+| No Crowd's Favor | 30% | 22% | 23% |
+| No Herald's Horn | 24% | 16% | 17% |
+| No Horn, no Battle Hymn | 21% | 13% | 18% |
+| No Horn, Battle Hymn value 1 | 24% | 16% | 18% |
+| No Horn, Battle Hymn Epic | 25% | 14% | 17% |
+| No Horn, Battle Hymn as block + 1 Fortify + 1 Rage | 25% | 15% | 17% |
+| No Horn, Battle Hymn's Rage only with Encourage (chosen) | 23% | 12% | 17% |
+
+- **Herald's Horn** (1 Encourage at the start of every battle) doubled Tower Helm, which almost every Shield bot carries. It is out of the pool; the asset stays for a later, delayed version.
+- **Battle Hymn** with unconditional Rage was a strictly better Shield face: the Shield bot defends all the time and its Rage piled up. Now the Rage needs Encourage.
+- **Final (800 runs):** Shield 24%, Rage 14%, Shield + Rage 16%, Bleed + Rage 9%.
+
+### Next Steps
+- **The user's play-test** (economy, balance passes, Encourage).
+- **Encourage:** a delayed Herald's Horn, and watch Shield, now near the top (23–24%).
+- **If the game still feels easy:** harden the Weak tier.

@@ -597,6 +597,10 @@ public static class RunSimulator
             // Rage and Ritual last the battle, so build some early, then start hitting with it.
             case "Fury": return rage < RageToStartAttacking ? ActionType.Magic : ActionType.Attack;
             case "Incantation": return ActionType.Magic;
+            // Encourage lasts the battle: build it early, then defend for boosted Fortify and Rage.
+            case "Rally": return !bigHit && player.GetStatus(StatusType.Encourage) < 2 ? ActionType.Magic : ActionType.Defense;
+            case "Crowd's Favor": return ActionType.Magic;
+            case "Battle Hymn": return ActionType.Defense;
             // Paying HP for Rage is only worth it with HP to spare and while Rage is still low.
             // Aim the Charge unless a big hit needs blocking.
             case "Anvil": return bigHit ? ActionType.Defense : ActionType.Magic;
@@ -663,6 +667,7 @@ public static class RunSimulator
             // Worth more than the face's own action only against a group.
             case "Sweep": return !bigHit && flow.LivingEnemies.Count >= 2;
             case "Dark Rite": return player.GetStatus(StatusType.Ritual) == 0;
+            case "Inspire": return !bigHit && player.GetStatus(StatusType.Encourage) == 0;
             case "Whirlwind": return !bigHit || !face.HasAction(ActionType.Defense);
             // A turn without a hit: worth it when the Charge it hands out (my battle value to each other Charge
             // face, past the cap) is more than the hit I'd deal now. This face keeps its Charge either way.

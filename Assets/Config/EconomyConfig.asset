@@ -61,6 +61,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bd3c59d0173dfb64694d46171500aff0, type: 2}
   - {fileID: 11400000, guid: afaa263a9aa39f04e9c5c4dc0531703c, type: 2}
   - {fileID: 11400000, guid: 23a47428a497286478912f3af1b81177, type: 2}
+  - {fileID: 11400000, guid: f6d884aa784196944abb9ef2494fa14e, type: 2}
+  - {fileID: 11400000, guid: e63448a5d3da0f3498a03ba20a1abe94, type: 2}
+  - {fileID: 11400000, guid: b7b0c697ae733334ba2940a460333db1, type: 2}
   offersPerMarket: 3
   commonWeight: 70
   rareWeight: 25
@@ -78,6 +81,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a69619cd17b2a2749805e6b7cdd69ff0, type: 2}
   - {fileID: 11400000, guid: 87bcda076086d734c8f5f00d7fd4ef76, type: 2}
   - {fileID: 11400000, guid: 04dc3e9042871cc4f94849f0720fcbda, type: 2}
+  - {fileID: 11400000, guid: c8f08909025931842b36a4b6612006b7, type: 2}
   enchantmentsPerMarket: 3
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}

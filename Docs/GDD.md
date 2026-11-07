@@ -429,7 +429,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 - **Rage and Ritual** are visible statuses, not hidden multipliers, so they follow the Value Is the Effect rule: the face's value stays as printed, and previews show the boosted result (e.g. a Sword with 3 Rage previews "5 damage, 1 Bleed").
 - **Ritual only boosts statuses applied to the opponent** (Burn, Poison, Bleed). Boosting self-applied statuses would break the "Fortify comes in small amounts" rule. Multiplying a status (Fuel) is not a new application, so Ritual does not apply to it.
 - **Vulnerable, Weak and Entangled** are debuffs enemies put on the player (inspired by Slay the Spire's Vulnerable and Weak). Applied on the enemy's turn, N stacks last the player's next N turns. They make some enemy turns worse for the player and interact with rerolls (e.g. Weak: is it worth rerolling for a bigger hit?).
-- **Encourage (planned):** the mirror of Ritual. Encourage N adds N to every buff the owner gains on itself: Rage, Fortify and FireShield. It is permanent for the battle, like Ritual. It doesn't affect Block (the basic defense of every face; boosting it would make Encourage a Shield tool instead of a bridge), Ritual, or Encourage itself (no compounding chains). It bridges Rage and Fortify (Shield + Rage). Its content will be designed separately, starting with small numbers, since Rage is permanent and already strong.
+- **Encourage:** the mirror of Ritual. Encourage N adds N to every buff the owner gains on itself: Rage, Fortify and FireShield. It is permanent for the battle, like Ritual. It doesn't affect Block (the basic defense of every face; boosting it would make Encourage a Shield tool instead of a bridge), Ritual, or Encourage itself (no compounding chains). It bridges Rage and Fortify (Shield + Rage). See "Encourage" under Build Archetypes for its content.
 - **Fortify is permanent, so it must come in small amounts.** Enemy intents that grant Fortify are kept at 1. A player's Shield face can grant Fortify equal to its value because it pays for it with weaker attacks than Sword.
 
 ## Build Archetypes
@@ -613,6 +613,28 @@ Ideas to revisit after Poison and Shield.
 
 - **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.
 - **Die topology:** Face positions on the die matter, e.g. opposite faces (1–6, 2–5, 3–4) or adjacent faces. Turns "which face do I replace?" into "which face, in which slot?". Complex, so it stays a late idea.
+
+### Encourage (implemented)
+
+The crowd's favor: the arena cheers, and every buff you gain on yourself grows. Ritual is a dark rite that boosts what you do to the enemy; Encourage is its bright mirror, boosting what you do for yourself.
+
+- **Rule:** see "Status Effects". Encourage adds to every gain of Rage, Fortify and FireShield, each gain separately, so many small gains (items such as Tower Helm, Berserker Torc, Iron Bracers) profit most, just as Ritual does with Plague Mask.
+- **A bridge, not an archetype:** Encourage content carries the **Rage and Block** tags, so the Market offers it to Shield and Rage players and the number of archetypes stays the same.
+- **The set mirrors Ritual's, so players recognize the pattern:**
+
+| Name | Kind | Rarity | Value | Effect | Ritual's counterpart |
+|---|---|---|---|---|---|
+| **Rally** | Face | Common | 1 | Magic: gain Encourage equal to my value. Defense: gain block equal to my value. | Incantation |
+| **Battle Hymn** | Face | Rare | 2 | Defense: gain Fortify equal to my value; if you have Encourage, also gain 1 Rage. | (the bridge) |
+| **Crowd's Favor** | Face | Epic | 1 | Magic: gain Encourage equal to my value for each buff type you have (Rage, Fortify, FireShield), at least my value. | Dark Communion |
+| **Inspire** | Enchantment | Epic | — | Magic: gain Encourage equal to the face's value. | Dark Rite |
+
+- **Battle Hymn gains two buffs in one action,** so Encourage boosts it twice (with Encourage 2: value + 2 Fortify and 3 Rage). It is the shared face of Shield + Rage. Its Rage needs Encourage, so it is an Encourage payoff, not a free Shield upgrade.
+- **Small numbers first:** Rage is permanent and already strong, so Rally starts at value 1.
+- **Tuned by simulation (DevLog Day 64):** the first set lifted Shield 18% → 28%, Rage 12% → 23%, Shield + Rage 14% → 26%. Two pieces caused most of it:
+  - **Herald's Horn** (an item: 1 Encourage at the start of every battle) doubled Tower Helm, which almost every Shield bot carries. Without it Shield + Rage fell from 26% to 17%. It is out of the set for now (the asset stays for a later, delayed version, e.g. "the first time you defend: gain 1 Encourage").
+  - **Battle Hymn** first gave 1 Rage on every Defense with no condition. The Shield bot defends all the time, so its Rage piled up and it was a strictly better Shield face; neither value 1 nor Epic fixed it. Now its Rage needs Encourage.
+  - With both changes: Shield 23–24%, Rage 12–14%, Shield + Rage 16–17%, Bleed + Rage 9%.
 
 ### Hybrid Builds
 
