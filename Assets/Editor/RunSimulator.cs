@@ -109,6 +109,9 @@ public static class RunSimulator
     public static FightStats Stats;
     // Optional change to every run's starting state (e.g. a combo on the die), for combo tests. Null = off.
     public static System.Action<RunData> RunSetup;
+    // Focused bots reroll the starting offers (at most MaxStartingRerolls times) when none fits their archetype.
+    public static bool UseStartingReroll = true;
+    private const int MaxStartingRerolls = 2;
     // Optional change before each battle (run, battle number), e.g. a combo that arrives at the first Grand Market.
     public static System.Action<RunData, int> BeforeBattle;
 
@@ -250,8 +253,15 @@ public static class RunSimulator
 
         try{
             for(int r = 0; r < runs; r++){
+                // Same start as RunManager.StartNewRun: starting gold, three offers, and a paid reroll if nothing fits.
                 RunData run = new RunData(config.startingDieFaces, config.startingMaxHP);
-                run.dieFaces.Add(new DieFace(ChooseStartingFace(bot, StartingFaceOffers.Generate(config.economy, config.startingDieFaces))));
+                run.gold = config.economy.startingGold;
+                run.startingFaceOffers = StartingFaceOffers.Generate(config.economy, config.startingDieFaces);
+                while(UseStartingReroll && bot.shopping == Shopping.Focused && run.startingOfferRerolls < MaxStartingRerolls
+                    && !run.startingFaceOffers.Exists(face => bot.Fits(face))
+                    && StartingFaceOffers.Reroll(config.economy, run, config.startingDieFaces)){ }
+                run.dieFaces.Add(new DieFace(ChooseStartingFace(bot, run.startingFaceOffers)));
+                run.startingFaceChosen = true;
                 if(RunSetup != null) RunSetup(run);
                 int hpBeforeWeak = run.currentHP;
 

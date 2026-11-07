@@ -1979,3 +1979,55 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test** of the area content against groups.
 - **Area content for Bleed and Shield** (second round).
 - **Then the difficulty and gold pass** (Phase A step 3), or the map (Phase B).
+
+## Day 57 - Starting Gold and the Starting Reroll
+
+### Accomplished
+- **New rules in the GDD** (the user's play-test ideas, agreed after discussion):
+  - Starting gold and the starting reroll ("Run Start").
+  - Consumable and Change ("Consumable and Change").
+  - The Healer ("Market").
+  - Encourage, planned ("Status Effects").
+- **Every run starts with 20 gold** (`EconomyConfigSO.startingGold`).
+- **The run start screen has a Reroll button:**
+  - It uses the Normal Market's rising price (5, 10, 15... gold), counted by `RunData.startingOfferRerolls`.
+  - It replaces all three offers and avoids the faces just shown (`StartingFaceOffers.Generate(..., avoid)`), still from different archetypes.
+  - The logic lives in `StartingFaceOffers.Reroll`, shared by `RunManager.RerollStartingFaces` and the simulator.
+  - `RunStartUI` shows the gold and wires the card buttons by index, so they keep working after a reroll.
+- **Why gold instead of free rerolls:** one of three random faces decided too much of a run. Gold spent at the start is missing in the first Market, which makes it a Save vs. Tempo decision instead of a free gift.
+- **Simulator:** bots start with the starting gold. Focused bots reroll up to twice when no offer fits their archetype (`UseStartingReroll`).
+
+### Tests
+- **Checks (10/10):**
+  - The run starts with 20 gold; the first reroll costs 5, then 10, then 15.
+  - Rerolled offers are three new faces from different archetypes.
+  - A reroll is refused without enough gold or after choosing.
+  - Starting die faces are never offered.
+- **Play Mode:**
+  - The Reroll button showed Lucky Buckler, War Hammer and Serrated Blade instead of Venom, Anvil and Fury. Gold went 20 → 15 and the next price showed 10.
+  - Choosing War Hammer put it in the sixth slot and kept the 15 gold.
+  - No Console errors.
+
+### Balance (1000 runs per bot)
+
+| Bot | 0 gold, no reroll | 20 gold, no reroll | 20 gold + reroll |
+|---|---|---|---|
+| Burn | 7% | 10% | 13% |
+| Poison | 9% | 19% | 19% |
+| Shield | 13% | 16% | 17% |
+| Rage | 5% | | 9% |
+| Bleed | 4% | | 7% |
+| Hammer | 2% | | 4% |
+| Fortune | 1% | | 2% |
+| Ritual + Poison | 14% | | 27% |
+| Ritual + Bleed | 4% | | 4% |
+| Shield + Rage | 10% | | 12% |
+| Bleed + Rage | 4% | | 7% |
+
+- Most of the gain comes from the gold (an early upgrade); the reroll adds a little.
+- Clear rates are now 0–27%, above the Phase A target for bots (5–15%). The starting gold stays: the freedom is the point. The Healer will soak up some gold, and the difficulty and gold pass will bring the numbers back.
+
+### Next Steps
+- **Consumable + Change + Health Potion** (Magic: heal 4, Consumable).
+- **The Healer** in the Market, then the difficulty and gold pass.
+- **Encourage:** its content set is to be discussed.

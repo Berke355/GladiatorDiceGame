@@ -67,8 +67,16 @@ public class RunManager : MonoBehaviour
     // The starting die has five faces; the sixth is picked from startingFaceOffers on the run start screen.
     public void StartNewRun(){
         run = new RunData(startingDieFaces, startingMaxHP);
+        run.gold = economy.startingGold;
         run.startingFaceOffers = StartingFaceOffers.Generate(economy, startingDieFaces);
     }
+
+    // The run start screen's paid reroll of the three offers.
+    public bool RerollStartingFaces(){
+        return StartingFaceOffers.Reroll(economy, run, startingDieFaces);
+    }
+
+    public int StartingRerollCost => StartingFaceOffers.RerollCost(economy, run);
 
     public void ChooseStartingFace(DieFaceSO face){
         if(run.startingFaceChosen){

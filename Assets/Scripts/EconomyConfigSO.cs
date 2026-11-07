@@ -7,6 +7,8 @@ using System.Collections.Generic;
 public class EconomyConfigSO : ScriptableObject
 {
     public int goldPerVictory = 10;
+    // Gold every run starts with; the run start screen's reroll is paid from it (see GDD "Run Start").
+    public int startingGold = 20;
     // Extra gold for winning a boss battle, so the Grand Market that follows is affordable.
     public int bossVictoryBonus = 0;
 

@@ -163,6 +163,19 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
 - **How Fortune grows during a fight:** Lucky Buckler's Defense fills the reroll pool, and Patient Blade hits harder for every reroll kept (the "Common that grows during a fight" rule). With only Patient Blade as a Common, the Fortune bot cleared 1–3% of runs; with Lucky Buckler and bots that defend with it and keep their rerolls, about 8–15%. Fortune dies most at the Minotaur (slow start, like Burn) and at Medusa (she petrifies the grown Patient Blade).
 - **Steady Hand stays as it is:** it rerolls without spending the pool, so it is still its own thing.
 
+### Consumable and Change
+
+- **Consumable** (a keyword on an action, not on a face): the action can be used once per battle. A face's other actions keep working. Each copy of a face on the die has its own use.
+- **Change** (a keyword on an action): roll the die again. The turn continues (the enemy doesn't act), and the new face must be used. Choosing Change again rolls again, until a face without Change comes up or the player picks another action.
+- **A used Consumable action becomes Change for the rest of the battle.** The player never sits with a dead roll: a drunk Health Potion turns into a way to the rest of the die. This follows the rule that the player always has something to do.
+- **Change is an action, not a reroll:**
+  - It doesn't spend the reroll pool and doesn't count as a reroll for Fortune effects ("if you rerolled this turn", Patient Blade) or enemy traits (Essedarius's Momentum).
+  - Entangled doesn't stop it: Entangled forbids rerolls, and blocking Change would bring the dead roll back.
+  - Items that fire when the die lands fire again, as with Steady Hand.
+  - Threats on the player's choice (Essedarius's Run Down) look at the action that ends the turn, not at Change.
+- **At most 5 Changes per turn,** a safety net against endless loops; in practice only a die that is nearly all used Consumables can reach it.
+- **Die thinning is accepted as a strategy for now:** once used, a Consumable face works like a face removed from the die for the rest of the battle (like Slay the Spire's Exhaust). A die full of Consumables is a build path: use them, then play a die made only of build faces. This competes with Fortune, so Consumable content stays small at first (only Health Potion). If it proves too strong, the fix is a limit on Change per battle or making it spend a reroll.
+
 ## Rarity & Economy
 
 ### Goals
@@ -201,12 +214,12 @@ Every run starts from the same five neutral faces plus one face the player picks
 |---|---|---|---|---|
 | **Sword** | 2 | Common | 2 | Attack: deal damage equal to my value and apply 2 Bleed. Defense: gain block equal to my value. |
 | **Shield** | 2 | Common | 2 | Attack: deal damage equal to my value. Defense: gain Fortify equal to my value. |
-| **Health Potion** | 1 | Common | 3 | Magic: heal equal to my value. No Attack or Defense. |
+| **Health Potion** | 1 | Common | 4 | Magic (Consumable): heal equal to my value. After it is used, the action becomes Change. No Attack or Defense. |
 | **Starting face** | 1 | Chosen | — | Picked by the player at the start of the run |
 
 - **Sword and Shield mirror each other:** Sword is stronger on offense (its attack also bleeds) and weaker on defense (temporary Block). Shield is stronger on defense (permanent Fortify) and weaker on offense. If one of them proves too strong, it will be rebalanced.
 - **Sword's Bleed is a fixed 2**, not its value, so upgrading Sword only raises its damage. With +1 value improving a single effect, Sword stays Common. It was 1, but Bleed applied on your turn ticks at the end of the enemy's turn, so 1 Bleed was gone before your next turn and "if the enemy is bleeding" faces never saw it.
-- **Health Potion** does one strong thing: rolled at full HP, it does nothing. This is intended. A later reroll mechanic (see Future below) gives players a way out of rolls that don't fit the situation.
+- **Health Potion** does one strong thing once per battle (see "Consumable and Change"). It was a repeatable heal of 3; as a Consumable it heals 4, and once drunk it becomes a Change face, so rolling it later is never a dead roll.
 
 **Choosing the starting face:**
 
@@ -215,6 +228,14 @@ Every run starts from the same five neutral faces plus one face the player picks
 - The three offers come from **different archetypes** (different tags), so the choice is a real decision about the build's first direction.
 - Faces already on the starting die (Sword, Shield, Health Potion) are never offered.
 - Every run starts different from the first moment, and the game's core question ("which face do I want?") is asked right away.
+
+**Starting gold and the starting reroll:**
+
+- **Every run starts with 20 gold** (one victory's worth).
+- **The run start screen has a Reroll button** with the Market's rising price (5, 10, 15... gold). It replaces all three offers and avoids showing the same faces again when the pool allows.
+- **Why gold instead of free rerolls:** one of three random faces decided too much of a run, which limited the player's freedom (play-test). A free reroll would be a decision-free gift that everyone always uses; gold spent here is missing in the first Market, so "a better starting face, or an upgrade in the first Market?" is a real Save vs. Tempo decision.
+- Unspent gold stays for the run.
+- **Simulation (DevLog Day 57):** most of the gain comes from the gold itself (an early upgrade in the first Market); the reroll adds a little on top (Burn: 7% without either, 10% with the gold, 13% with gold and reroll). Bot clear rates rose from 0–14% to 0–27% (Poison 9% → 19%, Ritual + Poison 14% → 27%), above the Phase A target. The Healer will soak up some of the gold, and the difficulty and gold pass will bring the numbers back.
 
 **Future:**
 
@@ -237,6 +258,7 @@ Market services:
 - **Lock an offer** (5 gold, 15 in the Grand Market): a locked face, enchantment or item survives rerolls and waits in the next Market that sells that kind (items only in a Grand Market), so the player can save up for it. Unlocking is free, without a refund; buying it releases the lock.
 - **Hover help:** every die face and item shows its full description on hover, and every highlighted keyword (Ritual, Bleed, Poison...) shows its definition when the pointer is over the word.
 - **Enchant a face:** inscribe an enchantment into the empty Magic action of one die face (see Enchanting Table).
+- **Healer:** heal 10 HP for gold, in every Market (Normal and Grand). The price rises within a visit (15, then 25 gold), at most 2 heals per visit. Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. The map's rest nodes will take over or join this later (Roadmap Phase B).
 
 **Market reroll:**
 
@@ -385,6 +407,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 - **Rage and Ritual** are visible statuses, not hidden multipliers, so they follow the Value Is the Effect rule: the face's value stays as printed, and previews show the boosted result (e.g. a Sword with 3 Rage previews "5 damage, 1 Bleed").
 - **Ritual only boosts statuses applied to the opponent** (Burn, Poison, Bleed). Boosting self-applied statuses would break the "Fortify comes in small amounts" rule. Multiplying a status (Fuel) is not a new application, so Ritual does not apply to it.
 - **Vulnerable, Weak and Entangled** are debuffs enemies put on the player (inspired by Slay the Spire's Vulnerable and Weak). Applied on the enemy's turn, N stacks last the player's next N turns. They make some enemy turns worse for the player and interact with rerolls (e.g. Weak: is it worth rerolling for a bigger hit?).
+- **Encourage (planned):** the mirror of Ritual. Encourage N adds N to every buff the owner gains on itself: Rage, Fortify and FireShield. It is permanent for the battle, like Ritual. It doesn't affect Block (the basic defense of every face; boosting it would make Encourage a Shield tool instead of a bridge), Ritual, or Encourage itself (no compounding chains). It bridges Rage and Fortify (Shield + Rage). Its content will be designed separately, starting with small numbers, since Rage is permanent and already strong.
 - **Fortify is permanent, so it must come in small amounts.** Enemy intents that grant Fortify are kept at 1. A player's Shield face can grant Fortify equal to its value because it pays for it with weaker attacks than Sword.
 
 ## Build Archetypes

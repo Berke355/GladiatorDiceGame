@@ -16,6 +16,8 @@ public class RunData
     // The faces offered at the start of the run, and whether one was picked for the die.
     public List<DieFaceSO> startingFaceOffers = new List<DieFaceSO>();
     public bool startingFaceChosen;
+    // Paid rerolls of the starting offers so far; each costs more (the Market's reroll price).
+    public int startingOfferRerolls;
     // Passive items (see GDD "Equipment"); at most EquipmentSlots of them.
     public const int EquipmentSlots = 3;
     public List<EquipmentSO> equipment = new List<EquipmentSO>();
