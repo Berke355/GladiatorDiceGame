@@ -107,3 +107,7 @@ MonoBehaviour:
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5
   epicUpgradeMultiplier: 20
+  healAmount: 10
+  healBaseCost: 40
+  healCostStep: 0
+  maxHealsPerVisit: 1

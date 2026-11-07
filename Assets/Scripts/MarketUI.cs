@@ -22,6 +22,9 @@ public class MarketUI : MonoBehaviour
     public Button cancelButton;
     public Button rerollButton;
     public TextMeshProUGUI rerollButtonText;
+    // The Healer: HP for gold, the price rising within the visit.
+    public Button healButton;
+    public TextMeshProUGUI healButtonText;
     public Button nextBattleButton;
 
     [Header("Boss Reward")]
@@ -78,6 +81,7 @@ public class MarketUI : MonoBehaviour
         }
         cancelButton.onClick.AddListener(CancelBuy);
         rerollButton.onClick.AddListener(OnRerollClicked);
+        if(healButton != null) healButton.onClick.AddListener(() => { if(market.Heal()) Refresh(); });
         skipRewardButton.onClick.AddListener(OnSkipRewardClicked);
 
         Refresh();
@@ -253,6 +257,10 @@ public class MarketUI : MonoBehaviour
         // The price rises with every reroll in this visit, so the button always shows the next price.
         rerollButtonText.text = "Reroll  " + market.GetRerollCost() + "g";
         rerollButton.interactable = !Choosing && market.CanReroll();
+        if(healButton != null){
+            healButtonText.text = market.HealsLeft > 0 ? "Heal " + market.HealAmount + " HP  " + market.GetHealCost() + "g" : "Healer: done";
+            healButton.interactable = !Choosing && market.CanHeal();
+        }
         // The boss reward must be taken or skipped before leaving.
         nextBattleButton.interactable = !Choosing && !market.IsRewardPending;
         hintText.text = Hint();

@@ -259,7 +259,19 @@ Market services:
 - **Lock an offer** (5 gold, 15 in the Grand Market): a locked face, enchantment or item survives rerolls and waits in the next Market that sells that kind (items only in a Grand Market), so the player can save up for it. Unlocking is free, without a refund; buying it releases the lock.
 - **Hover help:** every die face and item shows its full description on hover, and every highlighted keyword (Ritual, Bleed, Poison...) shows its definition when the pointer is over the word.
 - **Enchant a face:** inscribe an enchantment into the empty Magic action of one die face (see Enchanting Table).
-- **Healer:** heal 10 HP for gold, in every Market (Normal and Grand). The price rises within a visit (15, then 25 gold), at most 2 heals per visit. Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. The map's rest nodes will take over or join this later (Roadmap Phase B).
+- **Healer:** heal **10 HP for 40 gold, once per visit**, in every Market (Normal and Grand). Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. The map's rest nodes will take over or join this later (Roadmap Phase B).
+  - **Tuned by simulation (DevLog Day 59, 6 focused bots that heal below half HP, 800 runs):**
+
+| Healer | Burn | Poison | Shield | Rage | Bleed | Hammer |
+|---|---|---|---|---|---|---|
+| None | 17% | 23% | 21% | 11% | 11% | 4% |
+| 10 HP for 15, then 25 gold (2 per visit, the first plan) | 35% | 62% | 19% | 52% | 48% | 26% |
+| 10 HP for 15 gold, 1 per visit | 37% | 62% | 23% | 50% | 49% | 29% |
+| 6 HP for 20 gold, 1 per visit | 25% | 36% | 19% | 28% | 27% | 11% |
+| 5 HP for 20 gold, 1 per visit | 24% | 35% | 16% | 24% | 27% | 11% |
+| **10 HP for 40 gold, 1 per visit** | **20%** | **27%** | **18%** | **13%** | **13%** | **5%** |
+
+  - HP is the tightest limit in the game: cheap healing over 9 Markets undid the pressure of the 30% boss heal, most of all for long attrition builds (Rage, Bleed). The heal amount mattered more than the per-visit limit. At 40 gold (two victories) a heal competes with an upgrade or two rerolls; players will use it better than bots (e.g. right before a boss), so it stays on the expensive side.
 
 **Market reroll:**
 

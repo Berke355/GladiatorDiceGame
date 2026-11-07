@@ -2079,3 +2079,41 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The Healer** in the Market (10 HP, 15 then 25 gold, at most 2 per visit).
 - **Then the difficulty and gold pass.**
 - **Encourage:** its content set is to be discussed.
+
+## Day 59 - The Healer
+
+### Accomplished
+- **Healer in every Market** (Normal and Grand, GDD "Market"):
+  - 10 HP for 40 gold, once per visit.
+  - `Market.Heal` / `CanHeal` / `GetHealCost`; the numbers live in `EconomyConfigSO` (`healAmount`, `healBaseCost`, `healCostStep`, `maxHealsPerVisit`).
+  - The button sits on the right of the Gold / HP line. It is disabled at full HP or without the gold, and reads "Healer: done" once used. It was first placed under Reroll, where the screenshot showed it overlapping the first die slot.
+- **Bots** that shop heal when below half HP (`UseHealer`, `HealBelowFraction`).
+
+### Tests
+- **Checks (6/6)** with the first plan (10 HP for 15, then 25 gold, 2 per visit):
+  - No heal at full HP; healing stops at max HP.
+  - The second heal costs 25, and no third heal in the same visit.
+  - The price resets in the next Market (Grand too).
+  - No heal without the gold.
+- **Play Mode:** HP 20 → 30 → 40 and gold 60 → 45 → 20; then the button read "Healer: done" and was disabled.
+
+### Balance (6 focused bots, 800 runs)
+
+| Healer | Burn | Poison | Shield | Rage | Bleed | Hammer |
+|---|---|---|---|---|---|---|
+| None | 17% | 23% | 21% | 11% | 11% | 4% |
+| 10 HP for 15 → 25 gold, 2 per visit (the first plan) | 35% | 62% | 19% | 52% | 48% | 26% |
+| 10 HP for 15 gold, 1 per visit | 37% | 62% | 23% | 50% | 49% | 29% |
+| 6 HP for 20 gold, 1 per visit | 25% | 36% | 19% | 28% | 27% | 11% |
+| 5 HP for 20 gold, 1 per visit | 24% | 35% | 16% | 24% | 27% | 11% |
+| **10 HP for 40 gold, 1 per visit (chosen)** | **20%** | **27%** | **18%** | **13%** | **13%** | **5%** |
+
+### Findings
+- HP is the tightest limit in the game. Cheap healing over 9 Markets undid the 30% boss heal's pressure, most of all for long attrition builds (Rage, Bleed).
+- The heal amount mattered more than the per-visit limit: bots heal once, below half HP, and that one heal is enough.
+- At 40 gold (two victories) a heal competes with an upgrade or two rerolls. Players will use it better than bots (e.g. right before a boss), so it stays expensive.
+
+### Next Steps
+- **The difficulty and gold pass:** starting gold, the 4-HP Consumable potion and the Healer all raised clear rates (focused bots now 5–27%).
+- **Encourage:** its content set is to be discussed.
+- **The user's play-test** of the starting reroll, Consumable / Change and the Healer.

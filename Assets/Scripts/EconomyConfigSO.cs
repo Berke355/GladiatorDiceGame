@@ -90,6 +90,16 @@ public class EconomyConfigSO : ScriptableObject
     }
 
     // Rising cost within one Market visit, e.g. 5 / 10 / 15 (Grand: 15 / 30 / 45).
+    // The Healer (see GDD "Market"): HP for gold in every Market, the price rising within a visit.
+    public int healAmount = 10;
+    public int healBaseCost = 40;
+    public int healCostStep = 0;
+    public int maxHealsPerVisit = 1;
+
+    public int GetHealCost(int healsThisVisit){
+        return healBaseCost + healCostStep * healsThisVisit;
+    }
+
     public int GetRerollCost(bool grandMarket, int rerollsThisVisit){
         return grandMarket
             ? grandRerollBaseCost + grandRerollCostStep * rerollsThisVisit

@@ -74,6 +74,30 @@ public class Market
         GenerateEquipmentOffers();
     }
 
+    // ---------- Healer ----------
+
+    public int HealsThisVisit { get; private set; }
+    public int HealsLeft => economy.maxHealsPerVisit - HealsThisVisit;
+    public int HealAmount => economy.healAmount;
+
+    public int GetHealCost(){
+        return economy.GetHealCost(HealsThisVisit);
+    }
+
+    // Needs gold, a heal left this visit and missing HP.
+    public bool CanHeal(){
+        return HealsThisVisit < economy.maxHealsPerVisit && run.gold >= GetHealCost() && run.currentHP < run.maxHP;
+    }
+
+    // Heals healAmount (up to max HP) for the current price; the next heal costs more.
+    public bool Heal(){
+        if(!CanHeal()) return false;
+        run.gold -= GetHealCost();
+        HealsThisVisit++;
+        run.currentHP = System.Math.Min(run.maxHP, run.currentHP + economy.healAmount);
+        return true;
+    }
+
     // ---------- Reroll ----------
 
     public int GetRerollCost(){

@@ -690,7 +690,14 @@ public static class RunSimulator
 
     // ---------- Shopping ----------
 
+    // Bots that shop buy HP back from the Healer when they are low, before spending on the build.
+    public static bool UseHealer = true;
+    public static float HealBelowFraction = 0.5f;
+
     private static void Shop(Bot bot, Market market, RunData run){
+        if(UseHealer && bot.shopping != Shopping.None){
+            while(run.currentHP < run.maxHP * HealBelowFraction && market.Heal()){ }
+        }
         switch(bot.shopping){
             case Shopping.Focused:
                 if(UseEquipment) TakeBestReward(market, run, bot);
