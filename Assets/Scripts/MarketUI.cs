@@ -193,12 +193,13 @@ public class MarketUI : MonoBehaviour
         }
         else if(run.nextEncounter != null){
             EnemyGroup encounter = run.nextEncounter;
-            summary = "<b>" + encounter.DisplayName + "</b>  <size=80%>(" + encounter.tier + ")</size>";
+            int rage = RunManager.Instance.encounters.ScalingFor(battle).startingRage;
+            summary = "<b>" + encounter.DisplayName + "</b>  <size=80%>(" + encounter.tier + (rage > 0 ? ", starts with " + rage + " Rage" : "") + ")</size>";
             List<string> names = BattleManager.MemberNames(encounter);
             for(int i = 0; i < encounter.members.Count; i++){
                 EnemySO member = encounter.members[i];
                 if(i > 0) details.Append("\n\n");
-                details.Append("<b>" + names[i] + "</b>  " + encounter.MemberHP(member) + " HP");
+                details.Append("<b>" + names[i] + "</b>  " + RunManager.Instance.encounters.ScaledHP(encounter, member, battle) + " HP");
                 List<string> intents = new List<string>();
                 foreach(EnemyIntent intent in member.intents) intents.Add(intent.intentName);
                 details.Append("\nIntents: " + string.Join(", ", intents));

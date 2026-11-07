@@ -758,6 +758,37 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
 - **Second round (later):** punishing Magic, status resistance (e.g. ignore the first 2 statuses), splitting (needs multiple enemies, Phase C).
 - **Technical:** traits reuse the equipment trigger system from the enemy's side: an `EnemySO` lists `EnemyTrait`s (a trigger such as "hit by the player", "lost HP from a hit", "the player chose an action", "the player rerolled", plus existing effect assets). Second Wind is a second intent list the brain switches to below half HP.
 
+#### Difficulty Curve
+
+- **The problem (play-test and simulation):** the Weak battles stayed the same while the player grew stronger in every Market, so battle 2 and 3 were easier than battle 1 (HP lost per battle: 4.5, 2.9, 2.6), and the Minotaur came as a cliff (20.1, about 8 times battle 3).
+- **Battle scaling:** each tier climbs instead of staying flat. Normal enemies at some battle numbers get more HP and start with **Rage**. Rage is a visible status that adds to every hit and shows in the intents' numbers, so there is no hidden multiplier (Value Is the Effect). Bosses are tuned on their own. The Market's "next battle" line shows the starting Rage, and its hover shows the scaled HP.
+
+| Battle | HP | Starting Rage |
+|---|---|---|
+| 1 | ×1 | 0 |
+| 2 | ×1.7 | 0 |
+| 3 | ×1.4 | 1 |
+| 5 | ×1 | 0 |
+| 6 | ×1.15 | 0 |
+| 7 | ×1.3 | 1 |
+| 9 | ×1 | 0 |
+| 10 | ×1.15 | 1 |
+
+- **Tuned by simulation (DevLog Day 66, HP lost per battle, the average of the Burn, Rage, Shield and Fortune bots):**
+
+| Version | 1 | 2 | 3 | 4 (Minotaur) | Clear rate |
+|---|---|---|---|---|---|
+| No scaling | 4.5 | 2.9 | 2.6 | 20.1 | 28% |
+| HP ×1.25 / ×1.5 + 1 Rage at battle 3 | 4.5 | 4.1 | 7.5 | 18.5 | 15% |
+| + 1 Rage at battle 2, Stampede 9 | 4.7 | 8.2 | 7.6 | 17.5 | 15% |
+| Battle 2 HP ×1.3, Minotaur 22 HP | 4.6 | 4.2 | 7.9 | 17.1 | 16% |
+| **Battle 2 HP ×1.7, Minotaur 22 HP (chosen)** | **4.6** | **5.8** | **7.2** | **17.0** | **16%** |
+
+  - 1 Rage on a Weak enemy is a big step (their hits are 1–2), so battle 2 climbs through HP and battle 3 adds the Rage.
+  - Stampede 12 → 9 barely mattered: most of the Minotaur's damage comes from Gore and Trample in a long fight, so its HP went down instead (26 → 22).
+  - The Minotaur is still the run's first peak (about 2.4 times battle 3, was 8), and it kills about 20% of the runs that reach it, as before.
+- **All bots with the curve and the 20-gold Healer (700 runs):** Burn 10%, Poison 13%, Shield 17%, Rage 21%, Bleed 16%, Hammer 12%, Fortune 12%, Ritual 1%, Ritual + Poison 24%, Ritual + Bleed 11%, Shield + Rage 15%, Bleed + Rage 20%. Before the curve, the 20-gold Healer had pushed them to 22–48%.
+
 #### Balance Targets
 
 Enemy numbers are tuned with the run simulator (`Tools → Gladiator Dice → Run Balance Simulation`), where bots fight with the real battle rules and shop in the real Market. The difficulty curve is measured against these targets:
@@ -872,6 +903,8 @@ A raging bull of the labyrinth. The first boss teaches players to read a boss di
 | Trample | 2 | Attack: deal damage and gain block |
 | Hide | 1 | Defense: gain a lot of block |
 | Stampede | 1 | Start the Stampede countdown (huge hit in 3 turns, cancelled by stagger) |
+
+- **HP 22** (was 26, lowered in the difficulty curve pass, DevLog Day 66, so the first boss is a peak rather than a cliff).
 
 #### Medusa (battle 8)
 

@@ -2407,3 +2407,66 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 ### Next Steps
 - **The difficulty curve:** the Weak battles are too easy, and the Minotaur is a cliff (play-test, matching the simulation). Make the climb gradual.
 - **Fortune:** its faces are hard to find, and the found ones are weak in damage.
+
+## Day 66 - The Difficulty Curve
+
+### Findings
+- **The curve ran backwards** (play-test, confirmed by simulation): Weak enemies stayed the same while the player grew stronger in every Market.
+  - HP lost per battle: 4.5, 2.9, 2.6, then 20.1 at the Minotaur, about 8 times battle 3.
+- **The 20-gold Healer** (Day 65) pushed clear rates to 22–48%.
+- **New simulator report:** "avg HP lost by battle (fight only)", per battle number.
+
+### Accomplished
+- **Battle scaling** (`EncounterConfigSO.battleScaling`, GDD "Difficulty Curve"): normal enemies at some battle numbers get more HP and start with Rage.
+  - Rage is visible on the card and in the intents' numbers, so there is no hidden multiplier.
+  - `BattleManager` and the simulator apply it; the Market preview shows the starting Rage and the scaled HP.
+  - Bosses aren't scaled.
+
+| Battle | HP | Starting Rage |
+|---|---|---|
+| 2 | ×1.7 | 0 |
+| 3 | ×1.4 | 1 |
+| 6 | ×1.15 | 0 |
+| 7 | ×1.3 | 1 |
+| 10 | ×1.15 | 1 |
+
+- **Minotaur:** 22 HP (was 26).
+
+### Tuning (Burn, Rage, Shield, Fortune bots, 400 runs, HP lost per battle)
+
+| Version | 1 | 2 | 3 | 4 | Minotaur deaths | Clear rate |
+|---|---|---|---|---|---|---|
+| No scaling | 4.5 | 2.9 | 2.6 | 20.1 | 19% | 28% |
+| A: HP ×1.25 / ×1.5, Rage 1 at battle 3 | 4.5 | 4.1 | 7.5 | 18.5 | 22% | 15% |
+| B: + Rage 1 at battle 2, Stampede 9 | 4.7 | 8.2 | 7.6 | 17.5 | 24% | 15% |
+| C: battle 2 HP ×1.3, Minotaur 22 HP | 4.6 | 4.2 | 7.9 | 17.1 | 19% | 16% |
+| **D: battle 2 HP ×1.7 (chosen)** | **4.6** | **5.8** | **7.2** | **17.0** | **21%** | **16%** |
+
+- **1 Rage on a Weak enemy is a big step** (its hits are 1–2), so battle 2 climbs through HP and battle 3 adds the Rage.
+- **Stampede 12 → 9 barely mattered:** most of the Minotaur's damage comes from Gore and Trample in a long fight, so its HP went down instead.
+- **The Minotaur is still the first peak,** about 2.4 times battle 3 (was 8).
+- **All bots (700 runs):**
+
+| Bot | Clear rate |
+|---|---|
+| Burn | 10% |
+| Poison | 13% |
+| Shield | 17% |
+| Rage | 21% |
+| Bleed | 16% |
+| Hammer | 12% |
+| Fortune | 12% |
+| Ritual | 1% |
+| Ritual + Poison | 24% |
+| Ritual + Bleed | 11% |
+| Shield + Rage | 15% |
+| Bleed + Rage | 20% |
+| Unplanned buyer | 1% |
+| No shopping | 0% |
+
+### Tests
+- **Play Mode:** in battle 3, Murmillo started with 20/20 HP (base 14 × 1.4) and 1 Rage.
+
+### Next Steps
+- **Fortune:** its faces are hard to find, and the found ones are weak in damage (the user's play-test).
+- **The user's play-test** of the curve.

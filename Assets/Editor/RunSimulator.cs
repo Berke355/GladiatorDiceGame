@@ -236,6 +236,8 @@ public static class RunSimulator
 
         int[] reached = new int[BattlesPerRun + 2];
         int[] deathsAt = new int[BattlesPerRun + 2];
+        // HP lost in each battle (the fight only, before any healing), summed over the runs that fought it.
+        long[] hpLostAt = new long[BattlesPerRun + 2];
         int cleared = 0;
         float weakHpLost = 0;
         int weakCleared = 0;
@@ -287,7 +289,9 @@ public static class RunSimulator
                     string enemyName = boss != null ? boss.bossName : encounter.DisplayName;
 
                     int turns;
-                    bool won = FightBattle(run, encounter, boss, playerObject, enemyObjects, out turns);
+                    int hpBeforeFight = run.currentHP;
+                    bool won = FightBattle(run, encounter, boss, playerObject, enemyObjects, out turns, config.encounters, battle);
+                    hpLostAt[battle] += hpBeforeFight - run.currentHP;
                     if(!won){
                         deathsAt[battle]++;
                         deathsByEnemy[enemyName] = (deathsByEnemy.ContainsKey(enemyName) ? deathsByEnemy[enemyName] : 0) + 1;
@@ -334,6 +338,11 @@ public static class RunSimulator
         }
 
         string report = FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
+        StringBuilder hpLine = new StringBuilder("avg HP lost by battle (fight only):");
+        for(int b = 1; b <= BattlesPerRun; b++){
+            if(reached[b] > 0) hpLine.Append(" " + b + ":" + ((float)hpLostAt[b] / reached[b]).ToString("0.0"));
+        }
+        report += hpLine.AppendLine().ToString();
         string gold = "avg gold entering the first Grand Market: " + (firstGrandMarketVisits > 0 ? (goldAtFirstGrandMarket / firstGrandMarketVisits).ToString("0") : "-") + "\n";
         string onHand = "avg enchanted faces at battle 8: " + (reached[8] > 0 ? ((float)enchantedAtBattle8 / reached[8]).ToString("0.0") : "-") + "\n";
         onHand += "avg equipment at battle 8: " + (reached[8] > 0 ? ((float)equipmentAtBattle8 / reached[8]).ToString("0.0") : "-");
@@ -413,7 +422,7 @@ public static class RunSimulator
 
     // Mirrors the battle states: player turn (roll, act, OnTurnEnd), then enemy turn.
     // A normal encounter (one enemy or a group) or a boss; exactly one of them is set.
-    private static bool FightBattle(RunData run, EnemyGroup encounter, BossSO boss, GameObject playerObject, GameObject[] enemyObjects, out int turns){
+    private static bool FightBattle(RunData run, EnemyGroup encounter, BossSO boss, GameObject playerObject, GameObject[] enemyObjects, out int turns, EncounterConfigSO encounters, int battleNumber){
         Entity player = Reset<Entity>(playerObject);
         player.entityName = "Player";
         player.maxHP = run.maxHP;
@@ -432,8 +441,11 @@ public static class RunSimulator
             for(int i = 0; i < encounter.members.Count && i < enemyObjects.Length; i++){
                 Entity enemy = Reset<Entity>(enemyObjects[i]);
                 enemy.entityName = names[i];
-                enemy.maxHP = encounter.MemberHP(encounter.members[i]);
+                // Same scaling as BattleManager: HP multiplier and starting Rage for this battle number.
+                enemy.maxHP = encounters.ScaledHP(encounter, encounter.members[i], battleNumber);
                 enemy.currentHP = enemy.maxHP;
+                int startingRage = encounters.ScalingFor(battleNumber).startingRage;
+                if(startingRage > 0) enemy.ApplyStatus(StatusType.Rage, startingRage);
                 enemies.Add(new BattleEnemy(enemy, new EnemyBrain(encounter.members[i], enemy, player)));
             }
         }

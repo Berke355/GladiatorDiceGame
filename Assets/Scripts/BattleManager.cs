@@ -54,8 +54,12 @@ public class BattleManager : MonoBehaviour
                 Entity entity = i == 0 ? enemy : Instantiate(enemy, enemy.transform.parent);
                 entity.name = "Enemy " + names[i];
                 entity.entityName = names[i];
-                entity.maxHP = encounter.MemberHP(enemyData);
+                // Later battles of a tier are tougher: more HP and starting Rage (see GDD "Difficulty Curve").
+                int battleNumber = run.battlesWon + 1;
+                entity.maxHP = RunManager.Instance.encounters.ScaledHP(encounter, enemyData, battleNumber);
                 entity.currentHP = entity.maxHP;
+                int startingRage = RunManager.Instance.encounters.ScalingFor(battleNumber).startingRage;
+                if(startingRage > 0) entity.ApplyStatus(StatusType.Rage, startingRage);
                 enemies.Add(new BattleEnemy(entity, new EnemyBrain(enemyData, entity, player)));
             }
         }

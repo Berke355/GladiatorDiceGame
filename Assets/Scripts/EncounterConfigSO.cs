@@ -28,6 +28,16 @@ public class EnemyGroup
     public string DisplayName => string.IsNullOrEmpty(groupName) ? (members.Count > 0 ? members[0].enemyName : "") : groupName;
 }
 
+// How much tougher normal enemies are at one battle number (see GDD "Difficulty Curve"): their HP is multiplied
+// and they start with Rage, a visible status that adds to every hit, so each tier climbs instead of staying flat.
+[Serializable]
+public class BattleScaling
+{
+    public int battle;
+    public float hpMultiplier = 1f;
+    public int startingRage;
+}
+
 // Every normal enemy and enemy group that can appear in a run (each one's tier decides which part of the run
 // it belongs to), and the boss battles with the bosses that can appear in each.
 [CreateAssetMenu(fileName = "EncounterConfig", menuName = "Dice/Encounter Config")]
@@ -37,6 +47,17 @@ public class EncounterConfigSO : ScriptableObject
     public List<EnemyGroup> groups = new List<EnemyGroup>();
     // A slot without bosses (not built yet) keeps using normal enemies of the next tier.
     public List<BossSlot> bossSlots = new List<BossSlot>();
+    // Normal enemies' scaling per battle number; battles not listed use no scaling.
+    public List<BattleScaling> battleScaling = new List<BattleScaling>();
+
+    public BattleScaling ScalingFor(int battleNumber){
+        return battleScaling.Find(s => s.battle == battleNumber) ?? new BattleScaling{ battle = battleNumber };
+    }
+
+    // A member's HP at this battle number: its group HP times the battle's multiplier (at least 1).
+    public int ScaledHP(EnemyGroup encounter, EnemySO member, int battleNumber){
+        return Mathf.Max(1, Mathf.RoundToInt(encounter.MemberHP(member) * ScalingFor(battleNumber).hpMultiplier));
+    }
 
     // The boss for this battle number, picked from its slot's pool; null if it isn't a boss battle (or has no boss yet).
     public BossSO PickBoss(int battleNumber){

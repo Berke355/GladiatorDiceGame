@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Minotaur
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Minotaur
-  maxHP: 26
+  maxHP: 22
   faces:
   - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
   - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
@@ -24,3 +24,9 @@ MonoBehaviour:
   countdownTurns: 3
   staggerDamage: 8
   whileCountingDown: {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
+  headEnemy: {fileID: 0}
+  startingHeads: 0
+  maxHeads: 3
+  regrowthBlockedBy: 01000000
+  regenPerHead: 1
+  regenBlockedBy: 0100000005000000
