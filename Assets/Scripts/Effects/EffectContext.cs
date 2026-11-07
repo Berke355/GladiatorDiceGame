@@ -6,6 +6,8 @@ public class EffectContext
 {
     public Entity source;
     public Entity target;
+    // Every living opponent of the source, the target included, for area effects. Null: the target is the only one.
+    public List<Entity> opponents;
     public int value;
     // The source's die. Null for enemies, which have no die.
     public List<DieFace> die;
@@ -35,6 +37,9 @@ public class EffectContext
     public int heads;
     // Set by an effect that starts a boss countdown to a hit of this much damage (Stampede); BossBrain runs it.
     public int countdownDamage;
+
+    // The entities an area effect hits: every living opponent, or just the target.
+    public List<Entity> AllOpponents => opponents != null && opponents.Count > 0 ? opponents : new List<Entity>{ target };
 
     // A face's value in battle: its value plus its Charge.
     public int ValueOf(DieFace dieFace) => charge != null ? charge.ValueOf(dieFace) : dieFace.value;

@@ -693,6 +693,20 @@ Shield misses the target because its strong-tier fights take far longer than oth
 
 These results use the Run Start die (2 Sword, 2 Shield, Health Potion and a chosen starting face) and a 23-face Market pool. Adding the Berserker and Ritualist faces diluted the pool, so focused Burn and Poison bots find their faces less often. Berserker and Ritualist are not tuned yet, and the focused bots only buy faces of one tag, which doesn't suit Ritual (a hybrid glue). These archetypes need a balance pass and a hybrid-aware bot.
 
+### Multiple Enemies
+
+Some battles are fought against a group (Roadmap Phase C). Target choice adds a decision every turn: "the one in front, or the dangerous one?"
+
+- **Targeting:** click an enemy to select it as the target; the default is the front living enemy, and the target moves there when the selected one dies. Attacks, statuses applied to the enemy, ignites and items hit the selected target. Defense and buffs on yourself are unaffected. The target can be changed before or after rolling.
+- **Each enemy** has its own intent, traits and statuses (which tick separately). Enemies act in order, front first.
+- **Traits** react to the player as before. A trait about being attacked (Parry) only fires for the enemy that is the target.
+- **Groups:** normal battles can be groups of up to 3 enemies (e.g. 2 Tiro, or Retiarius + Secutor), each with less HP than a lone enemy.
+- **The battle is won** when every enemy is dead (the Hydra's body is the exception, see below).
+- **Area effects:** the rules support effects that hit every enemy; area content (faces, enchantments, items) comes later.
+- **The Hydra (planned rework):** a body plus 2 heads, each head a separate enemy. Killing a head cuts it; at the start of the Hydra's turn each cut head regrows as two, unless the body has Burn. The body heals per head, unless it has Burn or Bleed. The battle ends when the body dies.
+- **Bots** focus fire: they target the living enemy with the lowest HP.
+- **Built in stages:** the battle rules first (checked with single-enemy regression runs), then the targeting UI and the groups, then the Hydra.
+
 ### Bosses
 
 Bosses appear at battles 4, 8 and 11 (the final boss). They are what players remember about a run, so each one is built around a mechanic of its own.

@@ -8,16 +8,14 @@ using System.Collections.Generic;
 public class BattleFlow
 {
     public readonly Entity player;
-    public readonly Entity enemy;
-    public readonly IEnemyBrain brain;
+    // Every enemy in the battle, in turn order (the first one is the front). Dead enemies stay in the list.
+    public readonly List<BattleEnemy> enemies;
     public readonly List<DieFace> die;
     public readonly TriggerSystem triggers;
     // Charge on the die faces for this battle (Hammer).
     public readonly DieCharge charge = new DieCharge();
     // The player's rerolls for this battle (see GDD "Rerolls").
     public readonly RerollPool rerolls;
-    // The enemy's traits, reacting to the player's hits, actions and rerolls (see GDD "Enemy Traits").
-    public readonly EnemyTraitSystem enemyTraits;
     // Stone faces on the die for this battle (Medusa's Petrify).
     public readonly Petrification petrification = new Petrification();
 
@@ -30,17 +28,69 @@ public class BattleFlow
     public bool RerollPending { get; private set; }
     // The last action asked for the rolled face to keep its Charge (Resonance).
     private bool keepRolledCharge;
-    public bool IsOver => player.IsDead || enemy.IsDead;
+    public bool IsOver => player.IsDead || enemies.TrueForAll(enemy => enemy.IsDead);
 
-    public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0){
+    // The enemy the player's attacks, statuses and items hit. Defaults to the front living enemy, and moves
+    // there again when the selected one dies.
+    private BattleEnemy selectedTarget;
+    public BattleEnemy Target{
+        get{
+            if(selectedTarget == null || selectedTarget.IsDead) selectedTarget = enemies.Find(enemy => !enemy.IsDead) ?? selectedTarget;
+            return selectedTarget;
+        }
+    }
+
+    public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0)
+        : this(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, die, equipment, rerollsPerBattle){ }
+
+    public BattleFlow(Entity player, List<BattleEnemy> enemies, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0){
         rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
-        this.enemy = enemy;
-        this.brain = brain;
+        this.enemies = enemies;
         this.die = die;
-        triggers = new TriggerSystem(player, enemy, die, equipment, charge, rerolls);
-        brain.Bind(this);
-        enemyTraits = new EnemyTraitSystem(enemy, player, brain.Traits);
+        triggers = new TriggerSystem(player, () => Target.entity, LivingEnemyEntities, die, equipment, charge, rerolls);
+        foreach(BattleEnemy enemy in enemies){
+            enemy.brain.Bind(this);
+            enemy.traits = new EnemyTraitSystem(enemy.entity, player, enemy.brain.Traits);
+        }
+    }
+
+    // Selects the target of the player's attacks; returns false (and keeps the old one) for a dead or unknown enemy.
+    public bool SelectTarget(BattleEnemy enemy){
+        if(enemy == null || enemy.IsDead || !enemies.Contains(enemy)) return false;
+        selectedTarget = enemy;
+        return true;
+    }
+
+    public List<BattleEnemy> LivingEnemies => enemies.FindAll(enemy => !enemy.IsDead);
+
+    // Every living enemy's entity, for area effects (EffectContext.opponents).
+    public List<Entity> LivingEnemyEntities(){
+        List<Entity> living = new List<Entity>();
+        foreach(BattleEnemy enemy in enemies){
+            if(!enemy.IsDead) living.Add(enemy.entity);
+        }
+        return living;
+    }
+
+    // Damage every living enemy is about to deal this turn, with Rage (threats not included). Used by bots.
+    public int IncomingDamage{
+        get{
+            int damage = 0;
+            foreach(BattleEnemy enemy in enemies){
+                if(!enemy.IsDead) damage += enemy.brain.IncomingDamage;
+            }
+            return damage;
+        }
+    }
+
+    // Damage the living enemies' threats would deal if the player acted with this face and action.
+    public int ThreatAgainst(DieFace face, int battleValue, ActionType action){
+        int damage = 0;
+        foreach(BattleEnemy enemy in enemies){
+            if(!enemy.IsDead) damage += enemy.brain.ThreatAgainst(face, battleValue, action);
+        }
+        return damage;
     }
 
     // Whether the face can take this action now: a stone face can only defend (for StoneBlock block).
@@ -52,14 +102,16 @@ public class BattleFlow
         triggers.Fire(TriggerType.BattleStart);
     }
 
-    // The player's Block resets, then TurnStart items run, then the enemy shows its intent.
+    // The player's Block resets, then TurnStart items run, then every living enemy shows its intent.
     public void StartPlayerTurn(){
         rerolls.UsedThisTurn = 0;
         LastActedFace = null;
         triggers.StartRound();
         player.OnTurnStart();
         triggers.Fire(TriggerType.TurnStart);
-        brain.ChooseNextIntent();
+        foreach(BattleEnemy enemy in enemies){
+            if(!enemy.IsDead) enemy.brain.ChooseNextIntent();
+        }
     }
 
     // Also used for a reroll within the same turn, which is not a new turn (no turn start, no Block reset).
@@ -75,24 +127,30 @@ public class BattleFlow
     // A reroll can be spent once the die has landed and before an action is chosen; the new face must be used.
     public bool CanReroll => RolledFace != null && rerolls.Left > 0 && !IsOver && player.GetStatus(StatusType.Entangled) == 0;
 
-    // Spends a reroll and rolls again. Not a new turn: Block stays, the intent stays; FaceRolled items fire again.
+    // Spends a reroll and rolls again. Not a new turn: Block stays, the intents stay; FaceRolled items fire again.
     public DieFace RerollFace(){
         rerolls.Left--;
         rerolls.UsedThisTurn++;
         rerolls.UsedThisBattle++;
         DieFace face = Roll();
-        enemyTraits.PlayerRerolled();
+        foreach(BattleEnemy enemy in LivingEnemies){
+            enemy.traits.PlayerRerolled();
+        }
         return face;
     }
 
-    // ActionChosen items run first, then the rolled face's effects (and its enchantment's) for the action.
+    // ActionChosen items run first, then the enemies' traits, then the rolled face's effects (and its enchantment's)
+    // on the selected target.
     public void PlayAction(ActionType action){
         LastActedFace = RolledFace;
         LastActedValue = charge.ValueOf(RolledFace);
         LastAction = action;
         triggers.Fire(TriggerType.ActionChosen, action);
         if(IsOver) return;
-        enemyTraits.PlayerChoseAction(action);
+        BattleEnemy target = Target;
+        foreach(BattleEnemy enemy in LivingEnemies){
+            enemy.traits.PlayerChoseAction(action, enemy == target);
+        }
         if(IsOver) return;
 
         // A stone face only gives a little block; its own actions and its enchantment don't work.
@@ -103,7 +161,7 @@ public class BattleFlow
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = enemy, value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls };
+        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
@@ -126,14 +184,25 @@ public class BattleFlow
         triggers.currentFace = null;
     }
 
+    // Every living enemy acts in turn order; stops if the player dies.
     public void EnemyAct(){
-        enemy.OnTurnStart();
-        brain.ExecuteCurrentIntent();
+        foreach(BattleEnemy enemy in enemies){
+            if(enemy.IsDead) continue;
+            enemy.entity.OnTurnStart();
+            enemy.brain.ExecuteCurrentIntent();
+            if(player.IsDead) return;
+        }
     }
 
+    // Every living enemy's statuses tick and its brain ends its turn, in turn order.
     public void EndEnemyTurn(){
-        enemy.OnTurnEnd();
-        brain.OnTurnEnd();
+        foreach(BattleEnemy enemy in enemies){
+            if(enemy.IsDead) continue;
+            enemy.entity.OnTurnEnd();
+            if(enemy.IsDead) continue;
+            enemy.brain.OnTurnEnd();
+            if(player.IsDead) return;
+        }
     }
 
     // Before the run saves the player's HP, so healing items count.
@@ -143,8 +212,10 @@ public class BattleFlow
 
     public void Dispose(){
         triggers.Dispose();
-        enemyTraits.Dispose();
-        IDisposable disposableBrain = brain as IDisposable;
-        if(disposableBrain != null) disposableBrain.Dispose();
+        foreach(BattleEnemy enemy in enemies){
+            if(enemy.traits != null) enemy.traits.Dispose();
+            IDisposable disposableBrain = enemy.brain as IDisposable;
+            if(disposableBrain != null) disposableBrain.Dispose();
+        }
     }
 }

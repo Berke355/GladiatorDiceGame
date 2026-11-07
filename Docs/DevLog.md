@@ -1704,3 +1704,37 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
   - The Hydra becomes a body plus head enemies: killing a head cuts it, and cut heads regrow as two unless the body has Burn.
 - **In stages:** infrastructure with a single-enemy regression test, then targeting UI and groups, then the Hydra.
 - After that, the difficulty and gold pass (Phase A step 3).
+
+## Day 52 - Multiple Enemies: Battle Rules
+
+### Accomplished
+- **Stage 1 of Roadmap Phase C** (GDD "Multiple Enemies"): the battle rules now hold a list of enemies instead of one.
+  - `BattleEnemy` (entity, brain, its own traits). `BattleFlow.enemies` is in turn order, and dead enemies stay in the list but are skipped.
+  - **Target:** `BattleFlow.Target` (`SelectTarget`) is the enemy the player's attacks, statuses and items hit. It defaults to the front living enemy and falls back there when the target dies.
+  - **Turns:** every living enemy picks its own intent at the player's turn start. They act front to back, and their statuses tick separately. The battle is over when the player or every enemy is dead.
+  - **Traits:** each enemy has its own trait system. `EnemyTrait.requireTargeted` limits a trait to the enemy being attacked (Parry).
+  - **Area effects:** `EffectContext.opponents` / `AllOpponents` list every living opponent. This is architecture only; no area content yet.
+  - **Bots:** `IncomingDamage` and `ThreatAgainst` sum the living enemies, and bots focus the living enemy with the lowest HP.
+- **`EnemyBrain` is now plain C#** (like `BossBrain`), created per enemy per battle; its component was removed from the Battle scene. That makes spawning several enemies simple, at the cost of no longer seeing the intent in the Inspector.
+- The battle UI still shows one enemy (the front one).
+
+### Tests
+- **Checks (15/15),** with a hand-built two-enemy battle:
+  - Attacks hit only the target.
+  - A dead target falls back to a living enemy, and a dead enemy can't be selected.
+  - Parry fires only when it is the target.
+  - Both enemies act.
+  - The battle isn't over while one enemy lives.
+  - The single-enemy constructor still works.
+- **Single-enemy regression (1000 runs per bot):** the same within noise. Burn 12%, Poison 5%, Shield 6–8%, Rage 5%, Ritual 0%, Bleed 6%, Hammer 1%, Fortune 2%, Ritual + Poison 8%, Ritual + Bleed 3%, Shield + Rage 12%, Bleed + Rage 6%.
+- **Play Mode:** a full battle played through the real buttons, ending on the victory panel with no Console errors.
+
+### Findings
+- **Fixed in passing:** an enemy that died from its own status ticks still ran its brain's turn end. A dead Hydra could regenerate, and a dead Minotaur's Stampede could still hit. Dead enemies are now skipped.
+
+### Next Steps
+- **Stage 2:**
+  - A panel, intent and trait strip for each enemy, spawned at battle start.
+  - Click an enemy to target it.
+  - Enemy groups of up to 3 with lower HP each, in the encounter config.
+- **Stage 3:** the Hydra as a body plus 2 head enemies.

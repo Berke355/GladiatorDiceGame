@@ -5015,7 +5015,6 @@ GameObject:
   - component: {fileID: 1097898070}
   - component: {fileID: 1097898071}
   - component: {fileID: 1097898072}
-  - component: {fileID: 1097898073}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -5113,24 +5112,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &1097898073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1097898069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cde46336daa81f419b180e1e6415d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBrain
-  currentIntent:
-    intentName: 
-    intentType: 0
-    effects: []
-    value: 0
-    weight: 0
 --- !u!1 &1115985152
 GameObject:
   m_ObjectHideFlags: 0
@@ -10152,7 +10133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95912a1098373f41b394b72bf68f7ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
-  enemyBrain: {fileID: 1097898073}
+  enemyBrain: {fileID: 0}
   enemy: {fileID: 1097898071}
   player: {fileID: 748316986}
 --- !u!1 &2059198276

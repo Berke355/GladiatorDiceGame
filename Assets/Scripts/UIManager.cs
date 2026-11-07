@@ -199,7 +199,7 @@ public class UIManager : MonoBehaviour
         if(flow != null && flow.petrification.IsStone(face)){
             return action == ActionType.Defense ? Petrification.StoneBlock + " block (petrified)" : "";
         }
-        EffectContext context = new EffectContext{ source = player, target = enemy, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
+        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : enemy, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);

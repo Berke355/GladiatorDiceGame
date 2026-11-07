@@ -29,6 +29,8 @@ public class EnemyTrait
     public ActionType action;
     // Only while the enemy has block (Parry).
     public bool requireBlock;
+    // PlayerChoseAction: only when this enemy is the player's target (Parry: you attack it, not another enemy).
+    public bool requireTargeted;
     public List<EffectSO> effects = new List<EffectSO>();
     public int value = 1;
     // 0 = no limit (Curl Up fires once per battle).

@@ -383,13 +383,11 @@ public static class RunSimulator
             brain = new BossBrain(boss, enemy, player, run.dieFaces);
         }
         else{
-            EnemyBrain intentBrain = Reset<EnemyBrain>(enemyObject);
-            intentBrain.Setup(enemyData, enemy, player);
-            brain = intentBrain;
+            brain = new EnemyBrain(enemyData, enemy, player);
         }
 
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
-        BattleFlow flow = new BattleFlow(player, enemy, brain, run.dieFaces, run.equipment, run.rerollsPerBattle);
+        BattleFlow flow = new BattleFlow(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, run.dieFaces, run.equipment, run.rerollsPerBattle);
         EnemyTier statsTier = boss != null ? EnemyTier.Boss : enemyData.tier;
         FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;
@@ -404,16 +402,18 @@ public static class RunSimulator
             do{
                 DieFace face = flow.Roll();
                 if(flow.IsOver) break;
-                while(UseRerolls && flow.CanReroll && ShouldReroll(face, run.dieFaces, brain, flow)){
+                while(UseRerolls && flow.CanReroll && ShouldReroll(face, run.dieFaces, flow)){
                     face = flow.RerollFace();
                 }
                 if(flow.IsOver) break;
-                ActionType action = AvoidThreat(ChooseAction(face, run.dieFaces, player, enemy, brain, flow), face, brain, flow);
-                int enemyHP = enemy.currentHP;
-                int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? enemy.GetStatus(stats.trackedStatus) : 0;
+                flow.SelectTarget(ChooseTarget(flow));
+                Entity target = flow.Target.entity;
+                ActionType action = AvoidThreat(ChooseAction(face, run.dieFaces, player, target, flow), face, flow);
+                int enemyHP = target.currentHP;
+                int trackedBefore = stats != null && stats.trackedStatus != StatusType.None ? target.GetStatus(stats.trackedStatus) : 0;
                 if(stats != null){
                     stats.actions++;
-                    if(enemy.GetStatus(StatusType.Bleed) > 0) stats.bleedingAtAction++;
+                    if(target.GetStatus(StatusType.Bleed) > 0) stats.bleedingAtAction++;
                     stats.trackedStacksAtAction += trackedBefore;
                     if(turns < stats.trackedByTurn.Length){
                         stats.trackedByTurn[turns] += trackedBefore;
@@ -424,33 +424,33 @@ public static class RunSimulator
                 if(stats != null){
                     string name = face.definition.faceName;
                     if(!stats.perFace.ContainsKey(name)) stats.perFace[name] = new int[3];
-                    if(stats.trackedStatus != StatusType.None) stats.perFace[name][2] += Mathf.Max(0, enemy.GetStatus(stats.trackedStatus) - trackedBefore);
+                    if(stats.trackedStatus != StatusType.None) stats.perFace[name][2] += Mathf.Max(0, target.GetStatus(stats.trackedStatus) - trackedBefore);
                     stats.perFace[name][0]++;
-                    stats.perFace[name][1] += enemyHP - enemy.currentHP;
-                    stats.actionDamage += enemyHP - enemy.currentHP;
+                    stats.perFace[name][1] += enemyHP - target.currentHP;
+                    stats.actionDamage += enemyHP - target.currentHP;
                     if(action == ActionType.Magic && face.enchantment != null){
                         stats.enchantmentActions++;
-                        stats.enchantmentDamage += enemyHP - enemy.currentHP;
+                        stats.enchantmentDamage += enemyHP - target.currentHP;
                     }
                 }
             } while(flow.RerollPending && !flow.IsOver && ++rerolls < 10);
-            if(player.IsDead || enemy.IsDead) break;
+            if(flow.IsOver) break;
 
             flow.EndPlayerTurn();
-            if(player.IsDead || enemy.IsDead) break;
+            if(flow.IsOver) break;
 
             int playerHP = player.currentHP;
             flow.EnemyAct();
             if(stats != null) stats.hpTaken += playerHP - player.currentHP;
-            if(player.IsDead || enemy.IsDead) break;
+            if(flow.IsOver) break;
 
-            int enemyHPBeforeTicks = enemy.currentHP;
+            int enemyHPBeforeTicks = TotalHP(flow);
             flow.EndEnemyTurn();
-            if(stats != null) stats.tickDamage += enemyHPBeforeTicks - enemy.currentHP;
-            if(player.IsDead || enemy.IsDead) break;
+            if(stats != null) stats.tickDamage += enemyHPBeforeTicks - TotalHP(flow);
+            if(flow.IsOver) break;
         }
 
-        bool won = enemy.IsDead && !player.IsDead;
+        bool won = flow.IsOver && !player.IsDead;
         if(won) flow.WinBattle();
         flow.Dispose();
         run.currentHP = player.currentHP;
@@ -470,13 +470,29 @@ public static class RunSimulator
         return target.AddComponent<T>();
     }
 
+    private static int TotalHP(BattleFlow flow){
+        int total = 0;
+        foreach(BattleEnemy enemy in flow.enemies) total += Mathf.Max(0, enemy.entity.currentHP);
+        return total;
+    }
+
+    // Focus fire: the living enemy closest to dying.
+    private static BattleEnemy ChooseTarget(BattleFlow flow){
+        BattleEnemy best = null;
+        foreach(BattleEnemy enemy in flow.LivingEnemies){
+            if(best == null || enemy.entity.currentHP < best.entity.currentHP) best = enemy;
+        }
+        return best;
+    }
+
     // A simple, reasonable player: uses payoffs when their resource is ready, blocks big telegraphed hits.
-    private static ActionType ChooseAction(DieFace face, List<DieFace> die, Entity player, Entity enemy, IEnemyBrain brain, BattleFlow flow){
+    // enemy is the selected target.
+    private static ActionType ChooseAction(DieFace face, List<DieFace> die, Entity player, Entity enemy, BattleFlow flow){
         DieFaceSO definition = face.definition;
         int burn = enemy.GetStatus(StatusType.Burn);
         int fortify = player.GetStatus(StatusType.Fortify);
         int rage = player.GetStatus(StatusType.Rage);
-        bool bigHit = brain.IncomingDamage >= 6;
+        bool bigHit = flow.IncomingDamage >= 6;
         // Stacking Fortify only pays off if the die has a face that spends it.
         bool usesFortify = die.Exists(f => f.definition.faceName == "Shield Burst" || f.definition.faceName == "Shield Bash" || f.definition.faceName == "Spiked Shield");
 
@@ -519,26 +535,26 @@ public static class RunSimulator
     }
 
     // Switches to another action the face can take if the chosen one sets off a threat (e.g. Lash on Attack).
-    private static ActionType AvoidThreat(ActionType chosen, DieFace face, IEnemyBrain brain, BattleFlow flow){
+    private static ActionType AvoidThreat(ActionType chosen, DieFace face, BattleFlow flow){
         int value = flow.charge.ValueOf(face);
-        if(brain.ThreatAgainst(face, value, chosen) == 0) return chosen;
+        if(flow.ThreatAgainst(face, value, chosen) == 0) return chosen;
         foreach(ActionType action in new[]{ ActionType.Defense, ActionType.Attack, ActionType.Magic }){
-            if(action != chosen && flow.CanAct(face, action) && brain.ThreatAgainst(face, value, action) == 0) return action;
+            if(action != chosen && flow.CanAct(face, action) && flow.ThreatAgainst(face, value, action) == 0) return action;
         }
         return chosen;
     }
 
     // A simple reroll policy: reroll a stone face, a face that can't block a big incoming hit, or a face whose
     // battle value is well below the die's average. Keeps the last reroll for big hits.
-    private static bool ShouldReroll(DieFace face, List<DieFace> die, IEnemyBrain brain, BattleFlow flow){
+    private static bool ShouldReroll(DieFace face, List<DieFace> die, BattleFlow flow){
         if(flow.petrification.IsStone(face)) return true;
         // A threat on this face (e.g. Run Down on a low face) that no action avoids.
         bool safeAction = false;
         foreach(ActionType action in new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }){
-            if(flow.CanAct(face, action) && brain.ThreatAgainst(face, flow.charge.ValueOf(face), action) == 0) safeAction = true;
+            if(flow.CanAct(face, action) && flow.ThreatAgainst(face, flow.charge.ValueOf(face), action) == 0) safeAction = true;
         }
         if(!safeAction) return true;
-        bool bigHit = brain.IncomingDamage >= 6;
+        bool bigHit = flow.IncomingDamage >= 6;
         if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
         if(flow.rerolls.Left <= 1) return false;
         // Patient Blade hits harder for every reroll kept, so a die with one only rerolls to survive.

@@ -34,15 +34,16 @@ public class EnemyTraitSystem
         enemy.HitTaken -= onEnemyLostHP;
     }
 
-    public void PlayerChoseAction(ActionType action){
-        Fire(EnemyTrigger.PlayerChoseAction, action);
+    // targeted: this enemy is the player's target.
+    public void PlayerChoseAction(ActionType action, bool targeted = true){
+        Fire(EnemyTrigger.PlayerChoseAction, action, targeted);
     }
 
     public void PlayerRerolled(){
         Fire(EnemyTrigger.PlayerRerolled);
     }
 
-    private void Fire(EnemyTrigger trigger, ActionType action = ActionType.Attack){
+    private void Fire(EnemyTrigger trigger, ActionType action = ActionType.Attack, bool targeted = true){
         if(firing || traits.Count == 0 || enemy.IsDead) return;
         firing = true;
         try{
@@ -51,6 +52,7 @@ public class EnemyTraitSystem
                 if(trait.trigger != trigger) continue;
                 if(trigger == EnemyTrigger.PlayerChoseAction && trait.requireAction && trait.action != action) continue;
                 if(trait.requireBlock && enemy.currentBlock <= 0) continue;
+                if(trait.requireTargeted && !targeted) continue;
                 int fired;
                 firedThisBattle.TryGetValue(trait, out fired);
                 if(trait.maxPerBattle > 0 && fired >= trait.maxPerBattle) continue;

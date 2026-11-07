@@ -1,29 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Picks and runs a normal enemy's telegraphed intents (see GDD "Normal Enemies").
-public class EnemyBrain : MonoBehaviour, IEnemyBrain
+// Picks and runs a normal enemy's telegraphed intents (see GDD "Normal Enemies"). Plain C#, one per enemy per battle.
+public class EnemyBrain : IEnemyBrain
 {
     // The same intent can be picked at most this many turns in a row.
     private const int MaxRepeats = 2;
 
-    [System.NonSerialized]
-    public EnemySO definition;
+    public readonly EnemySO definition;
     public EnemyIntent currentIntent;
 
     // The enemy this brain controls and its opponent (the player).
-    private Entity self;
-    private Entity opponent;
+    private readonly Entity self;
+    private readonly Entity opponent;
     private int currentIndex = -1;
     private int repeatCount;
 
-    public void Setup(EnemySO enemy, Entity self, Entity opponent){
+    public EnemyBrain(EnemySO enemy, Entity self, Entity opponent){
         definition = enemy;
         this.self = self;
         this.opponent = opponent;
-        currentIndex = -1;
-        repeatCount = 0;
-        InSecondWind = false;
     }
 
     public void ChooseNextIntent(){
@@ -127,7 +123,6 @@ public class EnemyBrain : MonoBehaviour, IEnemyBrain
     private static bool IsThreat(EnemyIntent intent){
         return intent.effects != null && intent.effects.Exists(effect => effect is PunishChoiceEffectSO);
     }
-    // Normal enemies don't act on the player's die.
     // The battle, for the player's last action (threats on the player's choice).
     private BattleFlow flow;
     public void Bind(BattleFlow flow){ this.flow = flow; }

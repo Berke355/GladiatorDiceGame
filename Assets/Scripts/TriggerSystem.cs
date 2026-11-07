@@ -7,7 +7,9 @@ using System.Collections.Generic;
 public class TriggerSystem
 {
     private readonly Entity player;
-    private readonly Entity enemy;
+    // The enemy items hit (the player's selected target) and every living enemy, read when an item fires.
+    private readonly Func<Entity> target;
+    private readonly Func<List<Entity>> opponents;
     private readonly List<DieFace> die;
     private readonly List<EquipmentSO> equipment;
     private readonly DieCharge charge;
@@ -27,11 +29,12 @@ public class TriggerSystem
     private readonly Action<Entity, int> onHitDealt;
     private readonly Action<int> onHitTaken;
 
-    public TriggerSystem(Entity player, Entity enemy, List<DieFace> die, List<EquipmentSO> equipment, DieCharge charge = null, RerollPool rerolls = null){
+    public TriggerSystem(Entity player, Func<Entity> target, Func<List<Entity>> opponents, List<DieFace> die, List<EquipmentSO> equipment, DieCharge charge = null, RerollPool rerolls = null){
         this.player = player;
         this.charge = charge;
         this.rerolls = rerolls;
-        this.enemy = enemy;
+        this.target = target;
+        this.opponents = opponents;
         this.die = die;
         this.equipment = equipment ?? new List<EquipmentSO>();
 
@@ -65,7 +68,7 @@ public class TriggerSystem
                     Count(firedThisRound, reaction);
                     Count(firedThisBattle, reaction);
 
-                    EffectContext context = new EffectContext{ source = player, target = enemy, value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
+                    EffectContext context = new EffectContext{ source = player, target = target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
                     foreach(EffectSO effect in reaction.effects){
                         effect.Execute(context);
                     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
-    public EnemyBrain enemyBrain;
+    // The scene's enemy object, which takes the stats of the picked enemy or boss.
     public Entity enemy;
     public Entity player;
 
@@ -14,10 +14,6 @@ public class BattleManager : MonoBehaviour
     // Borrowed from the run in Awake; the run owns the die.
     [System.NonSerialized]
     public List<DieFace> currentDiceFaces;
-
-    // The intent brain of a normal enemy (enemyBrain) or the dice brain of a boss.
-    [System.NonSerialized]
-    public IEnemyBrain brain;
 
     // The turn steps and the equipment triggers, shared with the balance simulator.
     [System.NonSerialized]
@@ -41,11 +37,11 @@ public class BattleManager : MonoBehaviour
 
         // The run picks this battle's boss or enemy; the scene's Enemy object takes its stats.
         BossSO boss = RunManager.Instance.PickBossForNextBattle();
+        IEnemyBrain brain;
         if(boss != null){
             enemy.entityName = boss.bossName;
             enemy.maxHP = boss.maxHP;
             enemy.currentHP = boss.maxHP;
-            enemyBrain.enabled = false;
             brain = new BossBrain(boss, enemy, player, currentDiceFaces);
         }
         else{
@@ -53,11 +49,10 @@ public class BattleManager : MonoBehaviour
             enemy.entityName = enemyData.enemyName;
             enemy.maxHP = enemyData.maxHP;
             enemy.currentHP = enemyData.maxHP;
-            enemyBrain.Setup(enemyData, enemy, player);
-            brain = enemyBrain;
+            brain = new EnemyBrain(enemyData, enemy, player);
         }
 
-        flow = new BattleFlow(player, enemy, brain, currentDiceFaces, run.equipment, run.rerollsPerBattle);
+        flow = new BattleFlow(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, currentDiceFaces, run.equipment, run.rerollsPerBattle);
     }
 
     void OnDestroy(){
@@ -78,7 +73,7 @@ public class BattleManager : MonoBehaviour
 
     // Ends the battle if either side is dead. Callers must stop their turn flow when this returns true.
     public bool CheckBattleOver(){
-        if(player.IsDead || enemy.IsDead){
+        if(flow.IsOver){
             ChangeState(new BattleOverState(this, !player.IsDead));
             return true;
         }
@@ -90,8 +85,9 @@ public class BattleManager : MonoBehaviour
         if(UIManager.Instance != null){
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
-            UIManager.Instance.ShowTraits(brain.Traits);
-            flow.enemyTraits.TraitTriggered += UIManager.Instance.FlashTrait;
+            // One enemy panel for now: the front enemy's traits.
+            UIManager.Instance.ShowTraits(flow.enemies[0].brain.Traits);
+            flow.enemies[0].traits.TraitTriggered += UIManager.Instance.FlashTrait;
             flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
         }
         flow.StartBattle();
