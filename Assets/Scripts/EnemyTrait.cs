@@ -31,6 +31,11 @@ public class EnemyTrait
     public bool requireBlock;
     // PlayerChoseAction: only when this enemy is the player's target (Parry: you attack it, not another enemy).
     public bool requireTargeted;
+    // LostHPFromHit: only when no Block or Fortify softened the hit (Curl Up).
+    public bool requireUnblocked;
+    // The effects run at the start of the enemy's next turn, after its Block resets, instead of right away, so
+    // Block gained on the player's turn is still there on the player's next turn (Curl Up). At most once per turn.
+    public bool nextTurn;
     public List<EffectSO> effects = new List<EffectSO>();
     public int value = 1;
     // 0 = no limit (Curl Up fires once per battle).

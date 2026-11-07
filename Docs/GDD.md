@@ -174,14 +174,15 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
 ### Consumable and Change
 
 - **Consumable** (a keyword on an action, not on a face): the action can be used once per battle. A face's other actions keep working. Each copy of a face on the die has its own use.
-- **Change** (a keyword on an action): roll the die again. The turn continues (the enemy doesn't act), and the new face must be used. Choosing Change again rolls again, until a face without Change comes up or the player picks another action.
+- **Change** (a keyword on an action): roll the die again and land on **any face other than this one**. The turn continues (the enemy doesn't act), and the new face must be used. **Change can be used once per turn.**
 - **A used Consumable action becomes Change for the rest of the battle.** The player never sits with a dead roll: a drunk Health Potion turns into a way to the rest of the die. This follows the rule that the player always has something to do.
 - **Change is an action, not a reroll:**
   - It doesn't spend the reroll pool and doesn't count as a reroll for Fortune effects ("if you rerolled this turn", Patient Blade) or enemy traits (Essedarius's Momentum).
   - Entangled doesn't stop it: Entangled forbids rerolls, and blocking Change would bring the dead roll back.
   - Items that fire when the die lands fire again, as with Steady Hand.
   - Threats on the player's choice (Essedarius's Run Down) look at the action that ends the turn, not at Change.
-- **At most 5 Changes per turn,** a safety net against endless loops; in practice only a die that is nearly all used Consumables can reach it.
+- **Once per turn, a guaranteed other face (DevLog Day 65):** Change first rolled the whole die (a used potion could land on itself) and could be used up to 5 times a turn. The guarantee removes the frustrating repeat; the once-per-turn limit keeps Change from thinning the die, so future Consumable faces (even a Consumable build) don't become too strong. If a reroll then lands on a Change face again, that Change is spent for the turn, and the player passes.
+- **Pass:** a button that ends the turn without acting. The rolled face counts as unused (a Hammer keeps its Charge and gains 1 as usual), no items, traits or threats fire for an action, and threats on the player's choice don't trigger (passing gives up the turn). It also lets a player keep an unused potion when HP is full.
 - **Die thinning is accepted as a strategy for now:** once used, a Consumable face works like a face removed from the die for the rest of the battle (like Slay the Spire's Exhaust). A die full of Consumables is a build path: use them, then play a die made only of build faces. This competes with Fortune, so Consumable content stays small at first (only Health Potion). If it proves too strong, the fix is a limit on Change per battle or making it spend a reroll.
 - **Simulation (DevLog Day 58, 6 focused bots, 800 runs):** the old potion (heal 3 every time) cleared Burn 15%, Poison 19%, Shield 17%, Rage 8%, Bleed 6%, Hammer 4%. Consumable 4 with Change: 19%, 25%, 16%, 10%, 8%, 4%. Consumable 3 with Change: 16%, 16%, 19%, 6%, 7%, 3%, about the same as the old potion. So Change's die thinning costs little; the extra point of healing is most of the gain. The value stays 4 (one strong drink), and the difficulty and gold pass will balance the total.
 
@@ -264,10 +265,11 @@ Market services:
 - **Buy a face:** the new face replaces one face of the die, chosen by the player.
 - **Upgrade a face:** raise one die face's value by 1. There is no limit: anyone who can pay can keep upgrading. The Normal Market upgrades Common and Rare faces; **the Grand Market upgrades every face**, and Epic faces can only be upgraded there.
 - **Reroll the offers:** pay gold for a new set of offers, faces, enchantments and items alike (sold offers are replaced too). Locked offers stay. The new set avoids the faces it replaced when the pool allows.
-- **Lock an offer** (5 gold, 15 in the Grand Market): a locked face, enchantment or item survives rerolls and waits in the next Market that sells that kind (items only in a Grand Market), so the player can save up for it. Unlocking is free, without a refund; buying it releases the lock.
+- **Lock an offer** (2 gold, 5 in the Grand Market): a locked face, enchantment or item survives rerolls and waits in the next Market that sells that kind (items only in a Grand Market), so the player can save up for it. Unlocking is free, without a refund; buying it releases the lock. The price was 5 and 15, but locking is how a player saves up for an offer, so a high price worked against saving, above all for Epics (play-test).
+- **The next battle is shown** under the die slots ("Next battle (5): Tiro Pair (Weak)", or the boss), with each enemy's HP, intents and traits on hover. The battle is picked when the Market opens. Until the map exists, this is how the player sees what is coming and plans purchases.
 - **Hover help:** every die face and item shows its full description on hover, and every highlighted keyword (Ritual, Bleed, Poison...) shows its definition when the pointer is over the word.
 - **Enchant a face:** inscribe an enchantment into the empty Magic action of one die face (see Enchanting Table).
-- **Healer:** heal **10 HP for 40 gold, once per visit**, in every Market (Normal and Grand). Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. The map's rest nodes will take over or join this later (Roadmap Phase B).
+- **Healer:** heal **10 HP for 20 gold, once per visit**, in every Market (Normal and Grand). Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. The map's rest nodes will take over or join this later (Roadmap Phase B). The price was 40 after the first simulation, but in play-tests 40 felt far too expensive; 20 is measured together with the steeper early battles.
   - **Tuned by simulation (DevLog Day 59, 6 focused bots that heal below half HP, 800 runs):**
 
 | Healer | Burn | Poison | Shield | Rage | Bleed | Hammer |
@@ -731,14 +733,14 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
 |---|---|---|---|---|
 | **Thorns** | Each time you hit it, you take 1 damage | Multi-hit play | Rage, Twin Axes, Smoldering Gauntlet | One big hit, statuses |
 | **Enrage** | Each hit that costs it HP gives it 1 Rage | Long, many-hit fights | Rage, Bleed (Lacerate) | Status ticks (not hits), finishing fast |
-| **Curl Up** | The first hit that costs it HP gives it block (once per battle) | The opening move | Hammer's first big hit | Open with a small hit, then strike |
+| **Curl Up** | Each hit that gets through with no block gives it 2 block at the start of its next turn | The opening move | Hammer's big hits | Make it block first, or strike when it is about to curl up |
 | **Challenge** | Each time you choose Defense, it gains 1 Rage | Passive Shield play | Shield, Fortify | Defending by attacking, Spiked Shield |
 | **Parry** | Each time you choose Attack while it has block, you take damage | Attacking into its block | Multi-hit builds | Waiting for its block to reset, statuses |
 | **Second Wind** | Below half HP it changes its intents | Burst timing | Slow builds | Crossing the threshold on purpose |
 | **Momentum** | Each reroll you spend gives it 1 Rage | The reroll decision | Fortune, heavy rerollers | Rerolling only when it matters |
 
 - **Assignment (one trait or one new intent per enemy, Weak enemies stay simple):**
-  - Murmillo: Curl Up (3 block). The gentle introduction to traits.
+  - Murmillo: Curl Up (2 block at the start of its next turn). The gentle introduction to traits. It was "the first hit that costs it HP: gain 3 block", but block gained on the player's turn is gone at the start of the enemy's own turn, so it only mattered against a second hit in the same turn (play-test). The block now arrives at the start of its next turn, so it is there on the player's next turn, and the card shows it while it is waiting.
   - Retiarius: Net now also Entangles (no rerolls next turn).
   - Dimachaerus: Parry (2 damage).
   - Arena Lion: Enrage, capped at the first 2 HP-losing hits each battle, replacing its Roar intent (see the balance note below).

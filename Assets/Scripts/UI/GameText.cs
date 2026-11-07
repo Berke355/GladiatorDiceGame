@@ -27,7 +27,7 @@ public static class GameText
         new Keyword{ word = "Weak", color = "#9AA5B1", definition = "Every hit its owner deals deals 1 less damage. Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Entangled", color = "#7FA88B", definition = "Its owner can't reroll. Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Consumable", color = "#E8C170", definition = "This action can be used once per battle. Afterwards it becomes Change." },
-        new Keyword{ word = "Change", color = "#E8C170", definition = "Roll the die again: your turn goes on and the enemy doesn't act. Not a reroll: it spends no rerolls. At most 5 per turn." },
+        new Keyword{ word = "Change", color = "#E8C170", definition = "Roll the die again and land on a face other than this one: your turn goes on and the enemy doesn't act. Not a reroll: it spends no rerolls. Once per turn." },
         new Keyword{ word = "petrify", color = "#A8B0B8", definition = "A petrified face is stone for the player's next 2 turns: when rolled, its only action is Defense: gain 2 block. Its other actions and its enchantment don't work." },
         new Keyword{ word = "block", color = "#B8C4CC", definition = "Absorbs damage. Resets at the start of its owner's turn." },
         new Keyword{ word = "damage", color = "#FF7A6B", definition = null },

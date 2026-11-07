@@ -2366,3 +2366,44 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test** (economy, balance passes, Encourage).
 - **Encourage:** a delayed Herald's Horn, and watch Shield, now near the top (23–24%).
 - **If the game still feels easy:** harden the Weak tier.
+
+## Day 65 - Play-test Fixes: Market, Curl Up, Change and Pass
+
+### Accomplished (from the user's play-test)
+- **Healer:** 10 HP for 20 gold (was 40, which felt far too expensive). It will be measured together with the steeper early battles.
+- **Locks:** 2 gold, 5 in the Grand Market (were 5 and 15). Locking is how players save up for an offer, so a high price worked against saving, above all for Epics. A deposit model was considered and dropped as too unfamiliar.
+- **The next battle is shown in the Market** ("Next battle (1): Murmillo (Weak)"), with each enemy's HP, intents and traits on hover.
+  - `RunManager.GoToMarket` picks the battle ahead (`PickNextBattle`, stored in `RunData`), and `BattleManager` takes it (`TakeNextBattle`).
+  - Until the map exists, this is how the player plans purchases.
+- **Curl Up (Murmillo)** didn't work in practice. Its block came on the player's turn and was gone at the start of Murmillo's own turn, so it only mattered against a second hit in the same turn.
+  - Now, following the user's design: each hit that gets through with no block gives it 2 block at the start of its next turn.
+  - New trait options: `requireUnblocked` (`Entity.LastHitAbsorbed`) and `nextTurn` (run by `EnemyTraitSystem.RunPending` after the enemy's Block reset).
+  - The card shows "Curl Up: 2 block (at the start of its turn)" while it waits.
+  - No other trait had the same problem.
+- **Change:**
+  - Once per turn (was up to 5), and it guarantees a face other than its own (it used to roll the whole die, so a used potion could land on itself).
+  - The once-per-turn limit keeps Change from thinning the die, so future Consumable faces don't become too strong (the user's plan for more Consumable content).
+- **Pass button:**
+  - It ends the turn without acting; the rolled face counts as unused, so a Hammer keeps its Charge.
+  - It is the way out when a reroll lands on a Change that was already spent this turn, and it also lets the player keep an unused potion at full HP.
+  - Bots pass when the face can't act.
+- **Roadmap:** the user's map ideas (healing at rest nodes instead of the Market, an Enchanting Table node, "?" events).
+
+### Tests
+- **Checks:**
+  - Change never landed on its own face in 300 tries.
+  - The first Change in a turn works, and a second one in the same turn (on either used potion) is refused.
+  - Passing keeps the rolled Hammer's Charge (3 → 4), the pass flag resets the next turn, and acting still spends the Charge.
+- **Play Mode:**
+  - The Market showed "Next battle (1): Murmillo (Weak)" with its Curl Up text on hover, and the battle was against Murmillo.
+  - An unblocked Shield hit set Curl Up waiting (shown on the card); Murmillo had 2 block after its turn start, still there on the player's next turn.
+  - Change worked on three turns in a row, each time landing on another face.
+  - The Pass button is active only after the roll; passing went to the enemy's turn and back to the roll phase.
+  - No Console errors.
+
+### Findings
+- Serrated Blade's action preview reads "if enemy has Bleed: 4 damage, 4 Bleed", as if its Bleed were conditional too, which its description says it isn't. To fix later.
+
+### Next Steps
+- **The difficulty curve:** the Weak battles are too easy, and the Minotaur is a cliff (play-test, matching the simulation). Make the climb gradual.
+- **Fortune:** its faces are hard to find, and the found ones are weak in damage.

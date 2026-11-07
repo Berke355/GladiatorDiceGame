@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 
@@ -22,6 +23,9 @@ public class MarketUI : MonoBehaviour
     public Button cancelButton;
     public Button rerollButton;
     public TextMeshProUGUI rerollButtonText;
+    // The next battle (picked when the Market opens), so purchases can be planned; details on hover.
+    public TextMeshProUGUI nextBattleText;
+    public TooltipTrigger nextBattleTooltip;
     // The Healer: HP for gold, the price rising within the visit.
     public Button healButton;
     public TextMeshProUGUI healButtonText;
@@ -49,6 +53,9 @@ public class MarketUI : MonoBehaviour
         market = new Market(run, RunManager.Instance.economy, RunManager.Instance.IsGrandMarket);
         titleText.text = market.isGrand ? "GRAND MARKET" : "MARKET";
         equipmentSection.SetActive(market.isGrand);
+        // Usually picked already by GoToMarket; also covers playing the Market scene directly.
+        RunManager.Instance.PickNextBattle();
+        ShowNextBattle();
 
         // Buttons are wired here because each one needs its own index.
         for(int i = 0; i < offerCards.Length; i++){
@@ -169,6 +176,44 @@ public class MarketUI : MonoBehaviour
     // Called by the Next Battle button.
     public void OnNextBattleClicked(){
         RunManager.Instance.GoToNextBattle();
+    }
+
+    private void ShowNextBattle(){
+        if(nextBattleText == null) return;
+        int battle = run.battlesWon + 1;
+        string summary;
+        System.Text.StringBuilder details = new System.Text.StringBuilder();
+        if(run.nextBoss != null){
+            BossSO boss = run.nextBoss;
+            summary = "<b>" + boss.bossName + "</b>  <size=80%>(boss)</size>";
+            details.Append("<b>" + boss.bossName + "</b>  " + boss.maxHP + " HP\nIts die: ");
+            List<string> faces = new List<string>();
+            foreach(DieFaceSO face in boss.faces) faces.Add(face.faceName);
+            details.Append(string.Join(", ", faces));
+        }
+        else if(run.nextEncounter != null){
+            EnemyGroup encounter = run.nextEncounter;
+            summary = "<b>" + encounter.DisplayName + "</b>  <size=80%>(" + encounter.tier + ")</size>";
+            List<string> names = BattleManager.MemberNames(encounter);
+            for(int i = 0; i < encounter.members.Count; i++){
+                EnemySO member = encounter.members[i];
+                if(i > 0) details.Append("\n\n");
+                details.Append("<b>" + names[i] + "</b>  " + encounter.MemberHP(member) + " HP");
+                List<string> intents = new List<string>();
+                foreach(EnemyIntent intent in member.intents) intents.Add(intent.intentName);
+                details.Append("\nIntents: " + string.Join(", ", intents));
+                foreach(EnemyTrait trait in member.traits){
+                    if(trait.trigger == EnemyTrigger.Passive && trait.effects.Count == 0 && member.secondWindIntents.Count == 0) continue;
+                    details.Append("\n" + trait.traitName + ": " + GameText.Colorize(trait.description));
+                }
+            }
+        }
+        else{
+            nextBattleText.text = "";
+            return;
+        }
+        nextBattleText.text = "Next battle (" + battle + "): " + summary;
+        if(nextBattleTooltip != null) nextBattleTooltip.text = details.ToString();
     }
 
     private void Refresh(){

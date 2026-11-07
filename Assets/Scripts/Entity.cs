@@ -44,6 +44,8 @@ public class Entity : MonoBehaviour
     private bool burnAddedSinceLastTick = false;
 
     public bool IsDead => currentHP <= 0;
+    // Damage the last hit lost to Block and Fortify (0: the whole hit got through), e.g. for Curl Up.
+    public int LastHitAbsorbed { get; private set; }
 
     // Read-only view of the statuses, for the UI.
     public IEnumerable<KeyValuePair<StatusType, int>> Statuses => activeStatuses;
@@ -91,6 +93,7 @@ public class Entity : MonoBehaviour
             activeStatuses[StatusType.Fortify] -= fortified;
             remaining -= fortified;
         }
+        LastHitAbsorbed = blocked + fortified;
 
         if(remaining > 0){
             LoseHP(remaining);

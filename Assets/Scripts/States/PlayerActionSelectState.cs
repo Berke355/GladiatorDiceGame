@@ -33,6 +33,14 @@ public class PlayerActionSelectState : BattleState
         battleManager.CheckBattleOver();
     }
 
+    // Ends the turn without acting (the Pass button).
+    public void Pass(){
+        battleManager.flow.PassTurn();
+        battleManager.flow.EndPlayerTurn();
+        if(battleManager.CheckBattleOver()) return;
+        battleManager.ChangeState(new EnemyTurnState(battleManager));
+    }
+
     public void ExecuteAction(ActionType selectedAction){
         this.selectedAction=selectedAction;
 

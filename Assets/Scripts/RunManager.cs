@@ -137,7 +137,26 @@ public class RunManager : MonoBehaviour
     }
 
     public void GoToMarket(){
+        PickNextBattle();
         SceneManager.LoadScene(marketSceneName);
+    }
+
+    // Picks the next battle's boss or encounter once, ahead of time (the Market shows it); the battle takes it.
+    public void PickNextBattle(){
+        if(run.nextBattlePicked) return;
+        run.nextBoss = PickBossForNextBattle();
+        run.nextEncounter = run.nextBoss == null ? PickEncounterForNextBattle() : null;
+        run.nextBattlePicked = true;
+    }
+
+    // The picked next battle, handed to the battle once.
+    public void TakeNextBattle(out BossSO boss, out EnemyGroup encounter){
+        PickNextBattle();
+        boss = run.nextBoss;
+        encounter = run.nextEncounter;
+        run.nextBattlePicked = false;
+        run.nextBoss = null;
+        run.nextEncounter = null;
     }
 
     public void GoToNextBattle(){

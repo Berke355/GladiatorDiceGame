@@ -44,6 +44,8 @@ public class UIManager : MonoBehaviour
     // Spends one of the battle's rerolls; active only after the die has landed.
     public Button rerollButton;
     public TextMeshProUGUI rerollButtonText;
+    // Ends the turn without acting; active only after the die has landed.
+    public Button passButton;
     // Indexed by ActionType (0 Attack, 1 Defense, 2 Magic), matching BattleManager.OnActionSelected.
     public Button[] actionButtons;
     public TextMeshProUGUI[] actionButtonTexts;
@@ -153,6 +155,7 @@ public class UIManager : MonoBehaviour
         RefreshEnemies();
         rollButton.interactable = true;
         UpdateRerollButton(false);
+        if(passButton != null) passButton.interactable = false;
         for(int i = 0; i < actionButtons.Length; i++){
             actionButtons[i].interactable = false;
             actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>";
@@ -170,6 +173,7 @@ public class UIManager : MonoBehaviour
         RefreshEnemies();
         rollButton.interactable = false;
         UpdateRerollButton(flow != null && flow.CanReroll);
+        if(passButton != null) passButton.interactable = true;
         for(int i = 0; i < actionButtons.Length; i++){
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
@@ -210,7 +214,7 @@ public class UIManager : MonoBehaviour
             return action == ActionType.Defense ? Petrification.StoneBlock + " block (petrified)" : "";
         }
         if(flow != null && flow.IsChange(face, action)){
-            return flow.ChangesThisTurn < BattleFlow.MaxChangesPerTurn ? "Change: roll again" : "";
+            return flow.ChangesThisTurn < BattleFlow.MaxChangesPerTurn ? "Change: roll another face" : "";
         }
         EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
         List<string> parts = new List<string>();

@@ -20,8 +20,12 @@ public class BattleFlow
     public readonly Petrification petrification = new Petrification();
     // Consumable actions used this battle; a used one is Change (see GDD "Consumable and Change").
     public readonly Consumables consumables = new Consumables();
-    // A safety net against endless Change loops (only a die of used Consumables can get near it).
-    public const int MaxChangesPerTurn = 5;
+    // Change can be used once per turn (see GDD "Consumable and Change").
+    public const int MaxChangesPerTurn = 1;
+    // The face a Change came from: the next roll lands on any other face.
+    private DieFace changeFrom;
+    // The player passed this turn (no action): the rolled face counts as unused.
+    public bool Passed { get; private set; }
     public int ChangesThisTurn { get; private set; }
     // The last action was Change: the die is rolled again at once and the turn goes on.
     public bool LastWasChange { get; private set; }
@@ -148,6 +152,7 @@ public class BattleFlow
     public void StartPlayerTurn(){
         rerolls.UsedThisTurn = 0;
         ChangesThisTurn = 0;
+        Passed = false;
         LastActedFace = null;
         triggers.StartRound();
         player.OnTurnStart();
@@ -162,7 +167,10 @@ public class BattleFlow
         RerollPending = false;
         LastWasChange = false;
         keepRolledCharge = false;
-        RolledFace = die[UnityEngine.Random.Range(0, die.Count)];
+        // Change guarantees a face other than the one it came from.
+        List<DieFace> faces = changeFrom != null && die.Count > 1 ? die.FindAll(face => face != changeFrom) : die;
+        changeFrom = null;
+        RolledFace = faces[UnityEngine.Random.Range(0, faces.Count)];
         triggers.currentFace = RolledFace;
         triggers.Fire(TriggerType.FaceRolled);
         return RolledFace;
@@ -190,6 +198,7 @@ public class BattleFlow
         if(IsChange(RolledFace, action)){
             if(ChangesThisTurn >= MaxChangesPerTurn) return;
             ChangesThisTurn++;
+            changeFrom = RolledFace;
             LastWasChange = true;
             RerollPending = true;
             keepRolledCharge = false;
@@ -223,13 +232,23 @@ public class BattleFlow
         keepRolledCharge = context.keepCharge;
     }
 
+    // Ends the turn without an action (e.g. when the rolled face can't act): no items, traits or threats fire for an
+    // action, and the rolled face keeps its Charge as if it hadn't come up. EndPlayerTurn follows as usual.
+    public void PassTurn(){
+        Passed = true;
+        RerollPending = false;
+        LastWasChange = false;
+        keepRolledCharge = false;
+    }
+
     // TurnEnd items run before the player's statuses tick.
     // The face you acted with spends its Charge (unless its action kept it); every other charging face gains 1.
     public void EndPlayerTurn(){
         triggers.Fire(TriggerType.TurnEnd);
         player.OnTurnEnd();
+        DieFace actedWith = Passed ? null : RolledFace;
         foreach(DieFace face in die){
-            if(face == RolledFace){
+            if(face == actedWith){
                 if(!keepRolledCharge) charge.Reset(face);
             }
             else if(face.definition.charges) charge.Add(face, 1);
@@ -245,6 +264,7 @@ public class BattleFlow
             BattleEnemy enemy = enemies[i];
             if(enemy.IsDead) continue;
             enemy.entity.OnTurnStart();
+            enemy.traits.RunPending();
             enemy.brain.ExecuteCurrentIntent();
             if(IsOver) return;
         }

@@ -42,8 +42,8 @@ public class EconomyConfigSO : ScriptableObject
 
     [Header("Market Lock")]
     // Locking an offer keeps it through rerolls and into the next Market (Grand Market locks cost more).
-    public int lockCost = 5;
-    public int grandLockCost = 15;
+    public int lockCost = 2;
+    public int grandLockCost = 5;
 
     [Header("Market Reroll")]
     // Cost of the first reroll in a visit, and how much each further reroll adds (resets every Market).
@@ -92,7 +92,7 @@ public class EconomyConfigSO : ScriptableObject
     // Rising cost within one Market visit, e.g. 5 / 10 / 15 (Grand: 15 / 30 / 45).
     // The Healer (see GDD "Market"): HP for gold in every Market, the price rising within a visit.
     public int healAmount = 10;
-    public int healBaseCost = 40;
+    public int healBaseCost = 20;
     public int healCostStep = 0;
     public int maxHealsPerVisit = 1;
 

@@ -30,6 +30,10 @@ public class RunData
     public int rerollsPerBattle = 2;
     // Set by a boss victory: the next Market starts with a free equipment pick.
     public bool bossRewardPending;
+    // The next battle, picked ahead (when the Market opens) so the Market can show it: a boss or an encounter.
+    public bool nextBattlePicked;
+    public BossSO nextBoss;
+    public EnemyGroup nextEncounter;
 
     public RunData(List<DieFaceSO> startingDieFaces, int startingMaxHP){
         // Each face on the die is its own instance, so upgrading one never touches the asset or other copies.

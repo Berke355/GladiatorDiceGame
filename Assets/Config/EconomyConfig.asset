@@ -97,8 +97,8 @@ MonoBehaviour:
   bossRewardChoices: 3
   equipmentPerGrandMarket: 2
   equipmentPrice: 30
-  lockCost: 5
-  grandLockCost: 15
+  lockCost: 2
+  grandLockCost: 5
   rerollBaseCost: 5
   rerollCostStep: 5
   grandRerollBaseCost: 15
@@ -114,6 +114,6 @@ MonoBehaviour:
   rareUpgradeMultiplier: 5
   epicUpgradeMultiplier: 20
   healAmount: 10
-  healBaseCost: 40
+  healBaseCost: 20
   healCostStep: 0
   maxHealsPerVisit: 1

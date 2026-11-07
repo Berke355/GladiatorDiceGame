@@ -19,6 +19,11 @@ Slay the Spire is the main reference for this phase. The order matters: the batt
 - **Map.** A branching path between battles (inspired by Slay the Spire) instead of battle → Market → battle:
   - Node types: normal battle, elite (harder, extra reward such as an Epic face or item), rest (heal or upgrade a face), event (risk/reward choices, e.g. pay HP for an enchantment), Market and boss.
   - The Market becomes a node, so the economy needs a new pass.
+  - **Ideas from play-tests:**
+    - Healing moves from the Market to rest nodes, so the route is a choice between healing and shopping.
+    - The Enchanting Table may become its own node.
+    - "?" event nodes with risk/reward choices, as in Slay the Spire.
+    - The map shows what is coming, which replaces the Market's "next battle" line.
 
 ## Phase C: Multiple Enemies
 

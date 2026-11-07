@@ -37,7 +37,9 @@ public class BattleManager : MonoBehaviour
         player.currentHP = run.currentHP;
 
         // The run picks this battle's boss or enemy; the scene's Enemy object takes its stats.
-        BossSO boss = RunManager.Instance.PickBossForNextBattle();
+        BossSO boss;
+        EnemyGroup encounter;
+        RunManager.Instance.TakeNextBattle(out boss, out encounter);
         List<BattleEnemy> enemies = new List<BattleEnemy>();
         if(boss != null){
             enemy.entityName = boss.bossName;
@@ -46,7 +48,6 @@ public class BattleManager : MonoBehaviour
             enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, currentDiceFaces), true));
         }
         else{
-            EnemyGroup encounter = RunManager.Instance.PickEncounterForNextBattle();
             List<string> names = MemberNames(encounter);
             for(int i = 0; i < encounter.members.Count; i++){
                 EnemySO enemyData = encounter.members[i];
@@ -174,6 +175,13 @@ public class BattleManager : MonoBehaviour
     public void OnResultButton(){
         if(currentState is BattleOverState overState){
             overState.Continue();
+        }
+    }
+
+    // Called by the Pass button.
+    public void OnPassClicked(){
+        if(currentState is PlayerActionSelectState actionState){
+            actionState.Pass();
         }
     }
 

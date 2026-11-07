@@ -466,6 +466,11 @@ public static class RunSimulator
                     face = flow.RerollFace();
                 }
                 if(flow.IsOver) break;
+                // A face that can't act now (e.g. a used potion after this turn's Change): pass the turn.
+                if(!System.Array.Exists(new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }, a => flow.CanAct(face, a))){
+                    flow.PassTurn();
+                    break;
+                }
                 flow.SelectTarget(ChooseTarget(flow));
                 Entity target = flow.Target.entity;
                 ActionType action = AvoidThreat(ChooseAction(face, run.dieFaces, player, target, flow), face, flow);

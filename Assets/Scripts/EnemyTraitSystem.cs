@@ -10,6 +10,8 @@ public class EnemyTraitSystem
     private readonly Entity player;
     private readonly List<EnemyTrait> traits;
     private readonly Dictionary<EnemyTrait, int> firedThisBattle = new Dictionary<EnemyTrait, int>();
+    // Traits waiting for the start of the enemy's next turn (nextTurn), each at most once.
+    private readonly List<EnemyTrait> pending = new List<EnemyTrait>();
     // Effects run by a trait never fire traits (e.g. Thorns damage can't trigger another reaction).
     private bool firing;
 
@@ -43,6 +45,48 @@ public class EnemyTraitSystem
         Fire(EnemyTrigger.PlayerRerolled);
     }
 
+    // Whether a nextTurn trait is waiting (shown on the enemy's card).
+    public bool HasPending => pending.Count > 0;
+    // e.g. "Curl Up: 2 block".
+    public string PendingDescription{
+        get{
+            if(pending.Count == 0) return "";
+            EnemyTrait trait = pending[0];
+            EffectContext context = new EffectContext{ source = enemy, target = player, value = trait.value };
+            List<string> parts = new List<string>();
+            foreach(EffectSO effect in trait.effects){
+                string text = effect != null ? effect.Describe(context) : "";
+                if(text != "") parts.Add(text);
+            }
+            return trait.traitName + (parts.Count > 0 ? ": " + string.Join(", ", parts) : "");
+        }
+    }
+
+    // Called by BattleFlow at the start of the enemy's turn, after its Block reset.
+    public void RunPending(){
+        if(pending.Count == 0 || enemy.IsDead) return;
+        List<EnemyTrait> ready = new List<EnemyTrait>(pending);
+        pending.Clear();
+        firing = true;
+        try{
+            foreach(EnemyTrait trait in ready){
+                Run(trait);
+                TraitTriggered?.Invoke(traits.IndexOf(trait));
+            }
+        }
+        finally{
+            firing = false;
+        }
+    }
+
+    private void Run(EnemyTrait trait){
+        EffectContext context = new EffectContext{ source = enemy, target = player, value = trait.value };
+        foreach(EffectSO effect in trait.effects){
+            if(effect != null) effect.Execute(context);
+        }
+        Debug.Log(enemy.entityName + "'s " + trait.traitName + " triggered.");
+    }
+
     private void Fire(EnemyTrigger trigger, ActionType action = ActionType.Attack, bool targeted = true){
         if(firing || traits.Count == 0 || enemy.IsDead) return;
         firing = true;
@@ -53,16 +97,20 @@ public class EnemyTraitSystem
                 if(trigger == EnemyTrigger.PlayerChoseAction && trait.requireAction && trait.action != action) continue;
                 if(trait.requireBlock && enemy.currentBlock <= 0) continue;
                 if(trait.requireTargeted && !targeted) continue;
+                if(trait.requireUnblocked && enemy.LastHitAbsorbed > 0) continue;
+                if(trait.nextTurn && pending.Contains(trait)) continue;
                 int fired;
                 firedThisBattle.TryGetValue(trait, out fired);
                 if(trait.maxPerBattle > 0 && fired >= trait.maxPerBattle) continue;
                 firedThisBattle[trait] = fired + 1;
 
-                EffectContext context = new EffectContext{ source = enemy, target = player, value = trait.value };
-                foreach(EffectSO effect in trait.effects){
-                    if(effect != null) effect.Execute(context);
+                if(trait.nextTurn){
+                    pending.Add(trait);
+                    Debug.Log(enemy.entityName + "'s " + trait.traitName + " is ready for its next turn.");
                 }
-                Debug.Log(enemy.entityName + "'s " + trait.traitName + " triggered.");
+                else{
+                    Run(trait);
+                }
                 TraitTriggered?.Invoke(i);
             }
         }
