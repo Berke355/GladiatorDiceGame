@@ -43,7 +43,7 @@ public class BattleManager : MonoBehaviour
             enemy.entityName = boss.bossName;
             enemy.maxHP = boss.maxHP;
             enemy.currentHP = boss.maxHP;
-            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, currentDiceFaces)));
+            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, currentDiceFaces), true));
         }
         else{
             EnemyGroup encounter = RunManager.Instance.PickEncounterForNextBattle();
@@ -59,7 +59,8 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle);
+        // Enemies that join later (Hydra heads) are copies of the scene's enemy object.
+        flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle, () => Instantiate(enemy, enemy.transform.parent));
     }
 
     // Enemy names, with a letter when the same enemy appears twice ("Tiro A", "Tiro B").
@@ -104,6 +105,7 @@ public class BattleManager : MonoBehaviour
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
+            flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);
             flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
         }
         flow.StartBattle();

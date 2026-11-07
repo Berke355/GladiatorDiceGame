@@ -714,10 +714,10 @@ Some battles are fought against a group (Roadmap Phase C). Target choice adds a 
   - Secutor + Retiarius (the first idea) lost 29% even at ×0.35: two of the hardest Medium enemies are too much together. A tank in front (Murmillo) of a dangerous back-liner works better: kill the front one, or reach past it.
 - **The battle is won** when every enemy is dead (the Hydra's body is the exception, see below).
 - **Area effects:** the rules support effects that hit every enemy; area content (faces, enchantments, items) comes later.
-- **The Hydra (planned rework):** a body plus 2 heads, each head a separate enemy. Killing a head cuts it; at the start of the Hydra's turn each cut head regrows as two, unless the body has Burn. The body heals per head, unless it has Burn or Bleed. The battle ends when the body dies.
+- **The Hydra** is a body plus head enemies (see "Hydra" under Bosses). When more than 3 cards are on screen, all of them shrink to fit.
 - **Bots** focus fire: they target the living enemy with the lowest HP.
 - **Screen:** each enemy has a card at the top right (name, HP, defense, statuses, intent, traits); the target's card has a gold TARGET frame, and a defeated enemy's card is dimmed. The rolled face sits in the middle of the screen.
-- **Built in stages:** the battle rules first (checked with single-enemy regression runs), then the targeting UI and the groups, then the Hydra.
+- **Built in stages:** the battle rules first (checked with single-enemy regression runs), then the targeting UI and the groups, then the Hydra (DevLog Days 52–54).
 
 ### Bosses
 
@@ -776,29 +776,27 @@ The gorgon whose gaze turns gladiators to stone. Medusa attacks the player's die
 
 The many-headed serpent: cut off one head and two grow back, unless the wound is burned. In the myth, Heracles cauterized the necks with fire.
 
-- **Tests:** how the player deals damage.
-- **Mechanic: Heads.** The Hydra starts with **2 heads** (at most **3**). Its Bite face attacks once per head.
-  - **Cutting heads:** a single hit that costs it **10+ HP** cuts off a head (never the last one).
-  - **Regrowth:** at the start of its turn, every cut head grows back as two, **unless the Hydra has Burn**.
-  - **Regeneration:** the Hydra also heals every turn based on its head count. Burn stops this, and so does **Bleed** (an open wound doesn't close).
+- **Tests:** how the player deals damage, and which enemy they choose to hit.
+- **Mechanic: Heads.** The Hydra is a **body** plus **heads**, each head a separate enemy with its own card, HP and intent (see "Multiple Enemies"). It starts with **2 heads** (at most **3** alive).
+  - **Cutting heads:** killing a head cuts it off.
+  - **Regrowth:** at the start of the Hydra's turn, every head cut since its last turn grows back as two (up to 3 alive), **unless the body has Burn**. Grown heads act from the next turn.
+  - **Regeneration:** at the end of its turn the body heals 1 per living head. Burn stops this, and so does **Bleed** (an open wound doesn't close).
+  - **The battle is won when the body dies,** even with heads still alive.
+- **The decision:** the heads are the easy targets and the ones that bite, but killing one makes two. Without Burn the body is the target; with Burn on the body, clearing the heads first is safe. In simulation, bots that keep killing heads die in 90% of their Hydra fights, against 33% for bots that go for the body.
 - **Every build has a path:**
-  - **Burn** cuts heads safely and stops regeneration.
-  - **Bleed** stops regeneration, so its many medium hits wear the Hydra down; only Burn stops regrowth.
-  - **Poison** never cuts heads (so no regrowth) and keeps being reapplied to outpace regeneration.
-  - **Rage** deals many small hits that don't cut heads.
-  - **Shield** survives the bites: block absorbs each head's bite.
-  - **Burst** builds (Hammer, Shield Burst) deal big hits but grow more heads, a risk/reward decision about when to strike.
+  - **Burn** cauterizes the necks, so it can clear the heads safely, and it stops regeneration.
+  - **Bleed** stops regeneration while it wears the body down.
+  - **Poison** and **Rage** go for the body.
+  - **Shield** survives the bites while it works on the body.
+  - **Burst** builds (Hammer) kill the body faster; their big hits only grow heads if they are aimed at one.
 
-| Face | Count | Action |
+| Enemy | HP | Die / intents |
 |---|---|---|
-| Bite | 3 | Attack: deal 1 damage once per head |
-| Thrash | 1 | Attack: deal 3 damage |
-| Regrow | 1 | Magic: heal 5 (blocked by Burn or Bleed) |
-| Hiss | 1 | Defense: gain 3 block |
+| Hydra (body) | 30 | Thrash ×2 (Attack: 3 damage), Regrow ×1 (Magic: heal 5, blocked by Burn or Bleed), Hiss ×3 (Defense: 3 block) |
+| Hydra Head | 8 | Bite: 1 damage (×1), Hiss: 2 block (×1) |
 
-- **HP 50, regeneration 1 per head** at the end of its turn.
-- **Tuned by simulation:** the first numbers (HP 60, 3 heads up to 6, cut at 8+, Bite 2) killed 75–81% of the runs that reached it, against 37% for the Strong enemy that used to be in this slot. Players reach the last battle worn down, so the Hydra's many bites and grown heads were the main cause. With the numbers above it kills about 37% of the runs that reach it, as hard as the old Strong enemy overall.
-- **The paths are uneven, and that is a known open point:** Burn barely ever dies to the Hydra (about 3%), because Burn stops both regrowth and regeneration (the Heracles path). Hammer (about 54%) and Poison (about 52%) struggle most: Hammer's big hits keep cutting heads, and Poison deals no hits big enough to matter. Simulation bots also always attack, while a player can choose when to strike.
+- **Tuned by simulation (DevLog Day 54):** the target was the old Hydra's difficulty (it killed about 37% of the runs that reached it). The first numbers (body 40, Bite 2 at weight 3, Regrow ×2) killed 74–78%. Body HP barely mattered (30: 73%); the bites did. Bite 1 brought it to 59%, fewer Regrow faces to 54%, and Bite only half the time to **40%** (later runs: 33%). Removing regeneration also reached 34%, but regeneration is what makes Burn and Bleed matter, so it stays.
+- **The paths are more even than before:** Burn dies in about 20% of its Hydra fights (before: 3%), Shield 35%, Poison 33%, Bleed 50%, Hammer 57% (before: 54%).
 
 All boss numbers were set by simulation (DevLog Days 44–46) and are still to be confirmed by play-testing.
 

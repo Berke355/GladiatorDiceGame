@@ -1810,3 +1810,84 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
   - The body heals per head unless it has Burn or Bleed.
   - The battle ends when the body dies.
 - The user's play-test of the cards, targeting and groups.
+
+## Day 54 - Multiple Enemies: The Hydra's Heads
+
+### Accomplished
+- **The Hydra is a body plus head enemies** (stage 3 of Roadmap Phase C, GDD "Hydra").
+  - Each head is a separate enemy (`Assets/Bosses/Hydra/HydraHead.asset`) with its own card, HP and intent. It joins behind the body through `BattleFlow.SpawnEnemy`.
+  - **Cutting:** killing a head cuts it. At the start of the body's turn, every head cut since its last turn grows back as two. Dead heads are revived first, then new ones are spawned, up to 3 alive. Burn on the body stops this (the necks are cauterized).
+  - **Grown heads** act from the next turn (`EnemyBrain.ClearIntent` / `HasIntent`).
+  - **Regeneration:** the body heals 1 per living head at the end of its turn, unless it has Burn or Bleed.
+  - **Victory:** the battle ends when the body dies, even with heads alive. Every boss is created with `BattleEnemy.endsBattleOnDeath`.
+  - The body's intent shows its living heads, the cut ones (growing back or cauterized) and its regeneration.
+- **Battle rules for joining enemies:**
+  - `BattleFlow` takes an entity factory: a copy of the scene's enemy object in battle, a hidden object in the simulator, destroyed after the fight.
+  - `EnemyAct` / `EndEnemyTurn` loop by index, since the list can grow.
+  - `EnemyAdded` lets the UI add a card. Past 3 cards, every card shrinks to fit.
+- **`Entity.Heal` does nothing to a dead entity;** `Entity.Revive` brings a head back with full HP and no statuses.
+- **Removed:**
+  - The old head rules: "a hit of 10+ cuts a head" and the head counter.
+  - The body's Bite face, `PerHeadHitEffectSO` and `EffectContext.heads`.
+- **Simulator:**
+  - `DeathRateAt(battle, bots, runs)`: the share of the runs reaching a battle that die in it.
+  - `HydraFocusBody`: bots go for the body unless Burn blocks regrowth.
+
+### Tuning
+- **Target:** the old Hydra's difficulty (it killed about 37% of the runs that reached it).
+- **Method:** 12 focused and hybrid bots, 500 runs each.
+
+| Version | Arrivals that die |
+|---|---|
+| Body 40, head Bite 2 (weight 3), Regrow ×2, Hiss ×2 | 74–78% |
+| Body 30 | 73% |
+| Body 40, head Bite 1 | 59% |
+| Body 40, Bite 1, Regrow ×1, Hiss ×3 | 54% |
+| Same, body 30 | 49% |
+| Body 30, Bite 1 at weight 3, no regeneration | 34% |
+| **Body 30, Bite 1 half the time (Bite 1 / Hiss 1), Regrow ×1, Hiss ×3, regeneration 1 per head** | **40% (33% in a later run)** |
+
+- Body HP barely matters; the bites decide the fight.
+- Removing regeneration also hit the target, but regeneration is what makes Burn and Bleed matter, so it stays.
+- **The plan matters:** bots that keep killing heads die in 90% of their Hydra fights, against 33% for bots that go for the body.
+- **Paths per build (1000 runs; share of arrivals that die):**
+
+| Build | Hydra deaths |
+|---|---|
+| Burn | 20% (before: 3%) |
+| Shield + Rage | 23% |
+| Poison | 33% |
+| Ritual + Poison | 33% |
+| Shield | 35% |
+| Rage | 44% |
+| Bleed | 50% |
+| Fortune | 50% |
+| Bleed + Rage | 56% |
+| Hammer | 57% (before: 54%) |
+| Ritual + Bleed | 60% |
+
+- **All bots (1000 runs each):** 0–13% clear the run, the same range as before.
+
+### Tests
+- **Checks (15/15):**
+  - The heads join behind the body.
+  - A killed head counts as cut, and the intent says it will grow back.
+  - It grows back as two, and the grown heads don't act that turn.
+  - Never more than 3 heads alive.
+  - Burn cauterizes the necks and blocks regeneration.
+  - Regeneration heals 1 per head, and Bleed blocks it.
+  - A dead head can't be healed.
+  - The body's death ends the battle with heads alive.
+  - Without a factory nothing spawns.
+- **Play Mode (battle 11):**
+  - Clicking a head's card and killing it made two heads at the Hydra's turn; the cards shrank to fit 4.
+  - Killing the body showed RUN COMPLETE with 3 heads alive.
+  - No Console errors.
+
+### Next Steps
+- **The user's play-test of Phase C:** targeting, groups and the Hydra.
+- **Open points:**
+  - A defeated enemy's card still shows its statuses.
+  - Placeholder sprites overlap for group members.
+- **Area-effect content** (faces, enchantments, items) on top of `EffectContext.opponents`.
+- **Then the difficulty and gold pass** (Phase A step 3), or the map (Phase B).

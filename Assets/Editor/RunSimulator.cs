@@ -180,6 +180,29 @@ public static class RunSimulator
     // or null to pick as the game does. Picks made here don't mark members as met. Set it back to null afterwards.
     public static System.Func<int, EnemyTier, List<EnemySO>, List<EnemyGroup>, EnemyGroup> ForceEncounter;
 
+    // Share of the runs reaching this battle that die in it, over the given bots (e.g. 11: the Hydra's kill rate).
+    public static string DeathRateAt(int battle, IEnumerable<Bot> bots, int runs){
+        float reached = 0, died = 0;
+        foreach(Bot bot in bots){
+            string report = Simulate(bot, runs);
+            reached += PercentAt(report, "reached:", battle);
+            died += PercentAt(report, "deaths by battle:", battle);
+        }
+        return reached > 0 ? (100f * died / reached).ToString("0") + "% of " + (reached * runs / 100f).ToString("0") + " arrivals" : "no arrivals";
+    }
+
+    private static float PercentAt(string report, string line, int battle){
+        int start = report.IndexOf(line);
+        if(start < 0) return 0;
+        int end = report.IndexOf("\n", start);
+        string text = end < 0 ? report.Substring(start) : report.Substring(start, end - start);
+        int key = text.IndexOf(" " + battle + ":");
+        if(key < 0) return 0;
+        key += battle.ToString().Length + 2;
+        string number = text.Substring(key, text.IndexOf('%', key) - key).Replace(',', '.').Trim();
+        return float.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
+    }
+
     public static Bot[] BotsMatching(params string[] labelParts){
         return System.Array.FindAll(DefaultBots(), bot => System.Array.Exists(labelParts, part => bot.label.Contains(part)));
     }
@@ -392,7 +415,7 @@ public static class RunSimulator
             enemy.entityName = boss.bossName;
             enemy.maxHP = boss.maxHP;
             enemy.currentHP = enemy.maxHP;
-            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, run.dieFaces)));
+            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, run.dieFaces), true));
         }
         else{
             List<string> names = BattleManager.MemberNames(encounter);
@@ -405,8 +428,16 @@ public static class RunSimulator
             }
         }
 
+        // Enemies that join during the fight (Hydra heads) get hidden objects, destroyed after the fight.
+        List<GameObject> spawned = new List<GameObject>();
+        System.Func<Entity> factory = () => {
+            GameObject spawnedObject = new GameObject("SimSpawnedEnemy"){ hideFlags = HideFlags.HideAndDontSave };
+            spawned.Add(spawnedObject);
+            return spawnedObject.AddComponent<Entity>();
+        };
+
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
-        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.rerollsPerBattle);
+        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.rerollsPerBattle, factory);
         EnemyTier statsTier = boss != null ? EnemyTier.Boss : encounter.tier;
         FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;
@@ -472,6 +503,7 @@ public static class RunSimulator
         bool won = flow.IsOver && !player.IsDead;
         if(won) flow.WinBattle();
         flow.Dispose();
+        foreach(GameObject spawnedObject in spawned) Object.DestroyImmediate(spawnedObject);
         run.currentHP = player.currentHP;
         if(stats != null){
             stats.battles++;
@@ -495,8 +527,16 @@ public static class RunSimulator
         return total;
     }
 
-    // Focus fire: the living enemy closest to dying.
+    // Focus fire: the living enemy closest to dying. Against the Hydra, killing a head makes two grow back,
+    // so bots hit the body unless Burn cauterizes the necks (then they clear the heads first).
+    // HydraFocusBody off: bots focus the lowest HP even against the Hydra (for comparing the two plans).
+    public static bool HydraFocusBody = true;
+
     private static BattleEnemy ChooseTarget(BattleFlow flow){
+        foreach(BattleEnemy enemy in flow.LivingEnemies){
+            BossBrain boss = enemy.brain as BossBrain;
+            if(HydraFocusBody && boss != null && boss.HasHeads && !boss.RegrowthBlocked) return enemy;
+        }
         BattleEnemy best = null;
         foreach(BattleEnemy enemy in flow.LivingEnemies){
             if(best == null || enemy.entity.currentHP < best.entity.currentHP) best = enemy;

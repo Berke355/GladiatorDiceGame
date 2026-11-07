@@ -95,15 +95,32 @@ public class UIManager : MonoBehaviour
     public void ShowEnemies(List<BattleEnemy> enemies, System.Action<int> onClick){
         enemyCardTemplate.gameObject.SetActive(false);
         for(int i = 0; i < enemies.Count; i++){
-            int index = i;
-            EnemyCardUI card = Instantiate(enemyCardTemplate, enemyCardRow);
-            card.gameObject.SetActive(true);
-            card.name = "EnemyCard " + enemies[i].entity.entityName;
-            card.Bind(enemies[i], () => onClick(index));
-            enemies[i].entity.OnHealthChanged += RefreshEnemies;
-            enemyCards.Add(card);
+            AddEnemyCard(enemies[i], i, onClick);
         }
     }
+
+    // Also used for an enemy that joins during the battle (a Hydra head). Past 3 cards, all cards shrink to fit the row.
+    public void AddEnemyCard(BattleEnemy enemy, int index, System.Action<int> onClick){
+        EnemyCardUI card = Instantiate(enemyCardTemplate, enemyCardRow);
+        card.gameObject.SetActive(true);
+        card.name = "EnemyCard " + enemy.entity.entityName;
+        card.Bind(enemy, () => onClick(index));
+        enemy.entity.OnHealthChanged += RefreshEnemies;
+        enemyCards.Add(card);
+
+        HorizontalLayoutGroup row = enemyCardRow.GetComponent<HorizontalLayoutGroup>();
+        if(row != null){
+            row.childScaleWidth = true;
+            row.childScaleHeight = true;
+        }
+        float scale = enemyCards.Count > MaxFullSizeCards ? (float)MaxFullSizeCards / enemyCards.Count : 1f;
+        foreach(EnemyCardUI each in enemyCards){
+            each.transform.localScale = new Vector3(scale, scale, 1f);
+        }
+        RefreshEnemies();
+    }
+
+    private const int MaxFullSizeCards = 3;
 
     // Every card's panel, intent (numbers change with Rage, Ritual and statuses) and the target marker.
     public void RefreshEnemies(){

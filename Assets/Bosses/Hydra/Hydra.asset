@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: Hydra
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Hydra
-  maxHP: 50
+  maxHP: 30
   faces:
-  - {fileID: 11400000, guid: 99a13bf571026994cb36f7f3f87849ef, type: 2}
-  - {fileID: 11400000, guid: 99a13bf571026994cb36f7f3f87849ef, type: 2}
-  - {fileID: 11400000, guid: 99a13bf571026994cb36f7f3f87849ef, type: 2}
+  - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}
   - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}
   - {fileID: 11400000, guid: 43e95b68746df0e41add32f86657e0b2, type: 2}
+  - {fileID: 11400000, guid: 4558ec5030b12e240bdeae81f2cbb880, type: 2}
+  - {fileID: 11400000, guid: 4558ec5030b12e240bdeae81f2cbb880, type: 2}
   - {fileID: 11400000, guid: 4558ec5030b12e240bdeae81f2cbb880, type: 2}
   countdownTurns: 3
   staggerDamage: 12
   whileCountingDown: {fileID: 0}
+  headEnemy: {fileID: 11400000, guid: 4cecd9c8f3e05e14dbf1171f1ee0c31e, type: 2}
   startingHeads: 2
   maxHeads: 3
-  cutDamage: 10
   regrowthBlockedBy: 01000000
   regenPerHead: 1
   regenBlockedBy: 0100000005000000

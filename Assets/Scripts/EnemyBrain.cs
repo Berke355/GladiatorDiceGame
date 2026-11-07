@@ -22,6 +22,15 @@ public class EnemyBrain : IEnemyBrain
         this.opponent = opponent;
     }
 
+    // Forgets the current intent, so the enemy doesn't act until it picks a new one (a Hydra head growing back).
+    public void ClearIntent(){
+        currentIndex = -1;
+        repeatCount = 0;
+        currentIntent = default(EnemyIntent);
+    }
+
+    public bool HasIntent => currentIndex >= 0;
+
     public void ChooseNextIntent(){
         if(!InSecondWind && definition.secondWindIntents.Count > 0 && self.currentHP * 2 <= self.maxHP){
             InSecondWind = true;
@@ -83,6 +92,7 @@ public class EnemyBrain : IEnemyBrain
 
     // Runs the current intent. Enemies have no die, so die and face stay null in the context.
     public void ExecuteCurrentIntent(){
+        if(!HasIntent) return;
         EffectContext context = CreateContext();
         foreach(EffectSO effect in currentIntent.effects){
             if(effect != null){
@@ -110,11 +120,11 @@ public class EnemyBrain : IEnemyBrain
     }
 
     // Threat intents (PunishChoiceEffectSO) only hit if the player's choice sets them off, so they don't count here.
-    public int IncomingDamage => currentIntent.intentType == ActionType.Attack && !IsThreat(currentIntent) ? currentIntent.value + self.GetStatus(StatusType.Rage) : 0;
+    public int IncomingDamage => HasIntent && currentIntent.intentType == ActionType.Attack && !IsThreat(currentIntent) ? currentIntent.value + self.GetStatus(StatusType.Rage) : 0;
 
     public int ThreatAgainst(DieFace face, int battleValue, ActionType action){
         int damage = 0;
-        if(currentIntent.effects == null) return 0;
+        if(!HasIntent || currentIntent.effects == null) return 0;
         foreach(EffectSO effect in currentIntent.effects){
             PunishChoiceEffectSO threat = effect as PunishChoiceEffectSO;
             if(threat != null && threat.Triggers(face, battleValue, action)) damage += currentIntent.value + self.GetStatus(StatusType.Rage);

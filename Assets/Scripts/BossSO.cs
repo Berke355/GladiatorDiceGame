@@ -20,14 +20,14 @@ public class BossSO : ScriptableObject
     public DieFaceSO whileCountingDown;
 
     [Header("Heads (Hydra)")]
-    // 0 = no heads mechanic.
+    // Each head is a separate enemy of this kind, fought next to the boss (see GDD "Hydra"). Null = no heads.
+    public EnemySO headEnemy;
     public int startingHeads;
-    public int maxHeads = 6;
-    // A single hit that costs the boss at least this much HP cuts off a head (it never drops below 1 head).
-    public int cutDamage = 8;
-    // At the start of the boss's turn, every cut head grows back as two, unless it has one of these (Burn).
+    // Living heads at most; a cut head that can't grow back stays dead.
+    public int maxHeads = 3;
+    // At the start of the boss's turn, every head killed since grows back as two, unless it has one of these (Burn).
     public List<StatusType> regrowthBlockedBy = new List<StatusType>{ StatusType.Burn };
-    // At the end of the boss's turn it heals this much per head, unless it has one of these (Burn, Bleed).
+    // At the end of the boss's turn it heals this much per living head, unless it has one of these (Burn, Bleed).
     public int regenPerHead = 1;
     public List<StatusType> regenBlockedBy = new List<StatusType>{ StatusType.Burn, StatusType.Bleed };
 }

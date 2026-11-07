@@ -5,12 +5,16 @@ public class BattleEnemy
 {
     public readonly Entity entity;
     public readonly IEnemyBrain brain;
-    // Created by BattleFlow once the brain is bound.
+    // Created by BattleFlow when the enemy joins the battle.
     public EnemyTraitSystem traits { get; internal set; }
 
-    public BattleEnemy(Entity entity, IEnemyBrain brain){
+    // The battle ends when this enemy dies, even if others still live (a boss, e.g. the Hydra's body with its heads).
+    public readonly bool endsBattleOnDeath;
+
+    public BattleEnemy(Entity entity, IEnemyBrain brain, bool endsBattleOnDeath = false){
         this.entity = entity;
         this.brain = brain;
+        this.endsBattleOnDeath = endsBattleOnDeath;
     }
 
     public bool IsDead => entity.IsDead;

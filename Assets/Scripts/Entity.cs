@@ -123,11 +123,22 @@ public class Entity : MonoBehaviour
         }
     }
 
+    // A dead entity can't be healed back (only Revive brings it back).
     public void Heal(int amount){
+        if(IsDead) return;
         currentHP += amount;
         if(currentHP > maxHP){
             currentHP = maxHP;
         }
+        OnHealthChanged?.Invoke();
+    }
+
+    // Back to full HP with no Block and no statuses (a Hydra head growing back).
+    public void Revive(){
+        currentHP = maxHP;
+        currentBlock = 0;
+        activeStatuses.Clear();
+        burnAddedSinceLastTick = false;
         OnHealthChanged?.Invoke();
     }
 

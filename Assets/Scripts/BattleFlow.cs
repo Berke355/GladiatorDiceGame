@@ -28,7 +28,12 @@ public class BattleFlow
     public bool RerollPending { get; private set; }
     // The last action asked for the rolled face to keep its Charge (Resonance).
     private bool keepRolledCharge;
-    public bool IsOver => player.IsDead || enemies.TrueForAll(enemy => enemy.IsDead);
+    public bool IsOver => player.IsDead || enemies.TrueForAll(enemy => enemy.IsDead) || enemies.Exists(enemy => enemy.endsBattleOnDeath && enemy.IsDead);
+    // Creates the entity of an enemy spawned during the battle (a Hydra head): a scene object in battle, a hidden one
+    // in the simulator. Null: nothing can spawn.
+    private readonly Func<Entity> entityFactory;
+    // Raised when an enemy joins the battle after it started (SpawnEnemy), e.g. for the UI to add its card.
+    public event Action<BattleEnemy> EnemyAdded;
 
     // The enemy the player's attacks, statuses and items hit. Defaults to the front living enemy, and moves
     // there again when the selected one dies.
@@ -43,16 +48,38 @@ public class BattleFlow
     public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0)
         : this(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, die, equipment, rerollsPerBattle){ }
 
-    public BattleFlow(Entity player, List<BattleEnemy> enemies, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0){
+    public BattleFlow(Entity player, List<BattleEnemy> enemies, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0, Func<Entity> entityFactory = null){
         rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
         this.enemies = enemies;
         this.die = die;
+        this.entityFactory = entityFactory;
         triggers = new TriggerSystem(player, () => Target.entity, LivingEnemyEntities, die, equipment, charge, rerolls);
-        foreach(BattleEnemy enemy in enemies){
-            enemy.brain.Bind(this);
-            enemy.traits = new EnemyTraitSystem(enemy.entity, player, enemy.brain.Traits);
+        // Binding can spawn enemies (the Hydra grows its heads), which SpawnEnemy sets up itself.
+        int initial = enemies.Count;
+        for(int i = 0; i < initial; i++){
+            Setup(enemies[i]);
         }
+    }
+
+    private void Setup(BattleEnemy enemy){
+        enemy.traits = new EnemyTraitSystem(enemy.entity, player, enemy.brain.Traits);
+        enemy.brain.Bind(this);
+    }
+
+    // Adds a normal enemy to the battle (at the back of the turn order) with full HP. It picks its first intent at the
+    // next player turn, so it doesn't act on the turn it appears.
+    public BattleEnemy SpawnEnemy(EnemySO data, string name){
+        if(entityFactory == null) return null;
+        Entity entity = entityFactory();
+        entity.entityName = name;
+        entity.maxHP = data.maxHP;
+        entity.currentHP = data.maxHP;
+        BattleEnemy enemy = new BattleEnemy(entity, new EnemyBrain(data, entity, player));
+        enemies.Add(enemy);
+        Setup(enemy);
+        EnemyAdded?.Invoke(enemy);
+        return enemy;
     }
 
     // Selects the target of the player's attacks; returns false (and keeps the old one) for a dead or unknown enemy.
@@ -184,24 +211,27 @@ public class BattleFlow
         triggers.currentFace = null;
     }
 
-    // Every living enemy acts in turn order; stops if the player dies.
+    // Every living enemy acts in turn order; stops when the battle is over. Enemies can join during the loop
+    // (Hydra heads growing back); they have no intent yet, so they don't act.
     public void EnemyAct(){
-        foreach(BattleEnemy enemy in enemies){
+        for(int i = 0; i < enemies.Count; i++){
+            BattleEnemy enemy = enemies[i];
             if(enemy.IsDead) continue;
             enemy.entity.OnTurnStart();
             enemy.brain.ExecuteCurrentIntent();
-            if(player.IsDead) return;
+            if(IsOver) return;
         }
     }
 
     // Every living enemy's statuses tick and its brain ends its turn, in turn order.
     public void EndEnemyTurn(){
-        foreach(BattleEnemy enemy in enemies){
+        for(int i = 0; i < enemies.Count; i++){
+            BattleEnemy enemy = enemies[i];
             if(enemy.IsDead) continue;
             enemy.entity.OnTurnEnd();
             if(enemy.IsDead) continue;
             enemy.brain.OnTurnEnd();
-            if(player.IsDead) return;
+            if(IsOver) return;
         }
     }
 

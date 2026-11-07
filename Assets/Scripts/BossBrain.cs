@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 // The dice brain of a boss (see GDD "Boss Dice"): at the start of the player's turn it rolls its die,
 // and the rolled face is its intent. Plain C#, created for one battle. Boss mechanics that outlive a turn
-// (the Stampede countdown) live here, never in RunData.
+// (the Stampede countdown, the Hydra's heads) live here, never in RunData.
 public class BossBrain : IEnemyBrain, IDisposable
 {
     public readonly BossSO definition;
@@ -12,7 +12,7 @@ public class BossBrain : IEnemyBrain, IDisposable
     private readonly Entity opponent;
     private readonly List<DieFace> playerDie;
     private readonly List<DieFace> die = new List<DieFace>();
-    // The battle, for the player's stone faces and Charge (set by BattleFlow.Bind).
+    // The battle, for the player's stone faces and Charge and for spawning heads (set by BattleFlow.Bind).
     private BattleFlow flow;
 
     public List<DieFace> Die => die;
@@ -28,12 +28,19 @@ public class BossBrain : IEnemyBrain, IDisposable
     // The player's face this turn's intent aims at (Medusa's Gaze), locked when the die is rolled so the
     // telegraphed target is the one hit, even if the player's values change before the enemy acts.
     private DieFace lockedTarget;
-    // Heads (Hydra): current heads, and heads cut since the boss's last turn (they regrow at its next turn start).
-    public int Heads { get; private set; }
-    public int CutHeads { get; private set; }
-    public bool HasHeads => definition.startingHeads > 0;
     // The countdown started this turn, so this turn's end doesn't count down yet.
     private bool countdownJustStarted;
+
+    // Heads (Hydra): every head ever grown (a separate enemy, dead ones included), and the dead heads already
+    // counted as cut (grown back or cauterized), so each death is counted once.
+    private readonly List<BattleEnemy> heads = new List<BattleEnemy>();
+    private readonly HashSet<BattleEnemy> settledCuts = new HashSet<BattleEnemy>();
+    public bool HasHeads => definition.headEnemy != null;
+    public int LivingHeads => heads.FindAll(head => !head.IsDead).Count;
+    // Heads killed since the boss's last turn; at its next turn start each grows back as two (or is cauterized).
+    public int CutHeads => heads.FindAll(head => head.IsDead && !settledCuts.Contains(head)).Count;
+    public bool RegrowthBlocked => Blocked(definition.regrowthBlockedBy);
+    public bool RegenBlocked => Blocked(definition.regenBlockedBy);
 
     public BossBrain(BossSO boss, Entity self, Entity opponent, List<DieFace> playerDie){
         definition = boss;
@@ -43,12 +50,16 @@ public class BossBrain : IEnemyBrain, IDisposable
         foreach(DieFaceSO face in boss.faces){
             die.Add(new DieFace(face));
         }
-        Heads = boss.startingHeads;
         self.HitTaken += OnHitTaken;
     }
 
+    // The heads join the battle here, behind the boss.
     public void Bind(BattleFlow flow){
         this.flow = flow;
+        if(!HasHeads) return;
+        for(int i = 0; i < definition.startingHeads; i++){
+            GrowHead();
+        }
     }
 
     public void Dispose(){
@@ -69,7 +80,7 @@ public class BossBrain : IEnemyBrain, IDisposable
         Debug.Log(definition.bossName + " rolled " + RolledFace.definition.faceName + ": " + DescribeCurrentIntent());
     }
 
-    // The rolled face and its numbers, plus the countdown if one is running.
+    // The rolled face and its numbers, plus the countdown or the heads.
     public string DescribeCurrentIntent(){
         string text = RolledFace != null ? RolledFace.definition.faceName + ": " + DescribeFace(RolledFace) : "";
         if(CountdownRunning){
@@ -79,25 +90,20 @@ public class BossBrain : IEnemyBrain, IDisposable
                 + " (stagger: " + left + " more damage)";
         }
         if(HasHeads){
-            text += "\nHeads: " + Heads + (CutHeads > 0 ? " (" + CutHeads + " cut: " + (Blocked(definition.regrowthBlockedBy) ? "cauterized by Burn" : "will grow back as " + 2 * CutHeads) + ")" : "")
-                + " | a hit of " + definition.cutDamage + "+ cuts a head | regenerates " + definition.regenPerHead * HeadsAfterRegrowth + (Blocked(definition.regenBlockedBy) ? " (blocked)" : "");
+            int cut = CutHeads;
+            text += "\nHeads: " + LivingHeads
+                + (cut > 0 ? " | " + cut + " cut: " + (RegrowthBlocked ? "cauterized by Burn" : "will grow back as " + 2 * cut) : "")
+                + " | regenerates " + (RegenBlocked ? "0 (blocked)" : (definition.regenPerHead * LivingHeads).ToString());
         }
         return text;
     }
-
-    // Heads once cut heads regrow at the boss's next turn start (or are cauterized by Burn).
-    public int HeadsAfterRegrowth => Blocked(definition.regrowthBlockedBy) ? Heads : Mathf.Min(definition.maxHeads, Heads + 2 * CutHeads);
 
     private bool Blocked(List<StatusType> statuses){
         return statuses.Exists(status => self.GetStatus(status) > 0);
     }
 
     public void ExecuteCurrentIntent(){
-        // Heads: cut heads grow back as two at the start of the boss's turn, unless Burn cauterized them.
-        if(HasHeads && CutHeads > 0){
-            Heads = HeadsAfterRegrowth;
-            CutHeads = 0;
-        }
+        if(HasHeads) RegrowHeads();
         if(RolledFace == null) return;
         EffectContext context = CreateContext(RolledFace);
         foreach(EffectSO effect in RolledFace.GetEffects(ActionOf(RolledFace))){
@@ -111,11 +117,44 @@ public class BossBrain : IEnemyBrain, IDisposable
         }
     }
 
+    // Start of the boss's turn: every head cut since its last turn grows back as two (up to maxHeads living),
+    // unless Burn cauterized the wounds. Grown heads act from the next turn.
+    private void RegrowHeads(){
+        List<BattleEnemy> cut = heads.FindAll(head => head.IsDead && !settledCuts.Contains(head));
+        if(cut.Count == 0) return;
+        foreach(BattleEnemy head in cut) settledCuts.Add(head);
+        if(RegrowthBlocked){
+            Debug.Log(definition.bossName + "'s cut necks are cauterized.");
+            return;
+        }
+        for(int i = 0; i < 2 * cut.Count; i++){
+            if(!GrowHead()) break;
+        }
+    }
+
+    // Brings a dead head back (the oldest first) or adds a new one, unless maxHeads are already alive.
+    private bool GrowHead(){
+        if(LivingHeads >= definition.maxHeads) return false;
+        BattleEnemy dead = heads.Find(head => head.IsDead);
+        if(dead != null){
+            dead.entity.Revive();
+            EnemyBrain brain = dead.brain as EnemyBrain;
+            if(brain != null) brain.ClearIntent();
+            settledCuts.Remove(dead);
+            return true;
+        }
+        if(flow == null) return false;
+        BattleEnemy head = flow.SpawnEnemy(definition.headEnemy, definition.headEnemy.enemyName + " " + (heads.Count + 1));
+        if(head == null) return false;
+        heads.Add(head);
+        return true;
+    }
+
     // The countdown ticks at the end of each enemy turn after the one that started it, and the hit lands on the last.
     public void OnTurnEnd(){
-        // Heads: regenerate per head, unless Burn or Bleed keeps the wounds open.
-        if(HasHeads && !Blocked(definition.regenBlockedBy)){
-            self.Heal(definition.regenPerHead * Heads);
+        // Heads: regenerate per living head, unless Burn or Bleed keeps the wounds open.
+        if(HasHeads && !RegenBlocked){
+            self.Heal(definition.regenPerHead * LivingHeads);
         }
         if(!CountdownRunning) return;
         if(countdownJustStarted){
@@ -133,12 +172,7 @@ public class BossBrain : IEnemyBrain, IDisposable
         get{
             int damage = 0;
             if(RolledFace != null && ActionOf(RolledFace) == ActionType.Attack){
-                // Bite: one hit per head (heads regrow before it acts), each with Rage.
-                int hits = 1;
-                foreach(EffectSO effect in RolledFace.GetEffects(ActionType.Attack)){
-                    if(effect is PerHeadHitEffectSO) hits = Mathf.Max(1, HeadsAfterRegrowth);
-                }
-                damage += hits * (RolledFace.value + self.GetStatus(StatusType.Rage));
+                damage += RolledFace.value + self.GetStatus(StatusType.Rage);
                 // Coil: the bonus for the player's stone faces.
                 EffectContext context = CreateContext(RolledFace);
                 foreach(EffectSO effect in RolledFace.GetEffects(ActionType.Attack)){
@@ -153,13 +187,8 @@ public class BossBrain : IEnemyBrain, IDisposable
         }
     }
 
-    // A big hit cuts a head (never the last one). Hits during a countdown stagger the boss; enough of them cancel it.
+    // Hits during a countdown stagger the boss; enough of them cancel it.
     private void OnHitTaken(int hpLost){
-        if(HasHeads && hpLost >= definition.cutDamage && Heads > 1){
-            Heads--;
-            CutHeads++;
-            Debug.Log(definition.bossName + " lost a head (" + Heads + " left).");
-        }
         if(!CountdownRunning) return;
         StaggerTaken += hpLost;
         if(StaggerTaken >= definition.staggerDamage){
@@ -194,8 +223,7 @@ public class BossBrain : IEnemyBrain, IDisposable
             targetDie = playerDie,
             targetPetrification = flow != null ? flow.petrification : null,
             targetCharge = flow != null ? flow.charge : null,
-            targetFace = lockedTarget,
-            heads = HasHeads ? HeadsAfterRegrowth : 0
+            targetFace = lockedTarget
         };
     }
 }
