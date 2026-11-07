@@ -1891,3 +1891,22 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
   - Placeholder sprites overlap for group members.
 - **Area-effect content** (faces, enchantments, items) on top of `EffectContext.opponents`.
 - **Then the difficulty and gold pass** (Phase A step 3), or the map (Phase B).
+
+## Day 55 - Multiple Enemies: Small Fixes
+
+### Accomplished
+- **A defeated enemy's card shows no statuses.** `CombatantPanelUI` skips the status chips for a dead entity, so the card shows only "Defeated". This is display only; the entity's statuses are unchanged.
+- **Enemy sprites no longer overlap.** `BattleManager.ArrangeEnemySprites` lays the placeholder sprites side by side on the right side of the screen, in turn order, and shrinks them when there are several. It runs at battle start and whenever an enemy joins (a Hydra head).
+  - A dead enemy's sprite is hidden but keeps its place, so the others don't shift. A Hydra head that grows back shows again.
+  - A lone enemy keeps its old position and size.
+
+### Tests
+- **Play Mode (battle 11):**
+  - A dead head with 3 Bleed showed a "Defeated" card with no chips, and its sprite was hidden.
+  - After the Hydra's turn the head grew back as two, and the 4 sprites stood side by side at a smaller size.
+  - No Console errors.
+
+### Next Steps
+- **The user's play-test of Phase C:** targeting, groups and the Hydra.
+- **Area-effect content** (faces, enchantments, items) on top of `EffectContext.opponents`.
+- **Then the difficulty and gold pass** (Phase A step 3), or the map (Phase B).

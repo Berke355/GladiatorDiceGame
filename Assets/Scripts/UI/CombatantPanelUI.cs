@@ -32,10 +32,11 @@ public class CombatantPanelUI : MonoBehaviour
         RefreshStatuses(entity);
     }
 
-    // Fortify is shown with Block above; every other active status gets a chip.
+    // Fortify is shown with Block above; every other active status gets a chip. A defeated combatant shows none.
     private void RefreshStatuses(Entity entity){
         int index = 0;
         foreach(KeyValuePair<StatusType, int> status in entity.Statuses){
+            if(entity.IsDead) break;
             if(status.Value <= 0 || status.Key == StatusType.Fortify || status.Key == StatusType.None) continue;
 
             if(index >= chips.Count){

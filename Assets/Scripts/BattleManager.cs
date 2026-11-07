@@ -61,6 +61,46 @@ public class BattleManager : MonoBehaviour
 
         // Enemies that join later (Hydra heads) are copies of the scene's enemy object.
         flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle, () => Instantiate(enemy, enemy.transform.parent));
+        enemySpriteScale = enemy.transform.localScale;
+        enemySpriteY = enemy.transform.position.y;
+        foreach(BattleEnemy each in flow.enemies) each.entity.OnHealthChanged += UpdateEnemySprites;
+        flow.EnemyAdded += added => {
+            added.entity.OnHealthChanged += UpdateEnemySprites;
+            ArrangeEnemySprites();
+        };
+        ArrangeEnemySprites();
+    }
+
+    // The enemies' placeholder sprites share the right side of the screen, in turn order, shrinking when there
+    // are more of them. Dead ones are hidden (a revived Hydra head shows again) but keep their place.
+    private const float SpriteAreaLeft = 3.3f;
+    private const float SpriteAreaRight = 8.7f;
+    private Vector3 enemySpriteScale;
+    private float enemySpriteY;
+
+    private void ArrangeEnemySprites(){
+        int count = flow.enemies.Count;
+        float slot = (SpriteAreaRight - SpriteAreaLeft) / count;
+        float shrink = count > 1 ? Mathf.Min(1f, slot * 0.85f / SpriteWidth()) : 1f;
+        for(int i = 0; i < count; i++){
+            Transform sprite = flow.enemies[i].entity.transform;
+            float x = count > 1 ? SpriteAreaLeft + slot * (i + 0.5f) : enemy.transform.position.x;
+            sprite.position = new Vector3(x, enemySpriteY, sprite.position.z);
+            sprite.localScale = new Vector3(enemySpriteScale.x * shrink, enemySpriteScale.y * shrink, enemySpriteScale.z);
+        }
+        UpdateEnemySprites();
+    }
+
+    private float SpriteWidth(){
+        SpriteRenderer renderer = enemy.GetComponent<SpriteRenderer>();
+        return renderer != null && renderer.sprite != null ? renderer.sprite.bounds.size.x * enemySpriteScale.x : 3f;
+    }
+
+    private void UpdateEnemySprites(){
+        foreach(BattleEnemy each in flow.enemies){
+            SpriteRenderer renderer = each.entity.GetComponent<SpriteRenderer>();
+            if(renderer != null) renderer.enabled = !each.IsDead;
+        }
     }
 
     // Enemy names, with a letter when the same enemy appears twice ("Tiro A", "Tiro B").
@@ -76,6 +116,9 @@ public class BattleManager : MonoBehaviour
 
     void OnDestroy(){
         if(flow != null){
+            foreach(BattleEnemy each in flow.enemies){
+                if(each.entity != null) each.entity.OnHealthChanged -= UpdateEnemySprites;
+            }
             flow.Dispose();
         }
     }
