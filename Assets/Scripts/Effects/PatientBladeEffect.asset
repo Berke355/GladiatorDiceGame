@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: PatientBladeEffect
   m_EditorClassIdentifier: Assembly-CSharp::RerollScaledDamageEffectSO
   scaling: 0
+  perReroll: 2

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PatientBladeFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Patient Blade
-  description: 'Attack: Deal damage equal to my value, plus 1 for each reroll you
+  description: 'Attack: Deal damage equal to my value, plus 2 for each reroll you
     have left. Defense: Gain block equal to my value.'
   rarity: 0
   tags: 0900000000000000
@@ -24,3 +24,5 @@ MonoBehaviour:
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   charges: 0
+  hasNoValue: 0
+  consumableActions: 

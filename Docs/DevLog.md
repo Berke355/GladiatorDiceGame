@@ -2193,3 +2193,52 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test** of the new economy (starting reroll, potion and Change, Healer) and the capped items. If the game still feels easy, harden the Weak tier (battles 1–3 are almost riskless).
 - **Bring up the bottom:** Fortune, Hammer, Ritual + Bleed (archetype passes). Focused Ritual staying low is acceptable as a glue archetype.
 - **Encourage:** its content set is to be discussed.
+
+## Day 61 - Fortune Pass: Gambit, Hedge and +2 per Reroll
+
+### Findings
+- **Fortune fell from 8–15% (Day 48) to 2–4%.**
+  - The enemy traits hit it hardest: Momentum punishes rerolls and Entangle forbids them.
+  - It gained the least from the new economy.
+- **Where it dies:** the Minotaur 30% and Medusa 23% (she petrifies the grown Patient Blade).
+- **One damage face:** in Medium battles only Patient Blade dealt real damage (6.4 per roll), about 2 damage per turn overall.
+  - The spending payoffs were Rare and Epic, and bots almost never found them (0.2 and 0.1 per run at battle 8).
+  - Patient Blade +1 or Lucky Buckler +1 only reached 5%.
+
+### Accomplished
+- **Gambit** (Common, value 2, Fortune): Attack: my value + 2 per reroll used this battle. Defense: block equal to my value.
+  - The Common rung of spending, an additive little brother of Fate's Edge.
+- **Hedge** (Common, value 2, Fortune): Defense: block equal to my value + 1 per reroll left. Attack: my value.
+  - Patient Blade's defensive twin.
+- **Patient Blade:** + 2 per reroll left (was 1).
+- **Code:**
+  - `RerollScaledDamageEffectSO` gets `UsedThisBattleAdded` (appended to the enum) and a `perReroll` bonus.
+  - New `RerollScaledBlockEffectSO`.
+- **Bots:** a die with Gambit spends its last reroll too; savers (Patient Blade, Hedge) keep theirs. Hedge defends against big hits or with 2+ rerolls left.
+
+### Tests
+- **Checks (8/8, run with the first +1 bonus):**
+  - Gambit deals 2 with no rerolls used and 4 after two, and its text reads "4 damage". Its Defense gives 2 block.
+  - Hedge gives 4 block with 2 rerolls left and 2 with none; its attack deals 2.
+  - Fate's Edge keeps its multiply mode.
+
+### Balance (Fortune bot, 1000 runs)
+
+| Version | Clear rate |
+|---|---|
+| Before | 2–4% |
+| + Gambit and Hedge | 2% |
+| + Gambit +2 per reroll | 6% |
+| + Patient Blade +2 per reroll | 9% |
+| + both +2 | 14–15% |
+
+- **Why the new faces alone weren't enough:**
+  - With them, Fortune got further (48% reached battle 8, was 37%).
+  - But 37% of its rolls only defend (Lucky Buckler, Hedge). It took 1 HP per turn in Strong battles yet dealt only 2.7 damage, so fights lasted 15 turns.
+  - One point per reroll was small next to Rage, Ritual or stacking statuses.
+- **The other builds are unchanged within noise** after two faces joined the pool: Burn 12%, Poison 19%, Rage 12%, Bleed 12%.
+
+### Next Steps
+- **Hammer pass** (5%), then Ritual + Bleed (6%).
+- **The user's play-test.**
+- **Encourage:** its content set is to be discussed.

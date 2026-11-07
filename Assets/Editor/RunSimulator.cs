@@ -604,6 +604,8 @@ public static class RunSimulator
             case "Steady Hand": return !bigHit && die.Exists(f => f != face && flow.charge.Get(f) >= 2) ? ActionType.Magic : ActionType.Defense;
             // Defending fills the reroll pool (block + 1 reroll), which is what Fortune dice grow on.
             case "Lucky Buckler": return ActionType.Defense;
+            // Saved rerolls make its block big; attack only when nothing big is coming and the pool is empty.
+            case "Hedge": return bigHit || flow.rerolls.Left >= 2 ? ActionType.Defense : ActionType.Attack;
             // Area Magic faces: spread the status unless a big hit needs blocking.
             case "Wildfire":
             case "Contagion": return bigHit ? ActionType.Defense : ActionType.Magic;
@@ -638,12 +640,14 @@ public static class RunSimulator
         if(!safeAction) return true;
         bool bigHit = flow.IncomingDamage >= 6;
         if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
-        if(flow.rerolls.Left <= 1) return false;
+        // Fortune plans: savers (Patient Blade, Hedge) keep their rerolls; a spender (Gambit) spends the last one too.
+        bool spender = die.Exists(f => f.definition.faceName == "Gambit");
+        if(flow.rerolls.Left <= (spender ? 0 : 1)) return false;
         // Don't waste a once-per-battle heal at (nearly) full HP.
         if(face.definition.IsConsumable(ActionType.Magic) && !flow.IsChange(face, ActionType.Magic)
             && flow.player.maxHP - flow.player.currentHP < flow.charge.ValueOf(face)) return true;
         // Patient Blade hits harder for every reroll kept, so a die with one only rerolls to survive.
-        if(die.Exists(f => f.definition.faceName == "Patient Blade")) return false;
+        if(!spender && die.Exists(f => f.definition.faceName == "Patient Blade" || f.definition.faceName == "Hedge")) return false;
         float average = 0;
         foreach(DieFace f in die) average += flow.charge.ValueOf(f);
         average /= die.Count;

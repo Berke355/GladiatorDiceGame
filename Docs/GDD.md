@@ -152,15 +152,23 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
 
 | Content | Kind | Rarity | Value | Effect |
 |---|---|---|---|---|
-| **Patient Blade** | Face | Common | 3 | Attack: deal my value + 1 per reroll you have left. Defense: gain block equal to my value. |
+| **Patient Blade** | Face | Common | 3 | Attack: deal my value + 2 per reroll you have left. Defense: gain block equal to my value. |
 | **Lucky Buckler** | Face | Common | 2 | Attack: deal damage equal to my value. Defense: gain block equal to my value and 1 reroll. |
 | **Gambler's Strike** | Face | Rare | 3 | Attack: deal my value; if you rerolled this turn, hit again for my value. |
 | **Fate's Edge** | Face | Epic | 2 | Attack: deal my value × the rerolls you used this battle (at least my value). |
+| **Gambit** | Face | Common | 2 | Attack: deal my value + 2 per reroll you used this battle. Defense: gain block equal to my value. |
+| **Hedge** | Face | Common | 2 | Defense: gain block equal to my value + 1 per reroll you have left. Attack: deal damage equal to my value. |
 | **Loaded Die** | Item | Epic | — | At the start of each battle: gain 1 reroll. |
 | **Lucky Charm** | Enchantment | Rare | — | Magic: gain 1 reroll. |
 
 - **Save or spend:** Patient Blade rewards keeping rerolls, while Gambler's Strike and Fate's Edge reward spending them, so the same die pulls both ways.
 - **How Fortune grows during a fight:** Lucky Buckler's Defense fills the reroll pool, and Patient Blade hits harder for every reroll kept (the "Common that grows during a fight" rule). With only Patient Blade as a Common, the Fortune bot cleared 1–3% of runs; with Lucky Buckler and bots that defend with it and keep their rerolls, about 8–15%. Fortune dies most at the Minotaur (slow start, like Burn) and at Medusa (she petrifies the grown Patient Blade).
+- **The Fortune pass (DevLog Day 61):** Fortune fell from 8–15% (Day 48) to 2–4%. The enemy traits hit it hardest (Momentum punishes rerolls, Entangle forbids them), and it gained the least from the new economy. Its damage came from one Common (Patient Blade, 6.4 damage per roll in Medium battles, about 2 damage per turn overall): Lucky Buckler defends for a reroll, and the faces that reward spending rerolls were Rare and Epic, which bots almost never found (0.2 and 0.1 per run at battle 8). Raising Patient Blade or Lucky Buckler by 1 only reached 5%. The fix is content, not numbers:
+  - **Gambit** is the Common rung of spending, the additive little brother of Fate's Edge (Common adds, Epic multiplies, like Detonate and Exsanguinate).
+  - **Hedge** is Patient Blade's defensive twin: saving rerolls also keeps you alive through slow starts (the Minotaur).
+  - Both work alone (2 damage or 2 block at the start of a battle) and bring "save or spend" down to Common.
+  - **The new faces alone weren't enough** (still 2%): Fortune got further (48% reached battle 8, was 37%) but still couldn't kill. 37% of its rolls only defend (Lucky Buckler for a reroll, Hedge for block), so it took little damage (1 HP per turn in Strong battles) but dealt only 2.7 per turn and fights lasted 15 turns. Its damage didn't scale: one point per reroll is small next to Rage, Ritual or stacking statuses.
+  - **+2 per reroll** for both damage payoffs (Patient Blade: per reroll left; Gambit: per reroll used): Gambit alone 6%, Patient Blade alone 9%, both **14–15%**. The other builds stay the same within noise (Burn 12%, Poison 19%, Rage 12%, Bleed 12%) after two faces joined the pool.
 - **Steady Hand stays as it is:** it rerolls without spending the pool, so it is still its own thing.
 
 ### Consumable and Change
