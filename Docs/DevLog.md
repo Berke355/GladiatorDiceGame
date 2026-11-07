@@ -2242,3 +2242,36 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Hammer pass** (5%), then Ritual + Bleed (6%).
 - **The user's play-test.**
 - **Encourage:** its content set is to be discussed.
+
+## Day 62 - Hammer Pass: War Hammer 5
+
+### Findings
+- **Hammer fell from about 32% to 5%.**
+  - Medusa, the Hydra and the enemy traits all came after it.
+  - Hammer grows in battle, not through upgrades, so the new economy helped it least (like Fortune).
+- **Its damage was fine:** 4.5 per turn in Strong battles, 70% of them won.
+- **It dies at the bosses:**
+
+| Boss | Hammer arrivals that die | Other builds |
+|---|---|---|
+| Minotaur | 5% | 0–25% |
+| Medusa (petrifies the charged Hammer, her designed answer) | 56% | 39–45%; Shield 16%, since a stone face still blocks |
+| Hydra | 62% | 22–48% |
+
+### Experiments (Hammer bot, 1000 runs)
+
+| Change | Hammer | Other effects |
+|---|---|---|
+| Medusa HP 50 → 42 | 5% | Medusa's kill rate fell about 8 points for everyone (Hammer 56% → 40%), but Hammer died later instead; Ritual + Poison 23% → 28% |
+| Charge cap +7 / +8 | 5% / 6% | Faces rarely reach the cap |
+| War Hammer and Maul +1 | 9–12% | Shield 20% (Maul has the Block tag) |
+| War Hammer 3 → 5 (chosen) | 10% | Shield 17–18%, Rage 13%, Shield + Rage 14% |
+
+### Accomplished
+- **War Hammer is value 5** (was 3). It is targeted at Hammer and leaves Shield and Medusa alone. Its cost: it only attacks, and its upgrades cost more.
+- The Charge cap was made settable only for the experiment and is a constant again.
+
+### Next Steps
+- **Ritual + Bleed** (6%), the last bottom build; focused Ritual stays low as a glue archetype.
+- **The user's play-test.**
+- **Encourage:** its content set is to be discussed.

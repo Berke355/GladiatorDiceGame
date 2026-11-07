@@ -582,7 +582,7 @@ Pour power into one face and set up the turn it lands. Hammer stores its resourc
 
 - **Resource:** **Charge**, temporary value on a die face for the current battle. A Hammer face gains **+1 Charge every turn it isn't the face you act with**, up to **+5**. When you act with a face, its Charge is used and then resets to 0.
 - **Value Is the Effect still holds:** a face's value in battle is its value plus its Charge, the number shown on the die, and its effects use exactly that number.
-- **Math:** on a six-sided die, a face comes up about once every six turns, so a value-2 War Hammer usually lands at 5–7. Strong for a Common, but you don't know when it will land.
+- **Math:** on a six-sided die, a face comes up about once every six turns, so a value-5 War Hammer usually lands at 8–10. Strong for a Common, but you don't know when it will land, and it can only attack.
 - **The cap (+5)** applies to Charge gained every turn and from Anvil; only Resonance can push past it. It keeps "when will it land?" more important than "how big has it grown?"; without it, one roll in a long fight could deal 15+.
 - **The cost (Pillar 4):** War Hammer and Earthshaker only have Attack. When a charged Hammer lands, you swing even if the enemy is about to hit hard.
 - **Grows in battle, not through upgrades** (the "Common that grows during a fight" rule).
@@ -591,13 +591,17 @@ Pour power into one face and set up the turn it lands. Hammer stores its resourc
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
-| **War Hammer** | Starter | Common | 3 | Attack: deal damage equal to my value. Charge. |
+| **War Hammer** | Starter | Common | 5 | Attack: deal damage equal to my value. Charge. |
 | **Maul** | Starter (safe) | Common | 3 | Attack: deal damage equal to my value. Defense: gain block equal to my value. Charge. |
 | **Anvil** | Bridge (Hammer + Block) | Rare | 2 | Defense: gain block equal to my value. Magic: add my value as Charge to your highest-value other face. |
 | **Steady Hand** | Engine (die manipulation) | Rare | 1 | Magic: reroll the die and act again. Defense: gain block equal to my value. |
 | **Earthshaker** | Payoff | Epic | 1 | Attack: deal damage equal to your highest-value other face's value times my value. Its Charge is kept. |
 
 - **Maul is the safe Hammer:** when it lands charged, you choose between the big swing and a big block. It exists because the first set (War Hammer at value 2 as the only Common) cleared 7% of runs: the Hammer bot lost the most HP per turn of any build (2.0), and a second Attack-only Common didn't help (7%), while a Charge face with Defense doubled it. With Maul and War Hammer at 3, the Hammer bot clears about 32%. Maul's Block tag also gives the Shield archetype a growing face (Shield bot 6% → 20%).
+- **The Hammer pass (DevLog Day 62):** Hammer fell from about 32% to 5%. Medusa, the Hydra and the enemy traits came after it, and it grows in battle rather than through upgrades, so the new economy (starting gold, Healer) helped it least. Its damage was fine (4.5 per turn, 70% of Strong battles won); it died at Medusa (56% of its arrivals, the others 39–45%) and at the Hydra (62%).
+  - Medusa at 42 HP cut her kill rate for everyone (Hammer 56% → 40%) but Hammer still cleared 5%: it died later instead. It also lifted Ritual + Poison to 28%, so Medusa stays.
+  - A higher Charge cap (+7, +8) changed nothing: faces rarely sit unused long enough to reach it.
+  - War Hammer and Maul +1 gave 9–12%, but Maul's Block tag lifted Shield too (20%). **War Hammer 3 → 5** gives 10% and leaves Shield (17–18%), Rage and Shield + Rage unchanged. Its cost: it only attacks, and its upgrades cost more (Common: value × 3).
 - **Anvil** aims the Charge: it builds up the face you want to land, and bridges to the Shield archetype.
 - **Steady Hand** is the control tool: spend a weak roll fishing for the charged Hammer. Rerolling is not a new turn (Block doesn't reset, turn-start items don't fire), and a reroll can land on Steady Hand again.
 - **Earthshaker** is the multiplicative payoff: it hits with a charged face's value without using its Charge, so you can strike twice from one build-up.
