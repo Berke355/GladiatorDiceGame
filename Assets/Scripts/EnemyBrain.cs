@@ -62,6 +62,8 @@ public class EnemyBrain : IEnemyBrain
     // Readable intent text with the real numbers (Rage, Ritual and current stacks included),
     // e.g. "Shield Slam: 4 damage" or "Shield Rush: 2 damage, 2 block".
     public string DescribeCurrentIntent(){
+        // No intent picked yet (before the first turn).
+        if(currentIndex < 0) return "";
         List<string> parts = new List<string>();
         EffectContext context = CreateContext();
         if(currentIntent.effects != null){

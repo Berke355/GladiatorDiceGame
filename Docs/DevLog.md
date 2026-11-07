@@ -1738,3 +1738,75 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
   - Click an enemy to target it.
   - Enemy groups of up to 3 with lower HP each, in the encounter config.
 - **Stage 3:** the Hydra as a body plus 2 head enemies.
+
+## Day 53 - Multiple Enemies: Targeting UI and Enemy Groups
+
+### Accomplished
+- **Enemy cards** (`EnemyCardUI`):
+  - Every enemy gets a card at the top right, copied from a template in the Battle scene: name, HP, Block/Fortify, statuses, intent and trait chips.
+  - The old enemy panel, intent box and trait strip became the template. The rolled face panel moved to the middle of the screen, and the boss die strip sits under the cards.
+- **Click targeting:**
+  - Clicking a card calls `BattleManager.OnEnemyClicked`, which selects the target during the roll and action phases.
+  - The target's card shows a gold TARGET frame, and the action previews are rebuilt for the new target.
+  - A defeated enemy's card is dimmed and shows "Defeated"; the target moves to a living enemy.
+- **Enemy groups:**
+  - `EnemyGroup` (name, tier, up to 3 members in turn order, HP multiplier), listed in `EncounterConfigSO.groups`.
+  - `EncounterConfigSO.PickEncounter` is shared by `RunManager.PickEncounterForNextBattle` and the simulator. Lone enemies and groups are equally likely, and a group counts as meeting its members, so nothing is met twice in a run.
+  - Duplicate members are named "Tiro A" / "Tiro B".
+- **Simulator:** fights groups with up to 3 enemy objects. `RunSimulator.ForceEncounter` lets experiments fight one encounter at every battle of its tier.
+- `EnemyBrain.DescribeCurrentIntent` returns nothing before the first intent is picked.
+
+### Tuning
+- **Method:** each encounter was forced at every battle of its tier for the 12 focused and hybrid bots (480 runs), then the HP taken and the loss rate per battle were compared.
+- **The first try, every group at ×0.6, was far too hard:**
+  - Tiro Pair cost 13 HP and Wolf Pack 10.8, while lone Weak enemies cost 2–7.
+  - Net and Shield (Secutor + Retiarius) killed 52% of bots, while lone Medium enemies kill 2–24%.
+  - The cause: two attackers deal double damage per turn while both live, even with less total HP.
+
+| Group | Members | Tried | Chosen |
+|---|---|---|---|
+| Tiro Pair | Tiro, Tiro | ×0.35: 7.6 HP, ×0.45: 9.7 HP | **×0.4: 7.8 HP** |
+| Wolf Pack | Arena Wolf ×2 | ×0.35: 7.2 HP, ×0.45: 8.7 HP | **×0.4: 8.6 HP** |
+| Net and Shield | Secutor + Retiarius, then Murmillo + Retiarius | Secutor version ×0.35: 29% lost; Murmillo version ×0.6: 23% | **Murmillo + Retiarius ×0.5: 18.5% lost** |
+| Poison and Blades | Dimachaerus, Venefica | ×0.35: 12.5%, ×0.5: 23.5% | **×0.45: 19% lost** |
+| Beast Master | Arena Lion, Bestiarius | ×0.4: 26%, ×0.5: 46% | **×0.45: about 34% lost** |
+
+- Two of the hardest Medium enemies together were too much. A tank in front of a dangerous back-liner works better and makes the target choice matter.
+- **All bots with groups in the pool (1000 runs each):** 0–11% clear the run, 1–2 points below the rates without groups:
+
+| Bot | Clear rate |
+|---|---|
+| Burn | 9% |
+| Poison | 4% |
+| Shield | 8% |
+| Rage | 4% |
+| Ritual | 0% |
+| Bleed | 3% |
+| Hammer | 3% |
+| Fortune | 1% |
+| Ritual + Poison | 5% |
+| Ritual + Bleed | 2% |
+| Shield + Rage | 11% |
+| Bleed + Rage | 6% |
+
+### Tests
+- **Checks (7/7):**
+  - Weak groups are picked about as often as expected (105 of 400 picks, about 2/7).
+  - Picking a group marks every member met, and Tiro Pair never comes after meeting Tiro.
+  - Repeats are allowed when the tier runs out.
+  - Duplicate names get letters, member HP is scaled, and a lone enemy keeps full HP.
+- **Play Mode:**
+  - In Wolf Pack, clicking the second card through its real button moved the frame. The attack hit only that wolf.
+  - When it died, its card dimmed and the target moved to the other wolf; the battle ended in victory.
+  - Single-enemy (Thraex) and trait (Murmillo, Curl Up) cards look right. The trait chips were right-aligned and are now left-aligned.
+
+### Known Issues
+- A defeated enemy's card still shows its last statuses.
+- The scene's placeholder enemy sprites overlap for group members.
+
+### Next Steps
+- **Stage 3:** the Hydra as a body plus 2 head enemies.
+  - Killing a head cuts it, and cut heads regrow as two at the Hydra's turn start unless the body has Burn.
+  - The body heals per head unless it has Burn or Bleed.
+  - The battle ends when the body dies.
+- The user's play-test of the cards, targeting and groups.

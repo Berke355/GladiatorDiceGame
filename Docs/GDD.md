@@ -700,11 +700,23 @@ Some battles are fought against a group (Roadmap Phase C). Target choice adds a 
 - **Targeting:** click an enemy to select it as the target; the default is the front living enemy, and the target moves there when the selected one dies. Attacks, statuses applied to the enemy, ignites and items hit the selected target. Defense and buffs on yourself are unaffected. The target can be changed before or after rolling.
 - **Each enemy** has its own intent, traits and statuses (which tick separately). Enemies act in order, front first.
 - **Traits** react to the player as before. A trait about being attacked (Parry) only fires for the enemy that is the target.
-- **Groups:** normal battles can be groups of up to 3 enemies (e.g. 2 Tiro, or Retiarius + Secutor), each with less HP than a lone enemy.
+- **Groups:** normal battles can be groups of up to 3 enemies, each with less HP than a lone enemy (a multiplier per group). A group appears as often as any lone enemy of its tier and counts as meeting its members: nothing is met twice in a run.
+- **Each group is tuned to play like a hard lone enemy of its tier.** Even with less total HP, two attackers deal double damage per turn while both live, so the multipliers sit well below 0.5:
+
+| Group | Tier | Members (front first) | HP | Bots: HP taken / lost |
+|---|---|---|---|---|
+| Tiro Pair | Weak | Tiro, Tiro | ×0.4 (4 + 4) | 7.8 HP (lone Weak enemies: 2–7) |
+| Wolf Pack | Weak | Arena Wolf, Arena Wolf | ×0.4 (4 + 4) | 8.6 HP |
+| Net and Shield | Medium | Murmillo, Retiarius | ×0.5 (7 + 10) | 18.5% lost (lone Medium enemies: 2–24%) |
+| Poison and Blades | Medium | Dimachaerus, Venefica | ×0.45 (9 + 9) | 19% lost |
+| Beast Master | Strong | Arena Lion, Bestiarius | ×0.45 (10 + 21) | about 34% lost (lone Strong enemies: 20–58%) |
+
+  - Secutor + Retiarius (the first idea) lost 29% even at ×0.35: two of the hardest Medium enemies are too much together. A tank in front (Murmillo) of a dangerous back-liner works better: kill the front one, or reach past it.
 - **The battle is won** when every enemy is dead (the Hydra's body is the exception, see below).
 - **Area effects:** the rules support effects that hit every enemy; area content (faces, enchantments, items) comes later.
 - **The Hydra (planned rework):** a body plus 2 heads, each head a separate enemy. Killing a head cuts it; at the start of the Hydra's turn each cut head regrows as two, unless the body has Burn. The body heals per head, unless it has Burn or Bleed. The battle ends when the body dies.
 - **Bots** focus fire: they target the living enemy with the lowest HP.
+- **Screen:** each enemy has a card at the top right (name, HP, defense, statuses, intent, traits); the target's card has a gold TARGET frame, and a defeated enemy's card is dimmed. The rolled face sits in the middle of the screen.
 - **Built in stages:** the battle rules first (checked with single-enemy regression runs), then the targeting UI and the groups, then the Hydra.
 
 ### Bosses

@@ -27,6 +27,37 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 57b70612c7653a449b166a8d4b2739e8, type: 2}
   - {fileID: 11400000, guid: 1a62f2611d4e52b4d9831c63e1c217bb, type: 2}
   - {fileID: 11400000, guid: 4a710d8b17df78944a831efa88a13359, type: 2}
+  groups:
+  - groupName: Tiro Pair
+    tier: 0
+    members:
+    - {fileID: 11400000, guid: 9374cf5b4bef5f844b9bbf75c812b397, type: 2}
+    - {fileID: 11400000, guid: 9374cf5b4bef5f844b9bbf75c812b397, type: 2}
+    hpMultiplier: 0.4
+  - groupName: Wolf Pack
+    tier: 0
+    members:
+    - {fileID: 11400000, guid: 12115ca288deafb4f8c0e047aeaaa190, type: 2}
+    - {fileID: 11400000, guid: 12115ca288deafb4f8c0e047aeaaa190, type: 2}
+    hpMultiplier: 0.4
+  - groupName: Net and Shield
+    tier: 1
+    members:
+    - {fileID: 11400000, guid: 87cf8c5686ad27241823fdcb861f0a68, type: 2}
+    - {fileID: 11400000, guid: 2576009542aadad41ae3188caed53a36, type: 2}
+    hpMultiplier: 0.5
+  - groupName: Poison and Blades
+    tier: 1
+    members:
+    - {fileID: 11400000, guid: 06264f1efcc1e094d8b360b3e788faaf, type: 2}
+    - {fileID: 11400000, guid: d66cf3f1215d9064eafdad63089ad0a6, type: 2}
+    hpMultiplier: 0.45
+  - groupName: Beast Master
+    tier: 2
+    members:
+    - {fileID: 11400000, guid: 7a418011aa9290740b6e3b9c48a631dc, type: 2}
+    - {fileID: 11400000, guid: 4a710d8b17df78944a831efa88a13359, type: 2}
+    hpMultiplier: 0.45
   bossSlots:
   - battle: 4
     bosses:

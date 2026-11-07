@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
-    // The scene's enemy object, which takes the stats of the picked enemy or boss.
+    // The scene's enemy object, which takes the stats of the picked boss or the first enemy; copies of it hold the
+    // other members of an enemy group.
     public Entity enemy;
     public Entity player;
 
@@ -37,22 +38,39 @@ public class BattleManager : MonoBehaviour
 
         // The run picks this battle's boss or enemy; the scene's Enemy object takes its stats.
         BossSO boss = RunManager.Instance.PickBossForNextBattle();
-        IEnemyBrain brain;
+        List<BattleEnemy> enemies = new List<BattleEnemy>();
         if(boss != null){
             enemy.entityName = boss.bossName;
             enemy.maxHP = boss.maxHP;
             enemy.currentHP = boss.maxHP;
-            brain = new BossBrain(boss, enemy, player, currentDiceFaces);
+            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, currentDiceFaces)));
         }
         else{
-            EnemySO enemyData = RunManager.Instance.PickEnemyForNextBattle();
-            enemy.entityName = enemyData.enemyName;
-            enemy.maxHP = enemyData.maxHP;
-            enemy.currentHP = enemyData.maxHP;
-            brain = new EnemyBrain(enemyData, enemy, player);
+            EnemyGroup encounter = RunManager.Instance.PickEncounterForNextBattle();
+            List<string> names = MemberNames(encounter);
+            for(int i = 0; i < encounter.members.Count; i++){
+                EnemySO enemyData = encounter.members[i];
+                Entity entity = i == 0 ? enemy : Instantiate(enemy, enemy.transform.parent);
+                entity.name = "Enemy " + names[i];
+                entity.entityName = names[i];
+                entity.maxHP = encounter.MemberHP(enemyData);
+                entity.currentHP = entity.maxHP;
+                enemies.Add(new BattleEnemy(entity, new EnemyBrain(enemyData, entity, player)));
+            }
         }
 
-        flow = new BattleFlow(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, currentDiceFaces, run.equipment, run.rerollsPerBattle);
+        flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle);
+    }
+
+    // Enemy names, with a letter when the same enemy appears twice ("Tiro A", "Tiro B").
+    public static List<string> MemberNames(EnemyGroup encounter){
+        List<string> names = new List<string>();
+        foreach(EnemySO member in encounter.members){
+            int copies = encounter.members.FindAll(other => other == member).Count;
+            int index = names.FindAll(name => name.StartsWith(member.enemyName)).Count;
+            names.Add(copies > 1 ? member.enemyName + " " + (char)('A' + index) : member.enemyName);
+        }
+        return names;
     }
 
     void OnDestroy(){
@@ -85,9 +103,7 @@ public class BattleManager : MonoBehaviour
         if(UIManager.Instance != null){
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
-            // One enemy panel for now: the front enemy's traits.
-            UIManager.Instance.ShowTraits(flow.enemies[0].brain.Traits);
-            flow.enemies[0].traits.TraitTriggered += UIManager.Instance.FlashTrait;
+            UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
             flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
         }
         flow.StartBattle();
@@ -121,6 +137,16 @@ public class BattleManager : MonoBehaviour
         if(currentState is PlayerActionSelectState actionState){
             actionState.Reroll();
         }
+    }
+
+    // Called by an enemy card: selects that enemy as the target, before or after rolling.
+    public void OnEnemyClicked(int index){
+        bool choosing = currentState is PlayerRollState || currentState is PlayerActionSelectState;
+        if(!choosing || index < 0 || index >= flow.enemies.Count) return;
+        if(!flow.SelectTarget(flow.enemies[index]) || UIManager.Instance == null) return;
+        // The action previews depend on the target (e.g. Ignite reads its Burn).
+        if(currentState is PlayerActionSelectState) UIManager.Instance.ShowRolledFace(currentRolledFace, currentDiceFaces);
+        else UIManager.Instance.RefreshEnemies();
     }
 
     public void OnRolled(){

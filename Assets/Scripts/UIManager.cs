@@ -9,15 +9,15 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     public Entity player;
-    public Entity enemy;
 
     [Header("Combatants")]
     public CombatantPanelUI playerPanel;
-    public CombatantPanelUI enemyPanel;
 
-    [Header("Enemy Intent")]
-    public TextMeshProUGUI intentText;
-    public TooltipTrigger intentTooltip;
+    [Header("Enemies")]
+    // One card per enemy (panel, intent, traits), copied from the inactive template into the row.
+    public EnemyCardUI enemyCardTemplate;
+    public Transform enemyCardRow;
+    private readonly List<EnemyCardUI> enemyCards = new List<EnemyCardUI>();
 
     [Header("Rolled Face")]
     public TextMeshProUGUI rolledFaceTitle;
@@ -26,11 +26,6 @@ public class UIManager : MonoBehaviour
 
     [Header("Die")]
     public DieChipUI[] dieChips;
-
-    [Header("Enemy Traits")]
-    // Shown only for normal enemies with traits, in the spot the boss die uses.
-    public GameObject traitStrip;
-    public EquipmentChipUI[] traitChips;
 
     [Header("Boss Die")]
     // Shown only in boss battles: the boss's 6 faces, with the rolled one highlighted.
@@ -69,10 +64,7 @@ public class UIManager : MonoBehaviour
 
     void Start(){
         player.OnHealthChanged += UpdatePlayerUI;
-        enemy.OnHealthChanged += UpdateEnemyUI;
-
         UpdatePlayerUI();
-        UpdateEnemyUI();
     }
 
     void OnDestroy(){
@@ -84,8 +76,8 @@ public class UIManager : MonoBehaviour
             player.OnHealthChanged -= UpdatePlayerUI;
         }
 
-        if(enemy != null){
-            enemy.OnHealthChanged -= UpdateEnemyUI;
+        foreach(EnemyCardUI card in enemyCards){
+            if(card != null && card.Enemy != null) card.Enemy.entity.OnHealthChanged -= RefreshEnemies;
         }
     }
 
@@ -99,18 +91,26 @@ public class UIManager : MonoBehaviour
         shownEquipment = equipment;
     }
 
-    public void ShowTraits(List<EnemyTrait> traits){
-        int count = traits != null ? traits.Count : 0;
-        traitStrip.SetActive(count > 0);
-        for(int i = 0; i < traitChips.Length; i++){
-            bool has = i < count;
-            traitChips[i].gameObject.SetActive(has);
-            if(has) traitChips[i].SetTrait(traits[i]);
+    // One card per enemy, in turn order; onClick gets the enemy's index (target selection).
+    public void ShowEnemies(List<BattleEnemy> enemies, System.Action<int> onClick){
+        enemyCardTemplate.gameObject.SetActive(false);
+        for(int i = 0; i < enemies.Count; i++){
+            int index = i;
+            EnemyCardUI card = Instantiate(enemyCardTemplate, enemyCardRow);
+            card.gameObject.SetActive(true);
+            card.name = "EnemyCard " + enemies[i].entity.entityName;
+            card.Bind(enemies[i], () => onClick(index));
+            enemies[i].entity.OnHealthChanged += RefreshEnemies;
+            enemyCards.Add(card);
         }
     }
 
-    public void FlashTrait(int index){
-        if(index >= 0 && index < traitChips.Length) traitChips[index].Flash();
+    // Every card's panel, intent (numbers change with Rage, Ritual and statuses) and the target marker.
+    public void RefreshEnemies(){
+        BattleEnemy target = flow != null ? flow.Target : null;
+        foreach(EnemyCardUI card in enemyCards){
+            card.Refresh(card.Enemy == target);
+        }
     }
 
     // Called when an item triggers.
@@ -126,10 +126,6 @@ public class UIManager : MonoBehaviour
         playerPanel.Refresh(player);
     }
 
-    private void UpdateEnemyUI(){
-        enemyPanel.Refresh(enemy);
-    }
-
     // Start of the player's turn: only the roll button is active.
     public void ShowRollPhase(List<DieFace> die){
         rolledFaceTitle.text = "Roll the die";
@@ -137,6 +133,7 @@ public class UIManager : MonoBehaviour
         rolledFaceTooltip.text = "";
         UpdateDieChips(die, null);
 
+        RefreshEnemies();
         rollButton.interactable = true;
         UpdateRerollButton(false);
         for(int i = 0; i < actionButtons.Length; i++){
@@ -153,6 +150,7 @@ public class UIManager : MonoBehaviour
         rolledFaceTooltip.text = GameText.FaceTooltip(face);
         UpdateDieChips(die, face);
 
+        RefreshEnemies();
         rollButton.interactable = false;
         UpdateRerollButton(flow != null && flow.CanReroll);
         for(int i = 0; i < actionButtons.Length; i++){
@@ -161,11 +159,6 @@ public class UIManager : MonoBehaviour
             actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>"
                 + (preview != "" ? "\n<size=75%>" + GameText.Colorize(preview) + "</size>" : "");
         }
-    }
-
-    public void UpdateEnemyIntentText(string intentDescription){
-        intentText.text = GameText.Colorize(intentDescription);
-        intentTooltip.text = "<b>Enemy intent</b>\n" + GameText.Colorize(intentDescription) + GameText.Glossary(intentDescription);
     }
 
     // runComplete: the final boss was beaten, which ends the run.
@@ -199,7 +192,7 @@ public class UIManager : MonoBehaviour
         if(flow != null && flow.petrification.IsStone(face)){
             return action == ActionType.Defense ? Petrification.StoneBlock + " block (petrified)" : "";
         }
-        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : enemy, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
+        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);

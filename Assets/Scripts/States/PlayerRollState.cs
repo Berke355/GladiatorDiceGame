@@ -18,9 +18,9 @@ public class PlayerRollState : BattleState
         }
 
         if(UIManager.Instance != null){
-            IEnemyBrain brain = battleManager.flow.Target.brain;
-            UIManager.Instance.UpdateEnemyIntentText(brain.DescribeCurrentIntent());
-            UIManager.Instance.ShowBossDie(brain.Die, brain.RolledFace);
+            // Bosses fight alone, so the boss die belongs to the first enemy (null for normal enemies).
+            IEnemyBrain front = battleManager.flow.enemies[0].brain;
+            UIManager.Instance.ShowBossDie(front.Die, front.RolledFace);
             UIManager.Instance.ShowRollPhase(battleManager.currentDiceFaces);
         }
     }

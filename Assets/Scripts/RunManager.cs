@@ -118,18 +118,10 @@ public class RunManager : MonoBehaviour
         return encounters.PickBoss(run.battlesWon + 1);
     }
 
-    // Picks the enemy for the upcoming battle and remembers it so it won't appear again this run.
-    public EnemySO PickEnemyForNextBattle(){
+    // Picks the enemy or enemy group for the upcoming battle and remembers its members so they won't appear again this run.
+    public EnemyGroup PickEncounterForNextBattle(){
         EnemyTier tier = GetTierForBattle(run.battlesWon + 1);
-        List<EnemySO> candidates = encounters.enemyPool.FindAll(enemy => enemy.tier == tier && !run.metEnemies.Contains(enemy));
-        if(candidates.Count == 0){
-            // Every enemy of this tier was already met (e.g. a run longer than planned): allow repeats.
-            candidates = encounters.enemyPool.FindAll(enemy => enemy.tier == tier);
-        }
-
-        EnemySO picked = candidates[Random.Range(0, candidates.Count)];
-        run.metEnemies.Add(picked);
-        return picked;
+        return EncounterConfigSO.PickEncounter(encounters.enemyPool, encounters.groups, tier, run.metEnemies);
     }
 
     public void GoToRunStart(){

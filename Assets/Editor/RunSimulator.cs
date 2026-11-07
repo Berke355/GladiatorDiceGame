@@ -176,6 +176,10 @@ public static class RunSimulator
         }
     }
 
+    // Optional hook for experiments: returns the encounter to fight at this battle (e.g. always a given group),
+    // or null to pick as the game does. Picks made here don't mark members as met. Set it back to null afterwards.
+    public static System.Func<int, EnemyTier, List<EnemySO>, List<EnemyGroup>, EnemyGroup> ForceEncounter;
+
     public static Bot[] BotsMatching(params string[] labelParts){
         return System.Array.FindAll(DefaultBots(), bot => System.Array.Exists(labelParts, part => bot.label.Contains(part)));
     }
@@ -194,9 +198,13 @@ public static class RunSimulator
     public static string Simulate(Bot bot, int runs, float[] hpScale = null, float[] damageScale = null){
         RunManager config = AssetDatabase.LoadAssetAtPath<RunManager>("Assets/Resources/RunManager.prefab");
         List<EnemySO> pool = BuildEnemyPool(config.encounters, hpScale, damageScale);
+        List<EnemyGroup> groups = BuildGroups(config.encounters, pool);
 
         GameObject playerObject = new GameObject("SimPlayer"){ hideFlags = HideFlags.HideAndDontSave };
-        GameObject enemyObject = new GameObject("SimEnemy"){ hideFlags = HideFlags.HideAndDontSave };
+        GameObject[] enemyObjects = new GameObject[EnemyGroup.MaxMembers];
+        for(int i = 0; i < enemyObjects.Length; i++){
+            enemyObjects[i] = new GameObject("SimEnemy" + i){ hideFlags = HideFlags.HideAndDontSave };
+        }
         bool logWasEnabled = Debug.unityLogger.logEnabled;
         Debug.unityLogger.logEnabled = false;
 
@@ -242,11 +250,11 @@ public static class RunSimulator
                     EnemyTier tier = config.GetTierForBattle(battle);
                     // Boss slots with a boss fight it; the others (and boss slots without a boss yet) use a normal enemy.
                     BossSO boss = config.encounters.PickBoss(battle);
-                    EnemySO enemyData = boss == null ? PickEnemy(pool, run, tier) : null;
-                    string enemyName = boss != null ? boss.bossName : enemyData.enemyName;
+                    EnemyGroup encounter = boss == null ? (ForceEncounter != null ? ForceEncounter(battle, tier, pool, groups) : null) ?? EncounterConfigSO.PickEncounter(pool, groups, tier, run.metEnemies) : null;
+                    string enemyName = boss != null ? boss.bossName : encounter.DisplayName;
 
                     int turns;
-                    bool won = FightBattle(run, enemyData, boss, playerObject, enemyObject, out turns);
+                    bool won = FightBattle(run, encounter, boss, playerObject, enemyObjects, out turns);
                     if(!won){
                         deathsAt[battle]++;
                         deathsByEnemy[enemyName] = (deathsByEnemy.ContainsKey(enemyName) ? deathsByEnemy[enemyName] : 0) + 1;
@@ -289,7 +297,7 @@ public static class RunSimulator
         finally{
             Debug.unityLogger.logEnabled = logWasEnabled;
             Object.DestroyImmediate(playerObject);
-            Object.DestroyImmediate(enemyObject);
+            foreach(GameObject enemyObject in enemyObjects) Object.DestroyImmediate(enemyObject);
         }
 
         string report = FormatReport(bot, runs, reached, deathsAt, cleared, weakHpLost, weakCleared, turnsByTier, battlesByTier, deathsByEnemy);
@@ -353,42 +361,53 @@ public static class RunSimulator
         return value <= 0 ? 0 : Mathf.Max(1, Mathf.RoundToInt(value * scale));
     }
 
-    // Same rules as RunManager.PickEnemyForNextBattle.
-    private static EnemySO PickEnemy(List<EnemySO> pool, RunData run, EnemyTier tier){
-        List<EnemySO> candidates = pool.FindAll(enemy => enemy.tier == tier && !run.metEnemies.Contains(enemy));
-        if(candidates.Count == 0){
-            candidates = pool.FindAll(enemy => enemy.tier == tier);
+    // The config's enemy groups with their members swapped for the pool's (possibly scaled) copies.
+    // pool[i] is the copy of encounters.enemyPool[i]; a member outside the pool keeps its asset.
+    private static List<EnemyGroup> BuildGroups(EncounterConfigSO encounters, List<EnemySO> pool){
+        List<EnemyGroup> groups = new List<EnemyGroup>();
+        foreach(EnemyGroup original in encounters.groups){
+            EnemyGroup copy = new EnemyGroup{ groupName = original.groupName, tier = original.tier, hpMultiplier = original.hpMultiplier };
+            foreach(EnemySO member in original.members){
+                int index = encounters.enemyPool.IndexOf(member);
+                copy.members.Add(index >= 0 ? pool[index] : member);
+            }
+            groups.Add(copy);
         }
-        EnemySO picked = candidates[Random.Range(0, candidates.Count)];
-        run.metEnemies.Add(picked);
-        return picked;
+        return groups;
     }
 
     // ---------- Battle ----------
 
     // Mirrors the battle states: player turn (roll, act, OnTurnEnd), then enemy turn.
-    // A normal enemy (enemyData) or a boss (boss); exactly one of them is set.
-    private static bool FightBattle(RunData run, EnemySO enemyData, BossSO boss, GameObject playerObject, GameObject enemyObject, out int turns){
+    // A normal encounter (one enemy or a group) or a boss; exactly one of them is set.
+    private static bool FightBattle(RunData run, EnemyGroup encounter, BossSO boss, GameObject playerObject, GameObject[] enemyObjects, out int turns){
         Entity player = Reset<Entity>(playerObject);
         player.entityName = "Player";
         player.maxHP = run.maxHP;
         player.currentHP = run.currentHP;
 
-        Entity enemy = Reset<Entity>(enemyObject);
-        enemy.entityName = boss != null ? boss.bossName : enemyData.enemyName;
-        enemy.maxHP = boss != null ? boss.maxHP : enemyData.maxHP;
-        enemy.currentHP = enemy.maxHP;
-        IEnemyBrain brain;
+        List<BattleEnemy> enemies = new List<BattleEnemy>();
         if(boss != null){
-            brain = new BossBrain(boss, enemy, player, run.dieFaces);
+            Entity enemy = Reset<Entity>(enemyObjects[0]);
+            enemy.entityName = boss.bossName;
+            enemy.maxHP = boss.maxHP;
+            enemy.currentHP = enemy.maxHP;
+            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, run.dieFaces)));
         }
         else{
-            brain = new EnemyBrain(enemyData, enemy, player);
+            List<string> names = BattleManager.MemberNames(encounter);
+            for(int i = 0; i < encounter.members.Count && i < enemyObjects.Length; i++){
+                Entity enemy = Reset<Entity>(enemyObjects[i]);
+                enemy.entityName = names[i];
+                enemy.maxHP = encounter.MemberHP(encounter.members[i]);
+                enemy.currentHP = enemy.maxHP;
+                enemies.Add(new BattleEnemy(enemy, new EnemyBrain(encounter.members[i], enemy, player)));
+            }
         }
 
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
-        BattleFlow flow = new BattleFlow(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, run.dieFaces, run.equipment, run.rerollsPerBattle);
-        EnemyTier statsTier = boss != null ? EnemyTier.Boss : enemyData.tier;
+        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.rerollsPerBattle);
+        EnemyTier statsTier = boss != null ? EnemyTier.Boss : encounter.tier;
         FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;
         flow.StartBattle();
