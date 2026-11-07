@@ -2275,3 +2275,36 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Ritual + Bleed** (6%), the last bottom build; focused Ritual stays low as a glue archetype.
 - **The user's play-test.**
 - **Encourage:** its content set is to be discussed.
+
+## Day 63 - Ritual + Bleed: a Weak Pairing by Design
+
+### Findings (1000 runs)
+
+| | Bleed | Ritual + Bleed |
+|---|---|---|
+| Clear rate | 12% | 7% |
+| Enemy Bleed at the player's action (stacks) | 4.1 | 6.3 |
+| Tick damage per turn | 0.91 | 0.97 |
+| Action damage per turn | 3.83 | 3.82 |
+| Deaths at battle 7 | 7% | 17% |
+
+- **Why:** Bleed's stacks are duration, not damage (1 per tick; the damage comes from the faces, as the user designed it). Ritual's extra stacks only pay off through Lacerate (Common, value + Bleed, 15% of rolls) and Exsanguinate (Epic, value × consumed Bleed, 1% of rolls).
+- **The Ritual pieces cost slots:** Incantation (0.4 per die) and Bone Fetish (40% of runs) take die and item slots from Bleed faces, so the hybrid is weaker than plain Bleed.
+- **Experiments:**
+
+| Change | Bleed | Ritual + Bleed |
+|---|---|---|
+| Lacerate +1 | 14% | 6% |
+| Exsanguinate as Rare | 11% | 5% |
+
+### Decision
+- **Ritual + Bleed stays a weak pairing on purpose** (the user: Bleed's design doesn't match Ritual, and it doesn't have to).
+  - Ritual is the glue for statuses whose stacks are damage (Poison, Burn).
+  - Bleed's strong hybrid is Bleed + Rage.
+  - Not chosen: a bridge face, or Ritual raising Bleed's tick damage. Both would blur Bleed's identity.
+- Written into the GDD ("Hybrid Builds").
+
+### Next Steps
+- **The user's play-test** of the new economy and the balance passes (Days 57–62).
+- **Encourage:** its content set is to be discussed.
+- **If the game still feels easy:** harden the Weak tier.

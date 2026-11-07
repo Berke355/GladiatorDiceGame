@@ -621,6 +621,10 @@ Hybrids add variety and give players a way to pivot when they can't find the fac
 - **Bridge faces** carry two archetype tags (e.g. Flame Ward: Burn + Block, Toxic Blade: Poison + Physical) and naturally connect two builds.
 - **Die-composition payoffs** can be written for any tag, or even reward variety (e.g. "for each different tag on your die").
 - **Tag weighting stays around 60%** so about 40% of offers come from outside the current build and pivoting stays possible.
+- **Not every pair has to work (DevLog Day 63).** Ritual is the glue for statuses whose stacks are damage: Poison (more stacks, bigger ticks) and Burn (more fuel for ignitions). Ritual + Poison is the strongest hybrid (about 23%).
+  - **Ritual + Bleed is a weak pairing by design.** Bleed's stacks are its duration, not its damage (Bleed deals 1 per tick; the damage comes from the faces). Ritual raised the enemy's Bleed from 4.1 to 6.3 stacks, but tick damage stayed the same (0.97 vs 0.91 per turn). Only Lacerate (Common) and Exsanguinate (Epic) turn stacks into damage, and the Ritual pieces (Incantation, Bone Fetish) take die and item slots from Bleed faces, so the hybrid clears less than plain Bleed (7% vs 12%).
+  - Neither a stronger Lacerate (Ritual + Bleed 6%) nor a Rare Exsanguinate (5%) helped. A bridge face or making Ritual raise Bleed's tick damage would blur Bleed's identity, so the pairing stays weak on purpose.
+  - A Bleed player's strong hybrid is **Bleed + Rage** instead: Rage adds to every hit of the faces that carry Bleed's damage.
 
 ### Open Questions
 
