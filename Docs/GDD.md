@@ -383,15 +383,16 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 | Item | Build | Trigger | Effect |
 |---|---|---|---|
 | **Plague Mask** | Poison | FaceRolled (Poison face), first 2 per battle | Apply 1 Poison |
-| **Smoldering Gauntlet** | Burn | HitDealt | Apply 3 Burn |
+| **Smoldering Gauntlet** | Burn | HitDealt | Apply 1 Burn |
 | **Barbed Hook** | Bleed | HitDealt | If the enemy is bleeding, hit again for 1 |
 | **Tower Helm** | Shield | ActionChosen (Defense), up to 5 per battle | Gain 1 Fortify |
 | **Berserker Torc** | Rage | HitTaken, first per battle | Gain 1 Rage |
 | **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
 | **Laurel Wreath** | General | BattleWon | Heal 1 |
 | **Iron Bracers** | General | BattleStart | Gain 1 Fortify |
-| **Censer** | Poison | TurnEnd | Apply 1 Poison to every enemy (see "Area Effects") |
+| **Censer** | Poison | TurnEnd, first 3 per battle | Apply 1 Poison to every enemy (see "Area Effects") |
 
+- **Items that fire on every hit or every turn need small numbers or a cap.** In the difficulty pass (DevLog Day 60) the two uncapped items carried their builds: Smoldering Gauntlet (3 Burn per hit, on 92% of Burn bots at battle 8) lifted Burn to 22% (12% without it); it now applies 1 Burn per hit (16%). Censer is capped at 3 per battle (see "Area Effects").
 - **Bridges through existing rules:** Rage adds to Barbed Hook's extra hit (Bleed + Rage), Ritual adds to Plague Mask's Poison (Ritual + Poison), and Smoldering Gauntlet fires on every hit of a multi-hit (Twin Axes + Burn).
 - **Plague Mask scales with the die:** the more Poison faces on the die, the more often it fires.
 - **Berserker Torc is the risky one** (Pillar 4): it grows from damage taken, and Rage is permanent. Its numbers need the closest watch.
@@ -773,7 +774,7 @@ Faces, enchantments and items that act on several enemies.
 | **Contagion** | Face, value 2 | Rare | Poison | Magic: apply my value as Poison, then copy the target's Poison to every other enemy. Defense: block |
 | **Follow Through** | Face, value 3, Charge | Rare | Hammer | Attack: deal my value; if it kills the target, the excess hits the next enemy |
 | **Sweep** | Enchantment | Epic | Any | Magic: deal the face's value to every enemy |
-| **Censer** | Item | Rare | Poison | End of your turn: 1 Poison to every enemy |
+| **Censer** | Item | Rare | Poison | End of your first 3 turns each battle: 1 Poison to every enemy |
 
 - **Tuned by simulation (DevLog Day 56).** The test swapped one Sword on the starter die for the face and measured HP taken in Weak battles (400 runs each):
 
@@ -789,6 +790,7 @@ Faces, enchantments and items that act on several enemies.
   - Follow Through plays like War Hammer alone and a little better against groups.
 - **Whole runs:** the focused Burn, Poison, Rage and Hammer bots clear the same share with or without the new faces in the pool (within 1 point). Area effects are a situational tool, not a power jump. Most deaths happen at the bosses, where area effects matter little.
 - **The Hydra:** with Cleave in the pool, the Rage bot's Hydra deaths are unchanged (44%). Cleave's 3 damage rarely kills an 8 HP head by accident.
+- **Censer is capped at 3 per battle (DevLog Day 60):** uncapped, it was on 75% of Poison bots' gear at battle 8 and lifted Poison to 27% and Ritual + Poison to 36% (Ritual adds to every tick's Poison). Without it: 17% and 15%; capped at 3, like Plague Mask's cap: 16% and 25%.
 - **Later:** area content for Bleed and Shield.
 - **The Hydra** is a body plus head enemies (see "Hydra" under Bosses). When more than 3 cards are on screen, all of them shrink to fit.
 - **Bots** focus fire: they target the living enemy with the lowest HP.

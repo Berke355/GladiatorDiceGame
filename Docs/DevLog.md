@@ -2117,3 +2117,79 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The difficulty and gold pass:** starting gold, the 4-HP Consumable potion and the Healer all raised clear rates (focused bots now 5–27%).
 - **Encourage:** its content set is to be discussed.
 - **The user's play-test** of the starting reroll, Consumable / Change and the Healer.
+
+## Day 60 - Difficulty and Gold Pass: Capping the Outlier Items
+
+### Findings (simulation first)
+- **Clear rates after the new economy** (starting gold, Consumable potion, Healer) ran from 0% to 36%, against the Phase A target of 5–15% for bots:
+
+| Bot | Day 52 | Before this pass |
+|---|---|---|
+| Ritual + Poison | 8% | 36% |
+| Poison | 5% | 27% |
+| Burn | 12% | 21% |
+| Shield | 7% | 19% |
+| Shield + Rage | 12% | 15% |
+| Rage | 5% | 13% |
+| Bleed | 6% | 10% |
+| Bleed + Rage | 6% | 10% |
+| Hammer | 1% | 7% |
+| Ritual + Bleed | 3% | 5% |
+| Fortune | 2% | 3% |
+| Ritual | 0% | 0% |
+
+- **Where bots die:**
+  - The Minotaur stops slow starters (Ritual 61%, Fortune 30%, Burn 24% of runs).
+  - Medusa stops the middle builds (Bleed + Rage 46%, Bleed 39%, Rage 37%, Hammer 36%).
+  - The Strong tier takes 10–35% and the Hydra 4–11%.
+  - The Weak tier is almost riskless (0–1% deaths, 5–15 HP lost).
+  - Bots enter the first Grand Market with 54–62 gold.
+- **Raising every enemy is the wrong tool:** Medium and Strong HP ×1.2 took Rage 13% → 5% and Bleed 10% → 3%, but Ritual + Poison only 36% → 25% (damage ×1.25: 9%, 4%, 24%). It crushes the builds that are already weak and widens the spread.
+- **The outliers were two uncapped items:**
+  - **Censer** (Day 56): 1 Poison to every enemy every turn, boosted by Ritual, on 75% of Poison bots at battle 8. Without it, Poison 27% → 17% and Ritual + Poison 36% → 15%.
+  - **Smoldering Gauntlet:** 3 Burn per hit, ignited at once by Ember, on 92% of Burn bots. Without it, Burn 22% → 12%; Ember −1 only gave 17%.
+
+### Accomplished
+- **Censer:** at most 3 per battle (the first 3 turns), like Plague Mask's cap.
+- **Smoldering Gauntlet:** 1 Burn per hit (was 3).
+- GDD rule: items that fire on every hit or every turn need small numbers or a cap.
+
+### Experiments (1000 runs)
+
+| Change | Result |
+|---|---|
+| Censer, at most 3 per battle | Poison 17%, Ritual + Poison 26% |
+| Censer, at most 2 per battle | Poison 17%, Ritual + Poison 19% |
+| Gauntlet, at most once per turn | Burn 22% (bots rarely hit twice a turn) |
+| Gauntlet, 2 Burn per hit | Burn 20% |
+| Gauntlet, first 4 hits per battle | Burn 19% |
+| Gauntlet, 1 Burn per hit (chosen) | Burn 16% |
+| Ritual + Poison without Bone Fetish | 21% |
+
+- Ritual + Poison's strength is the hybrid synergy itself (Ritual adds to every Poison application), not one item, so it stays.
+
+### Results (1000 runs)
+
+| Bot | Clear rate |
+|---|---|
+| Ritual + Poison | 23% |
+| Shield | 16–20% |
+| Poison | 18% |
+| Burn | 15% |
+| Rage | 13% |
+| Bleed | 12% |
+| Shield + Rage | 11% |
+| Bleed + Rage | 10% |
+| Ritual + Bleed | 6% |
+| Hammer | 5% |
+| Fortune | 3% |
+| Ritual | 1% |
+| Unplanned buyer | 0% |
+| No shopping | 0% |
+
+- Shield plays long fights (20 turns in the Strong tier) with Tower Helm on 97% of its runs, but no single piece stands out, so it stays.
+
+### Next Steps
+- **The user's play-test** of the new economy (starting reroll, potion and Change, Healer) and the capped items. If the game still feels easy, harden the Weak tier (battles 1–3 are almost riskless).
+- **Bring up the bottom:** Fortune, Hammer, Ritual + Bleed (archetype passes). Focused Ritual staying low is acceptable as a glue archetype.
+- **Encourage:** its content set is to be discussed.

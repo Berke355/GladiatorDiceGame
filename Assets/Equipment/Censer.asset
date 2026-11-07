@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Censer
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Censer
-  description: 'At the end of your turn: apply 1 Poison to every enemy.'
+  description: 'At the end of your first 3 turns each battle: apply 1 Poison to every
+    enemy.'
   rarity: 1
   tags: 04000000
   triggers:
@@ -26,4 +27,4 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 12c74c2d521707643aa5af672e5caa5f, type: 2}
     value: 1
     maxPerRound: 0
-    maxPerBattle: 0
+    maxPerBattle: 3
