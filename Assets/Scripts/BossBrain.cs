@@ -47,6 +47,7 @@ public class BossBrain : IEnemyBrain, IDisposable
         this.self = self;
         this.opponent = opponent;
         this.playerDie = playerDie;
+        self.maxHPLossPerRound = boss.maxHPLossPerRound;
         foreach(DieFaceSO face in boss.faces){
             die.Add(new DieFace(face));
         }
@@ -94,6 +95,9 @@ public class BossBrain : IEnemyBrain, IDisposable
             text += "\nHeads: " + LivingHeads
                 + (cut > 0 ? " | " + cut + " cut: " + (RegrowthBlocked ? "cauterized by Burn" : "will grow back as " + 2 * cut) : "")
                 + " | regenerates " + (RegenBlocked ? "0 (blocked)" : (definition.regenPerHead * LivingHeads).ToString());
+        }
+        if(definition.maxHPLossPerRound > 0){
+            text += "\nScales: loses at most " + definition.maxHPLossPerRound + " HP a round (" + self.HPLossLeftThisRound + " left)";
         }
         return text;
     }

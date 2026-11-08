@@ -108,6 +108,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f26b858e9e5a6dd4487c6cf761a1ad0b, type: 2}
   - {fileID: 11400000, guid: 8932d5c6b507cb346ac1347b5eab780e, type: 2}
   - {fileID: 11400000, guid: 37592c37d36e45b47928531bc00048ac, type: 2}
+  - {fileID: 11400000, guid: 455202893ac83ff4ea441fdf2354288b, type: 2}
+  - {fileID: 11400000, guid: ab62233f4169bd147ac2371c88e7ed5f, type: 2}
+  - {fileID: 11400000, guid: f8f9b220d50314443820a1354be49e95, type: 2}
+  - {fileID: 11400000, guid: 1b16153fcc22bc14cbd189a9eb6d8e53, type: 2}
+  - {fileID: 11400000, guid: 34d7ebe702ff22941af977a70ac7dd59, type: 2}
+  - {fileID: 11400000, guid: a474f41bf98765541b6c8c3bb25c3a6c, type: 2}
+  - {fileID: 11400000, guid: ffe773c24b02ce840822279624c59abd, type: 2}
+  - {fileID: 11400000, guid: d9de2c843f83ef34db19303c3655abb0, type: 2}
   dieEnchantmentsPerMarket: 2
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}

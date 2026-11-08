@@ -10,6 +10,8 @@ public class DieCharge
     private readonly Dictionary<DieFace, int> charge = new Dictionary<DieFace, int>();
     // The bonus from the die's enchantments for a face (see GDD "Die Enchantments"), set by BattleFlow.
     public System.Func<DieFace, int> placementBonus;
+    // What the die's enchantments multiply a face's value by (Twin Soul), set by BattleFlow. 1 if not set.
+    public System.Func<DieFace, int> placementMultiplier;
     // Value added for the whole battle (Drill Sergeant). Unlike Charge, acting with the face doesn't spend it.
     private readonly Dictionary<DieFace, int> battleBonus = new Dictionary<DieFace, int>();
 
@@ -44,7 +46,8 @@ public class DieCharge
     // The value a face has in this battle, which is what its effects use (Value Is the Effect): its value, its Charge
     // and its place on the die. Never below 0.
     public int ValueOf(DieFace face){
-        return Mathf.Max(0, face.value + Get(face) + Bonus(face));
+        int multiplier = placementMultiplier != null ? placementMultiplier(face) : 1;
+        return Mathf.Max(0, (face.value + Get(face) + Bonus(face)) * multiplier);
     }
 
     // The face with the highest battle value other than exclude (the first one on ties); null if there is none.

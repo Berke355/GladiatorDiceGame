@@ -26,7 +26,7 @@ public static class GameText
         new Keyword{ word = "Vulnerable", color = "#E5A35C", definition = "Every hit its owner takes deals +1 damage. Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Weak", color = "#9AA5B1", definition = "Every hit its owner deals deals 1 less damage. Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Entangled", color = "#7FA88B", definition = "Its owner can't reroll. Loses 1 stack at the end of its owner's turn." },
-        new Keyword{ word = "Consumable", color = "#E8C170", definition = "This action can be used once per battle. Afterwards it becomes Change, usable once per turn." },
+        new Keyword{ word = "Consumable", color = "#E8C170", definition = "This face can be used once per battle, whichever action you choose. Afterwards every action on it is Change, usable once per turn." },
         new Keyword{ word = "Change", color = "#E8C170", definition = "Roll the die again and land on a face other than this one: your turn goes on and the enemy doesn't act. Not a reroll: it spends no rerolls." },
         new Keyword{ word = "Flip", color = "#E8C170", definition = "Roll the die again and land on the face opposite this one: your turn goes on. Not a reroll." },
         new Keyword{ word = "Tumble", color = "#E8C170", definition = "Roll the die again and land on a neighboring or named face: your turn goes on. Not a reroll." },

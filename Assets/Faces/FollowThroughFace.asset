@@ -21,5 +21,7 @@ MonoBehaviour:
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: fd0d98d1eb01faa44a2e51efa3133981, type: 2}
+  keywords: 01000000
   charges: 1
   hasNoValue: 0
+  consumableActions: 

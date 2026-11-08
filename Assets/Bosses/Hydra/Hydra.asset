@@ -13,14 +13,15 @@ MonoBehaviour:
   m_Name: Hydra
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Hydra
-  maxHP: 30
+  maxHP: 60
+  maxHPLossPerRound: 12
   faces:
   - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}
   - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}
   - {fileID: 11400000, guid: 43e95b68746df0e41add32f86657e0b2, type: 2}
   - {fileID: 11400000, guid: 4558ec5030b12e240bdeae81f2cbb880, type: 2}
   - {fileID: 11400000, guid: 4558ec5030b12e240bdeae81f2cbb880, type: 2}
-  - {fileID: 11400000, guid: 4558ec5030b12e240bdeae81f2cbb880, type: 2}
+  - {fileID: 11400000, guid: d4c621716608fba418903b7796432b6d, type: 2}
   countdownTurns: 3
   staggerDamage: 12
   whileCountingDown: {fileID: 0}

@@ -46,6 +46,11 @@ public class Entity : MonoBehaviour
     public bool IsDead => currentHP <= 0;
     // Damage the last hit lost to Block and Fortify (0: the whole hit got through), e.g. for Curl Up.
     public int LastHitAbsorbed { get; private set; }
+    // The most HP this entity can lose in a round, the player's turn plus the enemies' after it (the Hydra's Scales).
+    // 0: no limit. It holds for every HP loss, so a strong build can't end the fight in a few hits.
+    public int maxHPLossPerRound;
+    private int hpLostThisRound;
+    public int HPLossLeftThisRound => maxHPLossPerRound > 0 ? Math.Max(0, maxHPLossPerRound - hpLostThisRound) : int.MaxValue;
     // Who landed the last hit (null for a hit without a source).
     public Entity LastAttacker { get; private set; }
 
@@ -124,11 +129,17 @@ public class Entity : MonoBehaviour
 
     // Direct HP loss that ignores block (used by damage over time).
     private void LoseHP(int amount){
+        amount = Math.Min(amount, HPLossLeftThisRound);
+        hpLostThisRound += amount;
         currentHP -= amount;
         if(currentHP <= 0){
             currentHP = 0;
             Debug.Log(entityName + " died.");
         }
+    }
+
+    public void StartRound(){
+        hpLostThisRound = 0;
     }
 
     // A dead entity can't be healed back (only Revive brings it back).

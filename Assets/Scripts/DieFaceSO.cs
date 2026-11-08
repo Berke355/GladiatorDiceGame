@@ -14,14 +14,14 @@ public class DieFaceSO : ScriptableObject
     public int baseValue;
 
     public List<ActionEffect> effects = new List<ActionEffect>();
+    // Rules on the whole face, which affect every action on it (see GDD "Face Keywords").
+    public List<FaceKeyword> keywords = new List<FaceKeyword>();
 
-    // Charge rule (Hammer): every turn this face isn't the one you act with, it gains +1 value for the battle.
-    public bool charges;
     // A special face whose value isn't a number (none exist yet). Rules that compare values treat it as lowest,
     // e.g. it counts as below any threshold (see PunishChoiceEffectSO).
     public bool hasNoValue;
-    // Consumable actions (see GDD "Consumable and Change"): each can be used once per battle, then it becomes Change.
-    public List<ActionType> consumableActions = new List<ActionType>();
 
-    public bool IsConsumable(ActionType action) => consumableActions != null && consumableActions.Contains(action);
+    public bool HasKeyword(FaceKeyword keyword) => keywords != null && keywords.Contains(keyword);
+    public bool Charges => HasKeyword(FaceKeyword.Charge);
+    public bool IsConsumable => HasKeyword(FaceKeyword.Consumable);
 }

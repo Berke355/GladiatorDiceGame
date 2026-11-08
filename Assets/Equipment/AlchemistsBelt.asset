@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: AlchemistsBelt
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Alchemist's Belt
-  description: Consumable actions work 2 times each battle before they become Change.
+  description: Consumable faces work 2 times each battle before they become Change.
   rarity: 1
   tags: 
   triggers: []
   goldPerVictory: 0
   extraConsumableUses: 1
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

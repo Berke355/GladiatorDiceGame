@@ -644,7 +644,7 @@ public static class RunSimulator
 
         // A stone face can only defend.
         if(flow.petrification.IsStone(face)) return ActionType.Defense;
-        // A face whose only actions are used Consumables: Change (roll again).
+        // A used Consumable face: Change (roll again).
         ActionType? change = null;
         bool realAction = false;
         foreach(ActionType each in new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }){
@@ -739,7 +739,7 @@ public static class RunSimulator
         bool spender = die.Exists(f => f.definition.faceName == "Gambit");
         if(flow.rerolls.Left <= (spender ? 0 : 1)) return false;
         // Don't waste a once-per-battle heal at (nearly) full HP.
-        if(face.definition.IsConsumable(ActionType.Magic) && !flow.IsChange(face, ActionType.Magic)
+        if(flow.IsConsumableFace(face) && face.HasAction(ActionType.Magic) && !face.HasAction(ActionType.Attack) && !flow.IsChange(face, ActionType.Magic)
             && flow.player.maxHP - flow.player.currentHP < flow.charge.ValueOf(face)) return true;
         // Patient Blade hits harder for every reroll kept, so a die with one only rerolls to survive.
         if(!spender && die.Exists(f => f.definition.faceName == "Patient Blade" || f.definition.faceName == "Hedge")) return false;
@@ -792,7 +792,7 @@ public static class RunSimulator
             // A turn without a hit: worth it when the Charge it hands out (my battle value to each other Charge
             // face, past the cap) is more than the hit I'd deal now. This face keeps its Charge either way.
             case "Resonance":
-                int others = die.FindAll(f => f != face && f.definition.charges).Count;
+                int others = die.FindAll(f => f != face && f.definition.Charges).Count;
                 return others > 0 && flow.charge.ValueOf(face) * others > flow.charge.ValueOf(face) + player.GetStatus(StatusType.Rage);
         }
         bool offBuild = !enchantment.tags.Exists(tag => face.definition.tags.Contains(tag));
@@ -873,6 +873,10 @@ public static class RunSimulator
                 if(entry.position == position) score += entry.amount;
             }
         }
+        // Its weakest face goes on a spot that makes faces Consumable or worth nothing: that's the trick to test.
+        if(DieEnchantmentSO.ConsumableAt(run.dieEnchantments, position)) score -= 6;
+        int multiplier = DieEnchantmentSO.MultiplierAt(run.dieEnchantments, position);
+        score += multiplier == 0 ? -8 : (multiplier - 1) * 5;
         return score + 3 * (DieEnchantmentSO.WeightAt(run.dieEnchantments, position) - 1);
     }
 
@@ -1171,7 +1175,7 @@ public static class RunSimulator
     }
 
     private static int HostValue(DieFace face){
-        return face.value + (face.definition.charges ? 3 : 0);
+        return face.value + (face.definition.Charges ? 3 : 0);
     }
 
     // Replaces the weakest face outside the archetype (a face carrying an archetype enchantment counts as inside it,

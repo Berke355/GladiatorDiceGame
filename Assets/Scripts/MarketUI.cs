@@ -319,10 +319,11 @@ public class MarketUI : MonoBehaviour
 
             DieFace dieFace = run.dieFaces[i];
             string moving = i == pendingSwap ? "<color=#B8860B>Moving: </color>" : "";
-            int bonus = DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i);
+            int bonus = (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i) - dieFace.value;
             string bonusText = bonus > 0 ? " <color=#B8860B>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
             int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
-            string weightText = weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often";
+            string weightText = (weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often")
+                + (DieEnchantmentSO.ConsumableAt(run.dieEnchantments, i) ? " | Consumable" : "");
             slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + bonusText + "\n<size=70%>" + DieLayout.Name(i) + weightText + " | " + MagicStatus(dieFace) + "</size>";
             slot.tooltip.text = GameText.FaceTooltip(dieFace) + "\n<color=#9AA5B1>" + DieLayout.Describe(run.dieFaces, i) + "</color>";
             // An enchantment can only go on a face whose Magic action is still empty. With nothing being bought,

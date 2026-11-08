@@ -173,6 +173,16 @@ Every build should care where its faces sit, not only Fortune (play-test). Die e
 | **Twin Fangs** | Rare | Left and Right +1, Middle -2 |
 | **Kindred** | Epic | Every face that shares a tag with its opposite face gets +1 |
 | **Weighted Die** | Epic | Rightmost comes up twice as often. It used to stop Left from coming up, which erased the die's weakest face (the user's play-test). |
+| **Keystone** | Common | Middle +2, Right -1 |
+| **Right Hand** | Common | Right +2, Top -1 |
+| **Outer Ring** | Rare | Top and Bottom +1, Middle -1 |
+| **Low Guard** | Rare | Bottom +3, Left and Right -1 |
+| **Burnout** | Rare | Right +3, and the face on Right is Consumable (the user's idea) |
+| **Center of Gravity** | Epic | Middle comes up twice as often |
+| **Twin Weights** | Epic | Left and Right come up twice as often |
+| **Twin Soul** | Epic | Top's value x2, Bottom's value 0 (the user's idea; the x2 needs a price, or stacking wins again) |
+
+- **Why so many Epics:** the Grand Market offers 2 of them; with only Kindred and Weighted Die it always offered Weighted Die, which with Honed Edge made the same combo in every run (the user's play-test).
 
 - **Simulation (DevLog Day 74, an enchantment free from the start; Opportunist / Rage / Burn, 350 runs):**
 
@@ -263,11 +273,22 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
     4. Bots, simulation and play-tests.
 - **Steady Hand stays as it is:** it rerolls without spending the pool, so it is still its own thing.
 
+### Face Keywords
+
+**Rules on a whole face, which affect every action on it** (the user's idea). Charge was already one in practice.
+
+| Keyword | Effect |
+|---|---|
+| **Consumable** | The face can be used once per battle; afterwards every action on it is Change |
+| **Charge** | Every turn the face isn't the one you act with, it gains +1 value for the battle |
+
+- **Planned, after a play-test:** Growing (+1 value this battle per use), Heavy (+2 value, can't be rerolled) and Brittle (+3 value, -1 per use), sold at the Enchanting Table, one per face. "?" events can offer them once the map exists. Consumable stays printed only at first, since adding it to a weak face could erase that face from the die.
+
 ### Consumable and Change
 
-- **Consumable** (a keyword on an action, not on a face): the action can be used once per battle. A face's other actions keep working. Each copy of a face on the die has its own use.
+- **Consumable** (a Face Keyword, see below): the face can be used once per battle, whichever action is chosen. It used to be a keyword on one action, which let an enchantment use a high-value Consumable face without limit (the user's play-test: Throwing Knife with Whirlwind). Each copy of a face on the die has its own use.
 - **Change** (a keyword on an action): roll the die again and land on **any face other than this one**. The turn continues (the enemy doesn't act), and the new face must be used. **Change can be used once per turn.**
-- **A used Consumable action becomes Change for the rest of the battle.** The player never sits with a dead roll: a drunk Health Potion turns into a way to the rest of the die. This follows the rule that the player always has something to do.
+- **Every action of a used Consumable face becomes Change for the rest of the battle.** The player never sits with a dead roll: a drunk Health Potion turns into a way to the rest of the die. This follows the rule that the player always has something to do.
 - **Change is an action, not a reroll:**
   - It doesn't spend the reroll pool and doesn't count as a reroll for Fortune effects ("if you rerolled this turn", Patient Blade) or enemy traits (Essedarius's Momentum).
   - Entangled doesn't stop it: Entangled forbids rerolls, and blocking Change would bring the dead roll back.
@@ -504,7 +525,7 @@ Each item changes how you play or what you decide, not just a number. These also
 | Item | For | Trigger | Effect |
 |---|---|---|---|
 | **Whetstone** | Hammer | BattleStart | Charge faces start with 1 Charge |
-| **Alchemist's Belt** | Consumable | Always | Consumable actions work 2 times per battle before they become Change |
+| **Alchemist's Belt** | Consumable | Always | Consumable faces work 2 times per battle before they become Change |
 | **Lucky Charm** | Fortune | FaceRolled (a steer brought it), first per round | Gain 2 block |
 | **Spiked Greaves** | General | HitTaken, up to 3 per battle | Deal 1 damage to the attacker |
 | **Ambusher's Knife** | General | HitDealt, first per battle | Hit again for 3 |
@@ -1151,7 +1172,7 @@ The many-headed serpent: cut off one head and two grow back, unless the wound is
 
 | Enemy | HP | Die / intents |
 |---|---|---|
-| Hydra (body) | 30 | Thrash ×2 (Attack: 3 damage), Regrow ×1 (Magic: heal 5, blocked by Burn or Bleed), Hiss ×3 (Defense: 3 block) |
+| Hydra (body) | 60 | Scales: loses at most 12 HP a round. Thrash ×2 (Attack: 3 damage), Corrode ×1 (Attack: remove half of your Fortify, then 3 damage), Regrow ×1 (Magic: heal 5, blocked by Burn or Bleed), Hiss ×2 (Defense: 3 block) |
 | Hydra Head | 8 | Bite: 1 damage (×1), Hiss: 2 block (×1) |
 
 - **Tuned by simulation (DevLog Day 54):** the target was the old Hydra's difficulty (it killed about 37% of the runs that reached it). The first numbers (body 40, Bite 2 at weight 3, Regrow ×2) killed 74–78%. Body HP barely mattered (30: 73%); the bites did. Bite 1 brought it to 59%, fewer Regrow faces to 54%, and Bite only half the time to **40%** (later runs: 33%). Removing regeneration also reached 34%, but regeneration is what makes Burn and Bleed matter, so it stays.

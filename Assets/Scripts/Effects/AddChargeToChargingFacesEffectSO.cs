@@ -10,7 +10,7 @@ public class AddChargeToChargingFacesEffectSO : EffectSO
         context.keepCharge = true;
         int charged = 0;
         foreach(DieFace face in context.die){
-            if(face == context.face || !face.definition.charges) continue;
+            if(face == context.face || !face.definition.Charges) continue;
             context.charge.Add(face, context.value, false);
             charged++;
         }
@@ -21,7 +21,7 @@ public class AddChargeToChargingFacesEffectSO : EffectSO
         if(context.die == null){
             return context.value + " Charge to your Charge faces";
         }
-        int count = context.die.FindAll(face => face != context.face && face.definition.charges).Count;
+        int count = context.die.FindAll(face => face != context.face && face.definition.Charges).Count;
         return context.value + " Charge to " + count + (count == 1 ? " face" : " faces") + ", keep my Charge";
     }
 }

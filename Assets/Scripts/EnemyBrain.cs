@@ -20,6 +20,8 @@ public class EnemyBrain : IEnemyBrain
         definition = enemy;
         this.self = self;
         this.opponent = opponent;
+        // The simulator reuses its enemy objects, and a boss may have set this on one.
+        self.maxHPLossPerRound = 0;
     }
 
     // Forgets the current intent, so the enemy doesn't act until it picks a new one (a Hydra head growing back).

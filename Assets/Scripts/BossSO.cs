@@ -8,6 +8,8 @@ public class BossSO : ScriptableObject
 {
     public string bossName;
     public int maxHP = 40;
+    // The most HP the boss can lose in a round (Scales). 0: no limit.
+    public int maxHPLossPerRound;
     // The 6 faces of its die; a face listed twice comes up twice as often.
     public List<DieFaceSO> faces = new List<DieFaceSO>();
 

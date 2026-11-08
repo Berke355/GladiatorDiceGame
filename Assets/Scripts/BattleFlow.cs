@@ -18,7 +18,7 @@ public class BattleFlow
     public readonly RerollPool rerolls;
     // Stone faces on the die for this battle (Medusa's Petrify).
     public readonly Petrification petrification = new Petrification();
-    // Consumable actions used this battle; a used one is Change (see GDD "Consumable and Change").
+    // Consumable faces used this battle; a used one is Change (see GDD "Consumable and Change").
     public readonly Consumables consumables = new Consumables();
     // Change can be used once per turn (see GDD "Consumable and Change").
     public const int MaxChangesPerTurn = 1;
@@ -91,6 +91,7 @@ public class BattleFlow
             foreach(EquipmentSO item in equipment) enchantedFaceBonus += item.enchantedFaceBonus;
         }
         charge.placementBonus = face => DieEnchantmentSO.BonusAt(dieEnchantments, die, die.IndexOf(face)) + (face.enchantment != null ? enchantedFaceBonus : 0);
+        charge.placementMultiplier = face => DieEnchantmentSO.MultiplierAt(dieEnchantments, die.IndexOf(face));
         rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
         this.enemies = enemies;
@@ -165,17 +166,22 @@ public class BattleFlow
         return damage;
     }
 
-    // Whether the face can take this action now: a stone face can only defend (for StoneBlock block); a used
-    // Consumable action is Change, until this turn's Changes run out.
+    // Whether the face can take this action now: a stone face can only defend (for StoneBlock block); every action of
+    // a used Consumable face is Change, until this turn's Changes run out.
     public bool CanAct(DieFace face, ActionType action){
         if(petrification.IsStone(face)) return action == ActionType.Defense;
         if(IsChange(face, action)) return ChangesThisTurn < MaxChangesPerTurn;
         return face.HasAction(action);
     }
 
-    // A Consumable action already used this battle: it now rolls the die again (Change).
+    // Consumable by its own keyword or by its place on the die (Burnout).
+    public bool IsConsumableFace(DieFace face){
+        return face != null && (face.definition.IsConsumable || DieEnchantmentSO.ConsumableAt(dieEnchantments, die.IndexOf(face)));
+    }
+
+    // An action of a Consumable face already used this battle: it now rolls the die again (Change).
     public bool IsChange(DieFace face, ActionType action){
-        return face != null && !petrification.IsStone(face) && consumables.IsUsed(face, action);
+        return face != null && !petrification.IsStone(face) && consumables.IsUsed(face) && face.HasAction(action);
     }
 
     public void StartBattle(){
@@ -197,6 +203,7 @@ public class BattleFlow
         LastActedFace = null;
         triggers.StartRound();
         triggers.turnNumber = TurnNumber;
+        foreach(BattleEnemy enemy in enemies) enemy.entity.StartRound();
         player.OnTurnStart();
         triggers.Fire(TriggerType.TurnStart);
         foreach(BattleEnemy enemy in enemies){
@@ -294,7 +301,7 @@ public class BattleFlow
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
-        if(RolledFace.definition.IsConsumable(action)) consumables.MarkUsed(RolledFace, action);
+        if(IsConsumableFace(RolledFace)) consumables.MarkUsed(RolledFace);
         actedThisTurn.Add(RolledFace);
         if(context.keepCharge) keptChargeThisTurn.Add(RolledFace);
 
@@ -351,7 +358,7 @@ public class BattleFlow
         foreach(DieFace face in die){
             if(keptChargeThisTurn.Contains(face)) continue;
             if(actedThisTurn.Contains(face)) charge.Reset(face);
-            else if(face.definition.charges) charge.Add(face, 1);
+            else if(face.definition.Charges) charge.Add(face, 1);
         }
         petrification.EndPlayerTurn();
         triggers.currentFace = null;

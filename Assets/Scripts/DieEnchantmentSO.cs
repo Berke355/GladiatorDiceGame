@@ -26,6 +26,10 @@ public class DieEnchantmentSO : ScriptableObject
     public int oppositeTagBonus;
     // How often each listed position comes up, relative to the others' 1: 2 is twice as often, 0 never (Weighted Die).
     public List<PositionAmount> rollWeights = new List<PositionAmount>();
+    // Multiplies the value of the face on each listed position (Twin Soul: 2 on one, 0 on its opposite).
+    public List<PositionAmount> positionMultipliers = new List<PositionAmount>();
+    // The face on each listed position counts as Consumable (Burnout).
+    public List<int> consumablePositions = new List<int>();
 
     // The total bonus of these enchantments for the face on a position.
     public static int BonusAt(List<DieEnchantmentSO> enchantments, List<DieFace> die, int position){
@@ -38,6 +42,25 @@ public class DieEnchantmentSO : ScriptableObject
             if(enchantment.oppositeTagBonus != 0 && SharesTagWithOpposite(die, position)) bonus += enchantment.oppositeTagBonus;
         }
         return bonus;
+    }
+
+    public static int MultiplierAt(List<DieEnchantmentSO> enchantments, int position){
+        int multiplier = 1;
+        if(enchantments == null) return multiplier;
+        foreach(DieEnchantmentSO enchantment in enchantments){
+            foreach(PositionAmount entry in enchantment.positionMultipliers){
+                if(entry.position == position) multiplier *= entry.amount;
+            }
+        }
+        return multiplier;
+    }
+
+    public static bool ConsumableAt(List<DieEnchantmentSO> enchantments, int position){
+        if(enchantments == null) return false;
+        foreach(DieEnchantmentSO enchantment in enchantments){
+            if(enchantment.consumablePositions.Contains(position)) return true;
+        }
+        return false;
     }
 
     // How often a position comes up under these enchantments (1 is normal).

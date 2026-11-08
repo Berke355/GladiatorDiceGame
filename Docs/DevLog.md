@@ -3141,3 +3141,48 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test:** do prices force a choice, is Challenger's Mark worth it, do Scribe's Quill and cheap enchantments make enchanting attractive?
 - **The Shield bot and a Fortify question for the Hydra.**
 - **The map, more battles and the difficulty curve.**
+
+## Day 82 - The Hydra's Scales and Face Keywords
+
+### Accomplished (the user's play-tests: the last boss fell in seconds, even with a broken die, and the same die enchantment combo came up in every run)
+- **The Hydra grew into a final exam:** 60 HP (was 30), and a new face, Corrode (Attack: remove half of your Fortify, then 3 damage), which replaces one Hiss.
+- **Scales:** the Hydra's body loses at most 12 HP a round (`BossSO.maxHPLossPerRound`, `Entity.maxHPLossPerRound`), ticks included. It lengthens fights against strong dice and doesn't touch weak ones. Slay the Spire's last boss has a similar cap.
+- **Face Keywords (the user's idea):** rules on a whole face. `FaceKeyword` on `DieFaceSO.keywords`; Consumable and Charge are the first two, and the old fields were migrated.
+- **Consumable is now on the face:** it's usable once per battle whichever action is chosen, and afterwards every action on it is Change. As a keyword on one action, an enchantment could use a high-value Consumable face without limit (Throwing Knife with Whirlwind).
+- **Eight new die enchantments, pool 6 to 14:** Keystone, Right Hand (Common), Outer Ring, Low Guard, Burnout (Rare; the user's idea), Center of Gravity, Twin Weights, Twin Soul (Epic; the x2 is the user's idea, with Bottom at 0 as its price).
+- **`DieEnchantmentSO`:** `positionMultipliers` and `consumablePositions`. Chips and the Market show the real battle value.
+
+### Decisions
+- **A cap instead of only more HP:** more HP alone walls weak dice, while a cap only touches strong ones.
+- **4-5 minutes like Slay the Spire isn't realistic:** a turn here is usually one decision. The aim is 5-6 turns at least for the strongest die and about 10 for a normal one.
+- **Added Face Keywords come after a play-test:** Growing, Heavy and Brittle at the Enchanting Table, one per face. Consumable stays printed only at first, since adding it to a weak face could erase that face from the die.
+- **The Shield bot stays as it is.** It plays a complete Fortify die well (clears 31% at values 2 and 87% at values 4, from the start); its low rate comes from rarely completing that die. Earlier notes blaming its play were wrong.
+
+### Tests
+- **Checks (14/14):** the cap (ticks included, reset each round), Consumable faces, Knife with Whirlwind as one burst of 20 at value 10, the potion, Alchemist's Belt, the new die enchantments, and Weighted Die no longer guaranteed (121 of 300 Grand Markets; it was 300 of 300).
+- **Play Mode:** the Hydra fight opens with a readable card and the correct values on the die, with no console errors. A whole Hydra fight wasn't played on screen.
+
+### Balance
+- **The Hydra among arrivals:** the old one (30 HP, 3 damage) lost to 73-98% of arriving bots, so the last boss was the easiest late fight.
+
+| Hydra | Bots beat it | The user's Fortify die, values 4, beat it |
+|---|---|---|
+| 45 HP, 5 damage, Corrode | 41% | 168 of 174 |
+| 60 HP, cap 12, 5 damage | 19% | 20 of 125 |
+| 50 HP, cap 12, 4 damage | 33% | 51 of 115 |
+| 60 HP, cap 15, 3 damage | 43% | 81 of 119 |
+| **60 HP, cap 12, 3 damage (chosen)** | **44%** | **69 of 118** |
+
+- A longer fight needs less damage per turn: at 5 damage even that die wore down.
+- **Default bots (300 runs):** Bleed 20%, Rage 12%, Bleed + Rage 10%, Ritual + Poison 8%, Burn 7%, Poison 7%, Shield 7%, Shield + Rage 5%, Fortune 3%, Hammer 2%, One-face carry 1%, Opportunist 0%, Unplanned buyer 0%.
+- **A die enchantment free from the start (180 runs):** Rage 3% with none, 7% with Burnout, 4% with Twin Soul. Bots put their weakest face on those spots, so the trick of erasing a face was tried; it did not explode. Samples are small, and bots don't use Twin Soul on purpose.
+
+### Findings
+- **The Opportunist reached the Hydra only 11 times in 300 runs and never won,** below the 5-15% target. Most of those runs die earlier, so the Hydra isn't the only cause. The user plays far better than the bots, so enemies stay as they are until a play-test.
+- Stacking on one face is no longer strong (1%).
+
+### Next Steps
+- **The user's play-test:** does the Hydra feel like a final or a slog, can a patchwork die beat it, is Knife with Whirlwind still fun as one burst, do the new die enchantments lead to other arrangements?
+- **Growing, Heavy and Brittle at the Enchanting Table.**
+- **A Windows build and the first friends' play-test.**
+- **The map, more battles and the difficulty curve.**
