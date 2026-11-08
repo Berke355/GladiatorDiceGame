@@ -9,6 +9,9 @@ public class EconomyConfigSO : ScriptableObject
     public int goldPerVictory = 10;
     // Gold every run starts with; the run start screen's reroll is paid from it (see GDD "Run Start").
     public int startingGold = 20;
+    // Build-aware offers pick one of the build's tags, weighted by how many build faces carry it (the starting die's
+    // faces don't count), instead of any tag on the die (see GDD "Market").
+    public bool weightByBuildTags = false;
     // Extra gold for winning a boss battle, so the Grand Market that follows is affordable.
     public int bossVictoryBonus = 0;
 

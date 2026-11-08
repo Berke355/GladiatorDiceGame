@@ -32,6 +32,8 @@ Slay the Spire is the main reference for this phase. The order matters: the batt
 
 ## Phase D: Heroes and Meta Progression
 
+- **Unlockable builds:** complex builds such as Fortune (the redesign that manipulates which face comes up) are unlocked through meta progression, so new players learn the basic mechanics first.
+
 - **Heroes** with their own starting dice (and possibly a small passive). The current die (2 Sword, 2 Shield, Health Potion) is the **Knight**, the starting hero. Later: Archer, Necromancer, Robot, Pirate, Wizard...
   - Heroes exist for theme and play style, never power: no starting die may be stronger than another. Each hero gets a simulator bot, and they are compared in the same simulation.
 - **Main menu** outside runs, with a **menu market**: money and achievements earned from runs unlock heroes, faces (added to the pools), outfits.

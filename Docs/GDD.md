@@ -135,6 +135,24 @@ Every die face is defined by a common set of properties.
 - Tags
 - Description
 
+### Die Layout (planned)
+
+The die is a real cube laid out as a net, and where a face sits matters. This gives "You build a die" a layer a deck can't have (inspired by how Slice & Dice names the faces of a die's net).
+
+- **The net is a sideways cross,** always shown in battle and in the Market:
+
+```
+        [Top]
+[Left] [Middle] [Right] [Rightmost]
+        [Bottom]
+```
+
+- **Named positions:** faces can refer to Top, Left, Middle, Right, Rightmost and Bottom.
+- **Cube relations follow from the net:** opposite faces are Left ↔ Right, Middle ↔ Rightmost and Top ↔ Bottom, and every face has four neighbors. Faces can refer to the opposite face or a neighbor as well as to a named position.
+- **Placement is free in the Market:** faces can be moved and swapped at any time, at no cost. The decision is not a tax on placing a face but the arrangement puzzle itself: each face has one opposite and the net has one Rightmost, so two combos that want the same spot force a choice, and a new face can change the whole arrangement. Content that cares about positions gives the puzzle its depth.
+- **In battle the layout is fixed;** changing it mid-battle is a Fortune ability (e.g. a face that swaps two faces for the battle).
+- **Other builds barely notice the layout;** for Fortune it is vital, and future faces and mechanics will keep giving it more meaning.
+
 ### Value Is the Effect
 
 The number printed on a face is exactly what its effects use. There are no hidden multipliers: a face showing 4 never secretly deals 8. Players should be able to trust the big number on a face at a glance. Faces differ through which actions and effects they support, not through hidden scaling.
@@ -169,6 +187,24 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
   - Both work alone (2 damage or 2 block at the start of a battle) and bring "save or spend" down to Common.
   - **The new faces alone weren't enough** (still 2%): Fortune got further (48% reached battle 8, was 37%) but still couldn't kill. 37% of its rolls only defend (Lucky Buckler for a reroll, Hedge for block), so it took little damage (1 HP per turn in Strong battles) but dealt only 2.7 per turn and fights lasted 15 turns. Its damage didn't scale: one point per reroll is small next to Rage, Ritual or stacking statuses.
   - **+2 per reroll** for both damage payoffs (Patient Blade: per reroll left; Gambit: per reroll used): Gambit alone 6%, Patient Blade alone 9%, both **14–15%**. The other builds stay the same within noise (Burn 12%, Poison 19%, Rage 12%, Bleed 12%) after two faces joined the pool.
+- **The Fortune redesign (planned, DevLog Day 67).** The user's play-test: Fortune never lives up to its name. It only gains rerolls and saves them to raise damage and block, which makes it a weaker copy of Fortify + Rage, and its defensive faces (Lucky Buckler, Hedge) leave Sword as the only real attack.
+  - **New identity:** Fortune manipulates its own luck, deciding which face comes up and when, using the die's layout (see "Die Layout"). Gaining rerolls stays, but only as a small part.
+  - **Two sides, like Burn's fuel and ignition:**
+    - **Engines** steer the next roll. Change (any other face), Flip (the opposite face), Tumble (a neighbor or a named position such as Rightmost), choose a face (Epic), effects that also Change, and gaining rerolls.
+    - **Payoffs** reward the manipulation: "on the first turn", "if this is my second time this turn", "if I came from a Change or Flip", "if the face opposite me is X".
+  - **The user's examples:**
+    - An Epic engine: "Gain block equal to my value and choose a face of your die; Change: the chosen face comes up."
+    - An Epic payoff: "Attack: if this is my second time this turn, …; Magic: Change."
+  - **Several actions in a turn:** an effect that also Changes lets a turn hold more than one action. The limit is **3 actions per turn**; the game tracks how many times each face came up this turn.
+  - **Two kinds of Change:** the Change a used Consumable action becomes stays once per turn (it must not thin the die). Fortune's Change actions are their own face actions, held in check by rarity and the actions-per-turn limit. Change is strong, so its faces are Rare or Epic.
+  - **Existing faces:** Lucky Buckler stays as a small engine piece (gaining rerolls); Patient Blade, Gambit and Hedge are reviewed with the new set.
+  - **Harder to play,** so Fortune will be a build unlocked through meta progression (Roadmap Phase D). Its pieces are also useful alone in other builds.
+  - **Bots will plan combos poorly,** so Fortune's simulated rates are a floor and play-tests decide its balance.
+  - **Stages:**
+    1. The die layout: net, positions and opposites, shown in battle and the Market, with free swapping.
+    2. Roll steering, per-turn landing counts and the actions-per-turn limit.
+    3. Content: engines and payoffs.
+    4. Bots, simulation and play-tests.
 - **Steady Hand stays as it is:** it rerolls without spending the pool, so it is still its own thing.
 
 ### Consumable and Change
@@ -259,6 +295,8 @@ Each visit offers a limited, random selection. The player is never forced to spe
 - **Grand Market (after a boss):** 3 face offers and 3 enchantments, **all Epic**, plus 2 equipment items. The Grand Market is the station for Epic faces. Because Grand Markets come at known points (after bosses), saving gold for one is a plannable strategy, not a gamble.
 - A face is offered at most once per set of offers.
 - **Build-aware offers:** offers are weighted toward the tags already on the player's die (around 60%, not 100%). A Burn die is more likely to be offered Burn faces such as Fuel, while some offers still come from outside the build so players keep discovering new faces.
+  - **Known problem (play-test, DevLog Day 67):** the starting die's own tags (Sword: Physical + Bleed, Shield: Block) count too, so the matching pool is huge and a build's share is small. With one Patient Blade, 21% of offers were Fortune; with one Ember, only 11% were Burn.
+  - **Tried: weight offers by the build's tags** (the die's tag counts minus the starting die's; `EconomyConfigSO.weightByBuildTags`, **off** for now). It lifts those shares to 41% and 47%, but builds then come together much faster, unevenly: Burn 9% → 43% (38% even at a 35% match chance), Poison 17% → 32%, Hammer 10% → 20%, while Rage 20% → 13% and Fortune 10% → 8%. Burn's faces are very strong once assembled; it only looked balanced because they were hard to find. Decided after the Fortune redesign, together with a Burn pass.
 
 Market services:
 

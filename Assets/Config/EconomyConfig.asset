@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EconomyConfigSO
   goldPerVictory: 20
   startingGold: 20
+  weightByBuildTags: 0
   bossVictoryBonus: 30
   marketPool:
   - {fileID: 11400000, guid: 9188def0bdcf7e045976f2cbf48ee3a1, type: 2}

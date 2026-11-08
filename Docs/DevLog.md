@@ -2470,3 +2470,48 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 ### Next Steps
 - **Fortune:** its faces are hard to find, and the found ones are weak in damage (the user's play-test).
 - **The user's play-test** of the curve.
+
+## Day 67 - Fortune Investigation and Redesign Plan
+
+### Findings
+- **The user's play-test:** Fortune faces are hard to find, and the ones found are weak in damage. The defensive ones (Lucky Buckler, Hedge) left Sword as the only real attack.
+- **Finding faces is hard for every build.** Build-aware offers match any tag on the die, including the starting die's (Sword: Physical + Bleed, Shield: Block), so the matching pool is huge.
+  - Over 2000 Markets: with one Patient Blade, 21% of offers were Fortune; with one Ember, only 11% were Burn.
+- **Tried: weight offers by the build's tags.** The die's tag counts minus the starting die's (`RunData.startingDie`, `Market.BuildTagCounts`, `EconomyConfigSO.weightByBuildTags`). Offers rise to 41% Fortune and 47% Burn, but the builds shift very unevenly (600 runs):
+
+| Bot | Current rule | Build tags | Build tags, 35% match chance |
+|---|---|---|---|
+| Burn | 9% | 43% | 38% |
+| Poison | 17% | 32% | 31% |
+| Hammer | 10% | 20% | 21% |
+| Shield | 19% | 17% | 18% |
+| Bleed | 17% | 15% | 13% |
+| Rage | 20% | 13% | 19% |
+| Fortune | 10% | 8% | 11% |
+
+- Burn's faces are very strong once assembled; it only looked balanced because they were hard to find.
+- Fortune didn't gain: its problem is its design, not its offers. The option is in the code but **off**, until a decision after the Fortune redesign (with a Burn pass).
+
+### Decision: the Fortune Redesign (the user's design, GDD "Die Layout" and "Rerolls")
+- **Fortune never lived up to its name.** Gaining and saving rerolls made it a weaker copy of Fortify + Rage.
+- **New identity:** Fortune manipulates which face comes up and when, using the die's layout. Gaining rerolls becomes a small part of it.
+- **Two sides:**
+  - Engines (Change, Flip to the opposite face, Tumble to a neighbor or a named position, choosing a face, effects that also Change, gaining rerolls).
+  - Payoffs (first turn, second time this turn, came from a Change, what the opposite face is).
+- **The die layout:**
+  - A sideways cross net (Top; Left, Middle, Right, Rightmost; Bottom), as in Slice & Dice. Named positions plus cube relations: opposites Left ↔ Right, Middle ↔ Rightmost, Top ↔ Bottom.
+  - Placement is free in the Market: the decision is the arrangement puzzle, not a tax. The layout is fixed in battle, except through Fortune abilities.
+- **Rules:**
+  - At most 3 actions per turn.
+  - The Consumable Change stays once per turn; Fortune's Change actions are separate, held by rarity.
+- **Unlocks:** Fortune will be unlocked through meta progression (Roadmap Phase D), so new players aren't hit by it first.
+- **Stages:**
+  1. The die layout and free swapping.
+  2. Roll steering, per-turn landing counts and the action limit.
+  3. Content.
+  4. Bots, simulation and play-tests.
+
+### Next Steps
+- Stage 1 of the Fortune redesign: the die layout.
+- Decide the build-tag offers after the redesign, with a Burn pass.
+- Serrated Blade's misleading preview (Day 65).

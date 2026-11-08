@@ -163,9 +163,9 @@ public class Market
             return null;
         }
 
-        // Build-aware offers: most of the time, prefer faces that share a tag with the die.
+        // Build-aware offers: most of the time, prefer faces of the build's tags.
         if(Random.value < economy.tagMatchChance){
-            List<DieFaceSO> matching = candidates.FindAll(SharesTagWithDie);
+            List<DieFaceSO> matching = MatchingBuild(candidates, face => face.tags);
             if(matching.Count > 0){
                 candidates = matching;
             }
@@ -199,6 +199,52 @@ public class Market
         return SharesTagWithDie(face.tags);
     }
 
+    // The candidates that fit the build: one build tag, picked by weight, when the die has build faces; otherwise any
+    // candidate sharing a tag with the die (also the behaviour with weightByBuildTags off).
+    private List<T> MatchingBuild<T>(List<T> candidates, System.Func<T, List<FaceTag>> tagsOf){
+        if(economy.weightByBuildTags){
+            FaceTag? tag = PickBuildTag();
+            if(tag.HasValue){
+                List<T> withTag = candidates.FindAll(candidate => tagsOf(candidate).Contains(tag.Value));
+                if(withTag.Count > 0) return withTag;
+            }
+        }
+        return candidates.FindAll(candidate => SharesTagWithDie(tagsOf(candidate)));
+    }
+
+    // How many faces carry each tag beyond the starting die: 2 Fortune faces count 2 Fortune; a third Sword counts
+    // its Physical and Bleed, the two starting Swords don't.
+    public Dictionary<FaceTag, int> BuildTagCounts(){
+        Dictionary<FaceTag, int> counts = new Dictionary<FaceTag, int>();
+        foreach(DieFace dieFace in run.dieFaces){
+            foreach(FaceTag tag in dieFace.definition.tags){
+                counts[tag] = (counts.ContainsKey(tag) ? counts[tag] : 0) + 1;
+            }
+        }
+        if(run.startingDie != null){
+            foreach(DieFaceSO starter in run.startingDie){
+                foreach(FaceTag tag in starter.tags){
+                    if(counts.ContainsKey(tag)) counts[tag]--;
+                }
+            }
+        }
+        return counts;
+    }
+
+    private FaceTag? PickBuildTag(){
+        Dictionary<FaceTag, int> counts = BuildTagCounts();
+        int total = 0;
+        foreach(KeyValuePair<FaceTag, int> entry in counts) if(entry.Value > 0) total += entry.Value;
+        if(total == 0) return null;
+        int roll = Random.Range(0, total);
+        foreach(KeyValuePair<FaceTag, int> entry in counts){
+            if(entry.Value <= 0) continue;
+            roll -= entry.Value;
+            if(roll < 0) return entry.Key;
+        }
+        return null;
+    }
+
     private bool SharesTagWithDie(List<FaceTag> tags){
         foreach(DieFace dieFace in run.dieFaces){
             foreach(FaceTag tag in tags){
@@ -222,7 +268,7 @@ public class Market
             if(candidates.Count == 0) break;
 
             if(Random.value < economy.tagMatchChance){
-                List<EnchantmentSO> matching = candidates.FindAll(enchantment => SharesTagWithDie(enchantment.tags));
+                List<EnchantmentSO> matching = MatchingBuild(candidates, enchantment => enchantment.tags);
                 if(matching.Count > 0) candidates = matching;
             }
             EnchantmentSO picked = candidates[Random.Range(0, candidates.Count)];

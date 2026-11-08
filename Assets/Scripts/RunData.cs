@@ -35,7 +35,11 @@ public class RunData
     public BossSO nextBoss;
     public EnemyGroup nextEncounter;
 
+    // The run's starting die (before the chosen sixth face), so the Market can tell build faces from starter faces.
+    public List<DieFaceSO> startingDie = new List<DieFaceSO>();
+
     public RunData(List<DieFaceSO> startingDieFaces, int startingMaxHP){
+        startingDie = new List<DieFaceSO>(startingDieFaces);
         // Each face on the die is its own instance, so upgrading one never touches the asset or other copies.
         dieFaces = new List<DieFace>();
         foreach(DieFaceSO face in startingDieFaces){
