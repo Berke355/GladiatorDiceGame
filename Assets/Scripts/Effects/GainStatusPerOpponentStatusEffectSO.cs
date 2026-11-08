@@ -30,7 +30,7 @@ public class GainStatusPerOpponentStatusEffectSO : EffectSO
         Entity counted = countOwn ? context.source : context.target;
         if(counted != null){
             foreach(StatusType status in countedStatuses){
-                if(counted.GetStatus(status) > 0) types++;
+                if(context.Stacks(counted, status) > 0) types++;
             }
         }
         return context.value * Mathf.Max(1, types);

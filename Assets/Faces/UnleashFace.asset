@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: UnleashFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Unleash
-  description: 'Attack: Deal damage equal to my value times your Rage (at least my
-    value).'
+  description: 'Attack: Gain 1 Rage, then deal damage equal to my value times your
+    Rage.'
   rarity: 2
   tags: 05000000
   baseValue: 2
-  softCap: 3
   effects:
   - actionType: 0
+    effectLogic: {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
+  - actionType: 0
     effectLogic: {fileID: 11400000, guid: 9e6d9f59046b33347bdfedcafa9eecb0, type: 2}
+  charges: 0
+  hasNoValue: 0
+  consumableActions: 

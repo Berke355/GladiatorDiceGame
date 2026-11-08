@@ -19,7 +19,7 @@ public class IgniteEffectSO : EffectSO
         if(context.target == null){
             return "ignite Burn";
         }
-        int burn = context.target.GetStatus(StatusType.Burn);
+        int burn = context.Stacks(context.target, StatusType.Burn);
         return "ignite Burn (" + (burn > 0 ? burn + context.RageBonus : 0) + " damage)";
     }
 }

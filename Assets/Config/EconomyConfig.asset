@@ -125,7 +125,7 @@ MonoBehaviour:
   startingEpicWeight: 2
   commonPrice: 10
   rarePrice: 25
-  epicPrice: 60
+  epicPrice: 45
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5
   epicUpgradeMultiplier: 20

@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: DarkCommunionFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Dark Communion
-  description: 'Magic: Gain Ritual equal to my value for each status type (Burn,
-    Poison, Bleed) on the enemy, at least my value.'
+  description: 'Magic: Apply Poison equal to my value, then gain Ritual equal to
+    my value for each status type (Burn, Poison, Bleed) on the enemy.'
   rarity: 2
   tags: 06000000
-  baseValue: 1
-  softCap: 2
+  baseValue: 2
   effects:
   - actionType: 2
+    effectLogic: {fileID: 11400000, guid: 4e09dfd69596317439eded8d7ed69021, type: 2}
+  - actionType: 2
     effectLogic: {fileID: 11400000, guid: 0d74a8fd5a7a3ac40a60c27ffd635a82, type: 2}
+  charges: 0
+  hasNoValue: 0
+  consumableActions: 

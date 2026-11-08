@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: CrowdsFavorFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Crowd's Favor
-  description: 'Magic: Gain Encourage equal to my value for each buff type you have
-    (Rage, Fortify, FireShield), at least my value.'
+  description: 'Magic: Gain 1 Rage, then gain Encourage equal to my value for each
+    buff type you have (Rage, Fortify, FireShield).'
   rarity: 2
   tags: 0500000001000000
   baseValue: 1
   effects:
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 408bfe447de0e9242b66e4199b8eff67, type: 2}
   charges: 0

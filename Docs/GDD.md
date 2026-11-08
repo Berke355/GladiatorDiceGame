@@ -163,7 +163,7 @@ Every build should care where its faces sit, not only Fortune (play-test). Die e
 - **Value Is the Effect holds:** like Charge, it is part of a face's battle value. The die shows "Sword 2 +2", and effects and previews use 4. A battle value never goes below 0. Upgrade prices use the face's own value.
 - **Medusa's gaze takes the highest battle value,** so the face on the bonus spot is her target.
 - **At most 2 at a time;** a new one replaces one of them. They can't be removed otherwise. Few means each one is a heavy decision.
-- **Prices:** the same as other offers (Common 10, Rare 25, Epic 60). The table offers 2 per Market, under the same rules as faces (Grand Market: Epic only), and they can be locked.
+- **Prices:** the same as other offers (Common 10, Rare 25, Epic 45). The table offers 2 per Market, under the same rules as faces (Grand Market: Epic only), and they can be locked.
 
 | Enchantment | Rarity | Effect |
 |---|---|---|
@@ -306,7 +306,7 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 - After every battle except the final boss, the player visits the Market. After a boss, it is a **Grand Market** instead.
 - **Player HP:** 50 max. HP carries over between battles.
 - **Healing after bosses:** winning a boss battle restores 30% of max HP. Without it, runs would end from slow HP loss instead of from how good the build is. It was 50%, but in play-tests that made boss fights feel safe ("my HP will come back anyway"), so HP stays a resource to manage through the boss.
-- **Gold after bosses:** winning a boss battle pays a 30 gold bonus on top of the normal reward, so the player reaches the Grand Market able to afford about one Epic (simulated bots arrive with about 60 gold; without the bonus they had about 25, less than any Epic).
+- **Gold after bosses:** winning a boss battle pays a 30 gold bonus on top of the normal reward, so the player can always afford one Epic at the Grand Market: a boss victory alone pays 50 gold and an Epic costs 45.
 
 ### Run Start
 
@@ -402,7 +402,7 @@ You don't only build the die, you build its faces. Every Market has an **Enchant
 - **Permanent:** enchantments can't be removed for now. Buying a face into a slot replaces the old face together with its enchantment.
 - **A niche combo tool:** most players won't enchant in most runs. An enchantment shines on a face with a very high value, letting it spend that value on another action (e.g. Poison on a Hammer's Magic, or Dark Rite on a charged Hammer, which buffs the rest of the battle in one roll). It is judged with combo tests, not by average clear rates.
 - **An option, not an extra effect:** one roll still means one action. An enchantment adds a new choice to a face, so on a low-value face it changes little, and on a high-value face it changes a lot.
-- **Same logic as face offers:** the table shows **3 enchantments** in every Market. The Normal Market uses the face rarity weights (Common 70%, Rare 25%, Epic 5%); the **Grand Market shows only Epic enchantments**. Build-aware tags, rerolls and prices (Common 10, Rare 25, Epic 60) work exactly as for faces.
+- **Same logic as face offers:** the table shows **3 enchantments** in every Market. The Normal Market uses the face rarity weights (Common 70%, Rare 25%, Epic 5%); the **Grand Market shows only Epic enchantments**. Build-aware tags, rerolls and prices (Common 10, Rare 25, Epic 45) work exactly as for faces.
 - **Rarity** follows the same scaling rule as faces (linear Common, conditional or multi-effect Rare, multiplicative Epic). Permanent self-buffs scaled by the value (Rage, Ritual) are Epic: on a high-value face they multiply the rest of the battle.
 - **Technical:** the enchantment is stored on the `DieFace` instance, not on the `DieFaceSO` asset (the Definition / Instance split from Day 15), so only that copy of the face changes.
 
@@ -424,7 +424,7 @@ You don't only build the die, you build its faces. Every Market has an **Enchant
 Prices are placeholders, to be tuned through play-testing.
 
 - **Gold income:** 20 gold per victory, plus a 30 gold bonus for boss victories.
-- **Buy price by rarity:** Common 10, Rare 25, Epic 60. With current income, an Epic costs about three victories of saving, while Common and Rare faces are cheap enough to keep the build growing.
+- **Buy price by rarity:** Common 10, Rare 25, Epic 45. A boss victory always pays for one Epic, but it leaves little for upgrades, so taking it is still a real choice. Common and Rare faces are cheap enough to keep the build growing.
 - **Upgrade price:** rarity multiplier × current value, so each upgrade costs more than the last.
 
 | Rarity | Multiplier | 2 → 3 | 3 → 4 |
@@ -541,7 +541,17 @@ A build archetype is a family of faces built around one shared resource or play 
 - **Ceiling:** With the rest of its build on the die, the same face becomes much stronger.
 - **Test:** imagine the face on a die with no other faces from its build. Does at least one action still do something meaningful? If not, give it a standalone fallback action, or make its effect have a useful minimum (e.g. "value + Fortify × value" instead of "Fortify × value").
 
-Existing faces pass this test through their fallback actions: Fuel's Magic does nothing without Burn, but its Defense still gives block. Cauterize's Magic needs Burn, but its Attack still deals damage.
+Common and Rare faces can pass this test through a fallback action. Epic faces have a higher bar:
+
+### Epics Bring Their Own Fuel
+
+**An Epic must beat a good Sword on any die, the turn it comes up, and explode in its build.**
+
+- **Why:** an Epic that needs a working build only pays off in the lucky run. In the other three kinds of run (see below), the player can feel sorry to see one (the user's play-test). Seeing an Epic should be a turning point in every run, and most of all in the normal run with a patchwork die.
+- **How:** the Epic produces the resource it spends, as an effect written on the card, so Value Is the Effect still holds. A complete build then multiplies what the Epic started.
+- **Evidence:** the Epics that lifted bots most when given for free were the ones that need no fuel: Fate's Hand chooses the next face on any die, and Earthshaker reads the highest face on any die.
+- **Test:** give the Epic for free before battle 5 to the bots without a focus (Opportunist and Unplanned buyer). It should lift them too, not only the bot of its archetype.
+- **Later:** Epics that reward a patchwork die directly (e.g. "per different tag on the die").
 
 ### Every Run Is Its Own Build
 
@@ -607,8 +617,8 @@ Burst damage over a short time. Build Burn up, then cash it out.
 | Ember | Starter | Common |
 | Detonate | Engine (cash-out) | Rare |
 | Flame Ward | Bridge (Burn + Block) | Rare |
-| Fuel | Payoff (multiply Burn) | Epic |
-| Cauterize | Payoff (consume Burn to heal) | Epic |
+| Fuel | Payoff (Magic: apply Burn, multiply it, ignite it) | Epic |
+| Cauterize | Payoff (Attack: damage and Burn; Magic: consume Burn to heal), value 2 | Epic |
 
 ### Poison (implemented)
 
@@ -624,7 +634,7 @@ Slow and inevitable. Strongest in long fights, which makes it the boss-fighting 
 | **Venom** | Starter | Common | 2 | Attack: apply Poison equal to my value. Defense: gain block equal to my value. |
 | **Toxic Blade** | Bridge (Poison + Physical) | Rare | 2 | Attack: deal damage and apply Poison equal to my value. |
 | **Miasma** | Bridge (Poison + Block) | Rare | 2 | Defense: gain block and apply Poison equal to my value. |
-| **Plague** | Payoff | Epic | 1 | Magic: apply Poison equal to my value for each Poison face on your die. Attack: apply Poison equal to my value. |
+| **Plague** | Payoff | Epic | 2 | Magic: apply Poison equal to my value for each Poison face on your die. Attack: apply Poison equal to my value. |
 
 Plague introduces a new Epic pattern: **die-composition scaling** ("for each X face on your die"). It directly rewards building the die around one archetype, and alone it still applies its value (it counts itself).
 
@@ -661,7 +671,7 @@ Power that keeps growing. Build Rage, then hit often or hit once with everything
 | **Frenzy** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value, then gain 1 Rage. |
 | **Twin Axes** | Engine | Rare | 1 | Attack: hit twice for my value. |
 | **Iron Rage** | Bridge (Rage + Block) | Rare | 2 | Defense: gain Fortify equal to my value and 1 Rage. |
-| **Unleash** | Payoff | Epic | 2 | Attack: deal my value × your Rage as damage (at least my value). |
+| **Unleash** | Payoff | Epic | 2 | Attack: gain 1 Rage, then deal my value × your Rage as damage. |
 
 - **Frenzy builds Rage without losing a turn:** Fury and Bloodrage trade an attack for Rage; Frenzy attacks and grows every later hit by 1. The Rage comes after the hit, so it never boosts its own hit.
 - **Twin Axes hits twice, not three times:** with Rage counted on every hit, three hits would scale like a multiplier and belong in Epic. Two hits keep it a Rare (+1 value improves two hits).
@@ -679,7 +689,7 @@ The glue between status builds. Ritual makes every status you apply stronger.
 | **Incantation** | Starter | Common | 1 | Magic: gain Ritual equal to my value. Defense: gain block equal to my value. |
 | **Witch's Curse** | Engine | Rare | 2 | Magic: apply Bleed and Poison equal to my value (two applications, so Ritual counts twice). |
 | **Blood Rite** | Bridge (Ritual + Physical) | Rare | 3 | Attack: deal damage and apply Bleed equal to my value. |
-| **Dark Communion** | Payoff | Epic | 1 | Magic: gain Ritual equal to my value for each status type (Burn, Poison, Bleed) on the enemy, at least my value. |
+| **Dark Communion** | Payoff | Epic | 2 | Magic: apply Poison equal to my value, then gain Ritual equal to my value for each status type (Burn, Poison, Bleed) on the enemy, at least my value. |
 
 - **Dark Communion rewards variety:** the more different statuses the enemy carries, the more Ritual it gives. It is the "reward variety" payoff noted under Hybrid Builds.
 
@@ -698,7 +708,7 @@ A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder 
 | **Lacerate** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the enemy's Bleed (nothing is consumed). Defense: gain block equal to my value. |
 | **Open Wound** | Engine | Rare | 2 | Attack: deal damage equal to my value; if the enemy is bleeding, hit again for my value. |
 | **Bloodscent** | Bridge (Bleed + Rage) | Rare | 2 | Defense: gain block equal to my value; if the enemy is bleeding, heal equal to my value. |
-| **Exsanguinate** | Payoff | Epic | 1 | Attack: consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
+| **Exsanguinate** | Payoff | Epic | 2 | Attack: apply Bleed equal to my value, then consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
 
 - **Bleed timing:** Bleed applied on your turn ticks at the end of the enemy's turn, so N Bleed keeps the enemy marked for N − 1 of your turns. Bleed sources therefore apply at least 2 (Sword 2, Serrated Blade 4, Blood Rite 3, Witch's Curse 2); 1 Bleed would never reach your next turn.
 - **Lacerate keeps Bleed a mark:** Bleed still deals its 1 per tick; Lacerate hits harder the longer the enemy stays marked. Unlike Exsanguinate it consumes nothing and adds instead of multiplying, which keeps it a Common.
@@ -758,7 +768,7 @@ The crowd's favor: the arena cheers, and every buff you gain on yourself grows. 
 |---|---|---|---|---|---|
 | **Rally** | Face | Common | 1 | Magic: gain Encourage equal to my value. Defense: gain block equal to my value. | Incantation |
 | **Battle Hymn** | Face | Rare | 2 | Defense: gain Fortify equal to my value; if you have Encourage, also gain 1 Rage. | (the bridge) |
-| **Crowd's Favor** | Face | Epic | 1 | Magic: gain Encourage equal to my value for each buff type you have (Rage, Fortify, FireShield), at least my value. | Dark Communion |
+| **Crowd's Favor** | Face | Epic | 1 | Magic: gain 1 Rage, then gain Encourage equal to my value for each buff type you have (Rage, Fortify, FireShield), at least my value. | Dark Communion |
 | **Inspire** | Enchantment | Epic | — | Magic: gain Encourage equal to the face's value. | Dark Rite |
 
 - **Battle Hymn gains two buffs in one action,** so Encourage boosts it twice (with Encourage 2: value + 2 Fortify and 3 Rage). It is the shared face of Shield + Rage. Its Rage needs Encourage, so it is an Encourage payoff, not a free Shield upgrade.

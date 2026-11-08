@@ -20,7 +20,7 @@ public class OwnStatusScaledDamageEffectSO : EffectSO
     }
 
     private int BaseDamage(EffectContext context){
-        int stacks = context.source != null ? context.source.GetStatus(statusToScaleWith) : 0;
+        int stacks = context.source != null ? context.Stacks(context.source, statusToScaleWith) : 0;
         return context.value * Mathf.Max(1, stacks);
     }
 }

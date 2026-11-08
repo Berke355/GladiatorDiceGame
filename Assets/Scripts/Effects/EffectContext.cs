@@ -51,13 +51,37 @@ public class EffectContext
     public int ValueOf(DieFace dieFace) => charge != null ? charge.ValueOf(dieFace) : dieFace.value;
 
     // The source's Rage: added to every hit, so each hit of a multi-hit gets it.
-    public int RageBonus => source != null ? source.GetStatus(StatusType.Rage) : 0;
+    public int RageBonus => source != null ? Stacks(source, StatusType.Rage) : 0;
     // The source's Ritual: added to every status applied to the opponent (never to the source itself).
     public int RitualBonus => source != null ? source.GetStatus(StatusType.Ritual) : 0;
 
     // The source's Encourage: added to every buff it gains on itself (Rage, Fortify, FireShield), never to Block,
     // Ritual or Encourage itself.
     public int EncourageBonus => source != null ? source.GetStatus(StatusType.Encourage) : 0;
+
+    // Preview only: what the earlier effects of this action will have added by the time a later one runs, so a face
+    // that makes its own fuel shows the real numbers. Filled by Describe; empty when effects really run.
+    private Dictionary<Entity, Dictionary<StatusType, int>> previewGains;
+
+    // An entity's stacks of a status as an effect will find them. Effects that read stacks use this.
+    public int Stacks(Entity entity, StatusType status){
+        int stacks = entity.GetStatus(status);
+        if(previewGains != null && previewGains.TryGetValue(entity, out Dictionary<StatusType, int> gains) && gains.TryGetValue(status, out int gained)){
+            stacks += gained;
+        }
+        return stacks;
+    }
+
+    public void NotePreviewGain(Entity entity, StatusType status, int amount){
+        if(entity == null) return;
+        if(previewGains == null) previewGains = new Dictionary<Entity, Dictionary<StatusType, int>>();
+        if(!previewGains.TryGetValue(entity, out Dictionary<StatusType, int> gains)){
+            gains = new Dictionary<StatusType, int>();
+            previewGains[entity] = gains;
+        }
+        gains.TryGetValue(status, out int gained);
+        gains[status] = gained + amount;
+    }
 
     public static bool IsEncouraged(StatusType status){
         return status == StatusType.Rage || status == StatusType.Fortify || status == StatusType.FireShield;

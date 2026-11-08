@@ -2856,3 +2856,68 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Epic scan:** bought vs. free Epic per archetype, to see if the problem is general (Epic price, cheap upgrades) or Rage's.
 - **Full report** with the capped Thorns.
 - **The user's play-test:** die enchantments, Fortune, the difficulty curve.
+
+## Day 76 - Epics Bring Their Own Fuel
+
+### Accomplished (the user's play-test: without a working build an Epic barely works, so it only gives Epic impact in the lucky run)
+- **New rule, GDD "Epics Bring Their Own Fuel":** an Epic must beat a good Sword on any die, the turn it comes up, and explode in its build. Epics that reward a patchwork die directly are planned for later.
+- **Seven Epics changed:**
+
+| Epic | Value | Change |
+|---|---|---|
+| Unleash | 2 | Attack gains 1 Rage first |
+| Exsanguinate | 1 to 2 | Attack applies value Bleed first |
+| Fuel | 2 | Magic applies value Burn first and ignites the Burn at the end |
+| Cauterize | 1 to 2 | Attack also applies value Burn |
+| Crowd's Favor | 1 | Magic gains 1 Rage first |
+| Plague | 1 to 2 | - |
+| Dark Communion | 1 to 2 | Magic applies value Poison first |
+
+- Fate's Edge stays as it is: an extra reroll barely changed it, so it needs another idea. Earthshaker, Fate's Hand and Shield Burst already work on any die.
+- **Epic price 60 to 45:** a boss victory alone pays 50 gold, so the Grand Market can always sell one Epic. The price also applies to Epic enchantments.
+- **Previews see earlier effects:** `EffectContext.Stacks` / `NotePreviewGain`, so Fuel with no Burn previews its real 4 damage. Effects that read stacks use `Stacks`.
+- **Bots:** `RollWorth` judges a multiplying Epic by what it would really do (they were being rerolled away for their low printed value); Fuel plays Magic when it makes its own Burn; `BuyFittingFace` / `BuyBestEpic` take Crowd's Favor and Fate's Edge last. A correction to an earlier note: Exsanguinate, Earthshaker and others have a single action, so they never needed action rules; the reroll policy was the flaw.
+
+### Tests
+- **Previews against real results:** 10 cases over the changed faces, all equal (e.g. Unleash at 3 Rage: 12 damage; Exsanguinate on 5 Bleed: 14; Fuel on 3 Burn: 10). Not yet seen on screen in Play Mode.
+- **Default bots at the new price (300 runs):** Bleed 49%, Poison 35%, Bleed + Rage 30%, Rage 29%, Ritual + Poison 27%, Hammer 24%, Shield 19%, Shield + Rage 18%, Burn 16%, Fortune 15%, Opportunist 14%, Unplanned buyer 1%. No new wall. Opportunist and Unplanned read slightly lower than before (16-20% and 3-5%), which is close to noise but worth watching.
+
+### Balance
+- **Epic given free before battle 5 (200 runs). Reached battle 9, with 67 and 26 without a gift:**
+
+| Epic | Opportunist, before to after | Unplanned, before to after | Own archetype, before to after |
+|---|---|---|---|
+| Unleash | 65 to 92 | 23 to 33 | Rage 43% to 52% (no gift 30%) |
+| Dark Communion | 51 to 80 | 18 to 46 | Ritual + Poison 48% (no gift 36%), before not measured |
+| Fuel | 54 to 75 | 18 to 46 | Burn 13% to 30% (no gift 16%) |
+| Fate's Edge, with a reroll (not kept) | 72 to 80 | 26 to 31 | Fortune 21% to 20% (no gift 15%) |
+| Cauterize | 57 to 70 | 19 to 26 | Burn 20% to 28% (no gift 16%) |
+| Plague | 65 to 70 | 20 to 30 | Poison 30% to 45% (no gift 27%) |
+| Crowd's Favor | 54 to 69 | 14 to 37 | Rage 20% to 29% (no gift 30%) |
+| Exsanguinate | 55 to 62 | 17 to 36 | Bleed 26% to 47% (no gift 47%) |
+
+- The "before" figures of the last column were measured before the reroll fix, so part of those gains can come from it.
+- **Bought (250 runs). Bots that buy an Epic first at the Grand Market, in-memory price:**
+
+| Bot | Habits today, Epic 60 | Epic 60, save 10 | Epic 45 |
+|---|---|---|---|
+| Burn | 13% | 23% | 27% |
+| Poison | 25% | 22% | 35% |
+| Hammer | 22% | 20% | 29% |
+| Rage | 29% | 26% | 30% |
+| Shield | 25% | 22% | 17% |
+| Fortune | 15% | 10% | 9% |
+| Bleed | 47% | 24% | 26% |
+
+- **Opportunist (500 runs):** habits today 20%; Epic first at 60 with saving 7%; Epic first at 45 10%.
+
+### Findings
+- **The floor is largely fixed, the turning point isn't:** a free Epic no longer hurts a normal run, but paying for one still cuts the Opportunist's clear rate about in half. The rival is upgrades: on a patchwork die, the same gold in upgrades does more than one Epic outside its tags.
+- The bots buy an Epic every time; a player chooses, so these costs can be heavier than in real play.
+- **Bleed:** Exsanguinate consumes the Bleed that the other faces' conditions read, and the bot is forced to buy it. **Fortune:** a free Fate's Hand is strong, but buying Epics still lowers it; the bot's arrangement may be the limit.
+- Many runs that reach battle 9 still fall at battles 9 and 10.
+
+### Next Steps
+- **To discuss with the user:** upgrades against Epics (e.g. the upgrade cost, or an upgrade right at the Grand Market).
+- **The user's play-test:** the new Unleash and Fuel, Epics at 45, die enchantments, Fortune, the difficulty curve.
+- Epics that reward a patchwork die.

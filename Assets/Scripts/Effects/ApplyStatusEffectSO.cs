@@ -24,6 +24,7 @@ public class ApplyStatusEffectSO : EffectSO
 
     public override string Describe(EffectContext context){
         int amount = Amount(context.value) + (applyToSelf ? (EffectContext.IsEncouraged(statusToApply) ? context.EncourageBonus : 0) : context.RitualBonus);
+        context.NotePreviewGain(applyToSelf ? context.source : context.target, statusToApply, amount);
         return (applyToSelf ? "gain " : "") + amount + " " + statusToApply;
     }
 

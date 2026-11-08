@@ -654,7 +654,8 @@ public static class RunSimulator
         }
 
         switch(definition.faceName){
-            case "Fuel": return burn >= 3 ? ActionType.Magic : ActionType.Defense;
+            // A Magic with more than one effect makes its own Burn, so it doesn't wait for it.
+            case "Fuel": return burn >= 3 || (!bigHit && face.GetEffects(ActionType.Magic).Count > 1) ? ActionType.Magic : ActionType.Defense;
             case "Cauterize": return burn >= 3 && player.currentHP < player.maxHP - 4 ? ActionType.Magic : ActionType.Attack;
             case "Detonate": return burn >= 3 ? ActionType.Attack : ActionType.Magic;
             case "Plague": return ActionType.Magic;
@@ -732,7 +733,36 @@ public static class RunSimulator
         float average = 0;
         foreach(DieFace f in die) average += flow.charge.ValueOf(f);
         average /= die.Count;
-        return flow.charge.ValueOf(face) < average - 1;
+        return RollWorth(face, die, flow) < average - 1;
+    }
+
+    // What a face is worth on this roll: its battle value, or what a multiplying Epic would really do with it.
+    // Comparing Epics by their printed value alone made bots reroll them away.
+    private static int RollWorth(DieFace face, List<DieFace> die, BattleFlow flow){
+        int value = flow.charge.ValueOf(face);
+        Entity player = flow.player;
+        Entity target = flow.Target.entity;
+        switch(face.definition.faceName){
+            // They make their own fuel first.
+            case "Unleash": return value * (player.GetStatus(StatusType.Rage) + 1);
+            case "Exsanguinate": return value * (target.GetStatus(StatusType.Bleed) + value);
+            case "Fuel": return value * (target.GetStatus(StatusType.Burn) + value);
+            case "Plague": return value * Mathf.Max(1, die.FindAll(f => f.definition.tags.Contains(FaceTag.Poison)).Count);
+            case "Shield Burst": return value + value * player.GetStatus(StatusType.Fortify);
+            case "Fate's Edge": return value * Mathf.Max(1, flow.rerolls.UsedThisBattle);
+            case "Earthshaker":
+                int highest = 0;
+                foreach(DieFace other in die){
+                    if(other != face) highest = Mathf.Max(highest, flow.charge.ValueOf(other));
+                }
+                return value * highest;
+            // They set up the turns to come instead of a number now.
+            case "Fate's Hand":
+            case "Crowd's Favor":
+            case "Dark Communion":
+                return int.MaxValue;
+        }
+        return value;
     }
 
     // When to play an enchantment. Epic ones are combo pieces with their own timing; the others bring an
@@ -840,7 +870,11 @@ public static class RunSimulator
         // Set aside after healing, out of reach of everything below.
         int saved = bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist ? Mathf.Min(run.gold, goldToSave) : 0;
         run.gold -= saved;
-        if(GrandMarketFaceFirst && bot.shopping == Shopping.Focused && market.isGrand) BuyFittingFace(market, run, bot);
+        if(GrandMarketFaceFirst && market.isGrand){
+            if(bot.shopping == Shopping.Focused) BuyFittingFace(market, run, bot);
+            // An Epic is the opportunity an opportunist waits for, whatever its tag.
+            else if(bot.shopping == Shopping.Opportunist) BuyBestEpic(market, run);
+        }
         if(UseDieEnchantments && (bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist)){
             BuyDieEnchantments(market, run);
         }
@@ -871,14 +905,32 @@ public static class RunSimulator
     public static bool GrandMarketFaceFirst = false;
 
     private static void BuyFittingFace(Market market, RunData run, Bot bot){
+        int best = -1;
         for(int i = 0; i < market.offers.Count; i++){
             if(market.offers[i].sold || !bot.Fits(market.offers[i].face) || !market.CanBuy(i)) continue;
-            int slot = PickSlotToReplace(run, market.offers[i].face, bot);
-            if(slot >= 0){
-                market.Buy(i, slot);
-                return;
-            }
+            if(best < 0 || EpicWorth(market.offers[i].face) > EpicWorth(market.offers[best].face)) best = i;
         }
+        if(best < 0) return;
+        int slot = PickSlotToReplace(run, market.offers[best].face, bot);
+        if(slot >= 0) market.Buy(best, slot);
+    }
+
+    private static void BuyBestEpic(Market market, RunData run){
+        Bot current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+        int best = -1;
+        for(int i = 0; i < market.offers.Count; i++){
+            if(market.offers[i].sold || !market.CanBuy(i)) continue;
+            int worth = EpicWorth(market.offers[i].face) * 2 + (current.Fits(market.offers[i].face) ? 1 : 0);
+            if(best < 0 || worth > EpicWorth(market.offers[best].face) * 2 + (current.Fits(market.offers[best].face) ? 1 : 0)) best = i;
+        }
+        if(best < 0) return;
+        int slot = PickSlotToReplace(run, market.offers[best].face, current);
+        if(slot >= 0) market.Buy(best, slot);
+    }
+
+    // Measured with free gifts (DevLog Day 76): these two pay off least, so a bot takes them last.
+    private static int EpicWorth(DieFaceSO face){
+        return face.faceName == "Crowd's Favor" || face.faceName == "Fate's Edge" ? 0 : 1;
     }
 
     // Takes the reward the bot wants most. With full slots it replaces the item it wants least, if that one is worth less.

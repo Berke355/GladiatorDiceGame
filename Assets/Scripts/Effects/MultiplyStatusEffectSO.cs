@@ -19,6 +19,10 @@ public class MultiplyStatusEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
+        if(context.target != null){
+            int stacks = context.Stacks(context.target, statusToMultiply);
+            context.NotePreviewGain(context.target, statusToMultiply, stacks * context.value - stacks);
+        }
         return statusToMultiply + " x" + context.value;
     }
 }
