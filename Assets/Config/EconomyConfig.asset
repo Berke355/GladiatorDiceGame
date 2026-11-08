@@ -72,6 +72,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aa58efb3abb50ca42a3c30651386ad61, type: 2}
   - {fileID: 11400000, guid: 069b3389624499e4d8aae4416c6c1508, type: 2}
   - {fileID: 11400000, guid: 002e15011d5d9e440bbe226429df29af, type: 2}
+  - {fileID: 11400000, guid: abf01ebb64f0fd2419b770d26e2f5015, type: 2}
+  - {fileID: 11400000, guid: a528070cd055e7a4b9fa6e2bc1bd6674, type: 2}
+  - {fileID: 11400000, guid: 11ebb04df963d5a47872c3351c0a75e5, type: 2}
+  - {fileID: 11400000, guid: 985fc694587711c4f8f928dea10a394e, type: 2}
+  - {fileID: 11400000, guid: 899b016d9f81bf54c82881f4661564cc, type: 2}
+  - {fileID: 11400000, guid: ce0d2070eac2c244e8a94679ef114b67, type: 2}
+  - {fileID: 11400000, guid: 5c23c3d7fc062f0489927522170147c4, type: 2}
+  - {fileID: 11400000, guid: 944360dff0d015f4484964aa12d5a9b2, type: 2}
+  - {fileID: 11400000, guid: cc568995bfcfa1b46934ff3ee6442ae9, type: 2}
+  - {fileID: 11400000, guid: 30c05e6f4208c3a478666f1e66edfd1c, type: 2}
   offersPerMarket: 3
   commonWeight: 70
   rareWeight: 25

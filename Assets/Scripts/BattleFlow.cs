@@ -36,6 +36,10 @@ public class BattleFlow
     public int LastActedValue { get; private set; }
     public ActionType LastAction { get; private set; }
     private bool hasActedThisBattle;
+    // Whether this action differs from the last one this battle (Feint, Balance Scales). Also used by the previews.
+    public bool WouldChangeAction(ActionType action){
+        return hasActedThisBattle && LastAction != action;
+    }
     // The last action asked to reroll the die and act again (Steady Hand). Cleared by the next roll.
     public bool RerollPending { get; private set; }
     // Faces that acted this turn spend their Charge at the turn's end, unless their action kept it (Resonance).
@@ -260,7 +264,8 @@ public class BattleFlow
         ActionsThisTurn++;
         LastActedFace = RolledFace;
         LastActedValue = charge.ValueOf(RolledFace);
-        triggers.actionChanged = hasActedThisBattle && LastAction != action;
+        bool actionChanged = WouldChangeAction(action);
+        triggers.actionChanged = actionChanged;
         hasActedThisBattle = true;
         LastAction = action;
         triggers.Fire(TriggerType.ActionChosen, action);
@@ -279,7 +284,7 @@ public class BattleFlow
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber };
+        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }

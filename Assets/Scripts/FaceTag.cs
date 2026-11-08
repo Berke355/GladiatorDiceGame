@@ -12,5 +12,7 @@ public enum FaceTag
     Bleed,
     Hammer,
     // Faces and items built around rerolls.
-    Fortune
+    Fortune,
+    // Pragmatist faces: no archetype, they read states many builds produce (see GDD "Pragmatist Faces").
+    General
 }

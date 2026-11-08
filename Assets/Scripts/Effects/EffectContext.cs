@@ -27,6 +27,8 @@ public class EffectContext
     public int faceLandings;
     public bool arrivedBySteer;
     public int turnNumber;
+    // Whether this action differs from the source's last one this battle (Feint). False on the first action.
+    public bool actionChanged;
     // Set by an effect after which the face keeps its Charge instead of spending it (Resonance).
     public bool keepCharge;
     // The target's die, its stone faces and its Charge, for effects that act on it (Medusa). Null if the target has no die.

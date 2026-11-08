@@ -267,6 +267,8 @@ public class Market
     }
 
     private bool SharesTagWithDie(List<FaceTag> tags){
+        // General faces fit any die.
+        if(tags.Contains(FaceTag.General)) return true;
         foreach(DieFace dieFace in run.dieFaces){
             foreach(FaceTag tag in tags){
                 if(dieFace.definition.tags.Contains(tag)){

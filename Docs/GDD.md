@@ -575,6 +575,29 @@ Common and Rare faces can pass this test through a fallback action. Epic faces h
 - **Test:** give the Epic for free before battle 5 to the bots without a focus (Opportunist and Unplanned buyer). It should lift them too, not only the bot of its archetype.
 - **Later:** Epics that reward a patchwork die directly (e.g. "per different tag on the die").
 
+### Pragmatist Faces
+
+**Faces for the patchwork die: they belong to no archetype, and they find a different combo in every run.** They serve the normal run below, where a die is built from what the run offers (the user's idea).
+
+- **Rule:** a Pragmatist face reads a general state that many builds produce ("any status on the enemy", not "Burn").
+- **Floor:** it works about as well as a Sword on any die.
+- **Ceiling:** its bonus adds, it doesn't multiply. It is never the best face of one combo, and it stays Common or Rare.
+- **General tag:** these faces carry `General`, not an archetype tag.
+- **Test:** they get used and make different combos, without making one-face stacking dominant again. Bots clearing 5-15% remains the target (Roadmap Phase A).
+
+| Face | Rarity | Value | Effect | Finds combos with |
+|---|---|---|---|---|
+| **Exploit** | Common | 2 | Attack: my value + the number of status types on the enemy | Any die that applies several statuses |
+| **Veteran** | Common | 2 | Attack: my value. Defense: block equal to my value + the number of buff types you have | Rage, Fortify, Encourage, Ritual |
+| **Feint** | Common | 2 | Attack: my value. Defense: block equal to my value. +2 if this isn't your last action | Balance Scales, mixed dice |
+| **Drill Sergeant** | Common | 2 | Defense: block equal to my value. Magic: the faces next to me gain +1 value this battle | The die layout, high-value faces, Hammer |
+| **Throwing Knife** | Common | 5 | Attack (Consumable): my value | Fortune, Alchemist's Belt |
+| **Spare Blade** | Common | 3 | Attack: my value, +2 if I carry an enchantment | Action enchantments |
+| **Catalyst** | Rare | 2 | Magic: add my value to each of Burn, Poison and Bleed on the enemy. Defense: block equal to my value | Status mixes, Ritual |
+| **Mimic** | Rare | 2 | Attack: do what the opposite face does on Attack, with my value (a plain hit if it has no Attack) | Whatever the layout gives |
+| **Last Stand** | Rare | 2 | Attack: my value + 1 for every 5 HP you are missing | Faces and items that spend HP |
+| **Sharpshooter** | Rare | 2 | Attack: my value, +2 if you didn't reroll this turn | Dice that keep their rerolls |
+
 ### Every Run Is Its Own Build
 
 **The aim of a run is not to assemble a perfect build. A player who builds a patchwork die from what the run offers can still finish the game.**

@@ -10,9 +10,19 @@ public class DieCharge
     private readonly Dictionary<DieFace, int> charge = new Dictionary<DieFace, int>();
     // The bonus from the die's enchantments for a face (see GDD "Die Enchantments"), set by BattleFlow.
     public System.Func<DieFace, int> placementBonus;
+    // Value added for the whole battle (Drill Sergeant). Unlike Charge, acting with the face doesn't spend it.
+    private readonly Dictionary<DieFace, int> battleBonus = new Dictionary<DieFace, int>();
+
+    public void AddBattleBonus(DieFace face, int amount){
+        int current;
+        battleBonus.TryGetValue(face, out current);
+        battleBonus[face] = current + amount;
+    }
 
     public int Bonus(DieFace face){
-        return placementBonus != null ? placementBonus(face) : 0;
+        int bonus;
+        battleBonus.TryGetValue(face, out bonus);
+        return bonus + (placementBonus != null ? placementBonus(face) : 0);
     }
 
     public int Get(DieFace face){

@@ -3028,3 +3028,35 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The Shield bot and a Fortify question for the Hydra.**
 - **Upgrade cost,** after the Pragmatist set.
 - **The map (Roadmap Phase B),** and a boss pool per slot.
+
+## Day 79 - Pragmatist Faces
+
+### Accomplished (the user's idea: faces for the patchwork die, which find different combos in every run)
+- **GDD "Pragmatist Faces":** they read a general state that many builds produce, work like a Sword on any die, add instead of multiply, and stay Common or Rare.
+- **`FaceTag.General`:** these faces carry it instead of an archetype tag, and it fits any die in the Market's tag match.
+- **Ten faces, pool 55 to 65:** Exploit, Veteran, Feint, Drill Sergeant, Throwing Knife, Spare Blade (Common), Catalyst, Mimic, Last Stand, Sharpshooter (Rare).
+- **New effects:** `StatusTypesBonusEffectSO`, `ConditionalBonusEffectSO`, `AddToPresentStatusesEffectSO`, `CopyOppositeAttackEffectSO`, `MissingHPDamageEffectSO`, `AddValueToNeighborsEffectSO`. `DieCharge.AddBattleBonus` holds value that acting doesn't spend.
+- **Bots:** the Opportunist takes General faces as part of its plan; rules for Drill Sergeant and Catalyst.
+
+### Decisions
+- **Sharpshooter replaced Follow Up,** which read as complicated, and its "half" came close to a hidden multiplier.
+- **Catalyst has a Defense action:** without one it did nothing on an enemy without statuses.
+- **Runs get longer without new systems (Roadmap Phase B):** more enemies and bosses between the start and the last boss, plus a map that slows growth. An Act 2, a second die, face evolution and die levels were decided against, to keep the project finishable.
+
+### Tests
+- **Checks (19/19):** every face on the real `BattleFlow`, previews included. Mimic copies an Attack, falls back to a plain hit without one, doesn't loop with another Mimic and doesn't spend a Consumable. Not yet seen in Play Mode.
+
+### Balance
+- **One-face carry, the face on the die from the start (220 runs):** Bite 32%, Last Stand 21%, Exploit 10%, Feint 10%, Spare Blade 6%, Veteran 5%, Sharpshooter 3%, Mimic 1%. None of them makes stacking dominant.
+- **Free before battle 5 to the Opportunist (200 runs, no gift: 4% cleared, 29 reached battle 9). Reached battle 9:** Last Stand 61, Throwing Knife 32, Spare Blade 29, Sharpshooter 29, Drill Sergeant 28, Feint 23, Mimic 23, Veteran 22, Exploit 20, Catalyst 19. Only Last Stand stands out.
+- **Default bots (300 runs), before and after:** Bleed 39% to 35%, Shield 21% to 22%, Bleed + Rage 17% to 22%, Rage 17% to 19%, Ritual + Poison 18% to 13%, Poison 19% to 12%, Shield + Rage 14% to 12%, Burn 18% to 11%, One-face carry 17% to 11%, Hammer 20% to 10%, Fortune 10% to 10%, Opportunist 8% to 5%, Unplanned buyer 0% to 1%. Most bots are now in the 5-15% target of Roadmap Phase A.
+
+### Findings
+- **Correction to Day 78:** the Opportunist's 8% isn't too low; Roadmap Phase A's target is bots at 5-15%, since bots decide far worse than people.
+- The Opportunist uses these faces (1.6 per die at battle 8, all ten seen) but can't build combos with them, so the simulator can't show their value. The user's play-test decides.
+- General faces take about 25% of offers (225 of 900) while they are about 15% of the pool, because they fit any die. It may need tuning.
+
+### Next Steps
+- **Equipment without a slot limit, as relics:** remove the limit, scale items down, grow the pool.
+- **The Shield bot and a Fortify question for the Hydra.**
+- **The map, more battles and the difficulty curve.**

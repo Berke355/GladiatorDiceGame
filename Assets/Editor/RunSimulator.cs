@@ -19,6 +19,8 @@ public static class RunSimulator
         public FaceTag[] focusTags;
         // Shopping.Carry: the face it stacks everything on, bought when offered. Null: its strongest attacker.
         public string carryName;
+        // Takes General faces as part of its plan (the opportunist: they fit any die).
+        public bool takesGeneral;
 
         public Bot(string label, Shopping shopping, params FaceTag[] focusTags){
             this.label = label;
@@ -41,6 +43,7 @@ public static class RunSimulator
         }
 
         private bool Fits(List<FaceTag> tags){
+            if(takesGeneral && tags.Contains(FaceTag.General)) return true;
             foreach(FaceTag tag in focusTags){
                 if(tags.Contains(tag)) return true;
             }
@@ -673,6 +676,11 @@ public static class RunSimulator
             // Encourage lasts the battle: build it early, then defend for boosted Fortify and Rage.
             case "Rally": return !bigHit && player.GetStatus(StatusType.Encourage) < 2 ? ActionType.Magic : ActionType.Defense;
             case "Crowd's Favor": return ActionType.Magic;
+            // Raises the faces around it for the whole battle, so early is best; a big hit still comes first.
+            case "Drill Sergeant": return bigHit ? ActionType.Defense : ActionType.Magic;
+            case "Catalyst":
+                if(bigHit) return ActionType.Defense;
+                return burn > 0 || enemy.GetStatus(StatusType.Poison) > 0 || enemy.GetStatus(StatusType.Bleed) > 0 ? ActionType.Magic : ActionType.Defense;
             case "Battle Hymn": return ActionType.Defense;
             // Paying HP for Rage is only worth it with HP to spare and while Rage is still low.
             // Aim the Charge unless a big hit needs blocking.
@@ -966,7 +974,7 @@ public static class RunSimulator
     }
 
     private static void BuyBestEpic(Market market, RunData run){
-        Bot current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+        Bot current = OpportunistNow(market);
         int best = -1;
         for(int i = 0; i < market.offers.Count; i++){
             if(market.offers[i].sold || !market.CanBuy(i)) continue;
@@ -1110,7 +1118,7 @@ public static class RunSimulator
     // A player without a fixed plan: its focus is whatever it has picked up so far (the two most common tags beyond the
     // starting die), it takes a Rare or Epic opportunity even outside that focus, and it never pays to reroll for faces.
     private static void ShopOpportunist(Market market, RunData run){
-        Bot current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+        Bot current = OpportunistNow(market);
         if(UseEquipment) TakeBestReward(market, run, current);
         int opportunity = -1;
         for(int i = 0; i < market.offers.Count; i++){
@@ -1121,15 +1129,21 @@ public static class RunSimulator
             int slot = PickSlotToReplace(run, market.offers[opportunity].face, current);
             if(slot >= 0){
                 market.Buy(opportunity, slot);
-                current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+                current = OpportunistNow(market);
             }
         }
         ShopFocused(market, run, current, 0);
     }
 
+    private static Bot OpportunistNow(Market market){
+        Bot current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+        current.takesGeneral = true;
+        return current;
+    }
+
     private static FaceTag[] CurrentFocus(Market market){
         List<KeyValuePair<FaceTag, int>> counts = new List<KeyValuePair<FaceTag, int>>(market.BuildTagCounts());
-        counts.RemoveAll(entry => entry.Value <= 0 || entry.Key == FaceTag.Physical);
+        counts.RemoveAll(entry => entry.Value <= 0 || entry.Key == FaceTag.Physical || entry.Key == FaceTag.General);
         counts.Sort((a, b) => b.Value.CompareTo(a.Value));
         List<FaceTag> focus = new List<FaceTag>();
         for(int i = 0; i < counts.Count && i < 2; i++) focus.Add(counts[i].Key);
