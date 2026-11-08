@@ -27,6 +27,8 @@ public class RollConditionEffectSO : EffectSO
             string description = effect != null ? effect.Describe(context) : "";
             if(description != "") parts.Add(description);
         }
+        // During a turn (the action previews) a condition already met shows just its result.
+        if(context.face != null && context.turnNumber > 0 && Met(context)) return string.Join(", ", parts);
         return ConditionText() + ": " + string.Join(", ", parts);
     }
 

@@ -249,7 +249,7 @@ public class UIManager : MonoBehaviour
         if(flow != null && flow.IsChange(face, action)){
             return flow.ChangesThisTurn < BattleFlow.MaxChangesPerTurn ? "Change: roll another face" : "";
         }
-        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null };
+        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null, faceLandings = flow != null ? flow.LandingsThisTurn(face) : 0, arrivedBySteer = flow != null && flow.ArrivedBySteer, turnNumber = flow != null ? flow.TurnNumber : 0 };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);

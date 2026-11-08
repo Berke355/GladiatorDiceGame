@@ -199,7 +199,7 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
   - **Several actions in a turn:** an effect that also Changes lets a turn hold more than one action. The limit is **3 actions per turn**; the game tracks how many times each face came up this turn.
   - **Built so far (DevLog Day 70):** roll steering (Change, Flip, Tumble, a chosen face), landing counts, the action limit and the payoff conditions. No face uses them yet; that is stage 3.
   - **Two kinds of Change:** the Change a used Consumable action becomes stays once per turn (it must not thin the die). Fortune's Change actions are their own face actions, held in check by rarity and the actions-per-turn limit. Change is strong, so its faces are Rare or Epic.
-  - **The first set (agreed, to be built in stage 3):**
+  - **The first set (built, DevLog Day 71):**
 
 | Face | Side | Rarity | Value | Effect |
 |---|---|---|---|---|
@@ -209,9 +209,10 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
 | **Sidestep** | Engine | Rare | 2 | Defense: gain block equal to my value, then the Rightmost face comes up. |
 | **Mirror Blade** | Payoff | Rare | 3 | Attack: deal my value; if I came from a Change, Flip or Tumble, hit again. |
 | **Fate's Hand** | Engine | Epic | 2 | Defense: gain block equal to my value and choose a face of your die; it comes up. |
-| **Encore** | Payoff | Epic | 3 | Attack: deal my value; if this is my second time this turn, deal 3 times my value. Magic: Flip. |
+| **Encore** | Payoff | Epic | 3 | Attack: deal my value; if this is my second time this turn, hit 2 more times (3 times my value, each hit with Rage). Magic: Flip. |
 
     - **Example combo:** Encore opposite Ricochet. Encore's Magic Flips (action 1), Ricochet hits and Flips (action 2), Encore comes up a second time and hits big (action 3). It fits the limit of 3 actions exactly, and all of its power comes from where the faces sit.
+    - **Sidestep on Rightmost lands on itself** and repeats until the 3-action limit (6 block at value 2). This is allowed: a small discovery the arrangement puzzle can reward. Watch it in play-tests.
     - **Encore's Magic is Flip, not Change:** with Change, the second landing is mostly luck; with Flip, it is the arrangement puzzle.
     - Change's power means its faces are Rare or Epic. Turnabout's plain Flip, with no effect in the same action, is the Common entry point.
   - **Existing faces:** Lucky Buckler stays as a small engine piece (gaining rerolls). Patient Blade, Gambit and Hedge stay for now; the ones the new set makes unnecessary are removed after it is played.

@@ -2654,3 +2654,36 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 ### Next Steps
 - **Fortune stage 3:** build the agreed set.
 - **Fortune stage 4:** bots, simulation and the user's play-test.
+
+## Day 71 - Fortune Stage 3: The First Set
+
+### Accomplished
+- **Seven new Fortune faces** (GDD "Rerolls"), added to the Market pool (55 faces):
+
+| Face | Side | Rarity | Value | Effect |
+|---|---|---|---|---|
+| Turnabout | Engine | Common | 2 | Attack: my value. Magic: Flip |
+| Opening Gambit | Payoff | Common | 3 | Attack: my value, hit again on the first turn. Defense: block |
+| Ricochet | Engine | Rare | 2 | Attack: my value, then Flip |
+| Sidestep | Engine | Rare | 2 | Defense: block, then the Rightmost face comes up |
+| Mirror Blade | Payoff | Rare | 3 | Attack: my value, hit again if I came from a Change, Flip or Tumble |
+| Fate's Hand | Engine | Epic | 2 | Defense: block, then choose the next face |
+| Encore | Payoff | Epic | 3 | Attack: my value, 2 more hits if this is my second time this turn. Magic: Flip |
+
+- **Previews:** during a turn, a condition already met shows just its result ("2 x 3 damage").
+- **The example combo:** with Encore opposite Ricochet, Encore's Magic Flips, Ricochet hits 2 and Flips back, and Encore hits 9: 11 damage in the 3 actions of a turn.
+
+### Tests
+- **Checks (13/13):**
+  - Each face works.
+  - Opening Gambit hits 6 on turn 1 and 3 later.
+  - Mirror Blade hits 3 alone and 6 after a Flip.
+  - The combo works step by step and ends at the limit.
+- **Play Mode:** the full combo with real buttons (2, then 9 damage; then the turn passed to the enemy). No Console errors.
+
+### Findings
+- Sidestep on Rightmost lands on itself and repeats until the limit (6 block at value 2). It is allowed as a small discovery; to watch in play-tests.
+- **The Fortune bot fell from 19% to 12%** (700 runs): it buys the faces but can't arrange or combo them. The other bots are in place (Burn 14%, Rage 31%, Opportunist 17%).
+
+### Next Steps
+- **Fortune stage 4:** simple bot rules (arranging the die, Encore's Flip, Fate's Hand's choice), then the user's play-test.
