@@ -65,7 +65,7 @@ public class BattleManager : MonoBehaviour
         }
 
         // Enemies that join later (Hydra heads) are copies of the scene's enemy object.
-        flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle, () => Instantiate(enemy, enemy.transform.parent));
+        flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle, () => Instantiate(enemy, enemy.transform.parent), run.dieEnchantments);
         enemySpriteScale = enemy.transform.localScale;
         enemySpriteY = enemy.transform.position.y;
         foreach(BattleEnemy each in flow.enemies) each.entity.OnHealthChanged += UpdateEnemySprites;

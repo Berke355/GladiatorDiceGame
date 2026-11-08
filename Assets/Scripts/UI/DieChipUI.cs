@@ -14,12 +14,12 @@ public class DieChipUI : MonoBehaviour
     public Color highlightColor = new Color(0.85f, 0.65f, 0.2f, 0.95f);
     public Color stoneColor = new Color(0.42f, 0.44f, 0.47f, 0.95f);
 
-    // charge: the face's Charge this battle, shown as "+N" next to its value.
+    // charge: the face's Charge and place on the die this battle, shown as "+N" or "-N" next to its value.
     // stoneTurns: player turns the face stays petrified (0 = not stone).
     // used: a Consumable action of the face was used this battle (it is Change now).
     // layoutNote: the face's place on the net, added to the tooltip (see DieLayout.Describe).
     public void Set(DieFace face, bool highlighted, int charge = 0, int stoneTurns = 0, bool used = false, string layoutNote = ""){
-        string value = face.value + (charge > 0 ? " <color=#FFC857>+" + charge + "</color>" : "");
+        string value = face.value + (charge > 0 ? " <color=#FFC857>+" + charge + "</color>" : charge < 0 ? " <color=#FF7A6B>" + charge + "</color>" : "");
         if(used) value = "<color=#9AA5B1>used: Change</color>";
         text.text = "<b>" + face.DisplayName + "</b>\n" + (stoneTurns > 0 ? "STONE " + stoneTurns : value);
         tooltip.text = GameText.FaceTooltip(face)

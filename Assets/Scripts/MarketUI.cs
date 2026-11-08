@@ -15,6 +15,15 @@ public class MarketUI : MonoBehaviour
     public OfferCardUI[] offerCards;
     // The Enchanting Table, in every Market.
     public OfferCardUI[] enchantmentCards;
+    // The Enchanting Table is a tab: it swaps the faces and items for the enchantments, with the die net in view.
+    public GameObject facesSection;
+    public GameObject enchantmentSection;
+    public GameObject dieEnchantmentSection;
+    public OfferCardUI[] dieEnchantmentCards;
+    public Button tabButton;
+    public TextMeshProUGUI tabButtonText;
+    // The enchantments on the die; clickable only while choosing which one to replace.
+    public EquipmentSlotUI[] dieEnchantmentSlots;
     // Equipment for sale, Grand Market only; the whole section is hidden in the Normal Market.
     public GameObject equipmentSection;
     public OfferCardUI[] equipmentCards;
@@ -45,16 +54,18 @@ public class MarketUI : MonoBehaviour
     private int pendingReward = -1;
     // The die face picked to move; the next face clicked swaps places with it.
     private int pendingSwap = -1;
+    // A die enchantment being bought with every slot full: the next slot clicked is replaced.
+    private int pendingDieEnchantment = -1;
+    private bool showingTable;
 
     private bool ChoosingDieSlot => pendingOffer >= 0 || pendingEnchantment >= 0;
     private bool ChoosingEquipmentSlot => pendingEquipment >= 0 || pendingReward >= 0;
-    private bool Choosing => ChoosingDieSlot || ChoosingEquipmentSlot || pendingSwap >= 0;
+    private bool Choosing => ChoosingDieSlot || ChoosingEquipmentSlot || pendingSwap >= 0 || pendingDieEnchantment >= 0;
 
     void Start(){
         run = RunManager.Instance.run;
         market = new Market(run, RunManager.Instance.economy, RunManager.Instance.IsGrandMarket);
         titleText.text = market.isGrand ? "GRAND MARKET" : "MARKET";
-        equipmentSection.SetActive(market.isGrand);
         // Usually picked already by GoToMarket; also covers playing the Market scene directly.
         RunManager.Instance.PickNextBattle();
         ShowNextBattle();
@@ -70,6 +81,16 @@ public class MarketUI : MonoBehaviour
             enchantmentCards[i].buyButton.onClick.AddListener(() => OnEnchantmentClicked(index));
             enchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEnchantmentLock(index); Refresh(); });
         }
+        for(int i = 0; i < dieEnchantmentCards.Length; i++){
+            int index = i;
+            dieEnchantmentCards[i].buyButton.onClick.AddListener(() => OnDieEnchantmentClicked(index));
+            dieEnchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleDieEnchantmentLock(index); Refresh(); });
+        }
+        for(int i = 0; i < dieEnchantmentSlots.Length; i++){
+            int index = i;
+            dieEnchantmentSlots[i].slotButton.onClick.AddListener(() => OnDieEnchantmentSlotClicked(index));
+        }
+        tabButton.onClick.AddListener(() => { showingTable = !showingTable; ClearPending(); Refresh(); });
         for(int i = 0; i < equipmentCards.Length; i++){
             int index = i;
             equipmentCards[i].buyButton.onClick.AddListener(() => OnEquipmentClicked(index));
@@ -114,6 +135,20 @@ public class MarketUI : MonoBehaviour
             pendingEnchantment = offerIndex;
             Refresh();
         }
+    }
+
+    // With a free slot it goes straight on; with both full the player picks the one to replace.
+    private void OnDieEnchantmentClicked(int offerIndex){
+        if(!market.CanBuyDieEnchantment(offerIndex)) return;
+        if(market.HasFreeDieEnchantmentSlot) market.BuyDieEnchantment(offerIndex, -1);
+        else pendingDieEnchantment = offerIndex;
+        Refresh();
+    }
+
+    private void OnDieEnchantmentSlotClicked(int slot){
+        if(pendingDieEnchantment >= 0) market.BuyDieEnchantment(pendingDieEnchantment, slot);
+        ClearPending();
+        Refresh();
     }
 
     // With a free slot the item goes straight in; with full slots the player picks the item to replace.
@@ -183,6 +218,7 @@ public class MarketUI : MonoBehaviour
         pendingEquipment = -1;
         pendingReward = -1;
         pendingSwap = -1;
+        pendingDieEnchantment = -1;
     }
 
     // Called by the Next Battle button.
@@ -230,6 +266,31 @@ public class MarketUI : MonoBehaviour
     }
 
     private void Refresh(){
+        titleText.text = showingTable ? "ENCHANTING TABLE" : market.isGrand ? "GRAND MARKET" : "MARKET";
+        tabButtonText.text = showingTable ? "Back to Market" : "Enchanting Table";
+        facesSection.SetActive(!showingTable);
+        equipmentSection.SetActive(!showingTable && market.isGrand);
+        enchantmentSection.SetActive(showingTable);
+        dieEnchantmentSection.SetActive(showingTable);
+        for(int i = 0; i < dieEnchantmentCards.Length; i++){
+            OfferCardUI card = dieEnchantmentCards[i];
+            bool hasOffer = i < market.dieEnchantmentOffers.Count;
+            card.gameObject.SetActive(hasOffer);
+            if(!hasOffer) continue;
+            DieEnchantmentOffer offer = market.dieEnchantmentOffers[i];
+            card.infoText.text = OfferCardUI.DescribeDieEnchantment(offer.enchantment);
+            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingDieEnchantment ? "Selected" : "Buy  " + offer.price + "g");
+            card.buyButton.interactable = !Choosing && market.CanBuyDieEnchantment(i);
+            DrawLock(card, offer.sold, offer.locked, market.CanToggleDieEnchantmentLock(i));
+        }
+        for(int i = 0; i < dieEnchantmentSlots.Length; i++){
+            EquipmentSlotUI slot = dieEnchantmentSlots[i];
+            bool filled = i < run.dieEnchantments.Count;
+            slot.text.text = filled ? "<b>" + run.dieEnchantments[i].enchantmentName + "</b>" : "<color=#7F8C8D>No die enchantment</color>";
+            slot.tooltip.text = filled ? "<b>" + run.dieEnchantments[i].enchantmentName + "</b>\n" + GameText.Colorize(run.dieEnchantments[i].description) : "";
+            slot.slotButton.interactable = pendingDieEnchantment >= 0 && filled;
+        }
+
         runInfoText.text = "Gold: " + run.gold + "     HP: " + run.currentHP + " / " + run.maxHP + "     Battles won: " + run.battlesWon;
 
         for(int i = 0; i < offerCards.Length; i++){
@@ -279,7 +340,11 @@ public class MarketUI : MonoBehaviour
 
             DieFace dieFace = run.dieFaces[i];
             string moving = i == pendingSwap ? "<color=#B8860B>Moving: </color>" : "";
-            slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + "\n<size=70%>" + DieLayout.Name(i) + " | " + MagicStatus(dieFace) + "</size>";
+            int bonus = DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i);
+            string bonusText = bonus > 0 ? " <color=#B8860B>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
+            int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
+            string weightText = weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often";
+            slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + bonusText + "\n<size=70%>" + DieLayout.Name(i) + weightText + " | " + MagicStatus(dieFace) + "</size>";
             slot.tooltip.text = GameText.FaceTooltip(dieFace) + "\n<color=#9AA5B1>" + DieLayout.Describe(run.dieFaces, i) + "</color>";
             // An enchantment can only go on a face whose Magic action is still empty. With nothing being bought,
             // a click picks the face to move, and the next click swaps.
@@ -331,6 +396,7 @@ public class MarketUI : MonoBehaviour
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingEquipment >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.equipmentOffers[pendingEquipment].item.equipmentName;
         if(pendingReward >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.rewardChoices[pendingReward].equipmentName;
+        if(pendingDieEnchantment >= 0) return "Your die has 2 enchantments. Choose one to replace with " + market.dieEnchantmentOffers[pendingDieEnchantment].enchantment.enchantmentName;
         if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click";
         return (market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market.") + " Click a die face to move it (free).";
     }

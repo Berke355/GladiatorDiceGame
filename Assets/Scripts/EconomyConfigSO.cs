@@ -33,6 +33,9 @@ public class EconomyConfigSO : ScriptableObject
     public List<EnchantmentSO> enchantmentPool = new List<EnchantmentSO>();
     [FormerlySerializedAs("modulesPerMarket")]
     public int enchantmentsPerMarket = 3;
+    // Every enchantment for the die itself, and how many the table shows per visit (see GDD "Die Enchantments").
+    public List<DieEnchantmentSO> dieEnchantmentPool = new List<DieEnchantmentSO>();
+    public int dieEnchantmentsPerMarket = 2;
 
     [Header("Equipment")]
     // Every item the boss reward and the Grand Market can offer.

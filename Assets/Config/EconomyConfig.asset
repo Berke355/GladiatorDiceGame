@@ -91,6 +91,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 04dc3e9042871cc4f94849f0720fcbda, type: 2}
   - {fileID: 11400000, guid: c8f08909025931842b36a4b6612006b7, type: 2}
   enchantmentsPerMarket: 3
+  dieEnchantmentPool:
+  - {fileID: 11400000, guid: a2d352fda36dcfc44abd8ce2ea09e491, type: 2}
+  - {fileID: 11400000, guid: 910b5ae36922a7840b8c997ab19f67e6, type: 2}
+  - {fileID: 11400000, guid: 823cac29bf08afd409ef66ce22422bcb, type: 2}
+  - {fileID: 11400000, guid: f26b858e9e5a6dd4487c6cf761a1ad0b, type: 2}
+  - {fileID: 11400000, guid: 8932d5c6b507cb346ac1347b5eab780e, type: 2}
+  - {fileID: 11400000, guid: 37592c37d36e45b47928531bc00048ac, type: 2}
+  dieEnchantmentsPerMarket: 2
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
   - {fileID: 11400000, guid: 551fdb623450bbb4c9a281dfa043714e, type: 2}

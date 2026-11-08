@@ -479,7 +479,7 @@ public static class RunSimulator
         };
 
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
-        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.rerollsPerBattle, factory);
+        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.rerollsPerBattle, factory, run.dieEnchantments);
         EnemyTier statsTier = boss != null ? EnemyTier.Boss : encounter.tier;
         FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;
@@ -776,18 +776,76 @@ public static class RunSimulator
     public static bool UseHealer = true;
     public static float HealBelowFraction = 0.5f;
 
+    // Bots buy die enchantments and arrange for them; off to measure what they add.
+    public static bool UseDieEnchantments = true;
+    public static int GoldToKeepForUpgrades = 30;
+
+    // Takes the rarest affordable die enchantment while a slot is free, or if it is rarer than one on the die.
+    private static void BuyDieEnchantments(Market market, RunData run){
+        int best = -1;
+        for(int i = 0; i < market.dieEnchantmentOffers.Count; i++){
+            if(!market.CanBuyDieEnchantment(i)) continue;
+            // Upgrades come first: a Common or Rare only if gold is left for them; an Epic is worth saving up for.
+            DieEnchantmentOffer offer = market.dieEnchantmentOffers[i];
+            if(offer.enchantment.rarity != Rarity.Epic && run.gold - offer.price < GoldToKeepForUpgrades) continue;
+            if(best < 0 || market.dieEnchantmentOffers[i].enchantment.rarity > market.dieEnchantmentOffers[best].enchantment.rarity) best = i;
+        }
+        if(best < 0) return;
+        if(market.HasFreeDieEnchantmentSlot){
+            market.BuyDieEnchantment(best, -1);
+            return;
+        }
+        int weakest = 0;
+        for(int i = 1; i < run.dieEnchantments.Count; i++){
+            if(run.dieEnchantments[i].rarity < run.dieEnchantments[weakest].rarity) weakest = i;
+        }
+        if(market.dieEnchantmentOffers[best].enchantment.rarity > run.dieEnchantments[weakest].rarity) market.BuyDieEnchantment(best, weakest);
+    }
+
+    // Puts the highest-value faces on the best positions: bonus first, and a position that comes up more counts for more.
+    private static void ArrangeForDieEnchantments(Market market, RunData run){
+        if(run.dieEnchantments.Count == 0 || run.dieFaces.Count < DieLayout.Count) return;
+        List<int> positions = new List<int>();
+        for(int i = 0; i < DieLayout.Count; i++) positions.Add(i);
+        System.Func<int, int> score = position => PositionScore(run, position);
+        positions.Sort((a, b) => score(b).CompareTo(score(a)));
+        // Selection sort through free swaps: the best position gets the highest value still unplaced.
+        for(int rank = 0; rank < positions.Count; rank++){
+            int best = rank;
+            for(int other = rank + 1; other < positions.Count; other++){
+                if(run.dieFaces[positions[other]].value > run.dieFaces[positions[best]].value) best = other;
+            }
+            if(best != rank) market.SwapFaces(positions[rank], positions[best]);
+        }
+    }
+
+    private static int PositionScore(RunData run, int position){
+        int score = 0;
+        foreach(DieEnchantmentSO enchantment in run.dieEnchantments){
+            foreach(PositionAmount entry in enchantment.positionBonuses){
+                if(entry.position == position) score += entry.amount;
+            }
+        }
+        return score + 3 * (DieEnchantmentSO.WeightAt(run.dieEnchantments, position) - 1);
+    }
+
     private static void Shop(Bot bot, Market market, RunData run){
         if(UseHealer && bot.shopping != Shopping.None){
             while(run.currentHP < run.maxHP * HealBelowFraction && market.Heal()){ }
+        }
+        if(UseDieEnchantments && (bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist)){
+            BuyDieEnchantments(market, run);
         }
         switch(bot.shopping){
             case Shopping.Focused:
                 if(UseEquipment) TakeBestReward(market, run, bot);
                 ShopFocused(market, run, bot);
+                ArrangeForDieEnchantments(market, run);
                 ArrangeFortune(market, run);
                 break;
             case Shopping.Opportunist:
                 ShopOpportunist(market, run);
+                ArrangeForDieEnchantments(market, run);
                 ArrangeFortune(market, run);
                 break;
             case Shopping.Unplanned:

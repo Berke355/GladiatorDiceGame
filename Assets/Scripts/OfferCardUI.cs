@@ -27,6 +27,12 @@ public class OfferCardUI : MonoBehaviour
             + "<size=80%>" + GameText.Colorize(enchantment.description) + "</size>";
     }
 
+    public static string DescribeDieEnchantment(DieEnchantmentSO enchantment){
+        return "<b>" + enchantment.enchantmentName + "</b>\n"
+            + RarityLabel(enchantment.rarity) + "\n"
+            + "<size=80%>" + GameText.Colorize(enchantment.description) + "</size>";
+    }
+
     // Card text for an equipment item (Grand Market offers, boss reward).
     public static string DescribeEquipment(EquipmentSO item){
         return "<b>" + item.equipmentName + "</b>\n"

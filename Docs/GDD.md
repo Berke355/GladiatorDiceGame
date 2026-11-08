@@ -154,6 +154,43 @@ The die is a real cube laid out as a net, and where a face sits matters. This gi
 - **Built so far (DevLog Day 69):** the net, the positions and opposites, the swap, and the net on screen. No face reads the layout yet; that comes with Fortune's stages 2 and 3.
 - **Other builds barely notice the layout;** for Fortune it is vital, and future faces and mechanics will keep giving it more meaning.
 
+### Die Enchantments
+
+Every build should care where its faces sit, not only Fortune (play-test). Die enchantments are sold at the Enchanting Table and inscribed on the die itself, not on a face (inspired by items in Slice & Dice that change certain positions).
+
+- **Bound to the position:** a die enchantment stays where it is when faces move or are replaced. That creates the puzzle: which face goes on the +2 spot, and which on the -1?
+- **The minus side is the real decision:** faces that don't depend on their value go there (Turnabout used for its Flip, Lucky Buckler for its reroll, a drunk potion).
+- **Value Is the Effect holds:** like Charge, it is part of a face's battle value. The die shows "Sword 2 +2", and effects and previews use 4. A battle value never goes below 0. Upgrade prices use the face's own value.
+- **Medusa's gaze takes the highest battle value,** so the face on the bonus spot is her target.
+- **At most 2 at a time;** a new one replaces one of them. They can't be removed otherwise. Few means each one is a heavy decision.
+- **Prices:** the same as other offers (Common 10, Rare 25, Epic 60). The table offers 2 per Market, under the same rules as faces (Grand Market: Epic only), and they can be locked.
+
+| Enchantment | Rarity | Effect |
+|---|---|---|
+| **Honed Edge** | Common | Rightmost +2, Left -1 |
+| **Balance** | Common | Top +2, Bottom -2 |
+| **Heavy Core** | Rare | Middle +3, Top and Bottom -1 |
+| **Twin Fangs** | Rare | Left and Right +1, Middle -2 |
+| **Kindred** | Epic | Every face that shares a tag with its opposite face gets +1 |
+| **Weighted Die** | Epic | Rightmost comes up twice as often, Left never does (a steer can still bring it) |
+
+- **Simulation (DevLog Day 74, an enchantment free from the start; Opportunist / Rage / Burn, 350 runs):**
+
+| Enchantment | Opportunist | Rage | Burn |
+|---|---|---|---|
+| None | 15% | 29% | 9% |
+| Honed Edge | 21% | 35% | 13% |
+| Balance +1 / -1 | 14% | 37% | 14% |
+| Balance +2 / -2 | 17% | 33% | 8% |
+| Heavy Core | 21% | 32% | 15% |
+| Twin Fangs | 19% | 34% | 12% |
+| Kindred | 33% | 55% | 19% |
+| Weighted Die | 26% | 46% | 40% |
+
+  - Common and Rare ones are a small gain, and the Epics are strong, as their rarity should be. Balance's two versions are the same within noise; +2 / -2 makes the placement a heavier decision.
+  - **Gold is their real cost:** bots that bought them before upgrades did much worse (Rage 34% to 18%, Shield 25% to 13%). Now bots buy Commons and Rares only with 30 gold left over, and overall rates are about as before.
+- **The Enchanting Table is a tab in the Market:** a button switches the offers between the Market (faces, items) and the table (face enchantments, die enchantments), with the die net always in view. The map will later make it a node of its own.
+
 ### Value Is the Effect
 
 The number printed on a face is exactly what its effects use. There are no hidden multipliers: a face showing 4 never secretly deals 8. Players should be able to trust the big number on a face at a glance. Faces differ through which actions and effects they support, not through hidden scaling.

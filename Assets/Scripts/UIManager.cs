@@ -274,7 +274,7 @@ public class UIManager : MonoBehaviour
             bool hasFace = i < die.Count;
             dieChips[i].gameObject.SetActive(hasFace);
             if(hasFace){
-                dieChips[i].Set(die[i], die[i] == rolled, flow != null ? flow.charge.Get(die[i]) : 0, flow != null ? flow.petrification.TurnsLeft(die[i]) : 0, flow != null && flow.consumables.AnyUsed(die[i]), DieLayout.Describe(die, i));
+                dieChips[i].Set(die[i], die[i] == rolled, flow != null ? flow.charge.Get(die[i]) + flow.charge.Bonus(die[i]) : 0, flow != null ? flow.petrification.TurnsLeft(die[i]) : 0, flow != null && flow.consumables.AnyUsed(die[i]), DieLayout.Describe(die, i));
             }
         }
     }

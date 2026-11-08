@@ -76,7 +76,12 @@ public class BattleFlow
     public BattleFlow(Entity player, Entity enemy, IEnemyBrain brain, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0)
         : this(player, new List<BattleEnemy>{ new BattleEnemy(enemy, brain) }, die, equipment, rerollsPerBattle){ }
 
-    public BattleFlow(Entity player, List<BattleEnemy> enemies, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0, Func<Entity> entityFactory = null){
+    // The enchantments on the die (see GDD "Die Enchantments").
+    private readonly List<DieEnchantmentSO> dieEnchantments;
+
+    public BattleFlow(Entity player, List<BattleEnemy> enemies, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0, Func<Entity> entityFactory = null, List<DieEnchantmentSO> dieEnchantments = null){
+        this.dieEnchantments = dieEnchantments;
+        charge.placementBonus = face => DieEnchantmentSO.BonusAt(dieEnchantments, die, die.IndexOf(face));
         rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
         this.enemies = enemies;
@@ -195,9 +200,7 @@ public class BattleFlow
             RolledFace = steerTo;
         }
         else{
-            // Change guarantees a face other than the one it came from.
-            List<DieFace> faces = changeFrom != null && die.Count > 1 ? die.FindAll(face => face != changeFrom) : die;
-            RolledFace = faces[UnityEngine.Random.Range(0, faces.Count)];
+            RolledFace = PickFace(changeFrom);
         }
         steerTo = null;
         changeFrom = null;
@@ -205,6 +208,21 @@ public class BattleFlow
         triggers.currentFace = RolledFace;
         triggers.Fire(TriggerType.FaceRolled);
         return RolledFace;
+    }
+
+    // A random face, weighted by the die's enchantments (Weighted Die). Change guarantees a face other than the one it
+    // came from. If the weights rule out everything left, every candidate counts the same.
+    private DieFace PickFace(DieFace exclude){
+        List<DieFace> faces = exclude != null && die.Count > 1 ? die.FindAll(face => face != exclude) : die;
+        int total = 0;
+        foreach(DieFace face in faces) total += DieEnchantmentSO.WeightAt(dieEnchantments, die.IndexOf(face));
+        if(total <= 0) return faces[UnityEngine.Random.Range(0, faces.Count)];
+        int roll = UnityEngine.Random.Range(0, total);
+        foreach(DieFace face in faces){
+            roll -= DieEnchantmentSO.WeightAt(dieEnchantments, die.IndexOf(face));
+            if(roll < 0) return face;
+        }
+        return faces[faces.Count - 1];
     }
 
     // A reroll can be spent once the die has landed and before an action is chosen; the new face must be used.

@@ -2735,3 +2735,73 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 ### Next Steps
 - **The user's play-test of Fortune** and the difficulty curve.
 - **Rage and Hammer's ceiling.**
+
+## Day 74 - Die Enchantments and the Enchanting Table Tab
+
+### Accomplished (the user's play-test: placement only mattered for Fortune, and face enchantments were rarely bought)
+- **Die enchantments** (`DieEnchantmentSO`, GDD "Die Enchantments"), inscribed on the die's positions rather than on faces:
+  - A bonus stays on its position when faces move, so the arrangement is a puzzle for every build.
+  - Up to 2 at a time; a third replaces one. They can be locked, the Grand Market offers only Epics, and what's on the die isn't offered.
+  - The bonus is part of battle value (`DieCharge.placementBonus`), never below 0, shown on the die, and it counts for Medusa's target. Roll weights go through `BattleFlow.PickFace`; steers ignore them.
+
+| Enchantment | Rarity | Effect |
+|---|---|---|
+| Honed Edge | Common | Rightmost +2, Left -1 |
+| Balance | Common | Top +2, Bottom -2 |
+| Heavy Core | Rare | Middle +3, Top and Bottom -1 |
+| Twin Fangs | Rare | Left and Right +1, Middle -2 |
+| Kindred | Epic | Faces sharing a tag with their opposite +1 |
+| Weighted Die | Epic | Rightmost twice as often, Left never on a roll |
+
+- **The Enchanting Table is a tab in the Market:** "Enchanting Table" / "Back to Market" swaps the faces and items for the face and die enchantments, with the die net always in view. Two slots in the net's corner show what's on the die.
+- **Bots:** `BuyDieEnchantments` and `ArrangeForDieEnchantments` (highest values on the best positions).
+
+### Tests
+- **Checks (14/14):**
+  - Bonuses are right, and Kindred reads opposite tags.
+  - Over 6000 rolls with Weighted Die, Left never came up and Rightmost came up about twice as often as Top.
+  - Battle value applies the bonus and never goes below 0.
+  - Market rules: 2 offers, price, owned ones not offered, the third replaces, Epic only in the Grand Market, locks survive a reroll and the next Market.
+- **Play Mode:** bought Honed Edge and Balance; moved a face and the bonus stayed on its position. In battle, Sword 2 -1 had battle value 1 and Shield 2 +2 had 4, as the chips showed. The title first overflowed; widened.
+
+### Balance
+- **Free from the start (350 runs):**
+
+| Enchantment | Opportunist | Rage | Burn |
+|---|---|---|---|
+| None | 15% | 29% | 9% |
+| Honed Edge | 21% | 35% | 13% |
+| Balance +1 / -1 | 14% | 37% | 14% |
+| Balance +2 / -2 | 17% | 33% | 8% |
+| Heavy Core | 21% | 32% | 15% |
+| Twin Fangs | 19% | 34% | 12% |
+| Kindred | 33% | 55% | 19% |
+| Weighted Die | 26% | 46% | 40% |
+
+- Common and Rare ones are a small gain, mostly within noise; the Epics are strong. Balance's versions can't be told apart, and +2 / -2 makes placement a heavier decision.
+- **Gold is the real cost:** bots buying them before upgrades did much worse (Rage 34% to 18%, Shield 25% to 13%, 500 runs). Now they buy a Common or Rare only with 30 gold left over.
+- **With that rule (500 runs):**
+
+| Bot | Clear rate |
+|---|---|
+| Bleed + Rage | 37% |
+| Bleed | 33% |
+| Ritual + Poison | 33% |
+| Rage | 29% |
+| Shield | 28% |
+| Poison | 23% |
+| Shield + Rage | 23% |
+| Ritual + Bleed | 20% |
+| Burn | 18% |
+| Hammer | 15% |
+| Opportunist | 14% |
+| Fortune | 12% |
+| Unplanned buyer | 4% |
+
+### Findings
+- Weighted Die may be too strong: a weak face on Left is effectively removed from the die. To watch in play-tests; the fallback is "Left half as often".
+- Bots only put high values on bonus spots, and don't use the minus spots cleverly, so the puzzle's real value shows in play.
+
+### Next Steps
+- **The user's play-test:** die enchantments, Fortune, the difficulty curve.
+- **Rage and Hammer's ceiling.**

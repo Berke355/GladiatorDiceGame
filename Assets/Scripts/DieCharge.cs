@@ -8,6 +8,12 @@ public class DieCharge
     public const int MaxCharge = 5;
 
     private readonly Dictionary<DieFace, int> charge = new Dictionary<DieFace, int>();
+    // The bonus from the die's enchantments for a face (see GDD "Die Enchantments"), set by BattleFlow.
+    public System.Func<DieFace, int> placementBonus;
+
+    public int Bonus(DieFace face){
+        return placementBonus != null ? placementBonus(face) : 0;
+    }
 
     public int Get(DieFace face){
         int amount;
@@ -25,9 +31,10 @@ public class DieCharge
         charge.Remove(face);
     }
 
-    // The value a face has in this battle, which is what its effects use (Value Is the Effect).
+    // The value a face has in this battle, which is what its effects use (Value Is the Effect): its value, its Charge
+    // and its place on the die. Never below 0.
     public int ValueOf(DieFace face){
-        return face.value + Get(face);
+        return Mathf.Max(0, face.value + Get(face) + Bonus(face));
     }
 
     // The face with the highest battle value other than exclude (the first one on ties); null if there is none.

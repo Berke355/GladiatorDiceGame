@@ -17,6 +17,14 @@ public class EnchantmentOffer
     public bool locked;
 }
 
+public class DieEnchantmentOffer
+{
+    public DieEnchantmentSO enchantment;
+    public int price;
+    public bool sold;
+    public bool locked;
+}
+
 public class EquipmentOffer
 {
     public EquipmentSO item;
@@ -33,6 +41,8 @@ public class Market
     public readonly List<MarketOffer> offers = new List<MarketOffer>();
     // The Enchanting Table's offers (see GDD "Enchanting Table"): same rules as face offers, Epic only in the Grand Market.
     public readonly List<EnchantmentOffer> enchantmentOffers = new List<EnchantmentOffer>();
+    // The table's enchantments for the die itself (see GDD "Die Enchantments").
+    public readonly List<DieEnchantmentOffer> dieEnchantmentOffers = new List<DieEnchantmentOffer>();
     // Equipment for sale (Grand Market only) and the free boss reward choice (see GDD "Equipment").
     public readonly List<EquipmentOffer> equipmentOffers = new List<EquipmentOffer>();
     public readonly List<EquipmentSO> rewardChoices = new List<EquipmentSO>();
@@ -44,6 +54,7 @@ public class Market
     // Faces, enchantments and items from the offers a reroll replaced; avoided by the new offers when the pool allows.
     private readonly List<DieFaceSO> replacedFaces = new List<DieFaceSO>();
     private readonly List<EnchantmentSO> replacedEnchantments = new List<EnchantmentSO>();
+    private readonly List<DieEnchantmentSO> replacedDieEnchantments = new List<DieEnchantmentSO>();
     private readonly List<EquipmentSO> replacedEquipment = new List<EquipmentSO>();
 
     public Market(RunData run, EconomyConfigSO economy, bool isGrand){
@@ -59,6 +70,11 @@ public class Market
             if(enchantmentOffers.Count >= economy.enchantmentsPerMarket) break;
             enchantmentOffers.Add(new EnchantmentOffer{ enchantment = enchantment, price = economy.GetBuyPrice(enchantment.rarity), locked = true });
         }
+        run.lockedDieEnchantments.RemoveAll(enchantment => run.dieEnchantments.Contains(enchantment));
+        foreach(DieEnchantmentSO enchantment in run.lockedDieEnchantments.ToArray()){
+            if(dieEnchantmentOffers.Count >= economy.dieEnchantmentsPerMarket) break;
+            dieEnchantmentOffers.Add(new DieEnchantmentOffer{ enchantment = enchantment, price = economy.GetBuyPrice(enchantment.rarity), locked = true });
+        }
         if(isGrand){
             run.lockedEquipment.RemoveAll(item => run.equipment.Contains(item));
             foreach(EquipmentSO item in run.lockedEquipment.ToArray()){
@@ -71,6 +87,7 @@ public class Market
         }
         GenerateOffers();
         GenerateEnchantmentOffers();
+        GenerateDieEnchantmentOffers();
         GenerateEquipmentOffers();
     }
 
@@ -124,15 +141,21 @@ public class Market
         foreach(EnchantmentOffer offer in enchantmentOffers){
             if(!offer.locked) replacedEnchantments.Add(offer.enchantment);
         }
+        replacedDieEnchantments.Clear();
+        foreach(DieEnchantmentOffer offer in dieEnchantmentOffers){
+            if(!offer.locked) replacedDieEnchantments.Add(offer.enchantment);
+        }
         replacedEquipment.Clear();
         foreach(EquipmentOffer offer in equipmentOffers){
             if(!offer.locked) replacedEquipment.Add(offer.item);
         }
         offers.RemoveAll(offer => !offer.locked);
         enchantmentOffers.RemoveAll(offer => !offer.locked);
+        dieEnchantmentOffers.RemoveAll(offer => !offer.locked);
         equipmentOffers.RemoveAll(offer => !offer.locked);
         GenerateOffers();
         GenerateEnchantmentOffers();
+        GenerateDieEnchantmentOffers();
         GenerateEquipmentOffers();
         return true;
     }
@@ -286,6 +309,60 @@ public class Market
             else fresh.Add(enchantment);
         }
         return fresh.Count > 0 ? fresh : repeated;
+    }
+
+    // Same rules as face offers (Epic only in the Grand Market); what the die already has isn't offered.
+    private void GenerateDieEnchantmentOffers(){
+        while(dieEnchantmentOffers.Count < economy.dieEnchantmentsPerMarket){
+            Rarity rarity = isGrand ? Rarity.Epic : RollRarity();
+            List<DieEnchantmentSO> candidates = GetUnofferedDieEnchantments(rarity);
+            if(candidates.Count == 0 && !isGrand) candidates = GetUnofferedDieEnchantments(null);
+            if(candidates.Count == 0) break;
+            DieEnchantmentSO picked = candidates[Random.Range(0, candidates.Count)];
+            dieEnchantmentOffers.Add(new DieEnchantmentOffer{ enchantment = picked, price = economy.GetBuyPrice(picked.rarity) });
+        }
+    }
+
+    private List<DieEnchantmentSO> GetUnofferedDieEnchantments(Rarity? rarity){
+        List<DieEnchantmentSO> fresh = new List<DieEnchantmentSO>();
+        List<DieEnchantmentSO> repeated = new List<DieEnchantmentSO>();
+        foreach(DieEnchantmentSO enchantment in economy.dieEnchantmentPool){
+            if(rarity.HasValue && enchantment.rarity != rarity.Value) continue;
+            if(run.dieEnchantments.Contains(enchantment)) continue;
+            if(dieEnchantmentOffers.Exists(offer => offer.enchantment == enchantment)) continue;
+            if(replacedDieEnchantments.Contains(enchantment)) repeated.Add(enchantment);
+            else fresh.Add(enchantment);
+        }
+        return fresh.Count > 0 ? fresh : repeated;
+    }
+
+    public bool HasFreeDieEnchantmentSlot => run.dieEnchantments.Count < RunData.DieEnchantmentSlots;
+
+    public bool CanBuyDieEnchantment(int offerIndex){
+        DieEnchantmentOffer offer = dieEnchantmentOffers[offerIndex];
+        return !offer.sold && run.gold >= offer.price;
+    }
+
+    // Inscribes the enchantment on the die. replaceSlot -1 needs a free slot; otherwise it replaces that one.
+    public bool BuyDieEnchantment(int offerIndex, int replaceSlot){
+        if(!CanBuyDieEnchantment(offerIndex)) return false;
+        if(replaceSlot < 0 && !HasFreeDieEnchantmentSlot) return false;
+        if(replaceSlot >= run.dieEnchantments.Count) return false;
+        DieEnchantmentOffer offer = dieEnchantmentOffers[offerIndex];
+        run.gold -= offer.price;
+        if(replaceSlot >= 0) run.dieEnchantments[replaceSlot] = offer.enchantment;
+        else run.dieEnchantments.Add(offer.enchantment);
+        offer.sold = true;
+        if(offer.locked){ offer.locked = false; run.lockedDieEnchantments.Remove(offer.enchantment); }
+        return true;
+    }
+
+    public bool CanToggleDieEnchantmentLock(int i){ return CanToggle(dieEnchantmentOffers[i].sold, dieEnchantmentOffers[i].locked); }
+
+    public void ToggleDieEnchantmentLock(int i){
+        DieEnchantmentOffer offer = dieEnchantmentOffers[i];
+        if(!CanToggleDieEnchantmentLock(i)) return;
+        offer.locked = Toggle(offer.locked, run.lockedDieEnchantments, offer.enchantment);
     }
 
     // An enchantment can be bought only if some die face has an empty Magic action.
