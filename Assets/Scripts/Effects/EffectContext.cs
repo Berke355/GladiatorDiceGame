@@ -19,6 +19,14 @@ public class EffectContext
     public RerollPool rerolls;
     // Set by an effect that rerolls the die (Steady Hand); BattleFlow reads it after the action.
     public bool rerollRequested;
+    // Set by an effect that steers the next roll (Fortune's engines); BattleFlow reads it after the action.
+    public RollSteer steer;
+    public int steerPosition;
+    // For effects that read the roll (Fortune's payoffs): how many times this face came up this turn, whether a steer
+    // brought it here, and the player's turn number in this battle.
+    public int faceLandings;
+    public bool arrivedBySteer;
+    public int turnNumber;
     // Set by an effect after which the face keeps its Charge instead of spending it (Resonance).
     public bool keepCharge;
     // The target's die, its stone faces and its Charge, for effects that act on it (Medusa). Null if the target has no die.

@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 3013370}
   - component: {fileID: 3013369}
   - component: {fileID: 3013368}
+  - component: {fileID: 3013372}
   m_Layer: 5
   m_Name: DieChip4
   m_TagString: Untagged
@@ -225,9 +226,54 @@ MonoBehaviour:
   background: {fileID: 3013369}
   text: {fileID: 1551549534}
   tooltip: {fileID: 3013368}
+  button: {fileID: 3013372}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
+--- !u!114 &3013372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3013366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 3013369}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4562375
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,6 +424,7 @@ GameObject:
   - component: {fileID: 37106460}
   - component: {fileID: 37106459}
   - component: {fileID: 37106458}
+  - component: {fileID: 37106462}
   m_Layer: 5
   m_Name: DieChip2
   m_TagString: Untagged
@@ -471,9 +518,54 @@ MonoBehaviour:
   background: {fileID: 37106459}
   text: {fileID: 1831050754}
   tooltip: {fileID: 37106458}
+  button: {fileID: 37106462}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
+--- !u!114 &37106462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37106456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 37106459}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &58871249
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,6 +769,7 @@ GameObject:
   - component: {fileID: 129725967}
   - component: {fileID: 129725966}
   - component: {fileID: 129725965}
+  - component: {fileID: 129725969}
   m_Layer: 5
   m_Name: DieChip6
   m_TagString: Untagged
@@ -770,9 +863,54 @@ MonoBehaviour:
   background: {fileID: 129725966}
   text: {fileID: 1304775317}
   tooltip: {fileID: 129725965}
+  button: {fileID: 129725969}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
+--- !u!114 &129725969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129725963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 129725966}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &131752386
 GameObject:
   m_ObjectHideFlags: 0
@@ -2843,6 +2981,7 @@ MonoBehaviour:
   background: {fileID: 464321336}
   text: {fileID: 1166180022}
   tooltip: {fileID: 464321335}
+  button: {fileID: 0}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
@@ -5200,6 +5339,7 @@ GameObject:
   - component: {fileID: 990675072}
   - component: {fileID: 990675071}
   - component: {fileID: 990675070}
+  - component: {fileID: 990675074}
   m_Layer: 5
   m_Name: DieChip5
   m_TagString: Untagged
@@ -5293,9 +5433,54 @@ MonoBehaviour:
   background: {fileID: 990675071}
   text: {fileID: 330657831}
   tooltip: {fileID: 990675070}
+  button: {fileID: 990675074}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
+--- !u!114 &990675074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990675068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 990675071}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1054696193
 GameObject:
   m_ObjectHideFlags: 0
@@ -5597,6 +5782,7 @@ MonoBehaviour:
   background: {fileID: 1095584273}
   text: {fileID: 1528663226}
   tooltip: {fileID: 1095584272}
+  button: {fileID: 0}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
@@ -5814,6 +6000,7 @@ MonoBehaviour:
   background: {fileID: 1115985155}
   text: {fileID: 131752388}
   tooltip: {fileID: 1115985154}
+  button: {fileID: 0}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
@@ -7678,6 +7865,7 @@ MonoBehaviour:
   background: {fileID: 1489855466}
   text: {fileID: 1226281738}
   tooltip: {fileID: 1489855465}
+  button: {fileID: 0}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
@@ -8453,6 +8641,7 @@ GameObject:
   - component: {fileID: 1585057072}
   - component: {fileID: 1585057071}
   - component: {fileID: 1585057070}
+  - component: {fileID: 1585057074}
   m_Layer: 5
   m_Name: DieChip1
   m_TagString: Untagged
@@ -8546,9 +8735,54 @@ MonoBehaviour:
   background: {fileID: 1585057071}
   text: {fileID: 915918888}
   tooltip: {fileID: 1585057070}
+  button: {fileID: 1585057074}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
+--- !u!114 &1585057074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585057068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 1585057071}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1604520166
 GameObject:
   m_ObjectHideFlags: 0
@@ -9187,6 +9421,7 @@ GameObject:
   - component: {fileID: 1735523994}
   - component: {fileID: 1735523993}
   - component: {fileID: 1735523992}
+  - component: {fileID: 1735523996}
   m_Layer: 5
   m_Name: DieChip3
   m_TagString: Untagged
@@ -9280,9 +9515,54 @@ MonoBehaviour:
   background: {fileID: 1735523993}
   text: {fileID: 941721232}
   tooltip: {fileID: 1735523992}
+  button: {fileID: 1735523996}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
+--- !u!114 &1735523996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735523990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 1735523993}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1778169379
 GameObject:
   m_ObjectHideFlags: 0
@@ -9691,6 +9971,7 @@ MonoBehaviour:
   background: {fileID: 1801834441}
   text: {fileID: 393014095}
   tooltip: {fileID: 1801834440}
+  button: {fileID: 0}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}
@@ -10964,6 +11245,7 @@ MonoBehaviour:
   background: {fileID: 2006764290}
   text: {fileID: 1554708064}
   tooltip: {fileID: 2006764289}
+  button: {fileID: 0}
   normalColor: {r: 0.12, g: 0.14, b: 0.2, a: 0.9}
   highlightColor: {r: 0.85, g: 0.65, b: 0.2, a: 0.95}
   stoneColor: {r: 0.42, g: 0.44, b: 0.47, a: 0.95}

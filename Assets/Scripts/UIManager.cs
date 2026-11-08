@@ -145,6 +145,37 @@ public class UIManager : MonoBehaviour
         playerPanel.Refresh(player);
     }
 
+    // Each face on the net reports its position when clicked (choosing the next face).
+    public void WireDieChips(System.Action<int> onClick){
+        for(int i = 0; i < dieChips.Length; i++){
+            int position = i;
+            if(dieChips[i].button != null) dieChips[i].button.onClick.AddListener(() => onClick(position));
+        }
+    }
+
+    private void SetDieChipsClickable(bool clickable){
+        foreach(DieChipUI chip in dieChips){
+            if(chip.button != null) chip.button.interactable = clickable;
+        }
+    }
+
+    // An action lets the player choose the next face: only the faces on the net are active.
+    public void ShowChooseFace(List<DieFace> die){
+        rolledFaceTitle.text = "Choose a face";
+        rolledFaceText.text = "Click a face on your die: it comes up next.";
+        rolledFaceTooltip.text = "";
+        UpdateDieChips(die, null);
+        RefreshEnemies();
+        rollButton.interactable = false;
+        UpdateRerollButton(false);
+        if(passButton != null) passButton.interactable = false;
+        for(int i = 0; i < actionButtons.Length; i++){
+            actionButtons[i].interactable = false;
+            actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>";
+        }
+        SetDieChipsClickable(true);
+    }
+
     // Start of the player's turn: only the roll button is active.
     public void ShowRollPhase(List<DieFace> die){
         rolledFaceTitle.text = "Roll the die";
@@ -153,6 +184,7 @@ public class UIManager : MonoBehaviour
         UpdateDieChips(die, null);
 
         RefreshEnemies();
+        SetDieChipsClickable(false);
         rollButton.interactable = true;
         UpdateRerollButton(false);
         if(passButton != null) passButton.interactable = false;
@@ -171,6 +203,7 @@ public class UIManager : MonoBehaviour
         UpdateDieChips(die, face);
 
         RefreshEnemies();
+        SetDieChipsClickable(false);
         rollButton.interactable = false;
         UpdateRerollButton(flow != null && flow.CanReroll);
         if(passButton != null) passButton.interactable = true;

@@ -492,6 +492,8 @@ public static class RunSimulator
             // Steady Hand rerolls within the same turn, so a turn can hold several rolls and actions.
             int rerolls = 0;
             do{
+                // An action let the bot choose the next face: the strongest attacker.
+                if(flow.ChoicePending) flow.ChooseNextFace(StrongestAttacker(run.dieFaces, flow));
                 DieFace face = flow.Roll();
                 if(flow.IsOver) break;
                 while(UseRerolls && flow.CanReroll && ShouldReroll(face, run.dieFaces, flow)){
@@ -567,6 +569,15 @@ public static class RunSimulator
             Object.DestroyImmediate(existing);
         }
         return target.AddComponent<T>();
+    }
+
+    private static DieFace StrongestAttacker(List<DieFace> die, BattleFlow flow){
+        DieFace best = die[0];
+        foreach(DieFace face in die){
+            if(!flow.CanAct(face, ActionType.Attack)) continue;
+            if(!flow.CanAct(best, ActionType.Attack) || flow.charge.ValueOf(face) > flow.charge.ValueOf(best)) best = face;
+        }
+        return best;
     }
 
     private static int TotalHP(BattleFlow flow){

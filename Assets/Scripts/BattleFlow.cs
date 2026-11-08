@@ -27,8 +27,8 @@ public class BattleFlow
     // The player passed this turn (no action): the rolled face counts as unused.
     public bool Passed { get; private set; }
     public int ChangesThisTurn { get; private set; }
-    // The last action was Change: the die is rolled again at once and the turn goes on.
-    public bool LastWasChange { get; private set; }
+    // The last action steered the die (Change, Flip, Tumble): it is rolled again at once and the turn goes on.
+    public bool RollsAgainAtOnce { get; private set; }
 
     public DieFace RolledFace { get; private set; }
     // The player's action this turn (cleared at the start of each player turn), for enemy threats on that choice.
@@ -37,8 +37,25 @@ public class BattleFlow
     public ActionType LastAction { get; private set; }
     // The last action asked to reroll the die and act again (Steady Hand). Cleared by the next roll.
     public bool RerollPending { get; private set; }
-    // The last action asked for the rolled face to keep its Charge (Resonance).
-    private bool keepRolledCharge;
+    // Faces that acted this turn spend their Charge at the turn's end, unless their action kept it (Resonance).
+    private readonly HashSet<DieFace> actedThisTurn = new HashSet<DieFace>();
+    private readonly HashSet<DieFace> keptChargeThisTurn = new HashSet<DieFace>();
+    // Several actions can chain in one turn (effects that also Change); this ends the chain (see GDD "Rerolls").
+    public const int MaxActionsPerTurn = 3;
+    public int ActionsThisTurn { get; private set; }
+    // The player's turn number in this battle (1 on the first turn).
+    public int TurnNumber { get; private set; }
+    // How many times each face came up this turn.
+    private readonly Dictionary<DieFace, int> landingsThisTurn = new Dictionary<DieFace, int>();
+    public int LandingsThisTurn(DieFace face){
+        int count;
+        return face != null && landingsThisTurn.TryGetValue(face, out count) ? count : 0;
+    }
+    // The face the next roll lands on (a steer), and whether a steer brought the current face here.
+    private DieFace steerTo;
+    public bool ArrivedBySteer { get; private set; }
+    // An action let the player choose the next face; ChooseNextFace answers it.
+    public bool ChoicePending { get; private set; }
     public bool IsOver => player.IsDead || enemies.TrueForAll(enemy => enemy.IsDead) || enemies.Exists(enemy => enemy.endsBattleOnDeath && enemy.IsDead);
     // Creates the entity of an enemy spawned during the battle (a Hydra head): a scene object in battle, a hidden one
     // in the simulator. Null: nothing can spawn.
@@ -152,6 +169,13 @@ public class BattleFlow
     public void StartPlayerTurn(){
         rerolls.UsedThisTurn = 0;
         ChangesThisTurn = 0;
+        ActionsThisTurn = 0;
+        TurnNumber++;
+        landingsThisTurn.Clear();
+        actedThisTurn.Clear();
+        keptChargeThisTurn.Clear();
+        steerTo = null;
+        ChoicePending = false;
         Passed = false;
         LastActedFace = null;
         triggers.StartRound();
@@ -165,12 +189,19 @@ public class BattleFlow
     // Also used for a reroll within the same turn, which is not a new turn (no turn start, no Block reset).
     public DieFace Roll(){
         RerollPending = false;
-        LastWasChange = false;
-        keepRolledCharge = false;
-        // Change guarantees a face other than the one it came from.
-        List<DieFace> faces = changeFrom != null && die.Count > 1 ? die.FindAll(face => face != changeFrom) : die;
+        RollsAgainAtOnce = false;
+        ArrivedBySteer = steerTo != null || changeFrom != null;
+        if(steerTo != null){
+            RolledFace = steerTo;
+        }
+        else{
+            // Change guarantees a face other than the one it came from.
+            List<DieFace> faces = changeFrom != null && die.Count > 1 ? die.FindAll(face => face != changeFrom) : die;
+            RolledFace = faces[UnityEngine.Random.Range(0, faces.Count)];
+        }
+        steerTo = null;
         changeFrom = null;
-        RolledFace = faces[UnityEngine.Random.Range(0, faces.Count)];
+        landingsThisTurn[RolledFace] = LandingsThisTurn(RolledFace) + 1;
         triggers.currentFace = RolledFace;
         triggers.Fire(TriggerType.FaceRolled);
         return RolledFace;
@@ -199,11 +230,11 @@ public class BattleFlow
             if(ChangesThisTurn >= MaxChangesPerTurn) return;
             ChangesThisTurn++;
             changeFrom = RolledFace;
-            LastWasChange = true;
+            RollsAgainAtOnce = true;
             RerollPending = true;
-            keepRolledCharge = false;
             return;
         }
+        ActionsThisTurn++;
         LastActedFace = RolledFace;
         LastActedValue = charge.ValueOf(RolledFace);
         LastAction = action;
@@ -218,18 +249,54 @@ public class BattleFlow
         // A stone face only gives a little block; its own actions and its enchantment don't work.
         if(petrification.IsStone(RolledFace)){
             if(action == ActionType.Defense) player.GainBlock(Petrification.StoneBlock);
+            actedThisTurn.Add(RolledFace);
             RerollPending = false;
-            keepRolledCharge = false;
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls };
+        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
         if(RolledFace.definition.IsConsumable(action)) consumables.MarkUsed(RolledFace, action);
-        RerollPending = context.rerollRequested;
-        keepRolledCharge = context.keepCharge;
+        actedThisTurn.Add(RolledFace);
+        if(context.keepCharge) keptChargeThisTurn.Add(RolledFace);
+
+        // The chain goes on only below the actions-per-turn limit; at the limit the turn just ends.
+        bool canChain = ActionsThisTurn < MaxActionsPerTurn;
+        RerollPending = canChain && (context.rerollRequested || context.steer != RollSteer.None);
+        if(canChain && context.steer != RollSteer.None) ApplySteer(context.steer, context.steerPosition);
+    }
+
+    // Decides where the next roll lands. A position the die doesn't have (fewer than six faces) falls back to any other face.
+    private void ApplySteer(RollSteer steer, int position){
+        int here = die.IndexOf(RolledFace);
+        if(steer == RollSteer.Chosen){
+            ChoicePending = true;
+            return;
+        }
+        RollsAgainAtOnce = true;
+        int next = -1;
+        if(steer == RollSteer.Opposite && here >= 0 && here < DieLayout.Count){
+            next = DieLayout.OppositeOf(here);
+        }
+        else if(steer == RollSteer.Neighbor && here >= 0 && here < DieLayout.Count){
+            List<int> neighbors = DieLayout.NeighborsOf(here).FindAll(position2 => position2 < die.Count);
+            if(neighbors.Count > 0) next = neighbors[UnityEngine.Random.Range(0, neighbors.Count)];
+        }
+        else if(steer == RollSteer.Position){
+            next = position;
+        }
+        if(next >= 0 && next < die.Count) steerTo = die[next];
+        else changeFrom = RolledFace;
+    }
+
+    // Answers a Chosen steer: the next roll lands on this face.
+    public void ChooseNextFace(DieFace face){
+        if(!ChoicePending) return;
+        ChoicePending = false;
+        steerTo = face;
+        RollsAgainAtOnce = true;
     }
 
     // Ends the turn without an action (e.g. when the rolled face can't act): no items, traits or threats fire for an
@@ -237,8 +304,7 @@ public class BattleFlow
     public void PassTurn(){
         Passed = true;
         RerollPending = false;
-        LastWasChange = false;
-        keepRolledCharge = false;
+        RollsAgainAtOnce = false;
     }
 
     // TurnEnd items run before the player's statuses tick.
@@ -246,11 +312,9 @@ public class BattleFlow
     public void EndPlayerTurn(){
         triggers.Fire(TriggerType.TurnEnd);
         player.OnTurnEnd();
-        DieFace actedWith = Passed ? null : RolledFace;
         foreach(DieFace face in die){
-            if(face == actedWith){
-                if(!keepRolledCharge) charge.Reset(face);
-            }
+            if(keptChargeThisTurn.Contains(face)) continue;
+            if(actedThisTurn.Contains(face)) charge.Reset(face);
             else if(face.definition.charges) charge.Add(face, 1);
         }
         petrification.EndPlayerTurn();

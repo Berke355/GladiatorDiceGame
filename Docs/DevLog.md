@@ -2623,3 +2623,34 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 
 ### Next Steps
 - **Fortune stage 2:** steering the next roll (opposite, neighbor, position, chosen face), per-turn landing counts and the limit of 3 actions per turn.
+
+## Day 70 - Fortune Stage 2: Steering the Roll
+
+### Accomplished
+- **`SteerRollEffectSO`** (`RollSteer`): after an action the die rolls again in the same turn, onto a steered face.
+  - Change is any other face, Flip the opposite face, Tumble a neighbor or a named position, and Chosen lets the player pick.
+  - `BattleFlow.ApplySteer` reads the request after the action's effects.
+- **Choosing a face:** `PlayerChooseFaceState` waits for a click on a face of the net (`DieChipUI.button`, `UIManager.ShowChooseFace`). Bots take the strongest attacker.
+- **`RollConditionEffectSO`** for payoffs: `FirstTurn`, `LandedTimesThisTurn`, `ArrivedBySteer` and `OppositeHasTag`, fed by new `EffectContext` fields.
+- **At most 3 actions per turn** (`MaxActionsPerTurn`): the third action ends the chain, which also limits Steady Hand. The Consumable Change doesn't count as an action.
+- **Charge fix:** every face that acted this turn now spends its Charge, not only the last one. Otherwise a Hammer acting early in a chain would have hit and still gained Charge.
+- **Keywords:** Flip and Tumble. Change is now the general keyword, and the Consumable text carries the once-per-turn limit.
+- **The first content set is agreed** (GDD "Rerolls"): Turnabout, Opening Gambit, Ricochet, Sidestep, Mirror Blade, Fate's Hand and Encore. Encore's Magic is Flip rather than the first idea's Change, so its second landing comes from the arrangement instead of luck.
+
+### Tests
+- **Checks (13/13, with temporary faces):**
+  - Flip runs its effect and lands on the opposite face.
+  - Tumble lands on Rightmost, and a neighbor roll never lands on itself or its opposite (100 tries).
+  - Chosen waits for the choice, and that face comes up.
+  - The third action ends the chain; landing counts and the turn number are right and reset.
+  - The second-time and opposite-tag payoffs work, with the right text.
+  - A Hammer that acted earlier in a chain spends its Charge.
+- **Play Mode, with a temporary face:**
+  - The preview read "3 block, choose the next face".
+  - The action gave 3 block and opened "Choose a face", with only the faces active.
+  - Clicking Right brought that face up. No Console errors.
+- **Regression (700 runs):** Opportunist 16%, Burn 14%, Shield 22%, Rage 35%, Hammer 16%, Fortune 19%, all close to Day 68.
+
+### Next Steps
+- **Fortune stage 3:** build the agreed set.
+- **Fortune stage 4:** bots, simulation and the user's play-test.

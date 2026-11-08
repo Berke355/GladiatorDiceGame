@@ -8,6 +8,8 @@ public class DieChipUI : MonoBehaviour
     public Image background;
     public TextMeshProUGUI text;
     public TooltipTrigger tooltip;
+    // Clickable only while the player chooses the next face.
+    public Button button;
     public Color normalColor = new Color(0.12f, 0.14f, 0.2f, 0.9f);
     public Color highlightColor = new Color(0.85f, 0.65f, 0.2f, 0.95f);
     public Color stoneColor = new Color(0.42f, 0.44f, 0.47f, 0.95f);

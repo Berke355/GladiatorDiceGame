@@ -153,6 +153,7 @@ public class BattleManager : MonoBehaviour
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
+            UIManager.Instance.WireDieChips(OnDieFaceClicked);
             flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);
             flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
         }
@@ -179,6 +180,25 @@ public class BattleManager : MonoBehaviour
     public void OnResultButton(){
         if(currentState is BattleOverState overState){
             overState.Continue();
+        }
+    }
+
+    // The turn goes on with a new roll right away (Change, Flip, Tumble, a chosen face).
+    public void RollAgainAtOnce(){
+        DieFace face = flow.Roll();
+        currentRolledFace = face;
+        Debug.Log("Rolled again. Face: " + face.definition.faceName);
+        if(UIManager.Instance != null){
+            UIManager.Instance.ShowRolledFace(face, currentDiceFaces);
+        }
+        if(CheckBattleOver()) return;
+        ChangeState(new PlayerActionSelectState(this));
+    }
+
+    // Called by a die face on the net while the player chooses the next face.
+    public void OnDieFaceClicked(int position){
+        if(currentState is PlayerChooseFaceState chooseState){
+            chooseState.Choose(position);
         }
     }
 

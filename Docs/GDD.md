@@ -197,8 +197,24 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
     - An Epic engine: "Gain block equal to my value and choose a face of your die; Change: the chosen face comes up."
     - An Epic payoff: "Attack: if this is my second time this turn, …; Magic: Change."
   - **Several actions in a turn:** an effect that also Changes lets a turn hold more than one action. The limit is **3 actions per turn**; the game tracks how many times each face came up this turn.
+  - **Built so far (DevLog Day 70):** roll steering (Change, Flip, Tumble, a chosen face), landing counts, the action limit and the payoff conditions. No face uses them yet; that is stage 3.
   - **Two kinds of Change:** the Change a used Consumable action becomes stays once per turn (it must not thin the die). Fortune's Change actions are their own face actions, held in check by rarity and the actions-per-turn limit. Change is strong, so its faces are Rare or Epic.
-  - **Existing faces:** Lucky Buckler stays as a small engine piece (gaining rerolls); Patient Blade, Gambit and Hedge are reviewed with the new set.
+  - **The first set (agreed, to be built in stage 3):**
+
+| Face | Side | Rarity | Value | Effect |
+|---|---|---|---|---|
+| **Turnabout** | Engine | Common | 2 | Attack: deal my value. Magic: Flip. |
+| **Opening Gambit** | Payoff | Common | 3 | Attack: deal my value; on the first turn, hit again. Defense: gain block equal to my value. |
+| **Ricochet** | Engine | Rare | 2 | Attack: deal my value, then Flip. |
+| **Sidestep** | Engine | Rare | 2 | Defense: gain block equal to my value, then the Rightmost face comes up. |
+| **Mirror Blade** | Payoff | Rare | 3 | Attack: deal my value; if I came from a Change, Flip or Tumble, hit again. |
+| **Fate's Hand** | Engine | Epic | 2 | Defense: gain block equal to my value and choose a face of your die; it comes up. |
+| **Encore** | Payoff | Epic | 3 | Attack: deal my value; if this is my second time this turn, deal 3 times my value. Magic: Flip. |
+
+    - **Example combo:** Encore opposite Ricochet. Encore's Magic Flips (action 1), Ricochet hits and Flips (action 2), Encore comes up a second time and hits big (action 3). It fits the limit of 3 actions exactly, and all of its power comes from where the faces sit.
+    - **Encore's Magic is Flip, not Change:** with Change, the second landing is mostly luck; with Flip, it is the arrangement puzzle.
+    - Change's power means its faces are Rare or Epic. Turnabout's plain Flip, with no effect in the same action, is the Common entry point.
+  - **Existing faces:** Lucky Buckler stays as a small engine piece (gaining rerolls). Patient Blade, Gambit and Hedge stay for now; the ones the new set makes unnecessary are removed after it is played.
   - **Harder to play,** so Fortune will be a build unlocked through meta progression (Roadmap Phase D). Its pieces are also useful alone in other builds.
   - **Bots will plan combos poorly,** so Fortune's simulated rates are a floor and play-tests decide its balance.
   - **Stages:**
