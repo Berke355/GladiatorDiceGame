@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045e8e4e1ebe37943821798a5e55da6a, type: 3}
+  m_Name: SpikedGreaves
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
+  equipmentName: Spiked Greaves
+  description: 'The first 3 times each battle a hit makes you lose HP: deal 2 damage
+    to the attacker.'
+  rarity: 1
+  tags: 
+  triggers:
+  - trigger: 5
+    requireFaceTag: 0
+    faceTag: 0
+    requireAction: 0
+    action: 0
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
+    effects:
+    - {fileID: 11400000, guid: eb3494da333260a4f83d86adba089264, type: 2}
+    value: 2
+    maxPerRound: 0
+    maxPerBattle: 3
+  goldPerVictory: 0
+  extraConsumableUses: 0

@@ -16,6 +16,11 @@ public class TriggerSystem
     private readonly RerollPool rerolls;
     // The face rolled this turn (null outside the player's turn), passed to effects like a face's own effects.
     public DieFace currentFace;
+    // Set by BattleFlow before it fires FaceRolled / ActionChosen, for the reactions' conditions.
+    public bool arrivedBySteer;
+    public bool actionChanged;
+    // Who landed the hit being reported: HitTaken reactions (Spiked Greaves) answer them, not the selected target.
+    private Entity attacker;
     // Effects run by a trigger never fire triggers, so items can never loop (e.g. an extra hit firing itself).
     private bool firing;
 
@@ -39,7 +44,11 @@ public class TriggerSystem
         this.equipment = equipment ?? new List<EquipmentSO>();
 
         onHitDealt = (target, amount) => Fire(TriggerType.HitDealt);
-        onHitTaken = amount => Fire(TriggerType.HitTaken);
+        onHitTaken = amount => {
+            attacker = player.LastAttacker;
+            Fire(TriggerType.HitTaken);
+            attacker = null;
+        };
         player.HitDealt += onHitDealt;
         player.HitTaken += onHitTaken;
     }
@@ -68,7 +77,7 @@ public class TriggerSystem
                     Count(firedThisRound, reaction);
                     Count(firedThisBattle, reaction);
 
-                    EffectContext context = new EffectContext{ source = player, target = target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
+                    EffectContext context = new EffectContext{ source = player, target = attacker != null ? attacker : target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
                     foreach(EffectSO effect in reaction.effects){
                         effect.Execute(context);
                     }
@@ -101,6 +110,15 @@ public class TriggerSystem
             return false;
         }
         if(reaction.trigger == TriggerType.ActionChosen && reaction.requireAction && reaction.action != action){
+            return false;
+        }
+        if(reaction.requirePosition && (currentFace == null || die.IndexOf(currentFace) != reaction.position)){
+            return false;
+        }
+        if(reaction.requireSteered && !arrivedBySteer){
+            return false;
+        }
+        if(reaction.requireDifferentAction && !actionChanged){
             return false;
         }
         return true;

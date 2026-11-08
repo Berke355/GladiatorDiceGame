@@ -35,6 +35,7 @@ public class BattleFlow
     public DieFace LastActedFace { get; private set; }
     public int LastActedValue { get; private set; }
     public ActionType LastAction { get; private set; }
+    private bool hasActedThisBattle;
     // The last action asked to reroll the die and act again (Steady Hand). Cleared by the next roll.
     public bool RerollPending { get; private set; }
     // Faces that acted this turn spend their Charge at the turn's end, unless their action kept it (Resonance).
@@ -88,6 +89,9 @@ public class BattleFlow
         this.die = die;
         this.entityFactory = entityFactory;
         triggers = new TriggerSystem(player, () => Target.entity, LivingEnemyEntities, die, equipment, charge, rerolls);
+        if(equipment != null){
+            foreach(EquipmentSO item in equipment) consumables.usesPerBattle += item.extraConsumableUses;
+        }
         // Binding can spawn enemies (the Hydra grows its heads), which SpawnEnemy sets up itself.
         int initial = enemies.Count;
         for(int i = 0; i < initial; i++){
@@ -206,6 +210,7 @@ public class BattleFlow
         changeFrom = null;
         landingsThisTurn[RolledFace] = LandingsThisTurn(RolledFace) + 1;
         triggers.currentFace = RolledFace;
+        triggers.arrivedBySteer = ArrivedBySteer;
         triggers.Fire(TriggerType.FaceRolled);
         return RolledFace;
     }
@@ -255,6 +260,8 @@ public class BattleFlow
         ActionsThisTurn++;
         LastActedFace = RolledFace;
         LastActedValue = charge.ValueOf(RolledFace);
+        triggers.actionChanged = hasActedThisBattle && LastAction != action;
+        hasActedThisBattle = true;
         LastAction = action;
         triggers.Fire(TriggerType.ActionChosen, action);
         if(IsOver) return;

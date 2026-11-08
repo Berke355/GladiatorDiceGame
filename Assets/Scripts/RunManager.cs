@@ -95,7 +95,7 @@ public class RunManager : MonoBehaviour
         }
 
         run.battlesWon++;
-        int goldEarned = economy.goldPerVictory;
+        int goldEarned = economy.goldPerVictory + EquipmentSO.TotalGoldPerVictory(run.equipment);
 
         // Bosses heal and pay a bonus, so the player reaches the Grand Market with gold to spend.
         if(bossBattles.Contains(run.battlesWon)){

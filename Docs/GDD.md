@@ -480,8 +480,8 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 ### Getting Equipment
 
 - **Boss reward:** after a boss, choose 1 of 3 items for free.
-- **Grand Market:** sells 2 items at 30 gold, next to the Epic faces ("an item or an Epic face?").
-- Two bosses per run give at least two items; filling the third slot costs gold.
+- **Every Market sells items at 30 gold:** 1 in a Normal Market, 2 in the Grand Market. A locked item waits for the very next Market (the user's play-test: it used to wait 4 battles for the next Grand Market). Slay the Spire's shops sell relics the same way.
+- Two bosses per run give at least two items; filling the third slot costs gold, and with items on sale everywhere, choosing which one to give up comes up more often.
 
 ### First Set
 
@@ -493,9 +493,31 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 | **Tower Helm** | Shield | ActionChosen (Defense), up to 5 per battle | Gain 1 Fortify |
 | **Berserker Torc** | Rage | HitTaken, first per battle | Gain 1 Rage |
 | **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
-| **Laurel Wreath** | General | BattleWon | Heal 1 |
+| **Laurel Wreath** | General | BattleWon | Heal 2 |
 | **Iron Bracers** | General | BattleStart | Gain 1 Fortify |
 | **Censer** | Poison | TurnEnd, first 3 per battle | Apply 1 Poison to every enemy (see "Area Effects") |
+
+### Second Set
+
+Each item changes how you play or what you decide, not just a number. These also fill empty spots: Hammer and Consumable had no item, and a patchwork die had nothing of its own.
+
+| Item | For | Trigger | Effect |
+|---|---|---|---|
+| **Whetstone** | Hammer | BattleStart | Charge faces start with 1 Charge |
+| **Alchemist's Belt** | Consumable | Always | Consumable actions work 2 times per battle before they become Change |
+| **Lucky Charm** | Fortune | FaceRolled (a steer brought it), first per round | Gain 2 block |
+| **Spiked Greaves** | General | HitTaken, up to 3 per battle | Deal 2 damage to the attacker |
+| **Ambusher's Knife** | General | HitDealt, first per battle | Hit again for 3 |
+| **Blood Pact** | Rage | BattleStart | Lose 3 HP (never your last) and gain 1 Rage |
+| **Motley Cloak** | Patchwork die | TurnStart, first 3 per battle | Gain 1 block for every 2 different faces on your die |
+| **Balance Scales** | Patchwork die | ActionChosen (not your last action) | Gain 1 block |
+| **Compass** | Die layout | FaceRolled (Rightmost), first per round | Gain 2 block |
+| **Merchant's Purse** | Economy | Always | Every victory pays 5 more gold |
+
+- **Motley Cloak counts faces, not tags:** tags aren't shown to the player, while duplicate faces can be seen at a glance.
+- **Compass makes the net matter outside Fortune,** and **Merchant's Purse is a timing decision:** it pays for itself only when bought early.
+
+### Balance Notes
 
 - **Items that fire on every hit or every turn need small numbers or a cap.** In the difficulty pass (DevLog Day 60) the two uncapped items carried their builds: Smoldering Gauntlet (3 Burn per hit, on 92% of Burn bots at battle 8) lifted Burn to 22% (12% without it); it now applies 1 Burn per hit (16%). Censer is capped at 3 per battle (see "Area Effects").
 - **Bridges through existing rules:** Rage adds to Barbed Hook's extra hit (Bleed + Rage), Ritual adds to Plague Mask's Poison (Ritual + Poison), and Smoldering Gauntlet fires on every hit of a multi-hit (Twin Axes + Burn).

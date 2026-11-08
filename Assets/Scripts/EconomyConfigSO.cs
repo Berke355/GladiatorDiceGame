@@ -43,6 +43,7 @@ public class EconomyConfigSO : ScriptableObject
     // A boss reward is a free pick of one of this many items.
     public int bossRewardChoices = 3;
     // The Grand Market sells this many items at this price (the Normal Market sells none).
+    public int equipmentPerMarket = 1;
     public int equipmentPerGrandMarket = 2;
     public int equipmentPrice = 30;
 

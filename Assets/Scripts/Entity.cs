@@ -46,6 +46,8 @@ public class Entity : MonoBehaviour
     public bool IsDead => currentHP <= 0;
     // Damage the last hit lost to Block and Fortify (0: the whole hit got through), e.g. for Curl Up.
     public int LastHitAbsorbed { get; private set; }
+    // Who landed the last hit (null for a hit without a source).
+    public Entity LastAttacker { get; private set; }
 
     // Read-only view of the statuses, for the UI.
     public IEnumerable<KeyValuePair<StatusType, int>> Statuses => activeStatuses;
@@ -79,6 +81,7 @@ public class Entity : MonoBehaviour
 
     // Damage is absorbed by Block first, then Fortify, and only the rest reaches HP.
     public void TakeDamage(int damageAmount, Entity source = null){
+        LastAttacker = source;
         if(damageAmount > 0 && GetStatus(StatusType.Vulnerable) > 0){
             damageAmount += 1;
         }

@@ -2921,3 +2921,73 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **To discuss with the user:** upgrades against Epics (e.g. the upgrade cost, or an upgrade right at the Grand Market).
 - **The user's play-test:** the new Unleash and Fuel, Epics at 45, die enchantments, Fortune, the difficulty curve.
 - Epics that reward a patchwork die.
+
+## Day 77 - Equipment in Every Market and a Second Set
+
+### Accomplished (the user's play-test: a locked item waited 4 battles, Laurel Wreath was too weak, and the biggest problem is variety)
+- **Every Market sells items:** 1 in a Normal Market, 2 in the Grand Market, still at 30 gold. A locked item is in the very next Market.
+- **Laurel Wreath heals 2** (was 1).
+- **Ten new items, pool 10 to 20.** Each changes how you play or what you decide, and they fill empty spots: Hammer and Consumable had no item, and a patchwork die had nothing of its own.
+
+| Item | For | Effect |
+|---|---|---|
+| Whetstone | Hammer | Charge faces start each battle with 1 Charge |
+| Alchemist's Belt | Consumable | Consumable actions work 2 times per battle before they become Change |
+| Lucky Charm | Fortune | First time each turn a steer brings a face: 2 block |
+| Spiked Greaves | General | First 3 hits per battle that cost HP: 2 damage to the attacker |
+| Ambusher's Knife | General | First hit each battle: hit again for 3 |
+| Blood Pact | Rage | Battle start: lose 3 HP (never your last), gain 1 Rage |
+| Motley Cloak | Patchwork die | First 3 turns per battle: 1 block for every 2 different faces |
+| Balance Scales | Patchwork die | An action other than your last one: 1 block |
+| Compass | Die layout | First time each turn Rightmost comes up: 2 block |
+| Merchant's Purse | Economy | Every victory pays 5 more gold |
+
+- **New item rules:** reactions can require a die position, a steered face or a change of action; `goldPerVictory` and `extraConsumableUses` are rules outside the triggers; a HitTaken reaction answers the attacker (`Entity.LastAttacker`), not the selected target.
+
+### Decisions
+- **Motley Cloak counts faces, not tags:** the player doesn't see tags on the cards, while duplicate faces are visible at a glance.
+- **Whetstone reuses Resonance's effect,** so it needed no new class.
+
+### Tests
+- **Checks (20/20):** every new item's rule on the real `BattleFlow`, and the Market's offers, locks, buying and reroll.
+- **Play Mode:** the Normal Market shows the item card properly, with no console errors. The items in battle were only checked through code, not on screen.
+
+### Balance
+- **Motley Cloak was broken at first:** 2-3 block every turn took the Opportunist from 15% to 69% (250 runs).
+
+| Motley Cloak version | Opportunist |
+|---|---|
+| Per 2 faces, every turn | 69% |
+| Per 3 faces, every turn | 47% |
+| Per 2 faces, first 3 turns (chosen) | 32% |
+| Per 3 faces, first 3 turns | 23% |
+| Per 2 faces, first 2 turns | 18% |
+
+- **Each item given free from the start (250 runs):**
+
+| Item | Bot | Without | With |
+|---|---|---|---|
+| Spiked Greaves | Opportunist | 15% | 27% |
+| Laurel Wreath (heal 2) | Opportunist | 15% | 24% |
+| Balance Scales | Opportunist | 15% | 23% |
+| Compass | Opportunist | 15% | 21% |
+| Ambusher's Knife | Opportunist | 15% | 20% |
+| Merchant's Purse | Opportunist | 15% | 18% |
+| Alchemist's Belt | Opportunist | 15% | 15% |
+| Whetstone | Hammer | 31% | 39% |
+| Blood Pact | Rage | 23% | 24% |
+| Lucky Charm | Fortune | 14-15% | 22% |
+
+- **Default bots with items on sale everywhere (300 runs, before Motley Cloak's cap; it was on 46 of 1136 dice at battle 8):** Bleed 50%, Hammer 35%, Poison 30%, Ritual + Poison 27%, Rage 25%, Shield 21%, Bleed + Rage 21%, Opportunist 19%, Burn 18%, Shield + Rage 16%, Fortune 14%, Unplanned buyer 0%. No explosion.
+
+### Findings
+- Bots own only 1-1.6 items at battle 8, so these rates don't show a player who buys an item at every Market.
+- Alchemist's Belt does nothing for these bots, which usually have one Consumable. Blood Pact shows no gain in this measure.
+- **Small block every turn is very strong,** which may be part of why the user's Fortify die had no trouble.
+- The user's Fortify die beat the Hydra in seconds, while the Shield bot clears 21%: the bot plays that build far worse than a player, so the simulator underrates it. The user's verdict on the Hydra: closer to "the last boss shouldn't be this easy"; a friend would say "is that it?".
+
+### Next Steps
+- **The user's play-test:** are items tempting in the Market, and does the list feel varied?
+- **The Shield bot and a Fortify question for the Hydra.**
+- **The map (Roadmap Phase B),** and a boss pool per slot.
+- Later: upgrades against Epics, and Epics that reward a patchwork die.

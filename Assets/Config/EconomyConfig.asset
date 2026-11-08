@@ -110,7 +110,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9bd57ab875b93c44cb6828d436eec2ef, type: 2}
   - {fileID: 11400000, guid: a8f6f30dd87522544bc60bbaa0ae0038, type: 2}
   - {fileID: 11400000, guid: 0781d27898a1da843ade9a3c7c04adb0, type: 2}
+  - {fileID: 11400000, guid: f78a458b390c22f4aa22c71b60d97736, type: 2}
+  - {fileID: 11400000, guid: 17fcf3a2a7e4f3d4a8667fa286fa23c7, type: 2}
+  - {fileID: 11400000, guid: 7ed41b1261e8eb94196a62a54378df8c, type: 2}
+  - {fileID: 11400000, guid: 47e6342034fae3f439ea55436fb0681f, type: 2}
+  - {fileID: 11400000, guid: 24578cd804b0acc4f8caf2fee2628617, type: 2}
+  - {fileID: 11400000, guid: bae5e35f71176ea4f84a810c2a193466, type: 2}
+  - {fileID: 11400000, guid: 805a55cb9d15fa443b5eeac09ebab0d3, type: 2}
+  - {fileID: 11400000, guid: eac1999d0bbbbde4c9184734ac5094b2, type: 2}
+  - {fileID: 11400000, guid: 05675023d6dafb0448e955887b07f3bb, type: 2}
+  - {fileID: 11400000, guid: 3b3db002dcfc6f24dbcdf89085c0179b, type: 2}
   bossRewardChoices: 3
+  equipmentPerMarket: 1
   equipmentPerGrandMarket: 2
   equipmentPrice: 30
   lockCost: 2

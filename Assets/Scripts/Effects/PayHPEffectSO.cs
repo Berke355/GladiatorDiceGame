@@ -4,9 +4,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewPayHPEffect", menuName = "Dice/Effects/Pay HP Effect")]
 public class PayHPEffectSO : EffectSO
 {
+    // Leaves at least 1 HP (an item paying on its own at the start of a battle, Blood Pact, should never kill).
+    public bool neverLethal;
+
     public override void Execute(EffectContext context){
-        context.source.PayHP(context.value);
-        Debug.Log(context.source.entityName + " paid " + context.value + " HP.");
+        int amount = neverLethal ? Mathf.Min(context.value, context.source.currentHP - 1) : context.value;
+        context.source.PayHP(amount);
+        Debug.Log(context.source.entityName + " paid " + amount + " HP.");
     }
 
     public override string Describe(EffectContext context){

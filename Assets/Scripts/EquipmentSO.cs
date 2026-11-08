@@ -32,6 +32,13 @@ public class TriggeredEffect
     // ActionChosen: only this action.
     public bool requireAction;
     public ActionType action;
+    // FaceRolled: only the face on this position of the die (Compass).
+    public bool requirePosition;
+    public int position;
+    // FaceRolled: only a face that a steer brought here (Lucky Charm).
+    public bool requireSteered;
+    // ActionChosen: only an action other than the last one this battle (Balance Scales).
+    public bool requireDifferentAction;
     // Conditions on the battle state ("if the enemy is bleeding") go in a ConditionalEffectSO here.
     public List<EffectSO> effects = new List<EffectSO>();
     public int value = 1;
@@ -52,4 +59,14 @@ public class EquipmentSO : ScriptableObject
     // Archetype tags, for build-aware offers.
     public List<FaceTag> tags = new List<FaceTag>();
     public List<TriggeredEffect> triggers = new List<TriggeredEffect>();
+    // Rules that aren't reactions to a trigger: gold on every victory (Merchant's Purse), read by the run;
+    // more uses of every Consumable action per battle (Alchemist's Belt), read by BattleFlow.
+    public int goldPerVictory;
+    public int extraConsumableUses;
+
+    public static int TotalGoldPerVictory(List<EquipmentSO> equipment){
+        int gold = 0;
+        foreach(EquipmentSO item in equipment) gold += item.goldPerVictory;
+        return gold;
+    }
 }

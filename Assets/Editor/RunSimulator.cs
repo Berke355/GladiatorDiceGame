@@ -318,7 +318,7 @@ public static class RunSimulator
 
                     // Same rewards as RunManager.OnBattleEnded.
                     run.battlesWon++;
-                    run.gold += config.economy.goldPerVictory;
+                    run.gold += config.economy.goldPerVictory + EquipmentSO.TotalGoldPerVictory(run.equipment);
                     if(config.bossBattles.Contains(run.battlesWon)){
                         run.currentHP = Mathf.Min(run.maxHP, run.currentHP + Mathf.RoundToInt(run.maxHP * config.bossHealFraction));
                         run.gold += config.economy.bossVictoryBonus;

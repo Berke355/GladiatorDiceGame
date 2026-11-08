@@ -24,7 +24,7 @@ public class MarketUI : MonoBehaviour
     public TextMeshProUGUI tabButtonText;
     // The enchantments on the die; clickable only while choosing which one to replace.
     public EquipmentSlotUI[] dieEnchantmentSlots;
-    // Equipment for sale, Grand Market only; the whole section is hidden in the Normal Market.
+    // Equipment for sale; the whole section is hidden when the pool has nothing left to offer.
     public GameObject equipmentSection;
     public OfferCardUI[] equipmentCards;
     public DieSlotUI[] dieSlots;
@@ -269,7 +269,7 @@ public class MarketUI : MonoBehaviour
         titleText.text = showingTable ? "ENCHANTING TABLE" : market.isGrand ? "GRAND MARKET" : "MARKET";
         tabButtonText.text = showingTable ? "Back to Market" : "Enchanting Table";
         facesSection.SetActive(!showingTable);
-        equipmentSection.SetActive(!showingTable && market.isGrand);
+        equipmentSection.SetActive(!showingTable && market.equipmentOffers.Count > 0);
         enchantmentSection.SetActive(showingTable);
         dieEnchantmentSection.SetActive(showingTable);
         for(int i = 0; i < dieEnchantmentCards.Length; i++){

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045e8e4e1ebe37943821798a5e55da6a, type: 3}
+  m_Name: BloodPact
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
+  equipmentName: Blood Pact
+  description: 'At the start of each battle: lose 3 HP (never your last) and gain
+    1 Rage.'
+  rarity: 1
+  tags: 05000000
+  triggers:
+  - trigger: 0
+    requireFaceTag: 0
+    faceTag: 0
+    requireAction: 0
+    action: 0
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
+    effects:
+    - {fileID: 11400000, guid: 5c606f5714e41ec498bdfbbe58f8857b, type: 2}
+    - {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
+    value: 3
+    maxPerRound: 0
+    maxPerBattle: 0
+  goldPerVictory: 0
+  extraConsumableUses: 0

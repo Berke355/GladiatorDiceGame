@@ -75,12 +75,10 @@ public class Market
             if(dieEnchantmentOffers.Count >= economy.dieEnchantmentsPerMarket) break;
             dieEnchantmentOffers.Add(new DieEnchantmentOffer{ enchantment = enchantment, price = economy.GetBuyPrice(enchantment.rarity), locked = true });
         }
-        if(isGrand){
-            run.lockedEquipment.RemoveAll(item => run.equipment.Contains(item));
-            foreach(EquipmentSO item in run.lockedEquipment.ToArray()){
-                if(equipmentOffers.Count >= economy.equipmentPerGrandMarket) break;
-                equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice, locked = true });
-            }
+        run.lockedEquipment.RemoveAll(item => run.equipment.Contains(item));
+        foreach(EquipmentSO item in run.lockedEquipment.ToArray()){
+            if(equipmentOffers.Count >= EquipmentOfferCount) break;
+            equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice, locked = true });
         }
         if(run.bossRewardPending){
             GenerateRewardChoices();
@@ -390,12 +388,11 @@ public class Market
 
     // ---------- Equipment ----------
 
-    // The Grand Market sells a few items; the boss reward choice is never offered for sale at the same time.
+    private int EquipmentOfferCount => isGrand ? economy.equipmentPerGrandMarket : economy.equipmentPerMarket;
+
+    // Every Market sells items, the Grand Market more; the boss reward choice is never offered for sale at the same time.
     private void GenerateEquipmentOffers(){
-        if(!isGrand){
-            return;
-        }
-        while(equipmentOffers.Count < economy.equipmentPerGrandMarket){
+        while(equipmentOffers.Count < EquipmentOfferCount){
             EquipmentSO item = PickEquipment();
             if(item == null) break;
             equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice });
