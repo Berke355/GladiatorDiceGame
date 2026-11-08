@@ -172,7 +172,7 @@ Every build should care where its faces sit, not only Fortune (play-test). Die e
 | **Heavy Core** | Rare | Middle +3, Top and Bottom -1 |
 | **Twin Fangs** | Rare | Left and Right +1, Middle -2 |
 | **Kindred** | Epic | Every face that shares a tag with its opposite face gets +1 |
-| **Weighted Die** | Epic | Rightmost comes up twice as often, Left never does (a steer can still bring it) |
+| **Weighted Die** | Epic | Rightmost comes up twice as often. It used to stop Left from coming up, which erased the die's weakest face (the user's play-test). |
 
 - **Simulation (DevLog Day 74, an enchantment free from the start; Opportunist / Rage / Burn, 350 runs):**
 

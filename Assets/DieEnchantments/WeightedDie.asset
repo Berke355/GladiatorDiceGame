@@ -13,13 +13,10 @@ MonoBehaviour:
   m_Name: WeightedDie
   m_EditorClassIdentifier: Assembly-CSharp::DieEnchantmentSO
   enchantmentName: Weighted Die
-  description: The Rightmost face comes up twice as often. The Left face never comes
-    up on a roll.
+  description: The Rightmost face comes up twice as often.
   rarity: 2
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights:
   - position: 4
     amount: 2
-  - position: 1
-    amount: 0

@@ -9,7 +9,7 @@ using System.Text;
 public static class RunSimulator
 {
     // Opportunist: no fixed build; it follows what the run offers (the normal run in GDD "Every Run Is Its Own Build").
-    public enum Shopping { None, Focused, Unplanned, Opportunist }
+    public enum Shopping { None, Focused, Unplanned, Opportunist, Carry }
 
     public class Bot
     {
@@ -17,6 +17,8 @@ public static class RunSimulator
         public Shopping shopping;
         // Archetype tags a Focused bot builds around. Several tags make a hybrid bot (e.g. Ritual + Poison).
         public FaceTag[] focusTags;
+        // Shopping.Carry: the face it stacks everything on, bought when offered. Null: its strongest attacker.
+        public string carryName;
 
         public Bot(string label, Shopping shopping, params FaceTag[] focusTags){
             this.label = label;
@@ -133,6 +135,8 @@ public static class RunSimulator
             new Bot("No shopping", Shopping.None),
             new Bot("Unplanned buyer", Shopping.Unplanned),
             new Bot("Opportunist", Shopping.Opportunist),
+            // Stacks everything on one face, which a player found far stronger than spreading upgrades (DevLog Day 78).
+            new Bot("One-face carry", Shopping.Carry),
             new Bot("Focused: Burn", Shopping.Focused, FaceTag.Burn),
             new Bot("Focused: Poison", Shopping.Focused, FaceTag.Poison),
             new Bot("Focused: Shield", Shopping.Focused, FaceTag.Block),
@@ -890,6 +894,9 @@ public static class RunSimulator
                 ArrangeForDieEnchantments(market, run);
                 ArrangeFortune(market, run);
                 break;
+            case Shopping.Carry:
+                ShopCarry(market, run, bot);
+                break;
             case Shopping.Unplanned:
                 if(UseEquipment && market.IsRewardPending){
                     int slot = market.HasFreeEquipmentSlot ? -1 : Random.Range(0, run.equipment.Count);
@@ -899,6 +906,49 @@ public static class RunSimulator
                 break;
         }
         run.gold += saved;
+    }
+
+    // Stacks everything on one face: it stands on Rightmost, die enchantments that favor Rightmost are bought, the
+    // weakest face goes where it never comes up, and all the gold left goes into upgrading it.
+    private static void ShopCarry(Market market, RunData run, Bot bot){
+        if(UseEquipment) TakeBestReward(market, run, bot);
+        if(bot.carryName != null && !run.dieFaces.Exists(face => face.definition.faceName == bot.carryName)){
+            int offered = market.offers.FindIndex(offer => offer.face.faceName == bot.carryName);
+            if(offered >= 0 && market.CanBuy(offered)) market.Buy(offered, WeakestSlot(run, null));
+        }
+        DieFace carry = CarryFace(run, bot);
+        for(int i = 0; i < market.dieEnchantmentOffers.Count; i++){
+            DieEnchantmentSO offered = market.dieEnchantmentOffers[i].enchantment;
+            bool favorsRightmost = offered.positionBonuses.Exists(entry => entry.position == DieLayout.Rightmost && entry.amount > 0)
+                || offered.rollWeights.Exists(entry => entry.position == DieLayout.Rightmost && entry.amount > 1);
+            if(favorsRightmost && market.HasFreeDieEnchantmentSlot && market.CanBuyDieEnchantment(i)) market.BuyDieEnchantment(i, -1);
+        }
+        int at = run.dieFaces.IndexOf(carry);
+        if(at != DieLayout.Rightmost) market.SwapFaces(at, DieLayout.Rightmost);
+        if(DieEnchantmentSO.WeightAt(run.dieEnchantments, DieLayout.Left) == 0){
+            int weakest = WeakestSlot(run, carry);
+            if(weakest != DieLayout.Left) market.SwapFaces(weakest, DieLayout.Left);
+        }
+        while(market.CanUpgrade(DieLayout.Rightmost) && market.Upgrade(DieLayout.Rightmost)){ }
+    }
+
+    private static DieFace CarryFace(RunData run, Bot bot){
+        DieFace named = bot.carryName != null ? run.dieFaces.Find(face => face.definition.faceName == bot.carryName) : null;
+        if(named != null) return named;
+        DieFace best = null;
+        foreach(DieFace face in run.dieFaces){
+            if(face.HasAction(ActionType.Attack) && (best == null || face.value > best.value)) best = face;
+        }
+        return best ?? run.dieFaces[0];
+    }
+
+    private static int WeakestSlot(RunData run, DieFace except){
+        int weakest = -1;
+        for(int i = 0; i < run.dieFaces.Count; i++){
+            if(run.dieFaces[i] == except) continue;
+            if(weakest < 0 || run.dieFaces[i].value < run.dieFaces[weakest].value) weakest = i;
+        }
+        return weakest;
     }
 
     // Focused bots buy an Epic face of their archetype at the Grand Market before anything else competes for the gold.

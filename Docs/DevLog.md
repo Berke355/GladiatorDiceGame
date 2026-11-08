@@ -2991,3 +2991,40 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The Shield bot and a Fortify question for the Hydra.**
 - **The map (Roadmap Phase B),** and a boss pool per slot.
 - Later: upgrades against Epics, and Epics that reward a patchwork die.
+
+## Day 78 - Stacking on One Face
+
+### Accomplished (the user's play-test: a patchwork die stacked on Bite beat every Strong enemy and the Hydra with eyes closed)
+- **Bite's Attack now deals my value and heals 2** (it healed the whole hit, Rage included). Its Magic still heals my value. A fixed heal keeps Value Is the Effect; "heal half the damage" would have been a hidden multiplier.
+- **Weighted Die no longer stops Left from coming up:** Rightmost still comes up twice as often. A player could erase the die's weakest face with it.
+- **New bot, One-face carry** (`ShopCarry`, `Bot.carryName`): its carry stands on Rightmost, it buys die enchantments that favor Rightmost and puts all its remaining gold into that face. Bots used to spread upgrades, so the simulator had never seen this strategy.
+- `HealEffectSO.fixedAmount`.
+
+### Tests
+- **One-face carry (250-300 runs):**
+
+| Carry | Before | Only Bite changed | Both changes |
+|---|---|---|---|
+| Bite, on the die from the start | 87% | 59% | 33-34% |
+| Sword | 64-69% | - | 32-36% |
+| Shield | 65% | - | 36% |
+
+- **Weighted Die, checked by switching the rule on and off in memory (250 runs each):** Sword 68% and 63% with "Left never", 36% and 32% without; Bite 59% and 33%. The effect looked too large for its small change per roll, so it was measured twice.
+- Not yet seen in Play Mode.
+
+### Balance
+- **Default bots (300 runs), before these changes and after:** Bleed 50% to 39%, Shield 21% to 21%, Hammer 35% to 20%, Poison 30% to 19%, Burn 18% to 18%, Ritual + Poison 27% to 18%, Rage 25% to 17%, Bleed + Rage 21% to 17%, One-face carry 32% to 17%, Shield + Rage 16% to 14%, Fortune 14% to 10%, Opportunist 19% to 8%, Unplanned buyer 0% to 0%.
+- **Upgrade cost, in memory:** Common x3 to x4 takes the Sword carry from 33% to 15%, x5 to 14%. It is a very sharp lever that hits every bot, so it stays as it is for now.
+
+### Findings
+- **Before these changes, building nothing and stacking on the starting Sword beat every archetype.** Now the carry sits among the archetypes.
+- **"Left never" had been inflating every bot,** so older clear rates from Day 74 on overstate those builds.
+- **The Opportunist at 8% is too low** for the normal run in GDD "Every Run Is Its Own Build", which should finish or nearly finish.
+- The user clearly plays better than the bots: their first run lost to Medusa after a real dilemma between buying power and buying HP, which is the healthy kind of loss, and their second found the Bite stack halfway through. Real difficulty can be lower than these tables say.
+- Unaddressed: the user's last die also held Dark Communion, Venom, Contagion, Censer and Plague Mask, so Ritual + Poison may have helped Bite carry that run.
+
+### Next Steps
+- **Pragmatist faces:** faces that read general states, so a patchwork die finds its own combos. They should lift the Opportunist without making a one-face stack dominant. Add a General tag.
+- **The Shield bot and a Fortify question for the Hydra.**
+- **Upgrade cost,** after the Pragmatist set.
+- **The map (Roadmap Phase B),** and a boss pool per slot.

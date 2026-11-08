@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: BiteFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Bite
-  description: 'Attack: Deal damage equal to my value and heal that much. Magic:
-    Heal equal to my value.'
+  description: 'Attack: Deal damage equal to my value and heal 2. Magic: Heal equal
+    to my value.'
   rarity: 1
   tags: 02000000
   baseValue: 2
-  softCap: 4
   effects:
   - actionType: 0
-    effectLogic: {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}
+    effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+  - actionType: 0
+    effectLogic: {fileID: 11400000, guid: b5fa9b46fdef69f40b88170173c37bb1, type: 2}
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
+  charges: 0
+  hasNoValue: 0
+  consumableActions: 
