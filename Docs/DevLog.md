@@ -2595,3 +2595,31 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Fortune stage 1:** the die layout (net, positions, opposites, free swapping).
 - **Rage and Hammer's ceiling:** a complete build should be a power fantasy.
 - **Play-test:** does the Hydra feel like the peak, and is the game still too easy?
+
+## Day 69 - Fortune Stage 1: The Die Layout
+
+### Accomplished
+- **`DieLayout`:** the die is a sideways cross net, and the order of `RunData.dieFaces` is the position (0 Top, 1 Left, 2 Middle, 3 Right, 4 Rightmost, 5 Bottom).
+  - Opposites are Left/Right, Middle/Rightmost and Top/Bottom; every face has four neighbors.
+  - The starting face chosen at the run start takes Bottom.
+- **Free swapping in the Market** (`Market.SwapFaces`, `MarketUI.pendingSwap`): click a face, then another. A face keeps its upgrades and enchantment. Clicking the same face twice or Cancel leaves the die as it was.
+- **The net is on screen:**
+  - In the Market, each slot shows its position, with Upgrade beside it, and the "next battle" line moved to the net's empty corner.
+  - In battle, the die strip became the net on the left, and the player's placeholder sprite moved up and shrank.
+  - Tooltips show the position and the opposite face.
+- No face reads the layout yet; that comes with stages 2 and 3.
+
+### Tests
+- **Checks (6/6):**
+  - The opposites are right and symmetric.
+  - Each face has four neighbors, neither itself nor its opposite.
+  - A swap moves the instance with its upgrade, for free.
+  - Invalid swaps are refused, and the description text is right.
+- **Play Mode:**
+  - Swapping Top and Bottom kept the gold (20) and the instances.
+  - Clicking the same face twice and Cancel both left the order unchanged.
+  - In battle the rolled face (Sword at Top) was highlighted on the net, and its tooltip read "Position: Top. Opposite: Bottom (Hedge)".
+  - No Console errors.
+
+### Next Steps
+- **Fortune stage 2:** steering the next roll (opposite, neighbor, position, chosen face), per-turn landing counts and the limit of 3 actions per turn.

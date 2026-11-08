@@ -43,10 +43,12 @@ public class MarketUI : MonoBehaviour
     private int pendingEnchantment = -1;
     private int pendingEquipment = -1;
     private int pendingReward = -1;
+    // The die face picked to move; the next face clicked swaps places with it.
+    private int pendingSwap = -1;
 
     private bool ChoosingDieSlot => pendingOffer >= 0 || pendingEnchantment >= 0;
     private bool ChoosingEquipmentSlot => pendingEquipment >= 0 || pendingReward >= 0;
-    private bool Choosing => ChoosingDieSlot || ChoosingEquipmentSlot;
+    private bool Choosing => ChoosingDieSlot || ChoosingEquipmentSlot || pendingSwap >= 0;
 
     void Start(){
         run = RunManager.Instance.run;
@@ -140,6 +142,15 @@ public class MarketUI : MonoBehaviour
         else if(pendingEnchantment >= 0){
             market.BuyEnchantment(pendingEnchantment, dieSlot);
         }
+        else if(pendingSwap < 0){
+            // Nothing is being bought: the click picks this face to move.
+            pendingSwap = dieSlot;
+            Refresh();
+            return;
+        }
+        else{
+            market.SwapFaces(pendingSwap, dieSlot);
+        }
         ClearPending();
         Refresh();
     }
@@ -171,6 +182,7 @@ public class MarketUI : MonoBehaviour
         pendingEnchantment = -1;
         pendingEquipment = -1;
         pendingReward = -1;
+        pendingSwap = -1;
     }
 
     // Called by the Next Battle button.
@@ -266,16 +278,18 @@ public class MarketUI : MonoBehaviour
             if(!hasFace) continue;
 
             DieFace dieFace = run.dieFaces[i];
-            slot.faceText.text = dieFace.DisplayName + "\nValue " + dieFace.value + "\n<size=75%>" + MagicStatus(dieFace) + "</size>";
-            slot.tooltip.text = GameText.FaceTooltip(dieFace);
-            // An enchantment can only go on a face whose Magic action is still empty.
-            slot.slotButton.interactable = pendingOffer >= 0 || (pendingEnchantment >= 0 && market.CanEnchant(i));
+            string moving = i == pendingSwap ? "<color=#B8860B>Moving: </color>" : "";
+            slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + "\n<size=70%>" + DieLayout.Name(i) + " | " + MagicStatus(dieFace) + "</size>";
+            slot.tooltip.text = GameText.FaceTooltip(dieFace) + "\n<color=#9AA5B1>" + DieLayout.Describe(run.dieFaces, i) + "</color>";
+            // An enchantment can only go on a face whose Magic action is still empty. With nothing being bought,
+            // a click picks the face to move, and the next click swaps.
+            slot.slotButton.interactable = pendingOffer >= 0 || (pendingEnchantment >= 0 && market.CanEnchant(i)) || pendingSwap >= 0 || !Choosing;
 
             // The upgrade button only shows where this face can be upgraded (Normal: Common/Rare, Grand: Epic).
             bool upgradable = market.IsUpgradableHere(i);
             slot.upgradeButton.gameObject.SetActive(upgradable);
             if(upgradable){
-                slot.upgradeButtonText.text = "Upgrade  " + market.GetUpgradeCost(i) + "g";
+                slot.upgradeButtonText.text = "Upgrade\n" + market.GetUpgradeCost(i) + "g";
                 slot.upgradeButton.interactable = !Choosing && market.CanUpgrade(i);
             }
         }
@@ -317,7 +331,8 @@ public class MarketUI : MonoBehaviour
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingEquipment >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.equipmentOffers[pendingEquipment].item.equipmentName;
         if(pendingReward >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.rewardChoices[pendingReward].equipmentName;
-        return market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market. Lock an offer to keep it for later.";
+        if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click";
+        return (market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market.") + " Click a die face to move it (free).";
     }
 
     // A locked offer survives rerolls and waits in the next Market; unlocking is free, locking costs gold.

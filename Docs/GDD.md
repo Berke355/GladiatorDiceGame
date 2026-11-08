@@ -135,7 +135,7 @@ Every die face is defined by a common set of properties.
 - Tags
 - Description
 
-### Die Layout (planned)
+### Die Layout
 
 The die is a real cube laid out as a net, and where a face sits matters. This gives "You build a die" a layer a deck can't have (inspired by how Slice & Dice names the faces of a die's net).
 
@@ -149,8 +149,9 @@ The die is a real cube laid out as a net, and where a face sits matters. This gi
 
 - **Named positions:** faces can refer to Top, Left, Middle, Right, Rightmost and Bottom.
 - **Cube relations follow from the net:** opposite faces are Left ↔ Right, Middle ↔ Rightmost and Top ↔ Bottom, and every face has four neighbors. Faces can refer to the opposite face or a neighbor as well as to a named position.
-- **Placement is free in the Market:** faces can be moved and swapped at any time, at no cost. The decision is not a tax on placing a face but the arrangement puzzle itself: each face has one opposite and the net has one Rightmost, so two combos that want the same spot force a choice, and a new face can change the whole arrangement. Content that cares about positions gives the puzzle its depth.
+- **Placement is free in the Market:** click a die face, then another, and they swap places, at no cost. A face keeps its upgrades and enchantment when it moves. A bought face takes the place of the face it replaces, and the starting face chosen at the run start takes Bottom. The decision is not a tax on placing a face but the arrangement puzzle itself: each face has one opposite and the net has one Rightmost, so two combos that want the same spot force a choice, and a new face can change the whole arrangement. Content that cares about positions gives the puzzle its depth.
 - **In battle the layout is fixed;** changing it mid-battle is a Fortune ability (e.g. a face that swaps two faces for the battle).
+- **Built so far (DevLog Day 69):** the net, the positions and opposites, the swap, and the net on screen. No face reads the layout yet; that comes with Fortune's stages 2 and 3.
 - **Other builds barely notice the layout;** for Fortune it is vital, and future faces and mechanics will keep giving it more meaning.
 
 ### Value Is the Effect

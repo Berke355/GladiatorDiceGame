@@ -482,6 +482,16 @@ public class Market
         return IsUpgradableHere(dieSlot) && run.gold >= GetUpgradeCost(dieSlot);
     }
 
+    // Swaps two faces' places on the net (see GDD "Die Layout"). Free and unlimited: the arrangement is a puzzle, not a
+    // cost. The face instances move, so their upgrades and enchantments go with them.
+    public bool SwapFaces(int a, int b){
+        if(a == b || a < 0 || b < 0 || a >= run.dieFaces.Count || b >= run.dieFaces.Count) return false;
+        DieFace moved = run.dieFaces[a];
+        run.dieFaces[a] = run.dieFaces[b];
+        run.dieFaces[b] = moved;
+        return true;
+    }
+
     public bool Upgrade(int dieSlot){
         if(!CanUpgrade(dieSlot)){
             return false;
