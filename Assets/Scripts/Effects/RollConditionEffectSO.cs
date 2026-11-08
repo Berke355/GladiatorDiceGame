@@ -29,7 +29,7 @@ public class RollConditionEffectSO : EffectSO
         }
         // During a turn (the action previews) a condition already met shows just its result.
         if(context.face != null && context.turnNumber > 0 && Met(context)) return string.Join(", ", parts);
-        return ConditionText() + ": " + string.Join(", ", parts);
+        return "(" + ConditionText() + ": " + string.Join(", ", parts) + ")";
     }
 
     private string ConditionText(){

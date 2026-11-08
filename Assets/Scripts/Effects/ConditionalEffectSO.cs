@@ -28,8 +28,11 @@ public class ConditionalEffectSO : EffectSO
             string description = effect != null ? effect.Describe(context) : "";
             if(description != "") parts.Add(description);
         }
+        // A condition already met shows just its result. One not met goes in parentheses, so effects listed after it
+        // don't read as part of the condition (e.g. Serrated Blade's Bleed).
+        if(ConditionMet(context)) return string.Join(", ", parts);
         string condition = "if " + (checkTarget ? "enemy has " : "you have ") + requiredStatus;
-        return condition + ": " + string.Join(", ", parts);
+        return "(" + condition + ": " + string.Join(", ", parts) + ")";
     }
 
     private bool ConditionMet(EffectContext context){

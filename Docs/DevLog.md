@@ -2716,3 +2716,22 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **The user's play-test of Fortune:** the combos, the arrangement and whether the pieces can be found. A temporary test setting (Fortune offers first, or a built die) was offered.
 - **Rage and Hammer's ceiling,** and whether complete builds are strong enough in the late game.
 - **Serrated Blade's misleading preview** (Day 65).
+
+## Day 73 - Clearer Conditional Previews
+
+### Accomplished
+- **Serrated Blade's preview** read "if enemy has Bleed: 4 damage, 4 Bleed", as if its Bleed were conditional too. Action previews join effects with commas, so nothing showed where a condition ended.
+- **`ConditionalEffectSO` and `RollConditionEffectSO`:** a condition not met now goes in parentheses, and one already met shows just its result. Only the text changed, not the rules.
+
+| Face | Not met | Met |
+|---|---|---|
+| Serrated Blade | (if enemy has Bleed: 4 damage), 4 Bleed | 4 damage, 4 Bleed |
+| Open Wound | 2 damage, (if enemy has Bleed: 2 damage) | 2 damage, 2 damage |
+| Battle Hymn | gain 2 Fortify, (if you have Encourage: gain 1 Rage) | gain 4 Fortify, gain 3 Rage (with Encourage 2) |
+
+### Tests
+- The preview text of the real faces was generated in both states and matches the table. Encore and Opening Gambit were checked in the not-met state. Not looked at on screen in Play Mode.
+
+### Next Steps
+- **The user's play-test of Fortune** and the difficulty curve.
+- **Rage and Hammer's ceiling.**
