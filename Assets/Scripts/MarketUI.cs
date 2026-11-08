@@ -28,7 +28,9 @@ public class MarketUI : MonoBehaviour
     public GameObject equipmentSection;
     public OfferCardUI[] equipmentCards;
     public DieSlotUI[] dieSlots;
+    // The items the player has. Only the first object is needed in the scene; it is copied as items pile up.
     public EquipmentSlotUI[] equipmentSlots;
+    private List<EquipmentSlotUI> equipmentChips;
     public Button cancelButton;
     public Button rerollButton;
     public TextMeshProUGUI rerollButtonText;
@@ -50,8 +52,6 @@ public class MarketUI : MonoBehaviour
     // Offers waiting for the player to choose a slot; -1 when none. Only one is ever pending.
     private int pendingOffer = -1;
     private int pendingEnchantment = -1;
-    private int pendingEquipment = -1;
-    private int pendingReward = -1;
     // The die face picked to move; the next face clicked swaps places with it.
     private int pendingSwap = -1;
     // A die enchantment being bought with every slot full: the next slot clicked is replaced.
@@ -59,10 +59,10 @@ public class MarketUI : MonoBehaviour
     private bool showingTable;
 
     private bool ChoosingDieSlot => pendingOffer >= 0 || pendingEnchantment >= 0;
-    private bool ChoosingEquipmentSlot => pendingEquipment >= 0 || pendingReward >= 0;
-    private bool Choosing => ChoosingDieSlot || ChoosingEquipmentSlot || pendingSwap >= 0 || pendingDieEnchantment >= 0;
+    private bool Choosing => ChoosingDieSlot || pendingSwap >= 0 || pendingDieEnchantment >= 0;
 
     void Start(){
+        equipmentChips = new List<EquipmentSlotUI>(equipmentSlots);
         run = RunManager.Instance.run;
         market = new Market(run, RunManager.Instance.economy, RunManager.Instance.IsGrandMarket);
         titleText.text = market.isGrand ? "GRAND MARKET" : "MARKET";
@@ -100,10 +100,6 @@ public class MarketUI : MonoBehaviour
             int index = i;
             dieSlots[i].slotButton.onClick.AddListener(() => OnDieSlotClicked(index));
             dieSlots[i].upgradeButton.onClick.AddListener(() => OnUpgradeClicked(index));
-        }
-        for(int i = 0; i < equipmentSlots.Length; i++){
-            int index = i;
-            equipmentSlots[i].slotButton.onClick.AddListener(() => OnEquipmentSlotClicked(index));
         }
         for(int i = 0; i < rewardCards.Length; i++){
             int index = i;
@@ -151,17 +147,13 @@ public class MarketUI : MonoBehaviour
         Refresh();
     }
 
-    // With a free slot the item goes straight in; with full slots the player picks the item to replace.
     private void OnEquipmentClicked(int offerIndex){
-        if(!market.CanBuyEquipment(offerIndex)) return;
-        if(market.HasFreeEquipmentSlot) market.BuyEquipment(offerIndex, -1);
-        else pendingEquipment = offerIndex;
+        market.BuyEquipment(offerIndex);
         Refresh();
     }
 
     private void OnRewardClicked(int choiceIndex){
-        if(market.HasFreeEquipmentSlot) market.ClaimReward(choiceIndex, -1);
-        else pendingReward = choiceIndex;
+        market.ClaimReward(choiceIndex);
         Refresh();
     }
 
@@ -190,17 +182,6 @@ public class MarketUI : MonoBehaviour
         Refresh();
     }
 
-    private void OnEquipmentSlotClicked(int slot){
-        if(pendingReward >= 0){
-            market.ClaimReward(pendingReward, slot);
-        }
-        else if(pendingEquipment >= 0){
-            market.BuyEquipment(pendingEquipment, slot);
-        }
-        ClearPending();
-        Refresh();
-    }
-
     private void OnUpgradeClicked(int dieSlot){
         market.Upgrade(dieSlot);
         Refresh();
@@ -215,8 +196,6 @@ public class MarketUI : MonoBehaviour
     private void ClearPending(){
         pendingOffer = -1;
         pendingEnchantment = -1;
-        pendingEquipment = -1;
-        pendingReward = -1;
         pendingSwap = -1;
         pendingDieEnchantment = -1;
     }
@@ -327,7 +306,7 @@ public class MarketUI : MonoBehaviour
 
             EquipmentOffer offer = market.equipmentOffers[i];
             card.infoText.text = OfferCardUI.DescribeEquipment(offer.item);
-            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingEquipment ? "Selected" : "Buy  " + offer.price + "g");
+            card.buyButtonText.text = offer.sold ? "SOLD" : "Buy  " + offer.price + "g";
             card.buyButton.interactable = !Choosing && market.CanBuyEquipment(i);
             DrawLock(card, offer.sold, offer.locked, market.CanToggleEquipmentLock(i));
         }
@@ -360,22 +339,27 @@ public class MarketUI : MonoBehaviour
         }
 
         // Equipment slots are clickable only while choosing which item to replace.
-        for(int i = 0; i < equipmentSlots.Length; i++){
-            EquipmentSlotUI slot = equipmentSlots[i];
+        // One chip per item, copied as items pile up; the description is on hover.
+        while(equipmentChips.Count < run.equipment.Count){
+            equipmentChips.Add(Instantiate(equipmentChips[0], equipmentChips[0].transform.parent));
+        }
+        for(int i = 0; i < equipmentChips.Count; i++){
+            EquipmentSlotUI chip = equipmentChips[i];
             bool filled = i < run.equipment.Count;
-            slot.text.text = filled ? OfferCardUI.DescribeEquipmentShort(run.equipment[i]) : "<color=#7F8C8D>Empty slot</color>";
-            slot.tooltip.text = filled ? GameText.EquipmentTooltip(run.equipment[i]) : "";
-            slot.slotButton.interactable = ChoosingEquipmentSlot && filled;
+            chip.gameObject.SetActive(filled);
+            if(!filled) continue;
+            chip.text.text = "<b>" + run.equipment[i].equipmentName + "</b>";
+            chip.tooltip.text = GameText.EquipmentTooltip(run.equipment[i]);
         }
 
-        bool rewardOpen = market.IsRewardPending && pendingReward < 0;
+        bool rewardOpen = market.IsRewardPending;
         rewardPanel.SetActive(rewardOpen);
         for(int i = 0; i < rewardCards.Length; i++){
             bool hasChoice = i < market.rewardChoices.Count;
             rewardCards[i].gameObject.SetActive(hasChoice);
             if(!hasChoice) continue;
             rewardCards[i].infoText.text = OfferCardUI.DescribeEquipment(market.rewardChoices[i]);
-            rewardCards[i].buyButtonText.text = market.HasFreeEquipmentSlot ? "Take" : "Take (replace)";
+            rewardCards[i].buyButtonText.text = "Take";
         }
 
         cancelButton.gameObject.SetActive(Choosing);
@@ -394,8 +378,6 @@ public class MarketUI : MonoBehaviour
     private string Hint(){
         if(pendingOffer >= 0) return "Choose a face to replace with " + market.offers[pendingOffer].face.faceName + " (its enchantment is lost)";
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
-        if(pendingEquipment >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.equipmentOffers[pendingEquipment].item.equipmentName;
-        if(pendingReward >= 0) return "Your equipment slots are full. Choose an item to replace with " + market.rewardChoices[pendingReward].equipmentName;
         if(pendingDieEnchantment >= 0) return "Your die has 2 enchantments. Choose one to replace with " + market.dieEnchantmentOffers[pendingDieEnchantment].enchantment.enchantmentName;
         if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click";
         return (market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market.") + " Click a die face to move it (free).";

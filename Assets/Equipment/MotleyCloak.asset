@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MotleyCloak
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Motley Cloak
-  description: 'During your first 3 turns each battle: gain 1 block for every 2 different
+  description: 'During your first 3 turns each battle: gain 1 block for every 3 different
     faces on your die.'
   rarity: 1
   tags: 

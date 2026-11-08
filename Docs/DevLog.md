@@ -3060,3 +3060,48 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Equipment without a slot limit, as relics:** remove the limit, scale items down, grow the pool.
 - **The Shield bot and a Fortify question for the Hydra.**
 - **The map, more battles and the difficulty curve.**
+
+## Day 80 - Items as Relics
+
+### Accomplished (the user's play-test: three slots were too few; items should pile up like Slay the Spire's relics)
+- **No item limit.** The replace flow is gone from `Market`, `MarketUI` and the simulator.
+- **Small chips:** the Market and the battle show one chip per item, copied as items pile up, with the description on hover. Market: 8 columns, 2 rows. Battle: 5 columns, 3 rows.
+- **Items cost 15 gold** (was 30).
+- **The strongest items scaled down:** Motley Cloak (1 block per 3 different faces, was 2), Spiked Greaves (1 damage, was 2), Censer (first 2 turns, was 3), Plague Mask (once per battle, was twice), Barbed Hook (first 4 hits, was unlimited), Tower Helm (3 times, was 5). Laurel Wreath stays at 2 as the user asked.
+- **Face enchantments are cheaper:** Common 5, Rare 10, Epic 20 (the same as faces before), since the user rarely found them worth buying. Faces and die enchantments keep their prices.
+- `RunSimulator.BuyItemsFirst`: an experiment switch for a player who takes every item first.
+
+### Decisions
+- **No limit instead of 5 or 6 slots:** a bigger limit keeps the "which one do I give up" question and doesn't give the relic feeling.
+- **Die enchantments stay at 2,** because they feed one-face stacking directly.
+- **Items went ahead of the Hydra's Fortify question,** since they change the difficulty that question will be tuned against.
+
+### Tests
+- **Play Mode:** 15 items fit in the Market and in battle, with no console errors; it's tight but readable in battle. More than 16 in the Market or 15 in battle would overflow, which matters once runs get longer.
+
+### Balance
+- **Items given from the start to the Opportunist (250 runs), before and after scaling down:** 3 items 18% to 12%, 6 items 40% to 28%, 10 items 63% to 58%, 15 items 86% to 82%. No items: 4%.
+- **A bot that takes every item first, after scaling down (200 runs):**
+
+| Item price | Items at the Hydra | Opportunist | Poison | Shield | Rage | Bleed |
+|---|---|---|---|---|---|---|
+| 30 | about 5 | 2% | 5% | 12% | 9% | 21% |
+| 20 | about 10 | 5% | 1% | 6% | 7% | 11% |
+| 15 | about 11-12 | 13% | 10% | 18% | 21% | 35% |
+| 30, normal habits | about 2-3 | 5% | 8% | 19% | 18% | 32% |
+
+- 15 gold makes taking every item about even with upgrades, and clearly better on a patchwork die. At 20 all the income goes on items and the die stays weak.
+- **Default bots at 15 gold (300 runs):** Bleed 33%, Bleed + Rage 22%, Shield 19%, Rage 19%, One-face carry 17%, Ritual + Poison 14%, Hammer 13%, Fortune 11%, Poison 11%, Shield + Rage 10%, Burn 9%, Opportunist 3%, Unplanned buyer 1%. They own about 4 items at the Hydra.
+- **Enchantment prices:** bots almost never buy them (0-0.01 per die at battle 8), so these measures can't show their value; clear rates stayed within noise.
+
+### Findings
+- Items are strong in numbers: a good player taking many early may find the game too easy. The user's play-test decides.
+- 11-12 items per run against a pool of 20 means runs will see similar items until the pool grows.
+- The Opportunist at 3% is below the 5-15% band; bots don't use items on purpose yet.
+- A Rare item at 15 gold against a Rare face at 25 is odd; prices per rarity come when Common and Epic items exist.
+
+### Next Steps
+- **The user's play-test:** is piling up items fun, is 15 gold right, did the game get easy, and are enchantments worth buying now?
+- **Ten more items.**
+- **The Shield bot and a Fortify question for the Hydra.**
+- **The map, more battles and the difficulty curve.**

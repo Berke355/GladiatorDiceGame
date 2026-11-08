@@ -402,7 +402,7 @@ You don't only build the die, you build its faces. Every Market has an **Enchant
 - **Permanent:** enchantments can't be removed for now. Buying a face into a slot replaces the old face together with its enchantment.
 - **A niche combo tool:** most players won't enchant in most runs. An enchantment shines on a face with a very high value, letting it spend that value on another action (e.g. Poison on a Hammer's Magic, or Dark Rite on a charged Hammer, which buffs the rest of the battle in one roll). It is judged with combo tests, not by average clear rates.
 - **An option, not an extra effect:** one roll still means one action. An enchantment adds a new choice to a face, so on a low-value face it changes little, and on a high-value face it changes a lot.
-- **Same logic as face offers:** the table shows **3 enchantments** in every Market. The Normal Market uses the face rarity weights (Common 70%, Rare 25%, Epic 5%); the **Grand Market shows only Epic enchantments**. Build-aware tags, rerolls and prices (Common 10, Rare 25, Epic 45) work exactly as for faces.
+- **Same logic as face offers:** the table shows **3 enchantments** in every Market. The Normal Market uses the face rarity weights (Common 70%, Rare 25%, Epic 5%); the **Grand Market shows only Epic enchantments**. Build-aware tags and rerolls work exactly as for faces, but enchantments are cheaper (Common 5, Rare 10, Epic 20), so they stay an easy-to-reach option (the user's play-tests: they were rarely worth buying).
 - **Rarity** follows the same scaling rule as faces (linear Common, conditional or multi-effect Rare, multiplicative Epic). Permanent self-buffs scaled by the value (Rage, Ritual) are Epic: on a high-value face they multiply the rest of the battle.
 - **Technical:** the enchantment is stored on the `DieFace` instance, not on the `DieFaceSO` asset (the Definition / Instance split from Day 15), so only that copy of the face changes.
 
@@ -453,7 +453,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 ### Design Rules
 
 - **Equipment talks to the die.** Most triggers are die events ("when you roll a Poison face", "when you choose Defense"), so equipment rewards building the die instead of building a hero ("You don't build a hero. You build a die.").
-- **Three slots.** Equipment has no slot types (no helmet or armor slots); any item fits any slot. With a fourth item, you choose which one to give up, the same decision as replacing a die face.
+- **No limit: items pile up during a run, like Slay the Spire's relics** (the user's play-test: three slots were too few). Many small items talking to each other are a big part of what makes runs different.
 - **Small, fixed numbers.** Equipment builds synergies, not raw power. Value Is the Effect still holds: the printed number is what happens.
 - **No upgrades.** Upgrading stays the die's job.
 
@@ -480,22 +480,22 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 ### Getting Equipment
 
 - **Boss reward:** after a boss, choose 1 of 3 items for free.
-- **Every Market sells items at 30 gold:** 1 in a Normal Market, 2 in the Grand Market. A locked item waits for the very next Market (the user's play-test: it used to wait 4 battles for the next Grand Market). Slay the Spire's shops sell relics the same way.
-- Two bosses per run give at least two items; filling the third slot costs gold, and with items on sale everywhere, choosing which one to give up comes up more often.
+- **Every Market sells items at 15 gold:** 1 in a Normal Market, 2 in the Grand Market. A locked item waits for the very next Market (the user's play-test: it used to wait 4 battles for the next Grand Market). Slay the Spire's shops sell relics the same way.
+- With no slot limit, an item's only competition is what else the gold could buy.
 
 ### First Set
 
 | Item | Build | Trigger | Effect |
 |---|---|---|---|
-| **Plague Mask** | Poison | FaceRolled (Poison face), first 2 per battle | Apply 1 Poison |
+| **Plague Mask** | Poison | FaceRolled (Poison face), first per battle | Apply 1 Poison |
 | **Smoldering Gauntlet** | Burn | HitDealt | Apply 1 Burn |
-| **Barbed Hook** | Bleed | HitDealt | If the enemy is bleeding, hit again for 1 |
-| **Tower Helm** | Shield | ActionChosen (Defense), up to 5 per battle | Gain 1 Fortify |
+| **Barbed Hook** | Bleed | HitDealt, first 4 per battle | If the enemy is bleeding, hit again for 1 |
+| **Tower Helm** | Shield | ActionChosen (Defense), up to 3 per battle | Gain 1 Fortify |
 | **Berserker Torc** | Rage | HitTaken, first per battle | Gain 1 Rage |
 | **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
 | **Laurel Wreath** | General | BattleWon | Heal 2 |
 | **Iron Bracers** | General | BattleStart | Gain 1 Fortify |
-| **Censer** | Poison | TurnEnd, first 3 per battle | Apply 1 Poison to every enemy (see "Area Effects") |
+| **Censer** | Poison | TurnEnd, first 2 per battle | Apply 1 Poison to every enemy (see "Area Effects") |
 
 ### Second Set
 
@@ -506,10 +506,10 @@ Each item changes how you play or what you decide, not just a number. These also
 | **Whetstone** | Hammer | BattleStart | Charge faces start with 1 Charge |
 | **Alchemist's Belt** | Consumable | Always | Consumable actions work 2 times per battle before they become Change |
 | **Lucky Charm** | Fortune | FaceRolled (a steer brought it), first per round | Gain 2 block |
-| **Spiked Greaves** | General | HitTaken, up to 3 per battle | Deal 2 damage to the attacker |
+| **Spiked Greaves** | General | HitTaken, up to 3 per battle | Deal 1 damage to the attacker |
 | **Ambusher's Knife** | General | HitDealt, first per battle | Hit again for 3 |
 | **Blood Pact** | Rage | BattleStart | Lose 3 HP (never your last) and gain 1 Rage |
-| **Motley Cloak** | Patchwork die | TurnStart, first 3 per battle | Gain 1 block for every 2 different faces on your die |
+| **Motley Cloak** | Patchwork die | TurnStart, first 3 per battle | Gain 1 block for every 3 different faces on your die |
 | **Balance Scales** | Patchwork die | ActionChosen (not your last action) | Gain 1 block |
 | **Compass** | Die layout | FaceRolled (Rightmost), first per round | Gain 2 block |
 | **Merchant's Purse** | Economy | Always | Every victory pays 5 more gold |
@@ -525,7 +525,7 @@ Each item changes how you play or what you decide, not just a number. These also
 - **Berserker Torc is the risky one** (Pillar 4): it grows from damage taken, and Rage is permanent. Its numbers need the closest watch.
 - **Laurel Wreath** is worth the most in long runs, since HP carries over between battles.
 - **Equipment is part of the power curve.** Even the smallest numbers are a lot of power: HP carries over and runs are lost narrowly in the last battles, so a few HP per battle compound (healing 1 per battle lifts the Bleed bot from 22% to 37% of runs cleared). The first set first made the run far too easy (Rage 93%, Bleed 84%), and the items were uneven (alone, +0 to +67 points for their build).
-- **Tuning rule:** each item alone should add about +15 to +20 points to its build. Items that fire often get limits ("first 2 times each battle") instead of smaller numbers, since numbers can't go below 1. The Medium and Strong tiers were then made stronger (HP and intents ×1.1 and ×1.15), so builds with equipment land back in the target band.
+- **Tuning rule:** items pile up, so each one alone should add only a few points (it used to be +15 to +20 for three slots). Items that fire often get limits ("first 2 times each battle") instead of smaller numbers, since numbers can't go below 1. The Medium and Strong tiers were then made stronger (HP and intents ×1.1 and ×1.15), so builds with equipment land back in the target band.
 
 ## Status Effects
 

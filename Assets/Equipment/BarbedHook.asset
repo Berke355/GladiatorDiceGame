@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BarbedHook
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Barbed Hook
-  description: 'Each time you hit a bleeding enemy: hit again for 1 damage.'
+  description: 'Your first 4 hits each battle: if the enemy is bleeding, hit again
+    for 1 damage.'
   rarity: 1
   tags: 07000000
   triggers:
@@ -22,6 +23,14 @@ MonoBehaviour:
     faceTag: 0
     requireAction: 0
     action: 0
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
     effects:
     - {fileID: 11400000, guid: e4921089410ef5249b3f9004de6c6ce4, type: 2}
     value: 1
+    maxPerRound: 0
+    maxPerBattle: 4
+  goldPerVictory: 0
+  extraConsumableUses: 0

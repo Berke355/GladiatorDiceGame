@@ -133,7 +133,7 @@ MonoBehaviour:
   bossRewardChoices: 3
   equipmentPerMarket: 1
   equipmentPerGrandMarket: 2
-  equipmentPrice: 30
+  equipmentPrice: 15
   lockCost: 2
   grandLockCost: 5
   rerollBaseCost: 5
@@ -147,6 +147,9 @@ MonoBehaviour:
   commonPrice: 10
   rarePrice: 25
   epicPrice: 45
+  commonEnchantmentPrice: 5
+  rareEnchantmentPrice: 10
+  epicEnchantmentPrice: 20
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5
   epicUpgradeMultiplier: 20

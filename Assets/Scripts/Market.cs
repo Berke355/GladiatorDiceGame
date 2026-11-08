@@ -68,7 +68,7 @@ public class Market
         }
         foreach(EnchantmentSO enchantment in run.lockedEnchantments.ToArray()){
             if(enchantmentOffers.Count >= economy.enchantmentsPerMarket) break;
-            enchantmentOffers.Add(new EnchantmentOffer{ enchantment = enchantment, price = economy.GetBuyPrice(enchantment.rarity), locked = true });
+            enchantmentOffers.Add(new EnchantmentOffer{ enchantment = enchantment, price = economy.GetEnchantmentPrice(enchantment.rarity), locked = true });
         }
         run.lockedDieEnchantments.RemoveAll(enchantment => run.dieEnchantments.Contains(enchantment));
         foreach(DieEnchantmentSO enchantment in run.lockedDieEnchantments.ToArray()){
@@ -295,7 +295,7 @@ public class Market
                 if(matching.Count > 0) candidates = matching;
             }
             EnchantmentSO picked = candidates[Random.Range(0, candidates.Count)];
-            enchantmentOffers.Add(new EnchantmentOffer{ enchantment = picked, price = economy.GetBuyPrice(picked.rarity) });
+            enchantmentOffers.Add(new EnchantmentOffer{ enchantment = picked, price = economy.GetEnchantmentPrice(picked.rarity) });
         }
     }
 
@@ -431,32 +431,30 @@ public class Market
     }
 
     public bool IsRewardPending => run.bossRewardPending && rewardChoices.Count > 0;
-    public bool HasFreeEquipmentSlot => run.equipment.Count < RunData.EquipmentSlots;
 
     public bool CanBuyEquipment(int offerIndex){
         EquipmentOffer offer = equipmentOffers[offerIndex];
         return !offer.sold && run.gold >= offer.price && !run.equipment.Contains(offer.item);
     }
 
-    // replaceSlot -1 puts the item in a free slot; otherwise it replaces the item in that slot.
-    public bool BuyEquipment(int offerIndex, int replaceSlot){
-        if(!CanBuyEquipment(offerIndex) || !CanEquip(replaceSlot)){
+    public bool BuyEquipment(int offerIndex){
+        if(!CanBuyEquipment(offerIndex)){
             return false;
         }
         EquipmentOffer offer = equipmentOffers[offerIndex];
         run.gold -= offer.price;
-        Equip(offer.item, replaceSlot);
+        run.equipment.Add(offer.item);
         offer.sold = true;
         if(offer.locked){ offer.locked = false; run.lockedEquipment.Remove(offer.item); }
         return true;
     }
 
-    // Takes the free boss reward (same slot rule as buying). The reward is gone once taken or skipped.
-    public bool ClaimReward(int choiceIndex, int replaceSlot){
-        if(!IsRewardPending || !CanEquip(replaceSlot)){
+    // Takes the free boss reward. The reward is gone once taken or skipped.
+    public bool ClaimReward(int choiceIndex){
+        if(!IsRewardPending){
             return false;
         }
-        Equip(rewardChoices[choiceIndex], replaceSlot);
+        run.equipment.Add(rewardChoices[choiceIndex]);
         EndReward();
         return true;
     }
@@ -468,15 +466,6 @@ public class Market
     private void EndReward(){
         run.bossRewardPending = false;
         rewardChoices.Clear();
-    }
-
-    private bool CanEquip(int replaceSlot){
-        return replaceSlot < 0 ? HasFreeEquipmentSlot : replaceSlot < run.equipment.Count;
-    }
-
-    private void Equip(EquipmentSO item, int replaceSlot){
-        if(replaceSlot < 0) run.equipment.Add(item);
-        else run.equipment[replaceSlot] = item;
     }
 
     // ---------- Buying ----------

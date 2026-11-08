@@ -72,6 +72,12 @@ public class EconomyConfigSO : ScriptableObject
     public int rarePrice = 15;
     public int epicPrice = 30;
 
+    [Header("Face Enchantment Price")]
+    // Cheaper than faces: enchantments are an easy-to-reach option, and bought rarely at the face prices.
+    public int commonEnchantmentPrice = 5;
+    public int rareEnchantmentPrice = 10;
+    public int epicEnchantmentPrice = 20;
+
     [Header("Upgrade Cost Multiplier (x current value)")]
     public int commonUpgradeMultiplier = 3;
     public int rareUpgradeMultiplier = 5;
@@ -82,6 +88,14 @@ public class EconomyConfigSO : ScriptableObject
             case Rarity.Rare: return rarePrice;
             case Rarity.Epic: return epicPrice;
             default: return commonPrice;
+        }
+    }
+
+    public int GetEnchantmentPrice(Rarity rarity){
+        switch(rarity){
+            case Rarity.Rare: return rareEnchantmentPrice;
+            case Rarity.Epic: return epicEnchantmentPrice;
+            default: return commonEnchantmentPrice;
         }
     }
 

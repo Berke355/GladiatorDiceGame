@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TowerHelm
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Tower Helm
-  description: 'When you choose Defense: gain 1 Fortify (up to 5 times each battle).'
+  description: 'When you choose Defense: gain 1 Fortify (up to 3 times each battle).'
   rarity: 1
   tags: 01000000
   triggers:
@@ -22,8 +22,14 @@ MonoBehaviour:
     faceTag: 0
     requireAction: 1
     action: 1
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
     effects:
     - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
     value: 1
     maxPerRound: 0
-    maxPerBattle: 5
+    maxPerBattle: 3
+  goldPerVictory: 0
+  extraConsumableUses: 0

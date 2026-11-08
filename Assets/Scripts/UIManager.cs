@@ -85,6 +85,11 @@ public class UIManager : MonoBehaviour
 
     // The run's items, one chip each; unused chips are hidden.
     public void ShowEquipment(List<EquipmentSO> equipment){
+        // Items have no limit: the first chip is copied as they pile up.
+        while(equipmentChips.Length < equipment.Count){
+            System.Array.Resize(ref equipmentChips, equipmentChips.Length + 1);
+            equipmentChips[equipmentChips.Length - 1] = Instantiate(equipmentChips[0], equipmentChips[0].transform.parent);
+        }
         for(int i = 0; i < equipmentChips.Length; i++){
             bool filled = i < equipment.Count;
             equipmentChips[i].gameObject.SetActive(filled);

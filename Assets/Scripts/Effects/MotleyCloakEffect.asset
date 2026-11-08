@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c86163142b72b004f80778a13650b691, type: 3}
   m_Name: MotleyCloakEffect
   m_EditorClassIdentifier: Assembly-CSharp::BlockPerDifferentFaceEffectSO
+  facesPerBlock: 3

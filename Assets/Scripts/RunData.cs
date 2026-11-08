@@ -18,8 +18,7 @@ public class RunData
     public bool startingFaceChosen;
     // Paid rerolls of the starting offers so far; each costs more (the Market's reroll price).
     public int startingOfferRerolls;
-    // Passive items (see GDD "Equipment"); at most EquipmentSlots of them.
-    public const int EquipmentSlots = 3;
+    // Passive items (see GDD "Equipment"), with no limit: they pile up during a run, like relics.
     public List<EquipmentSO> equipment = new List<EquipmentSO>();
     // Market offers the player locked: they survive rerolls and wait in the next Market that sells that kind
     // (equipment only in a Grand Market). See GDD "Market".

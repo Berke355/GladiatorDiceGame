@@ -62,6 +62,7 @@ public static class RunSimulator
     public static int DefenseFacesToKeep = 0;
     // Focused bots and the opportunist hold back this much gold in the Market before a boss, for the Grand Market's Epics.
     public static int GoldToSaveForGrandMarket = 0;
+    public static bool BuyItemsFirst = false;
     // Bots buy enchantments; off to measure what enchantments add.
     public static bool BuyEnchantments = true;
     // Bots play the enchantments they bought; off to separate the gold cost from playing them.
@@ -879,6 +880,12 @@ public static class RunSimulator
         if(UseHealer && bot.shopping != Shopping.None){
             while(run.currentHP < run.maxHP * HealBelowFraction && market.Heal()){ }
         }
+        // Experiment: a player who takes every item before anything else (items pile up like relics).
+        if(BuyItemsFirst && bot.shopping != Shopping.None){
+            for(int i = 0; i < market.equipmentOffers.Count; i++){
+                if(market.CanBuyEquipment(i)) market.BuyEquipment(i);
+            }
+        }
         // Set aside after healing, out of reach of everything below.
         int saved = bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist ? Mathf.Min(run.gold, goldToSave) : 0;
         run.gold -= saved;
@@ -907,8 +914,7 @@ public static class RunSimulator
                 break;
             case Shopping.Unplanned:
                 if(UseEquipment && market.IsRewardPending){
-                    int slot = market.HasFreeEquipmentSlot ? -1 : Random.Range(0, run.equipment.Count);
-                    market.ClaimReward(Random.Range(0, market.rewardChoices.Count), slot);
+                    market.ClaimReward(Random.Range(0, market.rewardChoices.Count));
                 }
                 ShopUnplanned(market, run);
                 break;
@@ -991,18 +997,17 @@ public static class RunSimulator
         return face.faceName == "Crowd's Favor" || face.faceName == "Fate's Edge" ? 0 : 1;
     }
 
-    // Takes the reward the bot wants most. With full slots it replaces the item it wants least, if that one is worth less.
+    // Takes the reward the bot wants most.
     private static void TakeBestReward(Market market, RunData run, Bot bot){
         if(!market.IsRewardPending) return;
         int best = 0;
         for(int i = 1; i < market.rewardChoices.Count; i++){
             if(bot.Want(market.rewardChoices[i]) > bot.Want(market.rewardChoices[best])) best = i;
         }
-        int slot = EquipmentSlotFor(run, bot, bot.Want(market.rewardChoices[best]));
-        if(slot >= -1) market.ClaimReward(best, slot);
+        market.ClaimReward(best);
     }
 
-    // Buys an affordable item the bot wants (archetype first) if it has a slot for it.
+    // Buys an affordable item the bot wants (archetype first).
     private static bool BuyWantedEquipment(Market market, RunData run, Bot bot){
         int best = -1;
         for(int i = 0; i < market.equipmentOffers.Count; i++){
@@ -1010,18 +1015,7 @@ public static class RunSimulator
             if(best < 0 || bot.Want(market.equipmentOffers[i].item) > bot.Want(market.equipmentOffers[best].item)) best = i;
         }
         if(best < 0) return false;
-        int slot = EquipmentSlotFor(run, bot, bot.Want(market.equipmentOffers[best].item));
-        return slot >= -1 && market.BuyEquipment(best, slot);
-    }
-
-    // -1: a free slot. Otherwise the slot of the least wanted item, if it is wanted less than the new one; -2: no slot.
-    private static int EquipmentSlotFor(RunData run, Bot bot, int newWant){
-        if(run.equipment.Count < RunData.EquipmentSlots) return -1;
-        int worst = 0;
-        for(int i = 1; i < run.equipment.Count; i++){
-            if(bot.Want(run.equipment[i]) < bot.Want(run.equipment[worst])) worst = i;
-        }
-        return bot.Want(run.equipment[worst]) < newWant ? worst : -2;
+        return market.BuyEquipment(best);
     }
 
     // Buys the best affordable face of its archetype into a face outside it, otherwise upgrades its archetype's faces.
