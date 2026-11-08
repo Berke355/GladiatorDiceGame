@@ -213,6 +213,7 @@ Every battle gives the player a small pool of **rerolls** (2 for now), refilled 
 
     - **Example combo:** Encore opposite Ricochet. Encore's Magic Flips (action 1), Ricochet hits and Flips (action 2), Encore comes up a second time and hits big (action 3). It fits the limit of 3 actions exactly, and all of its power comes from where the faces sit.
     - **Sidestep on Rightmost lands on itself** and repeats until the 3-action limit (6 block at value 2). This is allowed: a small discovery the arrangement puzzle can reward. Watch it in play-tests.
+    - **Simulation (DevLog Day 72, bots that arrange simply and play simple combos; a floor, since bots plan poorly):** the Fortune bot clears 14% with or without arranging, because it rarely finds the Rare and Epic pieces (Encore and Ricochet are 1–2% of its rolls). With the die built from the start (500 runs): Fortune 43%, only the Encore + Ricochet pair 42%, Burn 48%, Hammer 46%. So its ceiling already matches the other builds. Real play decides the rest.
     - **Encore's Magic is Flip, not Change:** with Change, the second landing is mostly luck; with Flip, it is the arrangement puzzle.
     - Change's power means its faces are Rare or Epic. Turnabout's plain Flip, with no effect in the same action, is the Common entry point.
   - **Existing faces:** Lucky Buckler stays as a small engine piece (gaining rerolls). Patient Blade, Gambit and Hedge stay for now; the ones the new set makes unnecessary are removed after it is played.

@@ -2687,3 +2687,32 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 
 ### Next Steps
 - **Fortune stage 4:** simple bot rules (arranging the die, Encore's Flip, Fate's Hand's choice), then the user's play-test.
+
+## Day 72 - Fortune Stage 4: Bots and the Ceiling
+
+### Accomplished
+- **Bot rules for the new Fortune faces:**
+  - `ArrangeFortune` uses the free swap after shopping: each payoff (Encore, Mirror Blade) opposite a Flip engine (Ricochet, Turnabout), and an attacker on Rightmost for Sidestep. `ArrangeDie` switches it off.
+  - Encore Flips first when its partner is opposite, and attacks on its second landing.
+  - Turnabout Flips toward a payoff while actions are left.
+  - Fate's Hand picks Encore (if it already came up this turn) or Mirror Blade, otherwise the strongest attacker.
+
+### Results
+- **Fortune bot, normal runs (1000 runs):** 14% (12% before these rules), and 14% with arranging off. It rarely finds the Rare and Epic pieces: Encore is 1% of its rolls, Ricochet 2%.
+- **With the die built from the start (500 runs):**
+
+| Die | Clear rate |
+|---|---|
+| Burn (3 Ember, Detonate, Fuel, Flame Ward) | 48% |
+| Hammer (2 War Hammer, 2 Maul, Anvil, Earthshaker) | 46% |
+| Fortune (Encore + Ricochet, Mirror Blade + Turnabout, Fate's Hand, Opening Gambit) | 43% |
+| Only the Encore + Ricochet pair | 42% |
+
+- Fortune's ceiling matches the other builds even with bots' simple play, so these rates are a floor.
+- The pair alone does as well as the full setup. Either the other pieces add little or the bot uses them poorly; simulation can't tell which.
+- Even dice built from the start stay under 50%, dying mostly at battles 9–10. Bots' weak play may be part of it, but it matters for "a complete build should be very strong".
+
+### Next Steps
+- **The user's play-test of Fortune:** the combos, the arrangement and whether the pieces can be found. A temporary test setting (Fortune offers first, or a built die) was offered.
+- **Rage and Hammer's ceiling,** and whether complete builds are strong enough in the late game.
+- **Serrated Blade's misleading preview** (Day 65).

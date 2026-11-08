@@ -571,7 +571,23 @@ public static class RunSimulator
         return target.AddComponent<T>();
     }
 
+    private static readonly string[] FlipEngines = { "Ricochet", "Turnabout" };
+    private static readonly string[] SteerPayoffs = { "Encore", "Mirror Blade" };
+
+    private static bool IsOppositeNamed(List<DieFace> die, DieFace face, string[] names){
+        int here = die.IndexOf(face);
+        if(here < 0 || here >= DieLayout.Count) return false;
+        int opposite = DieLayout.OppositeOf(here);
+        return opposite < die.Count && System.Array.IndexOf(names, die[opposite].definition.faceName) >= 0;
+    }
+
+    // The bot's answer to a chosen steer: a payoff that the choice sets off, otherwise the strongest attacker.
     private static DieFace StrongestAttacker(List<DieFace> die, BattleFlow flow){
+        foreach(DieFace face in die){
+            if(flow.petrification.IsStone(face)) continue;
+            if(face.definition.faceName == "Encore" && flow.LandingsThisTurn(face) >= 1) return face;
+            if(face.definition.faceName == "Mirror Blade") return face;
+        }
         DieFace best = die[0];
         foreach(DieFace face in die){
             if(!flow.CanAct(face, ActionType.Attack)) continue;
@@ -656,6 +672,15 @@ public static class RunSimulator
             case "Steady Hand": return !bigHit && die.Exists(f => f != face && flow.charge.Get(f) >= 2) ? ActionType.Magic : ActionType.Defense;
             // Defending fills the reroll pool (block + 1 reroll), which is what Fortune dice grow on.
             case "Lucky Buckler": return ActionType.Defense;
+            // Fortune combos: Flip into the partner while actions are left, then hit big on the way back.
+            case "Encore":
+                if(flow.LandingsThisTurn(face) >= 2) return ActionType.Attack;
+                return flow.ActionsThisTurn == 0 && IsOppositeNamed(die, face, FlipEngines) ? ActionType.Magic : ActionType.Attack;
+            case "Turnabout":
+                return flow.ActionsThisTurn < BattleFlow.MaxActionsPerTurn - 1 && IsOppositeNamed(die, face, SteerPayoffs) ? ActionType.Magic : ActionType.Attack;
+            case "Opening Gambit":
+                if(flow.TurnNumber == 1) return ActionType.Attack;
+                break;
             // Saved rerolls make its block big; attack only when nothing big is coming and the pool is empty.
             case "Hedge": return bigHit || flow.rerolls.Left >= 2 ? ActionType.Defense : ActionType.Attack;
             // Area Magic faces: spread the status unless a big hit needs blocking.
@@ -759,9 +784,11 @@ public static class RunSimulator
             case Shopping.Focused:
                 if(UseEquipment) TakeBestReward(market, run, bot);
                 ShopFocused(market, run, bot);
+                ArrangeFortune(market, run);
                 break;
             case Shopping.Opportunist:
                 ShopOpportunist(market, run);
+                ArrangeFortune(market, run);
                 break;
             case Shopping.Unplanned:
                 if(UseEquipment && market.IsRewardPending){
@@ -858,6 +885,43 @@ public static class RunSimulator
             }
             break;
         }
+    }
+
+    // A simple arrangement of the Fortune faces (the free swap): each payoff (Encore, Mirror Blade) opposite a Flip engine
+    // (Ricochet, Turnabout), and a payoff or the strongest other face on Rightmost for Sidestep.
+    public static bool ArrangeDie = true;
+
+    private static void ArrangeFortune(Market market, RunData run){
+        if(!ArrangeDie || run.dieFaces.Count < DieLayout.Count) return;
+        List<DieFace> die = run.dieFaces;
+        HashSet<int> settled = new HashSet<int>();
+        foreach(string payoff in SteerPayoffs){
+            int payoffAt = die.FindIndex(face => face.definition.faceName == payoff);
+            if(payoffAt < 0 || settled.Contains(payoffAt)) continue;
+            int engineAt = -1;
+            for(int i = 0; i < die.Count; i++){
+                if(!settled.Contains(i) && System.Array.IndexOf(FlipEngines, die[i].definition.faceName) >= 0){
+                    engineAt = i;
+                    break;
+                }
+            }
+            if(engineAt < 0) continue;
+            int opposite = DieLayout.OppositeOf(payoffAt);
+            if(settled.Contains(opposite)) continue;
+            market.SwapFaces(opposite, engineAt);
+            settled.Add(payoffAt);
+            settled.Add(opposite);
+        }
+
+        int sidestepAt = die.FindIndex(face => face.definition.faceName == "Sidestep");
+        if(sidestepAt < 0 || settled.Contains(DieLayout.Rightmost) || settled.Contains(sidestepAt)) return;
+        // The strongest free attacker goes on Rightmost; Sidestep itself stays off it.
+        int best = -1;
+        for(int i = 0; i < die.Count; i++){
+            if(i == sidestepAt || settled.Contains(i) || !die[i].HasAction(ActionType.Attack)) continue;
+            if(best < 0 || die[i].value > die[best].value) best = i;
+        }
+        if(best >= 0) market.SwapFaces(best, DieLayout.Rightmost);
     }
 
     // A player without a fixed plan: its focus is whatever it has picked up so far (the two most common tags beyond the
