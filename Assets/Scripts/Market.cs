@@ -78,7 +78,7 @@ public class Market
         run.lockedEquipment.RemoveAll(item => run.equipment.Contains(item));
         foreach(EquipmentSO item in run.lockedEquipment.ToArray()){
             if(equipmentOffers.Count >= EquipmentOfferCount) break;
-            equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice, locked = true });
+            equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.GetEquipmentPrice(item.rarity), locked = true });
         }
         if(run.bossRewardPending){
             GenerateRewardChoices();
@@ -116,7 +116,9 @@ public class Market
     // ---------- Reroll ----------
 
     public int GetRerollCost(){
-        return economy.GetRerollCost(isGrand, rerollCount);
+        int free = 0;
+        foreach(EquipmentSO item in run.equipment) free += item.freeMarketRerolls;
+        return rerollCount < free ? 0 : economy.GetRerollCost(isGrand, rerollCount - free);
     }
 
     public bool CanReroll(){
@@ -397,7 +399,7 @@ public class Market
         while(equipmentOffers.Count < EquipmentOfferCount){
             EquipmentSO item = PickEquipment();
             if(item == null) break;
-            equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.equipmentPrice });
+            equipmentOffers.Add(new EquipmentOffer{ item = item, price = economy.GetEquipmentPrice(item.rarity) });
         }
     }
 

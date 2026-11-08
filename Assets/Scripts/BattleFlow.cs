@@ -86,7 +86,11 @@ public class BattleFlow
 
     public BattleFlow(Entity player, List<BattleEnemy> enemies, List<DieFace> die, List<EquipmentSO> equipment, int rerollsPerBattle = 0, Func<Entity> entityFactory = null, List<DieEnchantmentSO> dieEnchantments = null){
         this.dieEnchantments = dieEnchantments;
-        charge.placementBonus = face => DieEnchantmentSO.BonusAt(dieEnchantments, die, die.IndexOf(face));
+        int enchantedFaceBonus = 0;
+        if(equipment != null){
+            foreach(EquipmentSO item in equipment) enchantedFaceBonus += item.enchantedFaceBonus;
+        }
+        charge.placementBonus = face => DieEnchantmentSO.BonusAt(dieEnchantments, die, die.IndexOf(face)) + (face.enchantment != null ? enchantedFaceBonus : 0);
         rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
         this.enemies = enemies;
@@ -192,6 +196,7 @@ public class BattleFlow
         Passed = false;
         LastActedFace = null;
         triggers.StartRound();
+        triggers.turnNumber = TurnNumber;
         player.OnTurnStart();
         triggers.Fire(TriggerType.TurnStart);
         foreach(BattleEnemy enemy in enemies){
@@ -243,6 +248,7 @@ public class BattleFlow
         rerolls.UsedThisTurn++;
         rerolls.UsedThisBattle++;
         DieFace face = Roll();
+        triggers.Fire(TriggerType.Rerolled);
         foreach(BattleEnemy enemy in LivingEnemies){
             enemy.traits.PlayerRerolled();
         }

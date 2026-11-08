@@ -480,7 +480,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 ### Getting Equipment
 
 - **Boss reward:** after a boss, choose 1 of 3 items for free.
-- **Every Market sells items at 15 gold:** 1 in a Normal Market, 2 in the Grand Market. A locked item waits for the very next Market (the user's play-test: it used to wait 4 battles for the next Grand Market). Slay the Spire's shops sell relics the same way.
+- **Every Market sells items, priced by rarity (Common 10, Rare 15, Epic 25):** 1 in a Normal Market, 2 in the Grand Market. A locked item waits for the very next Market (the user's play-test: it used to wait 4 battles for the next Grand Market). Slay the Spire's shops sell relics the same way.
 - With no slot limit, an item's only competition is what else the gold could buy.
 
 ### First Set
@@ -516,6 +516,25 @@ Each item changes how you play or what you decide, not just a number. These also
 
 - **Motley Cloak counts faces, not tags:** tags aren't shown to the player, while duplicate faces can be seen at a glance.
 - **Compass makes the net matter outside Fortune,** and **Merchant's Purse is a timing decision:** it pays for itself only when bought early.
+
+### Third Set
+
+These fill the last empty spots: Burn and Ritual had almost nothing, and enchantments and long fights had nothing. Gold is the limit on how many items a run gets (the user's play-test), which makes rarity prices a real dial.
+
+| Item | Rarity | For | Trigger | Effect |
+|---|---|---|---|---|
+| **Tinder Box** | Common | Burn | BattleStart | Apply 2 Burn |
+| **Witch's Knot** | Common | Statuses, Ritual | BattleStart | Apply 1 Poison and 1 Bleed |
+| **Rabbit's Foot** | Common | Fortune | Rerolled, first per round | Gain 1 block |
+| **Drill Banner** | Common | Patchwork die | BattleStart | Your lowest-value face gains +1 value this battle |
+| **Second Blade** | Rare | Rage, attacks | HitDealt, first per round, 2 per battle | Hit again for 1 |
+| **Scribe's Quill** | Rare | Face enchantments | Always | Faces with an enchantment have +1 value |
+| **Hourglass** | Rare | Long fights | Start of turn 5 | Gain 1 Rage |
+| **Smelling Salts** | Rare | Survival | HitTaken below half HP, first per battle | Heal 3 |
+| **Challenger's Mark** | Epic | Risk | BattleStart | You gain 2 Rage and 1 Ritual, every enemy gains 1 Rage |
+| **Haggler's Scale** | Epic | Economy | Always | The first reroll in each Market is free |
+
+- **Merchant's Purse is Epic too.** With gold as the limit on items, it pushes hardest against that limit.
 
 ### Balance Notes
 

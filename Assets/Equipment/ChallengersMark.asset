@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045e8e4e1ebe37943821798a5e55da6a, type: 3}
+  m_Name: ChallengersMark
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
+  equipmentName: Challenger's Mark
+  description: 'At the start of each battle: you gain 2 Rage and 1 Ritual, and every
+    enemy gains 1 Rage.'
+  rarity: 2
+  tags: 
+  triggers:
+  - trigger: 0
+    requireFaceTag: 0
+    faceTag: 0
+    requireAction: 0
+    action: 0
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
+    effects:
+    - {fileID: 11400000, guid: 69cb545d272f25c4a9e0a0ddd900f9df, type: 2}
+    - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+    - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
+    - {fileID: 11400000, guid: 9040a9bae91a0e8488e90f88ee5323a9, type: 2}
+    value: 1
+    maxPerRound: 0
+    maxPerBattle: 0
+  goldPerVictory: 0
+  extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

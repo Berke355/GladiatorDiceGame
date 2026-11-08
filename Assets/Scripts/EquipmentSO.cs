@@ -18,7 +18,9 @@ public enum TriggerType
     // The end of the player's turn, before the player's statuses tick.
     TurnEnd,
     // The enemy died, before the player's HP is saved to the run.
-    BattleWon
+    BattleWon,
+    // The player spent a reroll, after the die landed again.
+    Rerolled
 }
 
 // One reaction of an item: when the trigger fires (and its condition holds), its effects run with the value.
@@ -39,6 +41,10 @@ public class TriggeredEffect
     public bool requireSteered;
     // ActionChosen: only an action other than the last one this battle (Balance Scales).
     public bool requireDifferentAction;
+    // HitTaken: only a hit that left the player below half HP (Smelling Salts).
+    public bool requireBelowHalfHP;
+    // TurnStart: only on this turn of the battle (Hourglass). 0: every turn.
+    public int onTurn;
     // Conditions on the battle state ("if the enemy is bleeding") go in a ConditionalEffectSO here.
     public List<EffectSO> effects = new List<EffectSO>();
     public int value = 1;
@@ -63,6 +69,10 @@ public class EquipmentSO : ScriptableObject
     // more uses of every Consumable action per battle (Alchemist's Belt), read by BattleFlow.
     public int goldPerVictory;
     public int extraConsumableUses;
+    // Faces with an enchantment have this much more value in battle (Scribe's Quill), read by BattleFlow.
+    public int enchantedFaceBonus;
+    // Rerolls per Market visit that cost nothing and don't raise the price (Haggler's Scale), read by Market.
+    public int freeMarketRerolls;
 
     public static int TotalGoldPerVictory(List<EquipmentSO> equipment){
         int gold = 0;

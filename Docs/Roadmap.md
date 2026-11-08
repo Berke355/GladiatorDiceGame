@@ -28,6 +28,8 @@ Slay the Spire is the main reference for this phase. The order matters: the batt
   - The map does half of the work: the die can't improve after every battle, so reaching full strength takes longer, and six faces no longer fill up too early.
   - **Decided against, to keep the project finishable (visual effects, content, optimization, marketing and the Steam release are still ahead):** an Act 2, a second die, face evolution and die levels.
 
+- **Curses (the user's idea, later).** The genre's classic mechanic, not designed yet. Item names avoid the word "curse" until then (Challenger's Mark was named for this).
+
 ## Phase C: Multiple Enemies
 
 - Battles against several enemies at once: target choice ("the one in front, or the dangerous one?"), area effects, an intent per enemy, bot targeting.

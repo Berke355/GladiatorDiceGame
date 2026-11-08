@@ -32,6 +32,8 @@ public class TooltipUI : MonoBehaviour
         }
         text.text = content;
         panel.gameObject.SetActive(true);
+        // Above everything on the canvas, also what scenes add after the tooltip (the Pass button, the next battle line).
+        transform.SetAsLastSibling();
         panel.SetAsLastSibling();
         // Size the panel to the new text before placing it.
         Canvas.ForceUpdateCanvases();

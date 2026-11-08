@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Merchant's Purse
   description: Every victory pays 5 more gold.
-  rarity: 1
+  rarity: 2
   tags: 
   triggers: []
   goldPerVictory: 5
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

@@ -3105,3 +3105,39 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Ten more items.**
 - **The Shield bot and a Fortify question for the Hydra.**
 - **The map, more battles and the difficulty curve.**
+
+## Day 81 - Third Item Set and Tooltip Layering
+
+### Accomplished (the user's play-test: piling up items is fun, and gold holds the reins of the difficulty)
+- **Ten new items, pool 20 to 30:** Tinder Box, Witch's Knot, Rabbit's Foot, Drill Banner (Common), Second Blade, Scribe's Quill, Hourglass, Smelling Salts (Rare), Challenger's Mark, Haggler's Scale (Epic).
+- **Item prices by rarity:** Common 10, Rare 15, Epic 25 (`EconomyConfigSO.GetEquipmentPrice`). Merchant's Purse is Epic now, since gold is the limit on items and it pushes hardest against it. Loaded Die was already Epic.
+- **New item rules:** the `Rerolled` trigger; `requireBelowHalfHP` and `onTurn` on reactions; `enchantedFaceBonus` and `freeMarketRerolls` on items; `AddValueToLowestFaceEffectSO`; `ApplyStatusEffectSO.ignoreRitual`.
+- **Tooltip layering (the user's play-test):** the Pass button and the Market's next battle line drew over the tooltip, because the scenes added them after it. `TooltipUI` now moves itself to the top of the canvas whenever it opens, so later additions can't cover it either. Its panel is opaque, since text below could be read through it.
+- **Curses are noted in the Roadmap** for later. Cursed Idol was renamed Challenger's Mark so the name won't clash with that mechanic.
+
+### Tests
+- **Checks (14/14):** every new item's rule, Second Blade's limits before its final numbers, and prices by rarity.
+- **Play Mode:** the tooltip covers the next battle line in the Market and the Pass and Roll buttons in battle, with no console errors. The new items were only checked through code, not on screen.
+
+### Balance
+- **Numbers changed after measuring (free from the start, 200 runs):**
+
+| Item | First version | Its effect | Final version | Its effect |
+|---|---|---|---|---|
+| Second Blade | Every turn | Rage 38% to 69% | First 2 turns | Rage 25% to 34% |
+| Hourglass | 2 Rage on turn 5 | Opportunist 6% to 20% | 1 Rage on turn 5 | 6% to 9% |
+| Smelling Salts | Heal 5 | Opportunist 6% to 15% | Heal 3 | 6% to 12% |
+| Challenger's Mark | 1 Rage for you | Opportunist 6% to 4% | 2 Rage for you | 6% to 13% |
+
+- The final Mark on the Rage bot read 30% against no-gift rates of 25-38%, so it is within noise.
+- **Default bots (300 runs):** Bleed 36%, Bleed + Rage 28%, Rage 20%, Shield 18%, Poison 16%, Hammer 14%, Ritual + Poison 14%, Shield + Rage 13%, Burn 11%, Fortune 11%, One-face carry 10%, Opportunist 5%, Unplanned buyer 1%.
+- **A bot taking every item first (200 runs):** Opportunist 14% against 5% with normal habits, Rage 32% against 20%.
+
+### Findings
+- At these prices items are usually a better buy than upgrades. That fits the user's wish and helps patchwork dice, but the prices may be too low. If the Market stops feeling like a choice, Common 15 and Rare 20 are the first thing to try.
+- Bots still don't buy enchantments, so Scribe's Quill and the cheaper enchantments can only be judged in play.
+
+### Next Steps
+- **The user's play-test:** do prices force a choice, is Challenger's Mark worth it, do Scribe's Quill and cheap enchantments make enchanting attractive?
+- **The Shield bot and a Fortify question for the Hydra.**
+- **The map, more battles and the difficulty curve.**

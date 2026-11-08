@@ -45,7 +45,10 @@ public class EconomyConfigSO : ScriptableObject
     // The Grand Market sells this many items at this price (the Normal Market sells none).
     public int equipmentPerMarket = 1;
     public int equipmentPerGrandMarket = 2;
-    public int equipmentPrice = 30;
+    public int commonEquipmentPrice = 10;
+    [UnityEngine.Serialization.FormerlySerializedAs("equipmentPrice")]
+    public int rareEquipmentPrice = 15;
+    public int epicEquipmentPrice = 25;
 
     [Header("Market Lock")]
     // Locking an offer keeps it through rerolls and into the next Market (Grand Market locks cost more).
@@ -88,6 +91,14 @@ public class EconomyConfigSO : ScriptableObject
             case Rarity.Rare: return rarePrice;
             case Rarity.Epic: return epicPrice;
             default: return commonPrice;
+        }
+    }
+
+    public int GetEquipmentPrice(Rarity rarity){
+        switch(rarity){
+            case Rarity.Rare: return rareEquipmentPrice;
+            case Rarity.Epic: return epicEquipmentPrice;
+            default: return commonEquipmentPrice;
         }
     }
 

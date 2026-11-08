@@ -130,10 +130,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: eac1999d0bbbbde4c9184734ac5094b2, type: 2}
   - {fileID: 11400000, guid: 05675023d6dafb0448e955887b07f3bb, type: 2}
   - {fileID: 11400000, guid: 3b3db002dcfc6f24dbcdf89085c0179b, type: 2}
+  - {fileID: 11400000, guid: 7ed92c6d49f4047498d9c345cf279194, type: 2}
+  - {fileID: 11400000, guid: 9276f51e2e57f674688caf1b59c845ff, type: 2}
+  - {fileID: 11400000, guid: e4dd2a87847929c4dabe039f2f1091db, type: 2}
+  - {fileID: 11400000, guid: 6759667c859959a4d8d73e431e5ab2ee, type: 2}
+  - {fileID: 11400000, guid: 4a81d28c0d0bd5944b008faf347061d3, type: 2}
+  - {fileID: 11400000, guid: ea655ba055ac66647b2d94f160faf87f, type: 2}
+  - {fileID: 11400000, guid: 50f22f569a6d6d541886353ca0c629d9, type: 2}
+  - {fileID: 11400000, guid: e65ccb53a91463842bc0d80dbcc1b4b4, type: 2}
+  - {fileID: 11400000, guid: 319da483dea84df4a971509fd4afdc5b, type: 2}
+  - {fileID: 11400000, guid: a8da8008e27a32748bcf652327195864, type: 2}
   bossRewardChoices: 3
   equipmentPerMarket: 1
   equipmentPerGrandMarket: 2
-  equipmentPrice: 15
+  commonEquipmentPrice: 10
+  rareEquipmentPrice: 15
+  epicEquipmentPrice: 25
   lockCost: 2
   grandLockCost: 5
   rerollBaseCost: 5

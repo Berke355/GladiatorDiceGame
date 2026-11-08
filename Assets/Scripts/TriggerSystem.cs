@@ -19,6 +19,7 @@ public class TriggerSystem
     // Set by BattleFlow before it fires FaceRolled / ActionChosen, for the reactions' conditions.
     public bool arrivedBySteer;
     public bool actionChanged;
+    public int turnNumber;
     // Who landed the hit being reported: HitTaken reactions (Spiked Greaves) answer them, not the selected target.
     private Entity attacker;
     // Effects run by a trigger never fire triggers, so items can never loop (e.g. an extra hit firing itself).
@@ -119,6 +120,12 @@ public class TriggerSystem
             return false;
         }
         if(reaction.requireDifferentAction && !actionChanged){
+            return false;
+        }
+        if(reaction.requireBelowHalfHP && player.currentHP * 2 >= player.maxHP){
+            return false;
+        }
+        if(reaction.onTurn > 0 && reaction.onTurn != turnNumber){
             return false;
         }
         return true;
