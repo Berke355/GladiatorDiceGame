@@ -53,6 +53,10 @@ public static class RunSimulator
     public static int RageToStartAttacking = 3;
     // 40 measured best: rerolling down to little gold costs the upgrades a build needs (DevLog Day 29).
     public static int GoldToKeepAfterReroll = 40;
+    // Focused bots and the opportunist keep this many protective faces (Defense or Health Potion) when they replace faces.
+    public static int DefenseFacesToKeep = 0;
+    // Focused bots and the opportunist hold back this much gold in the Market before a boss, for the Grand Market's Epics.
+    public static int GoldToSaveForGrandMarket = 0;
     // Bots buy enchantments; off to measure what enchantments add.
     public static bool BuyEnchantments = true;
     // Bots play the enchantments they bought; off to separate the gold cost from playing them.
@@ -337,7 +341,7 @@ public static class RunSimulator
                     }
 
                     Market market = new Market(run, config.economy, config.bossBattles.Contains(run.battlesWon));
-                    Shop(bot, market, run);
+                    Shop(bot, market, run, config.bossBattles.Contains(run.battlesWon + 1) ? GoldToSaveForGrandMarket : 0);
                     // The game does not let the player leave with the reward open; bots that ignore it skip it.
                     if(market.IsRewardPending) market.SkipReward();
                 }
@@ -829,10 +833,14 @@ public static class RunSimulator
         return score + 3 * (DieEnchantmentSO.WeightAt(run.dieEnchantments, position) - 1);
     }
 
-    private static void Shop(Bot bot, Market market, RunData run){
+    private static void Shop(Bot bot, Market market, RunData run, int goldToSave){
         if(UseHealer && bot.shopping != Shopping.None){
             while(run.currentHP < run.maxHP * HealBelowFraction && market.Heal()){ }
         }
+        // Set aside after healing, out of reach of everything below.
+        int saved = bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist ? Mathf.Min(run.gold, goldToSave) : 0;
+        run.gold -= saved;
+        if(GrandMarketFaceFirst && bot.shopping == Shopping.Focused && market.isGrand) BuyFittingFace(market, run, bot);
         if(UseDieEnchantments && (bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist)){
             BuyDieEnchantments(market, run);
         }
@@ -855,6 +863,21 @@ public static class RunSimulator
                 }
                 ShopUnplanned(market, run);
                 break;
+        }
+        run.gold += saved;
+    }
+
+    // Focused bots buy an Epic face of their archetype at the Grand Market before anything else competes for the gold.
+    public static bool GrandMarketFaceFirst = false;
+
+    private static void BuyFittingFace(Market market, RunData run, Bot bot){
+        for(int i = 0; i < market.offers.Count; i++){
+            if(market.offers[i].sold || !bot.Fits(market.offers[i].face) || !market.CanBuy(i)) continue;
+            int slot = PickSlotToReplace(run, market.offers[i].face, bot);
+            if(slot >= 0){
+                market.Buy(i, slot);
+                return;
+            }
         }
     }
 
@@ -1043,11 +1066,19 @@ public static class RunSimulator
 
     // Replaces the weakest face outside the archetype (a face carrying an archetype enchantment counts as inside it,
     // since replacing it loses the enchantment); if the die is all archetype, only a lower-rarity one.
+    // Faces that protect the bot are kept up to DefenseFacesToKeep, whatever their tag.
     private static int PickSlotToReplace(RunData run, DieFaceSO incoming, Bot bot){
+        int protectiveFaces = 0;
+        foreach(DieFace face in run.dieFaces){
+            if(IsProtective(face)) protectiveFaces++;
+        }
+        bool canLoseProtection = protectiveFaces > DefenseFacesToKeep || IsProtective(new DieFace(incoming));
+
         int best = -1;
         for(int i = 0; i < run.dieFaces.Count; i++){
             DieFace face = run.dieFaces[i];
             if(bot.Fits(face.definition) || (face.enchantment != null && bot.Fits(face.enchantment))) continue;
+            if(!canLoseProtection && IsProtective(face)) continue;
             if(best < 0 || face.value < run.dieFaces[best].value) best = i;
         }
         if(best >= 0) return best;
@@ -1055,9 +1086,14 @@ public static class RunSimulator
         for(int i = 0; i < run.dieFaces.Count; i++){
             DieFace face = run.dieFaces[i];
             if(face.definition.rarity >= incoming.rarity) continue;
+            if(!canLoseProtection && IsProtective(face)) continue;
             if(best < 0 || face.definition.rarity < run.dieFaces[best].definition.rarity) best = i;
         }
         return best;
+    }
+
+    private static bool IsProtective(DieFace face){
+        return face.HasAction(ActionType.Defense) || face.definition.faceName == "Health Potion";
     }
 
     // Spends on whatever is affordable, replacing random faces: a die bought without a plan.

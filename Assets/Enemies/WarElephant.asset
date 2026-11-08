@@ -37,7 +37,7 @@ MonoBehaviour:
     weight: 1
   traits:
   - traitName: Thorns
-    description: 'Each time you hit it: you take 1 damage.'
+    description: 'The first 6 times you hit it each battle: you take 1 damage.'
     trigger: 1
     requireAction: 0
     action: 0
@@ -45,5 +45,5 @@ MonoBehaviour:
     effects:
     - {fileID: 11400000, guid: eb3494da333260a4f83d86adba089264, type: 2}
     value: 1
-    maxPerBattle: 0
+    maxPerBattle: 6
   secondWindIntents: []

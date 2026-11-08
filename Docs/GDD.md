@@ -877,7 +877,7 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
   - Venefica: a new Hamstring intent (Weak 2).
   - Secutor: Second Wind (drops its shield and attacks wildly).
   - Essedarius: Momentum, plus threat intents (see below).
-  - War Elephant: Thorns (thick hide).
+  - War Elephant: Thorns (thick hide), capped at the first 6 hits each battle. Uncapped, its big HP pool made every build pay for every hit, and it killed 43% of the focused bots at battle 10 against 18-28% for the other Strong enemies.
   - Hoplomachus Champion: Challenge (the first 3 times you choose Defense each battle: +1 Rage).
   - Bestiarius: Whip also applies Vulnerable.
 - **Threat intents** (Essedarius): telegraphed threats on the player's choice this turn. Run Down: "7 damage if you act with a face below 5"; Lash: "4 damage if you choose Attack". They hit on the enemy's turn only if the player's action set them off. With Momentum they make the dilemma the user asked for (inspired by Slay the Spire's Gremlin Nob): take the hit, or reroll for a safer face and give it permanent Rage. Faces whose value isn't a number (`hasNoValue`, for future special faces) count as below any threshold.

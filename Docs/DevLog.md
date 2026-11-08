@@ -2805,3 +2805,54 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 ### Next Steps
 - **The user's play-test:** die enchantments, Fortune, the difficulty curve.
 - **Rage and Hammer's ceiling.**
+
+## Day 75 - War Elephant's Thorns and What Epics Are Worth
+
+### Accomplished
+- **War Elephant's Thorns is capped at the first 6 hits each battle.** The description says so; the enemy keeps its identity as a big target that bites back.
+- **Bot switches for experiments, all off by default:**
+  - `DefenseFacesToKeep`: focused bots and the opportunist keep this many protective faces (Defense or Health Potion) when replacing faces.
+  - `GoldToSaveForGrandMarket`: they hold back this much gold in the Market before a boss.
+  - `GrandMarketFaceFirst`: focused bots buy a fitting Epic face at the Grand Market before anything else.
+
+### Tests
+- **War Elephant, forced at battle 10 with battle 9 fixed to Essedarius (focused bots, 720 runs per row):**
+
+| Thorns | Died | Arrivals |
+|---|---|---|
+| No cap (before) | 43% | 255 |
+| First 6 hits | 28% | 260 |
+| First 3 hits | 22% | 227 |
+| None | 19% | 245 |
+
+- The other Strong enemies, forced at battle 10 without fixing battle 9: Hoplomachus Champion 28%, Bestiarius 20%, Essedarius 18%. A first measure of the caps didn't fix battle 9 either, so changing the Elephant also changed who arrived; caps 6 and 8 both read 41% there.
+- These were in-memory measurements; a full report with the saved asset is still to come.
+
+### Findings
+- **The Day 68 table is out of date.** Hammer no longer plateaus (64% and 80% at 4 and 5 build faces, small samples), and complete Hammer dice are rare. Rage rises to 46-59% at 4-5 faces, dips at 6 (44%), and complete dice aren't rare (218 of 534).
+- **It isn't Rally:** without the Encourage faces in the pool, Rage still flattens after 4 faces.
+- **Baked-in dice overstated the ceiling.** Fury, 2 Frenzy, Unleash, Iron Rage and Potion cleared 78-84% when the die was ready from battle 1. In ordinary runs (saving 10 gold, no die enchantments), the few dice with both Unleash and Iron Rage at battle 9 reached the Hydra 64% of the time (25 runs), against 49% with neither.
+- **Keeping defense didn't help (500 runs):** keeping 0, 1 or 2 protective faces gave Rage 32%, 29% and 35%, within noise.
+- **Focused bots almost never own an Epic face:** 3 of 284 Rage runs at battle 8. They arrive at the Grand Market with about 54 gold, an Epic costs 60, and when they save, an Epic die enchantment takes the gold first.
+- **Buying Epics made Rage worse (300 runs):**
+
+| Rage bot | Clear rate | Epic face at battle 9 |
+|---|---|---|
+| Today | 36% | 0 of 167 |
+| Face first | 25% | 9 of 163 |
+| Face first, save 10 | 19% | 71 of 121 |
+| Epic at 50 gold, face first | 14-18% | 107 of 121 (first run) |
+
+- Hammer shows no clear change (17%, 20%, 14%).
+- **Giving the Epic for free before battle 5 separates the face from its price (300 runs):** Earthshaker takes Hammer from 16% to 33%, Unleash takes Rage from 29% to 37%, and Unleash at value 3 to 45%. Rage's no-gift rate moved between 29% and 36% across measurements, so its gains may be smaller than they look.
+- Unleash deals 10-11 damage per roll against Common Frenzy's 8-9. Buying it costs the upgrades that feed every other face (Frenzy 9 to 8, Fury 7.4 to 6.9).
+- Crowd's Favor dealt no damage on 7% of rolls in the bot's hands; removing it moved Rage from 18% to 24%, within noise, and the bot may simply play it badly.
+
+### Decisions
+- **Rage and Hammer's faces stay as they are for now.** Unleash at value 3 is a candidate, but bought at 50 gold with Crowd's Favor in the pool it still gave only 16%, so it wouldn't make buying pay by itself.
+- **The bot switches stay off:** they make the bots worse, so the default bots remain the baseline.
+
+### Next Steps
+- **Epic scan:** bought vs. free Epic per archetype, to see if the problem is general (Epic price, cheap upgrades) or Rage's.
+- **Full report** with the capped Thorns.
+- **The user's play-test:** die enchantments, Fortune, the difficulty curve.
