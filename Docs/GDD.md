@@ -296,7 +296,8 @@ Each visit offers a limited, random selection. The player is never forced to spe
 - A face is offered at most once per set of offers.
 - **Build-aware offers:** offers are weighted toward the tags already on the player's die (around 60%, not 100%). A Burn die is more likely to be offered Burn faces such as Fuel, while some offers still come from outside the build so players keep discovering new faces.
   - **Known problem (play-test, DevLog Day 67):** the starting die's own tags (Sword: Physical + Bleed, Shield: Block) count too, so the matching pool is huge and a build's share is small. With one Patient Blade, 21% of offers were Fortune; with one Ember, only 11% were Burn.
-  - **Tried: weight offers by the build's tags** (the die's tag counts minus the starting die's; `EconomyConfigSO.weightByBuildTags`, **off** for now). It lifts those shares to 41% and 47%, but builds then come together much faster, unevenly: Burn 9% → 43% (38% even at a 35% match chance), Poison 17% → 32%, Hammer 10% → 20%, while Rage 20% → 13% and Fortune 10% → 8%. Burn's faces are very strong once assembled; it only looked balanced because they were hard to find. Decided after the Fortune redesign, together with a Burn pass.
+  - **Tried: weight offers by the build's tags** (the die's tag counts minus the starting die's; `EconomyConfigSO.weightByBuildTags`, **off** for now). It lifts those shares to 41% and 47%, but builds then come together much faster, unevenly: Burn 9% → 43% (38% even at a 35% match chance), Poison 17% → 32%, Hammer 10% → 20%, while Rage 20% → 13% and Fortune 10% → 8%. Burn's faces are very strong once assembled; it only looked balanced because they were hard to find.
+  - **Decision: wait until content is plentiful.** With few builds and faces today, this rule raises the chance of seeing your build's faces more than it should. It will be tuned as content grows, following "Every Run Is Its Own Build".
 
 Market services:
 
@@ -485,6 +486,41 @@ A build archetype is a family of faces built around one shared resource or play 
 - **Test:** imagine the face on a die with no other faces from its build. Does at least one action still do something meaningful? If not, give it a standalone fallback action, or make its effect have a useful minimum (e.g. "value + Fortify × value" instead of "Fortify × value").
 
 Existing faces pass this test through their fallback actions: Fuel's Magic does nothing without Burn, but its Defense still gives block. Cauterize's Magic needs Burn, but its Attack still deals damage.
+
+### Every Run Is Its Own Build
+
+**The aim of a run is not to assemble a perfect build. A player who builds a patchwork die from what the run offers can still finish the game.**
+
+- **Every run is unique:** each run reaches its power through a different combination of faces, because the offers decide what is possible.
+- **A complete build is the rare power fantasy:** when luck lets a player collect a build perfectly, the die becomes incredibly strong toward the end of the run. These runs must not happen all the time, so they feel valuable when they do.
+- **Build-aware offers set that rate:** they are the dial between the two. As content grows, they are tuned so a patchwork die is the normal run and a complete build is the lucky one.
+
+**The four kinds of run, from worst to best. Each one gives the player a reason to press Play again:**
+
+| Run | What happens | Result | How common | Why play again |
+|---|---|---|---|---|
+| **Bad decisions** | The player builds from faces that don't combo | Loses | Depends on the player | "So that's not how it works; I'll try other faces." |
+| **Bad luck** | The offers never fit together, so the player has to take faces that don't work together | Loses | Rare compared to the others | "I was really unlucky; next run will be better." |
+| **The normal run** | Not especially unlucky: some faces combo, and the die can finish the game with effort. Bad choices in battle can still lose it | Finishes, or nearly does | The most common | "Better builds are possible; I'll try." |
+| **The lucky build** | Great luck and the right decisions collect a build perfectly or nearly so | Becomes hugely strong | Rare | "I was so strong; I want that again." |
+
+**Measured (DevLog Day 68, 1000 runs per bot):**
+
+- **Bad decisions:** the unplanned buyer clears 2%.
+- **The normal run:** the Opportunist, with no fixed build, clears 10%. Bots play battles simply, so people should do better.
+- **The lucky build:** the clear rate by build faces at battle 8, among the runs that reach it:
+
+| Faces fitting the build | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| Burn | 4% | 15% | 41% | 76% | 83% | 67% |
+| Poison | 0% | 13% | 25% | 58% | 70% | 67% |
+| Rage | 0% | 9% | 20% | 31% | 36% | 27% |
+| Hammer | 0% | 1% | 11% | 32% | 31% | 26% |
+| Fortune | 0% | 7% | 13% | 26% | 25% | 25% |
+
+  - Burn and Poison have the intended power fantasy, and their complete builds are rare (5–6 faces: Burn 15 of 347 runs, Poison 23 of 606).
+  - Rage, Hammer and Fortune stop growing at 4 faces, so a complete build isn't a power fantasy. Rage's complete build isn't rare either (148 of 721 runs have 6 faces).
+  - The 5–6 face groups of Burn and Poison are small, so those numbers are rough. Bleed and Shield aren't listed because the starting Swords and Shields count as their build faces.
 
 ### Archetype Template
 
@@ -755,7 +791,7 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 |---|---|---|---|
 | **Essedarius** (chariot fighter) | 48 | Run Down: 7 damage if you act with a face below 5 (×2), Lash: 4 damage if you choose Attack (×1), Wheel Spikes 3 (×1), Rein In: block 3 (×1) | **Threats and Momentum:** its threats push you to reroll, and every reroll gives it Rage |
 | **War Elephant** | 64 | Stomp 7 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
-| **Hoplomachus Champion** | 51 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
+| **Hoplomachus Champion** | 40 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
 | **Bestiarius** (beast tamer) | 46 | Whip 2 (×2), Unleash 6 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
 
 #### New Mechanics for Enemies
@@ -786,7 +822,7 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
   - Secutor: Second Wind (drops its shield and attacks wildly).
   - Essedarius: Momentum, plus threat intents (see below).
   - War Elephant: Thorns (thick hide).
-  - Hoplomachus Champion: Challenge.
+  - Hoplomachus Champion: Challenge (the first 3 times you choose Defense each battle: +1 Rage).
   - Bestiarius: Whip also applies Vulnerable.
 - **Threat intents** (Essedarius): telegraphed threats on the player's choice this turn. Run Down: "7 damage if you act with a face below 5"; Lash: "4 damage if you choose Attack". They hit on the enemy's turn only if the player's action set them off. With Momentum they make the dilemma the user asked for (inspired by Slay the Spire's Gremlin Nob): take the hit, or reroll for a safer face and give it permanent Rage. Faces whose value isn't a number (`hasNoValue`, for future special faces) count as below any threshold.
   - The first version (Momentum alone, weak attacks) was no threat: without rerolls it never grew. Run Down started at "below 3 for 6", which only caught starter faces; "below 5 for 7" catches most faces.
@@ -810,7 +846,7 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
 | 6 | ×1.15 | 0 |
 | 7 | ×1.3 | 1 |
 | 9 | ×1 | 0 |
-| 10 | ×1.15 | 1 |
+| 10 | ×1.15 | 0 |
 
 - **Tuned by simulation (DevLog Day 66, HP lost per battle, the average of the Burn, Rage, Shield and Fortune bots):**
 
@@ -826,6 +862,10 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
   - Stampede 12 → 9 barely mattered: most of the Minotaur's damage comes from Gore and Trample in a long fight, so its HP went down instead (26 → 22).
   - The Minotaur is still the run's first peak (about 2.4 times battle 3, was 8), and it kills about 20% of the runs that reach it, as before.
 - **All bots with the curve and the 20-gold Healer (700 runs):** Burn 10%, Poison 13%, Shield 17%, Rage 21%, Bleed 16%, Hammer 12%, Fortune 12%, Ritual 1%, Ritual + Poison 24%, Ritual + Bleed 11%, Shield + Rage 15%, Bleed + Rage 20%. Before the curve, the 20-gold Healer had pushed them to 22–48%.
+
+- **Battle 10 became a wall (DevLog Day 68):** with 1 starting Rage it killed 50–55% of the runs reaching it, twice the Hydra. Removing the Rage gave 37%, and no scaling at all still 33%, because of one outlier: Hoplomachus Champion beat bots in 56% of forced fights (War Elephant 35%, Essedarius and Bestiarius 19%). Its uncapped Challenge and Battle Cry both pile up Rage. A cap of 3 gave 48%, removing Battle Cry barely helped (43–51%), and a cap of 3 with 40 HP (was 51) gave 37%; Spear Thrust 2 also gave 37%, but HP keeps its hits threatening.
+- **After the fix (5 bots, 400 runs), the share of arrivals that die:** Minotaur 22%, battle 7 23%, Medusa 24%, battle 9 19%, battle 10 33%, Hydra 17%. Battle 10 is still above the final boss, and the Hydra is measured only on strong survivors.
+- **Clear rates rose,** since many runs were stopped by Hoplomachus (700 runs): Burn 15%, Poison 23%, Shield 27%, Rage 30%, Bleed 31%, Hammer 18%, Fortune 23%, Ritual 1%, Ritual + Poison 28%, Ritual + Bleed 20%, Shield + Rage 23%, Bleed + Rage 33%, Opportunist 15%, unplanned buyer 4%, no shopping 0%. To be judged by play-tests against "Every Run Is Its Own Build".
 
 #### Balance Targets
 

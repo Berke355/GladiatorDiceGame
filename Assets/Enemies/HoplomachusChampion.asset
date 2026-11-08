@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Hoplomachus Champion
   tier: 2
-  maxHP: 51
+  maxHP: 40
   escalationPerTurn: 0
   intents:
   - intentName: Spear Thrust
@@ -38,13 +38,16 @@ MonoBehaviour:
     weight: 1
   traits:
   - traitName: Challenge
-    description: 'Each time you choose Defense: it gains 1 Rage.'
+    description: 'The first 3 times you choose Defense each battle: it gains 1 Rage.'
     trigger: 3
     requireAction: 1
     action: 1
     requireBlock: 0
+    requireTargeted: 0
+    requireUnblocked: 0
+    nextTurn: 0
     effects:
     - {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
     value: 1
-    maxPerBattle: 0
+    maxPerBattle: 3
   secondWindIntents: []

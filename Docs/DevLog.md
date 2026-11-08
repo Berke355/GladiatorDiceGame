@@ -2515,3 +2515,83 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - Stage 1 of the Fortune redesign: the die layout.
 - Decide the build-tag offers after the redesign, with a Burn pass.
 - Serrated Blade's misleading preview (Day 65).
+
+## Day 68 - The Four Kinds of Run, and Hoplomachus
+
+### Accomplished
+- **Design (the user's, GDD "Every Run Is Its Own Build"):** the aim of a run isn't a perfect build.
+  - A patchwork die made from what the run offers can finish the game, and a complete build is the rare power fantasy.
+  - Four kinds of run: bad decisions, bad luck, the normal run (the most common) and the lucky build. Each one gives a reason to play again.
+  - Build-aware offers wait until content is plentiful; they will be the dial between the normal run and the lucky build.
+- **Simulator:**
+  - **Opportunist bot:** no fixed build. Its focus is the two most common tags beyond the starting die, it takes Rare and Epic opportunities, and it never pays to reroll for faces.
+  - **New report line for focused bots:** "clear rate by build faces at battle 8".
+- **Hoplomachus Champion:** 40 HP (was 51); Challenge fires the first 3 times each battle (was uncapped).
+- **Battle 10:** no starting Rage (HP ×1.15 stays).
+- **CLAUDE.md:** fixed stale numbers (locks, Healer, the Change preview).
+
+### Findings (1000 runs per bot)
+- **Bad decisions:** the unplanned buyer clears 2%. This is healthy; an earlier worry about it was wrong.
+- **The normal run:** the Opportunist clears 10%.
+- **The lucky build,** by faces fitting the build at battle 8, among runs reaching it:
+
+| Faces | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| Burn | 4% | 15% | 41% | 76% | 83% | 67% |
+| Poison | 0% | 13% | 25% | 58% | 70% | 67% |
+| Rage | 0% | 9% | 20% | 31% | 36% | 27% |
+| Hammer | 0% | 1% | 11% | 32% | 31% | 26% |
+| Fortune | 0% | 7% | 13% | 26% | 25% | 25% |
+
+  - Burn and Poison have the intended power fantasy, and their complete builds are rare. Their 5–6 face groups are small (3–20 runs), so those numbers are rough.
+  - Rage, Hammer and Fortune stop growing at 4 faces. Rage's complete build isn't rare either (148 of 721 runs).
+  - Bleed and Shield aren't listed, because the starting faces count as their build faces.
+- **Bad luck can't be measured yet:** focused bots stay rigid, so few build faces doesn't mean bad luck.
+- **Battle 10 was a wall:** it killed 50–55% of the runs reaching it, twice the Hydra, because of the starting Rage added on Day 66 and one outlier enemy.
+
+### Tuning
+
+| Battle 10 (5 bots, 400 runs) | Arrivals that die |
+|---|---|
+| HP ×1.15, Rage 1 | 50% |
+| HP ×1.15, no Rage | 37% |
+| No scaling | 33% |
+
+| Hoplomachus, forced fights | Lost |
+|---|---|
+| As it was | 56% |
+| Challenge at most 3 / at most 2 | 48% / 44% |
+| No Battle Cry, uncapped / at most 3 | 51% / 43% |
+| Cap 3, Spear Thrust 2 | 37% |
+| Cap 3, 40 HP (chosen) | 37% |
+
+- For comparison: War Elephant 35%, Essedarius and Bestiarius 19%.
+
+### Results
+- **Arrivals that die (5 bots, 400 runs):** Minotaur 22%, battle 7 23%, Medusa 24%, battle 9 19%, battle 10 33%, Hydra 17%. Battle 10 is still above the Hydra, which is measured only on strong survivors.
+- **Clear rates rose (700 runs):**
+
+| Bot | Clear rate |
+|---|---|
+| Bleed + Rage | 33% |
+| Bleed | 31% |
+| Rage | 30% |
+| Ritual + Poison | 28% |
+| Shield | 27% |
+| Poison | 23% |
+| Fortune | 23% |
+| Shield + Rage | 23% |
+| Ritual + Bleed | 20% |
+| Hammer | 18% |
+| Burn | 15% |
+| Opportunist | 15% |
+| Unplanned buyer | 4% |
+| Ritual | 1% |
+| No shopping | 0% |
+
+- The Opportunist and the unplanned buyer fit the four kinds of run. The focused bots are above the old 5–15% target; to be judged by the next play-test before raising the difficulty.
+
+### Next Steps
+- **Fortune stage 1:** the die layout (net, positions, opposites, free swapping).
+- **Rage and Hammer's ceiling:** a complete build should be a power fantasy.
+- **Play-test:** does the Hydra feel like the peak, and is the game still too easy?

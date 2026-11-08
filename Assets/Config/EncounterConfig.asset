@@ -83,4 +83,4 @@ MonoBehaviour:
     startingRage: 1
   - battle: 10
     hpMultiplier: 1.15
-    startingRage: 1
+    startingRage: 0

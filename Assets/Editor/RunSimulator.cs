@@ -8,7 +8,8 @@ using System.Text;
 // Battles are simulated directly, without loading scenes, so thousands of runs take seconds.
 public static class RunSimulator
 {
-    public enum Shopping { None, Focused, Unplanned }
+    // Opportunist: no fixed build; it follows what the run offers (the normal run in GDD "Every Run Is Its Own Build").
+    public enum Shopping { None, Focused, Unplanned, Opportunist }
 
     public class Bot
     {
@@ -127,6 +128,7 @@ public static class RunSimulator
         return new[]{
             new Bot("No shopping", Shopping.None),
             new Bot("Unplanned buyer", Shopping.Unplanned),
+            new Bot("Opportunist", Shopping.Opportunist),
             new Bot("Focused: Burn", Shopping.Focused, FaceTag.Burn),
             new Bot("Focused: Poison", Shopping.Focused, FaceTag.Poison),
             new Bot("Focused: Shield", Shopping.Focused, FaceTag.Block),
@@ -247,6 +249,9 @@ public static class RunSimulator
         // What the die looks like when a run reaches the Strong tier (battle 8): is the build actually there?
         Dictionary<string, int> facesAtBattle8 = new Dictionary<string, int>();
         int buildFacesAtBattle8 = 0;
+        // Runs reaching battle 8 and runs clearing the game, by how many faces fit the bot's build at battle 8.
+        int[] runsByBuildFaces = new int[7];
+        int[] clearsByBuildFaces = new int[7];
         int enchantedAtBattle8 = 0;
         int equipmentAtBattle8 = 0;
         Dictionary<string, int> itemsAtBattle8 = new Dictionary<string, int>();
@@ -266,11 +271,17 @@ public static class RunSimulator
                 run.startingFaceChosen = true;
                 if(RunSetup != null) RunSetup(run);
                 int hpBeforeWeak = run.currentHP;
+                int buildFacesThisRun = -1;
 
                 for(int battle = 1; battle <= BattlesPerRun; battle++){
                     reached[battle]++;
                     if(BeforeBattle != null) BeforeBattle(run, battle);
                     if(battle == 8){
+                        buildFacesThisRun = 0;
+                        foreach(DieFace face in run.dieFaces){
+                            if(bot.Fits(face.definition)) buildFacesThisRun++;
+                        }
+                        runsByBuildFaces[Mathf.Min(buildFacesThisRun, 6)]++;
                         foreach(DieFace face in run.dieFaces){
                             string name = face.definition.faceName;
                             facesAtBattle8[name] = (facesAtBattle8.ContainsKey(name) ? facesAtBattle8[name] : 0) + 1;
@@ -321,6 +332,7 @@ public static class RunSimulator
                     }
                     if(battle == BattlesPerRun){
                         cleared++;
+                        if(buildFacesThisRun >= 0) clearsByBuildFaces[Mathf.Min(buildFacesThisRun, 6)]++;
                         break;
                     }
 
@@ -343,6 +355,14 @@ public static class RunSimulator
             if(reached[b] > 0) hpLine.Append(" " + b + ":" + ((float)hpLostAt[b] / reached[b]).ToString("0.0"));
         }
         report += hpLine.AppendLine().ToString();
+        if(bot.shopping == Shopping.Focused){
+            StringBuilder buildLine = new StringBuilder("clear rate by build faces at battle 8:");
+            for(int b = 0; b <= 6; b++){
+                if(runsByBuildFaces[b] == 0) continue;
+                buildLine.Append(" " + b + " faces: " + (100f * clearsByBuildFaces[b] / runsByBuildFaces[b]).ToString("0") + "% of " + runsByBuildFaces[b] + " |");
+            }
+            report += buildLine.AppendLine().ToString();
+        }
         string gold = "avg gold entering the first Grand Market: " + (firstGrandMarketVisits > 0 ? (goldAtFirstGrandMarket / firstGrandMarketVisits).ToString("0") : "-") + "\n";
         string onHand = "avg enchanted faces at battle 8: " + (reached[8] > 0 ? ((float)enchantedAtBattle8 / reached[8]).ToString("0.0") : "-") + "\n";
         onHand += "avg equipment at battle 8: " + (reached[8] > 0 ? ((float)equipmentAtBattle8 / reached[8]).ToString("0.0") : "-");
@@ -700,7 +720,7 @@ public static class RunSimulator
 
     // Focused bots take a face of their archetype (or the rarest offer), the others pick at random.
     private static DieFaceSO ChooseStartingFace(Bot bot, List<DieFaceSO> offers){
-        if(bot.shopping == Shopping.Focused){
+        if(bot.shopping == Shopping.Focused || bot.shopping == Shopping.Opportunist){
             DieFaceSO best = null;
             foreach(DieFaceSO face in offers){
                 bool fits = bot.Fits(face);
@@ -728,6 +748,9 @@ public static class RunSimulator
             case Shopping.Focused:
                 if(UseEquipment) TakeBestReward(market, run, bot);
                 ShopFocused(market, run, bot);
+                break;
+            case Shopping.Opportunist:
+                ShopOpportunist(market, run);
                 break;
             case Shopping.Unplanned:
                 if(UseEquipment && market.IsRewardPending){
@@ -774,7 +797,8 @@ public static class RunSimulator
 
     // Buys the best affordable face of its archetype into a face outside it, otherwise upgrades its archetype's faces.
     // If the Market shows nothing of its archetype, it rerolls while it can afford it and keep some gold.
-    private static void ShopFocused(Market market, RunData run, Bot bot){
+    private static void ShopFocused(Market market, RunData run, Bot bot, int maxRerolls = -1){
+        if(maxRerolls < 0) maxRerolls = MaxRerollsPerVisit;
         int rerolls = 0;
         for(int guard = 0; guard < 20; guard++){
             int bestOffer = -1;
@@ -799,7 +823,7 @@ public static class RunSimulator
                 continue;
             }
 
-            if(!fittingOfferOnShow && rerolls < MaxRerollsPerVisit && run.gold - market.GetRerollCost() >= GoldToKeepAfterReroll){
+            if(!fittingOfferOnShow && rerolls < maxRerolls && run.gold - market.GetRerollCost() >= GoldToKeepAfterReroll){
                 market.Reroll();
                 rerolls++;
                 continue;
@@ -823,6 +847,35 @@ public static class RunSimulator
             }
             break;
         }
+    }
+
+    // A player without a fixed plan: its focus is whatever it has picked up so far (the two most common tags beyond the
+    // starting die), it takes a Rare or Epic opportunity even outside that focus, and it never pays to reroll for faces.
+    private static void ShopOpportunist(Market market, RunData run){
+        Bot current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+        if(UseEquipment) TakeBestReward(market, run, current);
+        int opportunity = -1;
+        for(int i = 0; i < market.offers.Count; i++){
+            if(!market.CanBuy(i) || market.offers[i].face.rarity == Rarity.Common || current.Fits(market.offers[i].face)) continue;
+            if(opportunity < 0 || market.offers[i].face.rarity > market.offers[opportunity].face.rarity) opportunity = i;
+        }
+        if(opportunity >= 0){
+            int slot = PickSlotToReplace(run, market.offers[opportunity].face, current);
+            if(slot >= 0){
+                market.Buy(opportunity, slot);
+                current = new Bot("Opportunist now", Shopping.Focused, CurrentFocus(market));
+            }
+        }
+        ShopFocused(market, run, current, 0);
+    }
+
+    private static FaceTag[] CurrentFocus(Market market){
+        List<KeyValuePair<FaceTag, int>> counts = new List<KeyValuePair<FaceTag, int>>(market.BuildTagCounts());
+        counts.RemoveAll(entry => entry.Value <= 0 || entry.Key == FaceTag.Physical);
+        counts.Sort((a, b) => b.Value.CompareTo(a.Value));
+        List<FaceTag> focus = new List<FaceTag>();
+        for(int i = 0; i < counts.Count && i < 2; i++) focus.Add(counts[i].Key);
+        return focus.ToArray();
     }
 
     // Buys an affordable enchantment of the archetype (the rarest one). Epic enchantments are combo pieces, so
