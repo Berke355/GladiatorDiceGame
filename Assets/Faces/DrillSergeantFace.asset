@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DrillSergeantFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Drill Sergeant
-  description: 'Defense: Gain block equal to my value. Magic: The faces next to me
-    gain +1 value this battle.'
+  description: 'Defense: Gain block equal to my value. Magic: Every face except me
+    and my opposite gains +1 value this battle.'
   rarity: 0
   tags: 0a000000
   baseValue: 2

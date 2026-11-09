@@ -629,8 +629,8 @@ Common and Rare faces can pass this test through a fallback action. Epic faces h
 |---|---|---|---|---|
 | **Exploit** | Common | 2 | Attack: my value + the number of status types on the enemy | Any die that applies several statuses |
 | **Veteran** | Common | 2 | Attack: my value. Defense: block equal to my value + the number of buff types you have | Rage, Fortify, Encourage, Ritual |
-| **Feint** | Common | 2 | Attack: my value. Defense: block equal to my value. +2 if this isn't your last action | Balance Scales, mixed dice |
-| **Drill Sergeant** | Common | 2 | Defense: block equal to my value. Magic: the faces next to me gain +1 value this battle | The die layout, high-value faces, Hammer |
+| **Feint** | Common | 2 | Attack: my value. Defense: block equal to my value. +2 if your last action was a different one | Balance Scales, mixed dice |
+| **Drill Sergeant** | Common | 2 | Defense: block equal to my value. Magic: every face except me and my opposite gains +1 value this battle | The die layout, high-value faces, Hammer |
 | **Throwing Knife** | Common | 5 | Attack (Consumable): my value | Fortune, Alchemist's Belt |
 | **Spare Blade** | Common | 3 | Attack: my value, +2 if I carry an enchantment | Action enchantments |
 | **Catalyst** | Rare | 2 | Magic: add my value to each of Burn, Poison and Bleed on the enemy. Defense: block equal to my value | Status mixes, Ritual |

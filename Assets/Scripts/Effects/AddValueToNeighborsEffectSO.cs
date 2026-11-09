@@ -13,7 +13,7 @@ public class AddValueToNeighborsEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        if(context.die == null || context.face == null) return "+" + amount + " value to the faces next to me";
+        if(context.die == null || context.face == null) return "+" + amount + " value to every face except me and my opposite";
         int count = Neighbors(context).Count;
         return "+" + amount + " value to " + count + (count == 1 ? " face" : " faces");
     }

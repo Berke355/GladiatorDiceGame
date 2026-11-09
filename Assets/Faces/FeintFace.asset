@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Feint
   description: 'Attack: Deal damage equal to my value. Defense: Gain block equal
-    to my value. +2 if this isn''t your last action.'
+    to my value. +2 if your last action was a different one.'
   rarity: 0
   tags: 0a000000
   baseValue: 2
