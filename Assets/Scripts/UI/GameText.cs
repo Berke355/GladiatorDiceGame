@@ -20,7 +20,7 @@ public static class GameText
         new Keyword{ word = "ignite", color = "#FF9A3C", definition = "Deal damage equal to the target's Burn. The Burn stays." },
         new Keyword{ word = "Poison", color = "#8BD45E", definition = "At the end of its owner's turn: lose HP equal to the stacks, then the stacks halve (rounded down). Ignores Block and Fortify." },
         new Keyword{ word = "Rage", color = "#FF5A5A", definition = "Every hit deals +1 damage per stack (each hit of a multi-hit). Lasts the whole battle." },
-        new Keyword{ word = "Ritual", color = "#B388FF", definition = "Every status applied to the opponent gets +1 per stack. Lasts the whole battle." },
+        new Keyword{ word = "Ritual", color = "#B388FF", definition = "Each time you apply Burn, Poison or Bleed, apply 1 more for each Ritual you have. Lasts the whole battle." },
         new Keyword{ word = "Encourage", color = "#FFD27F", definition = "Every Rage, Fortify and FireShield you gain gets +1 per stack (not Block). Lasts the whole battle." },
         new Keyword{ word = "Bleed", color = "#E0435A", definition = "At the end of its owner's turn: lose 1 HP, then lose 1 stack. Stacks are how many turns it lasts. Ignores Block and Fortify." },
         new Keyword{ word = "Vulnerable", color = "#E5A35C", definition = "Every hit its owner takes deals +1 damage. Loses 1 stack at the end of its owner's turn." },

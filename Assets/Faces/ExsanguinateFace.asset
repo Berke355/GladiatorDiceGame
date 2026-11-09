@@ -13,16 +13,15 @@ MonoBehaviour:
   m_Name: ExsanguinateFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Exsanguinate
-  description: 'Attack: Apply Bleed equal to my value, then consume the enemy''s
-    Bleed and deal my value times the consumed Bleed as damage.'
+  description: 'Attack: Apply 2 Bleed, then consume the enemy''s Bleed and deal my
+    value times the consumed Bleed as damage.'
   rarity: 2
   tags: 07000000
   baseValue: 2
   effects:
   - actionType: 0
-    effectLogic: {fileID: 11400000, guid: 9236ed9622649e74582c8c6b7b9dc1bf, type: 2}
+    effectLogic: {fileID: 11400000, guid: 500381d8c1c6de746b04f404c897c503, type: 2}
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 8e9eb13ee1462e84f96d341b162ca009, type: 2}
-  charges: 0
+  keywords: 
   hasNoValue: 0
-  consumableActions: 

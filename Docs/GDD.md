@@ -515,7 +515,7 @@ Passive items that react to what happens in battle. Equipment makes the die stro
 | **Berserker Torc** | Rage | HitTaken, first per battle | Gain 1 Rage |
 | **Bone Fetish** | Ritual | BattleStart | Gain 1 Ritual |
 | **Laurel Wreath** | General | BattleWon | Heal 2 |
-| **Iron Bracers** | General | BattleStart | Gain 1 Fortify |
+| **Iron Bracers** | General | BattleStart | Gain 3 Fortify |
 | **Censer** | Poison | TurnEnd, first 2 per battle | Apply 1 Poison to every enemy (see "Area Effects") |
 
 ### Second Set
@@ -611,6 +611,7 @@ Common and Rare faces can pass this test through a fallback action. Epic faces h
 
 - **Why:** an Epic that needs a working build only pays off in the lucky run. In the other three kinds of run (see below), the player can feel sorry to see one (the user's play-test). Seeing an Epic should be a turning point in every run, and most of all in the normal run with a patchwork die.
 - **How:** the Epic produces the resource it spends, as an effect written on the card, so Value Is the Effect still holds. A complete build then multiplies what the Epic started.
+- **The fuel is a fixed amount, never the value:** if a multiplying Epic also makes value-sized fuel, its value counts twice and upgrades grow its damage with the square of the value (an upgraded Exsanguinate hit for 24 in the middle of a run, the user's friend's play-test). Exsanguinate and Fuel apply 2.
 - **Evidence:** the Epics that lifted bots most when given for free were the ones that need no fuel: Fate's Hand chooses the next face on any die, and Earthshaker reads the highest face on any die.
 - **Test:** give the Epic for free before battle 5 to the bots without a focus (Opportunist and Unplanned buyer). It should lift them too, not only the bot of its archetype.
 - **Later:** Epics that reward a patchwork die directly (e.g. "per different tag on the die").
@@ -702,7 +703,7 @@ Burst damage over a short time. Build Burn up, then cash it out.
 | Ember | Starter | Common |
 | Detonate | Engine (cash-out) | Rare |
 | Flame Ward | Bridge (Burn + Block) | Rare |
-| Fuel | Payoff (Magic: apply Burn, multiply it, then consume it all for that much damage) | Epic |
+| Fuel | Payoff (Magic: apply 2 Burn, multiply it, then consume it all for that much damage) | Epic |
 | Cauterize | Payoff (Attack: damage and Burn; Magic: consume Burn to heal), value 2 | Epic |
 
 ### Poison (implemented)
@@ -793,7 +794,7 @@ A mark, not a damage source. Keep the enemy bleeding, and your faces hit harder 
 | **Lacerate** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the enemy's Bleed (nothing is consumed). Defense: gain block equal to my value. |
 | **Open Wound** | Engine | Rare | 2 | Attack: deal damage equal to my value; if the enemy is bleeding, hit again for my value. |
 | **Bloodscent** | Bridge (Bleed + Rage) | Rare | 2 | Defense: gain block equal to my value; if the enemy is bleeding, heal equal to my value. |
-| **Exsanguinate** | Payoff | Epic | 2 | Attack: apply Bleed equal to my value, then consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
+| **Exsanguinate** | Payoff | Epic | 2 | Attack: apply 2 Bleed, then consume the enemy's Bleed and deal my value × the consumed Bleed as damage (at least my value). |
 
 - **Bleed timing:** Bleed applied on your turn ticks at the end of the enemy's turn, so N Bleed keeps the enemy marked for N − 1 of your turns. Bleed sources therefore apply at least 2 (Sword 2, Serrated Blade 4, Blood Rite 3, Witch's Curse 2); 1 Bleed would never reach your next turn.
 - **Lacerate keeps Bleed a mark:** Bleed still deals its 1 per tick; Lacerate hits harder the longer the enemy stays marked. Unlike Exsanguinate it consumes nothing and adds instead of multiplying, which keeps it a Common.
@@ -1159,7 +1160,7 @@ The many-headed serpent: cut off one head and two grow back, unless the wound is
 - **Tests:** how the player deals damage, and which enemy they choose to hit.
 - **Mechanic: Heads.** The Hydra is a **body** plus **heads**, each head a separate enemy with its own card, HP and intent (see "Multiple Enemies"). It starts with **2 heads** (at most **3** alive).
   - **Cutting heads:** killing a head cuts it off.
-  - **Regrowth:** at the start of the Hydra's turn, every head cut since its last turn grows back as two (up to 3 alive), **unless the body has Burn**. Grown heads act from the next turn.
+  - **Regrowth:** a cut head grows back as two (up to 3 alive) at the start of the Hydra's second turn after the cut, **unless the body has Burn then**. Grown heads act from the next turn. Cutting a head also deals 5 damage to the body (it counts toward Scales). So cutting a head hurts the body and buys a turn without its attacks and its regeneration, and costs a second head later (the user's friend's play-test: heads used to come back at the very next turn, so cutting one was never worth it).
   - **Regeneration:** at the end of its turn the body heals 1 per living head. Burn stops this, and so does **Bleed** (an open wound doesn't close).
   - **The battle is won when the body dies,** even with heads still alive.
 - **The decision:** the heads are the easy targets and the ones that bite, but killing one makes two. Without Burn the body is the target; with Burn on the body, clearing the heads first is safe. In simulation, bots that keep killing heads die in 90% of their Hydra fights, against 33% for bots that go for the body.

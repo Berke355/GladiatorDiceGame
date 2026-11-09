@@ -31,6 +31,8 @@ public class BossSO : ScriptableObject
     public List<StatusType> regrowthBlockedBy = new List<StatusType>{ StatusType.Burn };
     // At the end of the boss's turn it heals this much per living head, unless it has one of these (Burn, Bleed).
     public int regenPerHead = 1;
+    // The body loses this much HP when a head is cut (it counts toward Scales), so cutting heads is a real path.
+    public int headCutDamage;
     public List<StatusType> regenBlockedBy = new List<StatusType>{ StatusType.Burn, StatusType.Bleed };
 }
 

@@ -30,4 +30,5 @@ MonoBehaviour:
   maxHeads: 3
   regrowthBlockedBy: 01000000
   regenPerHead: 1
+  headCutDamage: 5
   regenBlockedBy: 0100000005000000

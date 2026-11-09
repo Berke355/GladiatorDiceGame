@@ -13,15 +13,14 @@ MonoBehaviour:
   m_Name: FuelFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Fuel
-  description: 'Defense: Gain block equal to my value. Magic: Apply Burn equal to
-    my value, multiply the enemy''s Burn by my value, then consume it all and deal
-    that much damage.'
+  description: 'Defense: Gain block equal to my value. Magic: Apply 2 Burn, multiply
+    the enemy''s Burn by my value, then consume it all and deal that much damage.'
   rarity: 2
   tags: 03000000
   baseValue: 2
   effects:
   - actionType: 2
-    effectLogic: {fileID: 11400000, guid: 6b11e72c35be2e344b7e718b742f902d, type: 2}
+    effectLogic: {fileID: 11400000, guid: 3bb10aae0ebf56b47894abe5c4e2b1a2, type: 2}
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   - actionType: 2

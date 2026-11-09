@@ -35,6 +35,13 @@ public class BossBrain : IEnemyBrain, IDisposable
     // counted as cut (grown back or cauterized), so each death is counted once.
     private readonly List<BattleEnemy> heads = new List<BattleEnemy>();
     private readonly HashSet<BattleEnemy> settledCuts = new HashSet<BattleEnemy>();
+    // A cut head grows back one boss turn after the boss first sees it dead, so cutting it buys a turn without it
+    // (the user's friend's play-test: heads came back at once, so cutting one was never worth it).
+    private readonly Dictionary<BattleEnemy, int> cutSeenAt = new Dictionary<BattleEnemy, int>();
+    private int bossTurns;
+    // Heads whose cut already hurt the body; a regrown head can hurt it again when it is cut again.
+    private readonly HashSet<BattleEnemy> cutPaid = new HashSet<BattleEnemy>();
+    private readonly Dictionary<BattleEnemy, System.Action> headWatchers = new Dictionary<BattleEnemy, System.Action>();
     public bool HasHeads => definition.headEnemy != null;
     public int LivingHeads => heads.FindAll(head => !head.IsDead).Count;
     // Heads killed since the boss's last turn; at its next turn start each grows back as two (or is cauterized).
@@ -65,6 +72,20 @@ public class BossBrain : IEnemyBrain, IDisposable
 
     public void Dispose(){
         self.HitTaken -= OnHitTaken;
+        foreach(KeyValuePair<BattleEnemy, System.Action> watcher in headWatchers){
+            watcher.Key.entity.OnHealthChanged -= watcher.Value;
+        }
+    }
+
+    // A head that dies hurts the body once (the user's friend's play-test: cutting heads had no reward at all).
+    private void WatchHead(BattleEnemy head){
+        System.Action watcher = () => {
+            if(!head.IsDead || cutPaid.Contains(head) || self.IsDead) return;
+            cutPaid.Add(head);
+            if(definition.headCutDamage > 0) self.PayHP(definition.headCutDamage);
+        };
+        head.entity.OnHealthChanged += watcher;
+        headWatchers[head] = watcher;
     }
 
     public void ChooseNextIntent(){
@@ -92,14 +113,24 @@ public class BossBrain : IEnemyBrain, IDisposable
         }
         if(HasHeads){
             int cut = CutHeads;
+            int ready = cutSeenAt.Count;
+            string regrowth = RegrowthBlocked ? "Burn will cauterize them"
+                : (ready > 0 ? GrowsBack(ready) + " this turn" : "")
+                + (ready > 0 && cut > ready ? ", " : "")
+                + (cut > ready ? GrowsBack(cut - ready) + " next turn" : "");
             text += "\nHeads: " + LivingHeads
-                + (cut > 0 ? " | " + cut + " cut: " + (RegrowthBlocked ? "cauterized by Burn" : "will grow back as " + 2 * cut) : "")
+                + (definition.headCutDamage > 0 ? " (cutting one deals " + definition.headCutDamage + " to the body)" : "")
+                + (cut > 0 ? " | " + cut + " cut: " + regrowth : "")
                 + " | regenerates " + (RegenBlocked ? "0 (blocked)" : (definition.regenPerHead * LivingHeads).ToString());
         }
         if(definition.maxHPLossPerRound > 0){
             text += "\nScales: loses at most " + definition.maxHPLossPerRound + " HP a round (" + self.HPLossLeftThisRound + " left)";
         }
         return text;
+    }
+
+    private static string GrowsBack(int heads){
+        return heads + (heads == 1 ? " grows" : " grow") + " back as " + 2 * heads;
     }
 
     private bool Blocked(List<StatusType> statuses){
@@ -121,12 +152,21 @@ public class BossBrain : IEnemyBrain, IDisposable
         }
     }
 
-    // Start of the boss's turn: every head cut since its last turn grows back as two (up to maxHeads living),
-    // unless Burn cauterized the wounds. Grown heads act from the next turn.
+    // Start of the boss's turn: a head cut before its previous turn grows back as two (up to maxHeads living), unless Burn
+    // cauterizes the wound then; a head cut since its previous turn waits one more turn. Grown heads act from the next turn.
     private void RegrowHeads(){
-        List<BattleEnemy> cut = heads.FindAll(head => head.IsDead && !settledCuts.Contains(head));
+        bossTurns++;
+        List<BattleEnemy> cut = new List<BattleEnemy>();
+        foreach(BattleEnemy head in heads){
+            if(!head.IsDead || settledCuts.Contains(head)) continue;
+            if(!cutSeenAt.ContainsKey(head)) cutSeenAt[head] = bossTurns;
+            else if(cutSeenAt[head] < bossTurns) cut.Add(head);
+        }
         if(cut.Count == 0) return;
-        foreach(BattleEnemy head in cut) settledCuts.Add(head);
+        foreach(BattleEnemy head in cut){
+            settledCuts.Add(head);
+            cutSeenAt.Remove(head);
+        }
         if(RegrowthBlocked){
             Debug.Log(definition.bossName + "'s cut necks are cauterized.");
             return;
@@ -139,9 +179,11 @@ public class BossBrain : IEnemyBrain, IDisposable
     // Brings a dead head back (the oldest first) or adds a new one, unless maxHeads are already alive.
     private bool GrowHead(){
         if(LivingHeads >= definition.maxHeads) return false;
-        BattleEnemy dead = heads.Find(head => head.IsDead);
+        // Only a head whose cut is settled comes back; a freshly cut one still has its turn to wait.
+        BattleEnemy dead = heads.Find(head => head.IsDead && settledCuts.Contains(head));
         if(dead != null){
             dead.entity.Revive();
+            cutPaid.Remove(dead);
             EnemyBrain brain = dead.brain as EnemyBrain;
             if(brain != null) brain.ClearIntent();
             settledCuts.Remove(dead);
@@ -151,6 +193,7 @@ public class BossBrain : IEnemyBrain, IDisposable
         BattleEnemy head = flow.SpawnEnemy(definition.headEnemy, definition.headEnemy.enemyName + " " + (heads.Count + 1));
         if(head == null) return false;
         heads.Add(head);
+        WatchHead(head);
         return true;
     }
 

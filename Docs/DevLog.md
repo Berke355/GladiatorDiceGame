@@ -3216,3 +3216,47 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **A Windows build and the first friends' play-test.**
 - **Growing, Heavy and Brittle at the Enchanting Table,** after that test.
 - **The map, more battles and the difficulty curve.**
+
+## Day 84 - A Friend's Play-Test
+
+### The play-test
+The user had a friend who likes the genre play a run, with the user explaining the game along the way.
+- **The text was overwhelming at first;** after 2-3 battles the friend got used to the Market.
+- **"It's very hard to enjoy without a UI."** The friend didn't want a second run, but asked for the game to be developed and wants to try it with a UI.
+- **Ritual's description wasn't understood.**
+- **Iron Bracers felt weak.**
+- **Exsanguinate broke the run in the middle:** with a single Bleed face it hit for 24, and the friend, who had been building around Flip, said "it's over then, what is this". Every later fight was very short, the Hydra included.
+- **The Hydra's heads:** the friend hit them first, since they have less HP, and found that cutting one gave nothing back: the heads came back at once as two.
+- **Suggestion:** characters that change the starting die. They're already on the Roadmap (Phase D).
+
+### Accomplished
+- **Exsanguinate and Fuel apply a fixed 2 Bleed or Burn as their fuel,** not their value. With value-sized fuel the value counted twice, so upgrades grew their damage with the square of the value. GDD "Epics Bring Their Own Fuel" now says so.
+- **The Hydra's heads:** cutting one deals 5 damage to the body (`BossSO.headCutDamage`, through `PayHP`, so it counts toward Scales), and the head grows back as two one body turn later instead of at once (`cutSeenAt`). Burn applied in that turn still cauterizes. The card says when each cut head grows back.
+- **Iron Bracers:** 3 Fortify (was 1).
+- **Ritual's description:** "Each time you apply Burn, Poison or Bleed, apply 1 more for each Ritual you have. Lasts the whole battle."
+
+### Tests
+- **Exsanguinate on 2 Bleed:** 8 / 12 / 16 / 24 damage at values 2 / 3 / 4 / 6; it was 24 at value 4. Fuel on a target without Burn: 4 / 6 / 8 / 12.
+- **The Hydra's heads (9 checks):** a cut head waits a turn and then grows back as two, Burn in that turn cauterizes, two cuts on different turns regrow on different turns; a cut deals 5 once, a regrown head pays again when cut again, and it counts toward Scales. Not yet seen in Play Mode.
+
+### Balance
+- **Free before battle 5 (200 runs):** Bleed 17% without, 24% with Exsanguinate (it was 26% to 47% before); Burn 4% without, 17% with Fuel; Opportunist with Iron Bracers at 1 cleared 0% and reached battle 9 in 38 runs, at 3 cleared 4% and reached it in 64.
+- **The Hydra, focused bots and the Opportunist (110 runs each):**
+
+| Heads | Bots going for the body | Bots cutting every head first |
+|---|---|---|
+| Back at once (before) | about 40% | not measured |
+| Back a turn later | 40% | 1% |
+| Back a turn later, cut deals 5 | 39% | 6% |
+
+- **Default bots (300 runs):** Bleed 20%, Rage 12%, Bleed + Rage 12%, Burn 11%, Ritual + Poison 11%, Poison 9%, Shield 7%, Shield + Rage 4%, Hammer 3%, Fortune 3%, One-face carry 3%, Opportunist 1%, Unplanned buyer 0%.
+
+### Findings
+- **Cutting heads is still mostly a trap for bots,** but they cut every head every time. A player can cut one when a turn's breath is worth it. If play-tests show it never is, the cut damage can go up (8).
+- **The friend's run needed the user's guidance,** so the text load is even heavier for a new player than this test showed. The UI is now the most important problem.
+
+### Next Steps
+- **Three style mock-ups of the battle screen,** so the user can choose a look.
+- **A UI redesign:** icons and a short card language.
+- **Growing, Heavy and Brittle at the Enchanting Table.**
+- **The map, more battles and the difficulty curve.**
