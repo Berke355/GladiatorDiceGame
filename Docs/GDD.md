@@ -702,7 +702,7 @@ Burst damage over a short time. Build Burn up, then cash it out.
 | Ember | Starter | Common |
 | Detonate | Engine (cash-out) | Rare |
 | Flame Ward | Bridge (Burn + Block) | Rare |
-| Fuel | Payoff (Magic: apply Burn, multiply it, ignite it) | Epic |
+| Fuel | Payoff (Magic: apply Burn, multiply it, then consume it all for that much damage) | Epic |
 | Cauterize | Payoff (Attack: damage and Burn; Magic: consume Burn to heal), value 2 | Epic |
 
 ### Poison (implemented)

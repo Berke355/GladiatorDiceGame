@@ -3186,3 +3186,33 @@ Rerolls add about 0–8 points with the bots' simple policy. The difficulty pass
 - **Growing, Heavy and Brittle at the Enchanting Table.**
 - **A Windows build and the first friends' play-test.**
 - **The map, more battles and the difficulty curve.**
+
+## Day 83 - Fuel Burns It All Up
+
+### Accomplished (the user's play-test: a Burn die with two Fuels one-shot many enemies; the Hydra felt a little tense, dropping to 10 HP at times; a run took 12-13 minutes)
+- **Fuel's Magic now consumes the Burn:** it applies Burn, multiplies it, then consumes it all for that much damage (`IgniteEffectSO.consume`). The Day 76 version kept the Burn, so two Fuels compounded each other.
+
+### Balance
+- **Burn bot, Fuel free before battle 5 (220 runs):** none 10%, 1 Fuel 21%, 2 Fuels before 46%, 2 Fuels now 25%. One Fuel is still strong, and compounding is gone.
+- **Tag match chance, measured directly on a die with Burn faces (2000 Markets):**
+
+| Match chance | Burn in offers | Markets with a Burn face |
+|---|---|---|
+| 60% (today) | 7% | 21% |
+| 40% | 7% | 21% |
+| 25% | 7% | 21% |
+| 0% | 6% | 18% |
+
+### Decisions
+- **The tag match chance stays at 60%.** It looks for faces sharing any tag with the die, and the starting die has Physical, Bleed and Block, so nearly every face already matches. Lowering it would change nothing. It only becomes a real dial with `weightByBuildTags` on.
+
+### Findings
+- **"Building is too easy" isn't about how often offers appear:** only about 1 Market in 5 shows a Burn face. More likely a few pieces are enough: a few Burn faces, Tinder Box, Smoldering Gauntlet and Fuel. That is a matter of content and item power, not one number. Cheap rerolls and locks may also help; the user's reroll use is still to be asked.
+- **Correction to Day 79:** General faces at about 25% of offers aren't mainly due to fitting any die; with matching off they are still 18%, since most are Common.
+- **The user's feedback on patchwork dice:** a patchwork die needs faces that talk to each other, not disconnected ones. New faces should talk to at least two archetypes as content grows.
+- The new die enchantments did lead the user to try other arrangements.
+
+### Next Steps
+- **A Windows build and the first friends' play-test.**
+- **Growing, Heavy and Brittle at the Enchanting Table,** after that test.
+- **The map, more battles and the difficulty curve.**
