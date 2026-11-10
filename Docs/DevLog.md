@@ -3260,3 +3260,28 @@ The user had a friend who likes the genre play a run, with the user explaining t
 - **A UI redesign:** icons and a short card language.
 - **Growing, Heavy and Brittle at the Enchanting Table.**
 - **The map, more battles and the difficulty curve.**
+
+## Day 85 - Faces for the Enemies
+
+The friend's play-test said the game is hard to enjoy without visuals. After comparing art styles, the user chose Roman pixel art. Sprites drawn in code weren't good enough and a paid PixelLab plan was out of budget, so this day tried free tools.
+
+### Accomplished
+- **Every enemy and boss has a sprite** (`Assets/Art/Enemies`, `Assets/Art/Bosses`): 15 enemies (Hydra Head included) and the 3 bosses. The user made them with Gemini from `Docs/ArtPrompts.md` (one style block plus a subject line per enemy, the player gladiator attached as the style reference). A cleanup script then put them on a true pixel grid (Gemini draws on a 240-pixel grid), removed the magenta background and stray specks, cut the palette to 32 colors and flipped the ones facing right.
+- **The player is the PixelLab gladiator** (`Assets/Art/Player/Gladiator.png`), in place of the blue circle.
+- **`EnemySO` / `BossSO.sprite` and `spriteHeight`** (in human heights: Arena Wolf 0.65, War Elephant and bosses 1.3–1.35), copied onto `BattleEnemy`. `BattleManager.ArrangeEnemySprites` stands every enemy on one ground line; each takes its own width, and a row that doesn't fit shrinks by one factor, so the Hydra's body stays bigger than its heads.
+- **The battle scene's sprites were moved** clear of the UI: the player stands above the die net, the enemies below the enemy cards.
+- **GDD "Visual Style".**
+
+### Decisions
+- **Gemini for still images, PixelLab for animation.** Gemini's still sprites were good on the first try, but its 4-frame attack changed the character from frame to frame. PixelLab animates the character itself; blending its skeleton mode (which swings the sword) with its smooth mode (as start and end frames) gave the best attack so far.
+- **Tripo and Leonardo were not used:** Tripo makes 3D models (a render pipeline we don't need), and Leonardo's pixel art isn't on a grid and can't animate a character consistently.
+
+### Tests
+- **Play Mode, Hydra:** the body and two heads stand on the ground line in turn order, the body bigger than the heads. Groups and the other bosses were checked in an edit-mode preview with the UI drawn.
+
+### Next Steps
+- **Hit and idle animations** for the player (PixelLab), and fixing the shield that disappears in the attack.
+- **The boss die strip overlaps the enemies' heads;** it moves with the UI redesign.
+- **The player sprite has half the pixel density of the enemies** (a 64-pixel PixelLab canvas). A bigger PixelLab character would match them.
+- **A UI redesign:** icons and a short card language.
+

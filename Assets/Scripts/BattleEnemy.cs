@@ -11,6 +11,10 @@ public class BattleEnemy
     // The battle ends when this enemy dies, even if others still live (a boss, e.g. the Hydra's body with its heads).
     public readonly bool endsBattleOnDeath;
 
+    // How the enemy looks in battle (from its EnemySO or BossSO); null keeps the scene's placeholder.
+    public UnityEngine.Sprite sprite;
+    public float spriteHeight = 1f;
+
     public BattleEnemy(Entity entity, IEnemyBrain brain, bool endsBattleOnDeath = false){
         this.entity = entity;
         this.brain = brain;

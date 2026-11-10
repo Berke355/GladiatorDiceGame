@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Hydra
   maxHP: 60
+  sprite: {fileID: 21300000, guid: b31964c1315f8ae46b4fbdc886ff3cda, type: 3}
+  spriteHeight: 1.35
   maxHPLossPerRound: 12
   faces:
   - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}

@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Medusa
   maxHP: 50
+  sprite: {fileID: 21300000, guid: 2bc738715dd543d47b379413d7007a64, type: 3}
+  spriteHeight: 1.3
+  maxHPLossPerRound: 0
   faces:
   - {fileID: 11400000, guid: 84b696bf3f512694da98406c9e5587f8, type: 2}
   - {fileID: 11400000, guid: 84b696bf3f512694da98406c9e5587f8, type: 2}
@@ -24,3 +27,10 @@ MonoBehaviour:
   countdownTurns: 3
   staggerDamage: 12
   whileCountingDown: {fileID: 0}
+  headEnemy: {fileID: 0}
+  startingHeads: 0
+  maxHeads: 3
+  regrowthBlockedBy: 01000000
+  regenPerHead: 1
+  headCutDamage: 0
+  regenBlockedBy: 0100000005000000

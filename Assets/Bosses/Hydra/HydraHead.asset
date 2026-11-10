@@ -15,6 +15,8 @@ MonoBehaviour:
   enemyName: Hydra Head
   tier: 3
   maxHP: 8
+  sprite: {fileID: 21300000, guid: 099bb422a61a3264abfe3b1187da1bb4, type: 3}
+  spriteHeight: 0.95
   escalationPerTurn: 0
   intents:
   - intentName: Bite

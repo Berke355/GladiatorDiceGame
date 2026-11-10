@@ -15,6 +15,8 @@ MonoBehaviour:
   enemyName: Essedarius
   tier: 2
   maxHP: 48
+  sprite: {fileID: 21300000, guid: 02efd62df05437144b9aa8c9f74e21d1, type: 3}
+  spriteHeight: 1.15
   escalationPerTurn: 0
   intents:
   - intentName: Run Down
@@ -48,6 +50,9 @@ MonoBehaviour:
     requireAction: 0
     action: 0
     requireBlock: 0
+    requireTargeted: 0
+    requireUnblocked: 0
+    nextTurn: 0
     effects:
     - {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
     value: 1

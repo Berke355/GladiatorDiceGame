@@ -1202,3 +1202,11 @@ All boss numbers were set by simulation (DevLog Days 44–46) and are still to b
 ### Open Questions
 
 - Healing amount after a boss (50% of max HP is a placeholder).
+
+## Visual Style
+
+- **Roman pixel art,** side view: the player stands on the left facing right, enemies on the right facing left, all on one ground line.
+- **One look for every sprite:** dark brown outlines, a warm palette (terracotta, bronze, bone white, olive, deep red), hard pixel edges. Still sprites are cleaned onto a true pixel grid with a limited palette.
+- **Sizes are relative to a gladiator** (`spriteHeight`): beasts and bosses are taller, never just filling the frame. A crowded row shrinks as a whole, so a boss stays bigger than its heads.
+- **Animation matters most.** It is made where frames stay consistent (PixelLab); still images can come from any generator that matches the style.
+- **Every generated sprite is disclosed** as AI content on the store page.

@@ -45,7 +45,7 @@ public class BattleManager : MonoBehaviour
             enemy.entityName = boss.bossName;
             enemy.maxHP = boss.maxHP;
             enemy.currentHP = boss.maxHP;
-            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, currentDiceFaces), true));
+            enemies.Add(new BattleEnemy(enemy, new BossBrain(boss, enemy, player, currentDiceFaces), true){ sprite = boss.sprite, spriteHeight = boss.spriteHeight });
         }
         else{
             List<string> names = MemberNames(encounter);
@@ -60,7 +60,7 @@ public class BattleManager : MonoBehaviour
                 entity.currentHP = entity.maxHP;
                 int startingRage = RunManager.Instance.encounters.ScalingFor(battleNumber).startingRage;
                 if(startingRage > 0) entity.ApplyStatus(StatusType.Rage, startingRage);
-                enemies.Add(new BattleEnemy(entity, new EnemyBrain(enemyData, entity, player)));
+                enemies.Add(new BattleEnemy(entity, new EnemyBrain(enemyData, entity, player)){ sprite = enemyData.sprite, spriteHeight = enemyData.spriteHeight });
             }
         }
 
@@ -68,6 +68,12 @@ public class BattleManager : MonoBehaviour
         flow = new BattleFlow(player, enemies, currentDiceFaces, run.equipment, run.rerollsPerBattle, () => Instantiate(enemy, enemy.transform.parent), run.dieEnchantments);
         enemySpriteScale = enemy.transform.localScale;
         enemySpriteY = enemy.transform.position.y;
+        enemySpriteX = enemy.transform.position.x;
+        SpriteRenderer placeholder = enemy.GetComponent<SpriteRenderer>();
+        if(placeholder != null){
+            placeholderSprite = placeholder.sprite;
+            placeholderColor = placeholder.color;
+        }
         foreach(BattleEnemy each in flow.enemies) each.entity.OnHealthChanged += UpdateEnemySprites;
         flow.EnemyAdded += added => {
             added.entity.OnHealthChanged += UpdateEnemySprites;
@@ -76,29 +82,69 @@ public class BattleManager : MonoBehaviour
         ArrangeEnemySprites();
     }
 
-    // The enemies' placeholder sprites share the right side of the screen, in turn order, shrinking when there
-    // are more of them. Dead ones are hidden (a revived Hydra head shows again) but keep their place.
+    // The enemies share the right side of the screen, in turn order, shrinking when there are more of them.
+    // An enemy with a sprite stands on the ground line (the placeholder's bottom edge) and is HumanHeight ×
+    // spriteHeight tall; one without keeps the scene's placeholder. Dead ones are hidden (a revived Hydra head shows
+    // again) but keep their place.
     private const float SpriteAreaLeft = 3.3f;
     private const float SpriteAreaRight = 8.7f;
+    // World height of a gladiator-sized sprite.
+    private const float HumanHeight = 2.8f;
     private Vector3 enemySpriteScale;
     private float enemySpriteY;
+    private float enemySpriteX;
+    private Sprite placeholderSprite;
+    private Color placeholderColor = Color.white;
 
+    // Each enemy takes its own width; if the row doesn't fit, all of them shrink by the same factor, so a boss stays
+    // bigger than its heads. The row is centered on the placeholder's x and kept inside the sprite area.
     private void ArrangeEnemySprites(){
         int count = flow.enemies.Count;
-        float slot = (SpriteAreaRight - SpriteAreaLeft) / count;
-        float shrink = count > 1 ? Mathf.Min(1f, slot * 0.85f / SpriteWidth()) : 1f;
+        float area = SpriteAreaRight - SpriteAreaLeft;
+        float groundY = enemySpriteY - PlaceholderSize().y / 2f;
+        float[] widths = new float[count];
+        float total = SpriteGap * (count - 1);
         for(int i = 0; i < count; i++){
-            Transform sprite = flow.enemies[i].entity.transform;
-            float x = count > 1 ? SpriteAreaLeft + slot * (i + 0.5f) : enemy.transform.position.x;
-            sprite.position = new Vector3(x, enemySpriteY, sprite.position.z);
-            sprite.localScale = new Vector3(enemySpriteScale.x * shrink, enemySpriteScale.y * shrink, enemySpriteScale.z);
+            BattleEnemy each = flow.enemies[i];
+            widths[i] = each.sprite != null ? each.sprite.bounds.size.x * FullScale(each) : PlaceholderSize().x;
+            total += widths[i];
+        }
+        float shrink = Mathf.Min(1f, area / total);
+        float left = Mathf.Clamp(enemySpriteX - total * shrink / 2f, SpriteAreaLeft, SpriteAreaRight - total * shrink);
+        for(int i = 0; i < count; i++){
+            BattleEnemy each = flow.enemies[i];
+            Transform sprite = each.entity.transform;
+            SpriteRenderer renderer = each.entity.GetComponent<SpriteRenderer>();
+            float x = left + widths[i] * shrink / 2f;
+            left += (widths[i] + SpriteGap) * shrink;
+            if(each.sprite != null && renderer != null){
+                renderer.sprite = each.sprite;
+                renderer.color = Color.white;
+                float scale = FullScale(each) * shrink;
+                sprite.position = new Vector3(x, groundY, sprite.position.z);
+                sprite.localScale = new Vector3(scale, scale, 1f);
+            }
+            else{
+                if(renderer != null){
+                    renderer.sprite = placeholderSprite;
+                    renderer.color = placeholderColor;
+                }
+                sprite.position = new Vector3(x, enemySpriteY, sprite.position.z);
+                sprite.localScale = new Vector3(enemySpriteScale.x * shrink, enemySpriteScale.y * shrink, enemySpriteScale.z);
+            }
         }
         UpdateEnemySprites();
     }
 
-    private float SpriteWidth(){
-        SpriteRenderer renderer = enemy.GetComponent<SpriteRenderer>();
-        return renderer != null && renderer.sprite != null ? renderer.sprite.bounds.size.x * enemySpriteScale.x : 3f;
+    private const float SpriteGap = 0.2f;
+
+    // The scale that makes the enemy's sprite HumanHeight × spriteHeight tall.
+    private static float FullScale(BattleEnemy enemy){
+        return HumanHeight * enemy.spriteHeight / enemy.sprite.bounds.size.y;
+    }
+
+    private Vector2 PlaceholderSize(){
+        return placeholderSprite != null ? Vector2.Scale(placeholderSprite.bounds.size, enemySpriteScale) : new Vector2(3f, 3f);
     }
 
     private void UpdateEnemySprites(){

@@ -15,6 +15,8 @@ MonoBehaviour:
   enemyName: Tiro
   tier: 0
   maxHP: 11
+  sprite: {fileID: 21300000, guid: 00026dcde98303b4eb1ab487b8e9c840, type: 3}
+  spriteHeight: 0.95
   escalationPerTurn: 0
   intents:
   - intentName: Slash
@@ -29,3 +31,5 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     weight: 2
+  traits: []
+  secondWindIntents: []

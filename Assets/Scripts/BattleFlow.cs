@@ -121,7 +121,7 @@ public class BattleFlow
         entity.entityName = name;
         entity.maxHP = data.maxHP;
         entity.currentHP = data.maxHP;
-        BattleEnemy enemy = new BattleEnemy(entity, new EnemyBrain(data, entity, player));
+        BattleEnemy enemy = new BattleEnemy(entity, new EnemyBrain(data, entity, player)){ sprite = data.sprite, spriteHeight = data.spriteHeight };
         enemies.Add(enemy);
         Setup(enemy);
         EnemyAdded?.Invoke(enemy);

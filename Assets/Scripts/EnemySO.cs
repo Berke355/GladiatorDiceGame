@@ -18,6 +18,9 @@ public class EnemySO : ScriptableObject
     public string enemyName;
     public EnemyTier tier;
     public int maxHP;
+    // The battle sprite: facing left, pivot at the feet. spriteHeight is its height in human heights (1 = a gladiator).
+    public Sprite sprite;
+    public float spriteHeight = 1f;
     // Rage gained after each of the enemy's turns (e.g. Essedarius gathering speed).
     public int escalationPerTurn;
     public List<EnemyIntent> intents = new List<EnemyIntent>();

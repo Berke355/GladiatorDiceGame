@@ -15,6 +15,8 @@ MonoBehaviour:
   enemyName: Dimachaerus
   tier: 1
   maxHP: 19
+  sprite: {fileID: 21300000, guid: 80e99c24ebcca63438d466a8724921ac, type: 3}
+  spriteHeight: 1.05
   escalationPerTurn: 0
   intents:
   - intentName: Twin Strike
@@ -31,12 +33,15 @@ MonoBehaviour:
     weight: 1
   traits:
   - traitName: Parry
-    description: 'Each time you choose Attack against it while it has block: you take 2 damage.'
+    description: 'Each time you choose Attack against it while it has block: you
+      take 2 damage.'
     trigger: 3
     requireAction: 1
     action: 0
     requireBlock: 1
     requireTargeted: 1
+    requireUnblocked: 0
+    nextTurn: 0
     effects:
     - {fileID: 11400000, guid: eb3494da333260a4f83d86adba089264, type: 2}
     value: 2

@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Minotaur
   maxHP: 22
+  sprite: {fileID: 21300000, guid: d343e231ae3139f419df4407c1ebee86, type: 3}
+  spriteHeight: 1.3
+  maxHPLossPerRound: 0
   faces:
   - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
   - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
@@ -29,4 +32,5 @@ MonoBehaviour:
   maxHeads: 3
   regrowthBlockedBy: 01000000
   regenPerHead: 1
+  headCutDamage: 0
   regenBlockedBy: 0100000005000000

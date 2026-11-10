@@ -15,6 +15,8 @@ MonoBehaviour:
   enemyName: Lampadarius
   tier: 0
   maxHP: 13
+  sprite: {fileID: 21300000, guid: eb727f53f67c4f7478d1967e4e769db1, type: 3}
+  spriteHeight: 1.05
   escalationPerTurn: 0
   intents:
   - intentName: Torch Swing
@@ -41,3 +43,5 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 8b6a869f4e5efd64d824f9b5a5183b3d, type: 2}
     value: 0
     weight: 1
+  traits: []
+  secondWindIntents: []
