@@ -3323,3 +3323,21 @@ Stage 2 of the redesign, with the art the user made in the meantime: 24 icons fr
 - **The Market and the run start screen** in the same look.
 - **Animations** for the player (idle, attack, hit) on the new gladiator.
 
+## Day 88 - The Market Joins the Arena
+
+After the battle screen, going to the Market dropped the player back into the old blue screens. This day gave the Market and the run start screen the battle screen's look, without touching their layout or rules.
+
+### Accomplished
+- **A theme pass over Market.unity and RunStart.unity:** a dimmed arena behind everything (a `Backdrop` image), the camera's background the arena's dark brown, the old translucent black panels now dark brown with a bronze outline, every white button a dark bronze one with a bronze outline (the main ones, Next Battle, Choose and Buy, in a lighter bronze), dark text turned bone white, the titles (MARKET, CHOOSE YOUR STARTING FACE, BOSS REWARD) in gold Cinzel and every other text in VT323 (1.4× its old size).
+- **The tooltip prefab** (`Assets/UI/Tooltip.prefab`, in all three scenes) in the same colors and font.
+- **Market text colors for a dark background:** "Can be enchanted", "Moving" and a die enchantment's bonus in gold, "Has its own Magic" in a light grey (they were picked for the old light buttons).
+- **Sizes that overflowed after the font change:** the hint line, the Enchanting Table and Heal buttons and Next Battle.
+
+### Tests
+- **Play Mode:** the run start screen and a Market after the first battle. Nothing overlaps; the hint fits on one line. The Enchanting Table tab and the boss reward panel use the same objects but were not seen, since the Editor didn't draw new frames in the background.
+
+### Next Steps
+- **The Market's card language:** offers still describe faces in words; a line of icons on each card would make them faster to compare.
+- **Face icons** for the die net and the rolled face.
+- **Animations** for the player.
+

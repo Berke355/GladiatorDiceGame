@@ -318,9 +318,9 @@ public class MarketUI : MonoBehaviour
             if(!hasFace) continue;
 
             DieFace dieFace = run.dieFaces[i];
-            string moving = i == pendingSwap ? "<color=#B8860B>Moving: </color>" : "";
+            string moving = i == pendingSwap ? "<color=#E2B23C>Moving: </color>" : "";
             int bonus = (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i) - dieFace.value;
-            string bonusText = bonus > 0 ? " <color=#B8860B>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
+            string bonusText = bonus > 0 ? " <color=#E2B23C>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
             int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
             string weightText = (weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often")
                 + (DieEnchantmentSO.ConsumableAt(run.dieEnchantments, i) ? " | Consumable" : "");
@@ -394,6 +394,6 @@ public class MarketUI : MonoBehaviour
     // Whether the face can take an enchantment, or which one it has.
     private static string MagicStatus(DieFace face){
         if(face.enchantment != null) return "<color=#B388FF>Enchanted: " + face.enchantment.enchantmentName + "</color>";
-        return face.CanEnchant ? "<color=#B07800>Can be enchanted</color>" : "<color=#4A5562>Has its own Magic</color>";
+        return face.CanEnchant ? "<color=#E2B23C>Can be enchanted</color>" : "<color=#A89C88>Has its own Magic</color>";
     }
 }
