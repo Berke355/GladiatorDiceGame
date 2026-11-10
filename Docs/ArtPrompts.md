@@ -68,3 +68,62 @@ The Minotaur is done (see the art comparison page). Bosses are bigger than every
 | Medusa | `Subject: Medusa, a boss: a woman's upper body on a long coiled green serpent tail instead of legs, hair made of living hissing snakes, glowing pale green eyes, skin turning to grey stone in patches, fragments of a stone statue at her tail. Twice the height of a human.` |
 | Hydra | `Subject: the Hydra's body, a boss: a huge dark green scaled reptile body with a heavy tail and clawed legs, its many necks cut off short as stumps (the heads are drawn separately). Three times the size of a human.` |
 | HydraHead | `Subject: one Hydra head on a long curved neck rising from below the image, dark green scales, open jaws with fangs and dripping acid, the neck cut off at the bottom edge of the image.` |
+
+# Icons
+
+Two sheets of 12 icons, each drawn as ONE image, so every icon shares the style and the size. The cleanup script cuts the grid into separate icons in the order below (left to right, top to bottom).
+
+## How to use
+
+1. A **new chat** for each sheet; no reference image (an attached character tends to get drawn into the cells).
+2. Paste the **Icon style block**, then the sheet's list, in one message.
+3. If a cell has a label, a frame or two icons, ask in the same chat to fix that cell only.
+
+## Icon style block
+
+```
+A pixel art icon sheet for a Roman gladiator game: exactly 12 icons in a grid of
+4 columns and 3 rows, equal square cells, evenly spaced, every icon centered in
+its cell and filling about 80% of it, all the same size and weight.
+Strict pixel art like 32x32 game icons: hard pixel edges, no anti-aliasing, no
+blur, no gradients, no glow, a 2-pixel dark brown outline around every icon,
+bold readable silhouettes that work at small size, warm palette (bronze, bone
+white, terracotta, deep red) plus the colors named below.
+Plain solid magenta background (#FF00FF) in every cell, no grid lines, no
+frames, no text, no letters, no numbers, no labels.
+Icons, in this order (left to right, top to bottom):
+```
+
+## Sheet 1: statuses
+
+```
+1. Block: a round bronze shield seen from the front
+2. Fortify: a short grey stone wall with battlements
+3. Bleed: a single deep red blood drop
+4. Burn: an orange and yellow flame
+5. Poison: a bright green drop with a tiny skull inside
+6. Rage: a clenched red fist
+7. Ritual: a purple eye inside a small triangle
+8. Vulnerable: a bronze shield with a big crack through it
+9. Weak: a sword broken in two pieces
+10. Entangled: a tangled brown rope net
+11. Encourage: a green laurel wreath
+12. Fire Shield: a bronze shield wrapped in orange flames
+```
+
+## Sheet 2: actions and screen
+
+```
+1. Damage: a short Roman sword (gladius) pointing up
+2. Heal: a red heart with a small white cross
+3. Magic: a rolled parchment scroll with a purple seal
+4. Gold: a gold Roman coin with a laurel profile
+5. Health: a plain red heart
+6. Reroll: a white six-sided die with a curved arrow around it
+7. Threat: a red exclamation mark on a bronze triangle
+8. Charge: a war hammer with a small yellow lightning bolt
+9. Petrified: a grey cracked stone block
+10. Consumable: a cracked clay bottle
+11. Change: two curved arrows chasing each other in a circle
+12. Target: a gold crosshair ring with four short lines
+```
