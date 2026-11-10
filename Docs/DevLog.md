@@ -3267,7 +3267,7 @@ The friend's play-test said the game is hard to enjoy without visuals. After com
 
 ### Accomplished
 - **Every enemy and boss has a sprite** (`Assets/Art/Enemies`, `Assets/Art/Bosses`): 15 enemies (Hydra Head included) and the 3 bosses. The user made them with Gemini from `Docs/ArtPrompts.md` (one style block plus a subject line per enemy, the player gladiator attached as the style reference). A cleanup script then put them on a true pixel grid (Gemini draws on a 240-pixel grid), removed the magenta background and stray specks, cut the palette to 32 colors and flipped the ones facing right.
-- **The player is the PixelLab gladiator** (`Assets/Art/Player/Gladiator.png`), in place of the blue circle.
+- **The player is a PixelLab gladiator** (`Assets/Art/Player/Gladiator.png`, character "Gladiator HD", 128-pixel canvas, 3 generations), in place of the blue circle. The first one was drawn on a 64-pixel canvas, so its pixels were twice the size of the enemies'; at 128 the gladiator is 123 pixels tall, like the human enemies.
 - **`EnemySO` / `BossSO.sprite` and `spriteHeight`** (in human heights: Arena Wolf 0.65, War Elephant and bosses 1.3–1.35), copied onto `BattleEnemy`. `BattleManager.ArrangeEnemySprites` stands every enemy on one ground line; each takes its own width, and a row that doesn't fit shrinks by one factor, so the Hydra's body stays bigger than its heads.
 - **The battle scene's sprites were moved** clear of the UI: the player stands above the die net, the enemies below the enemy cards.
 - **GDD "Visual Style".**
@@ -3282,6 +3282,6 @@ The friend's play-test said the game is hard to enjoy without visuals. After com
 ### Next Steps
 - **Hit and idle animations** for the player (PixelLab), and fixing the shield that disappears in the attack.
 - **The boss die strip overlaps the enemies' heads;** it moves with the UI redesign.
-- **The player sprite has half the pixel density of the enemies** (a 64-pixel PixelLab canvas). A bigger PixelLab character would match them.
+- **The attack animations were made on the 64-pixel gladiator;** they have to be made again on the new one.
 - **A UI redesign:** icons and a short card language.
 
