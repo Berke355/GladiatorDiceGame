@@ -14,9 +14,10 @@ public class UIManager : MonoBehaviour
     public CombatantPanelUI playerPanel;
 
     [Header("Enemies")]
-    // One card per enemy (panel, intent, traits), copied from the inactive template into the row.
+    // One card per enemy (plate, intent, traits), copied from the inactive template into the layer and placed on the
+    // enemy's sprite every frame. The layer stretches over the whole canvas with its pivot at the bottom left.
     public EnemyCardUI enemyCardTemplate;
-    public Transform enemyCardRow;
+    public RectTransform enemyCardRow;
     private readonly List<EnemyCardUI> enemyCards = new List<EnemyCardUI>();
 
     [Header("Rolled Face")]
@@ -38,6 +39,10 @@ public class UIManager : MonoBehaviour
 
     [Header("Equipment")]
     public EquipmentChipUI[] equipmentChips;
+
+    [Header("Top Bar")]
+    public TextMeshProUGUI battleInfoText;
+    public TextMeshProUGUI goldText;
 
     [Header("Buttons")]
     public Button rollButton;
@@ -106,7 +111,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Also used for an enemy that joins during the battle (a Hydra head). Past 3 cards, all cards shrink to fit the row.
+    // Also used for an enemy that joins during the battle (a Hydra head).
     public void AddEnemyCard(BattleEnemy enemy, int index, System.Action<int> onClick){
         EnemyCardUI card = Instantiate(enemyCardTemplate, enemyCardRow);
         card.gameObject.SetActive(true);
@@ -114,20 +119,34 @@ public class UIManager : MonoBehaviour
         card.Bind(enemy, () => onClick(index));
         enemy.entity.OnHealthChanged += RefreshEnemies;
         enemyCards.Add(card);
-
-        HorizontalLayoutGroup row = enemyCardRow.GetComponent<HorizontalLayoutGroup>();
-        if(row != null){
-            row.childScaleWidth = true;
-            row.childScaleHeight = true;
-        }
-        float scale = enemyCards.Count > MaxFullSizeCards ? (float)MaxFullSizeCards / enemyCards.Count : 1f;
-        foreach(EnemyCardUI each in enemyCards){
-            each.transform.localScale = new Vector3(scale, scale, 1f);
-        }
         RefreshEnemies();
     }
 
-    private const int MaxFullSizeCards = 3;
+    // Sprites move when an enemy joins (the row is arranged again), so the cards follow them every frame.
+    void LateUpdate(){
+        Camera view = Camera.main;
+        if(view == null) return;
+        Vector2 canvasSize = enemyCardRow.rect.size;
+        foreach(EnemyCardUI card in enemyCards){
+            if(card == null || card.Enemy == null) continue;
+            SpriteRenderer renderer = card.Enemy.entity.GetComponent<SpriteRenderer>();
+            if(renderer == null || renderer.sprite == null) continue;
+            // From the sprite's own bounds, so a hidden (dead) enemy keeps its place.
+            Bounds local = renderer.sprite.bounds;
+            Transform sprite = renderer.transform;
+            Vector3 feet = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.min.y, 0f)));
+            Vector3 top = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.max.y, 0f)));
+            float worldWidth = 2f * view.orthographicSize * view.aspect;
+            float slot = card.Enemy.slotWidth > 0f ? card.Enemy.slotWidth : worldWidth * 0.1f;
+            card.Place(Vector2.Scale(feet, canvasSize), (top.y - feet.y) * canvasSize.y, slot / worldWidth * canvasSize.x);
+        }
+    }
+
+    // The top bar: which battle this is and the run's gold.
+    public void ShowBattleInfo(int battle, int lastBattle, int gold, bool boss){
+        if(battleInfoText != null) battleInfoText.text = "BATTLE " + battle + " / " + lastBattle + (boss ? "  <color=#E2B23C>BOSS</color>" : "");
+        if(goldText != null) goldText.text = gold + " Gold";
+    }
 
     // Every card's panel, intent (numbers change with Rage, Ritual and statuses) and the target marker.
     public void RefreshEnemies(){

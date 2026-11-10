@@ -1210,3 +1210,4 @@ All boss numbers were set by simulation (DevLog Days 44–46) and are still to b
 - **Sizes are relative to a gladiator** (`spriteHeight`): beasts and bosses are taller, never just filling the frame. A crowded row shrinks as a whole, so a boss stays bigger than its heads.
 - **Animation matters most.** It is made where frames stay consistent (PixelLab); still images can come from any generator that matches the style.
 - **Every generated sprite is disclosed** as AI content on the store page.
+- **The battle screen is the arena:** a thin top bar (battle number, gold, items, the boss's die), the fight in the middle, and a bottom bar with the die net, the rolled face and the buttons. Each enemy's intent and traits float above its head and its plate (name, HP, statuses) sits under its feet, so the eye stays on the fighters; clicking an enemy targets it. Boss battles are fought in the night arena.

@@ -7,6 +7,9 @@ public class BattleManager : MonoBehaviour
     // other members of an enemy group.
     public Entity enemy;
     public Entity player;
+    // The arena behind everything; boss battles use the night arena.
+    public SpriteRenderer arenaBackground;
+    public Sprite bossArena;
 
     private BattleState currentState;
     [System.NonSerialized]
@@ -42,6 +45,7 @@ public class BattleManager : MonoBehaviour
         RunManager.Instance.TakeNextBattle(out boss, out encounter);
         List<BattleEnemy> enemies = new List<BattleEnemy>();
         if(boss != null){
+            if(arenaBackground != null && bossArena != null) arenaBackground.sprite = bossArena;
             enemy.entityName = boss.bossName;
             enemy.maxHP = boss.maxHP;
             enemy.currentHP = boss.maxHP;
@@ -86,10 +90,10 @@ public class BattleManager : MonoBehaviour
     // An enemy with a sprite stands on the ground line (the placeholder's bottom edge) and is HumanHeight ×
     // spriteHeight tall; one without keeps the scene's placeholder. Dead ones are hidden (a revived Hydra head shows
     // again) but keep their place.
-    private const float SpriteAreaLeft = 3.3f;
-    private const float SpriteAreaRight = 8.7f;
+    private const float SpriteAreaLeft = 1.4f;
+    private const float SpriteAreaRight = 8.4f;
     // World height of a gladiator-sized sprite.
-    private const float HumanHeight = 2.8f;
+    private const float HumanHeight = 2.2f;
     private Vector3 enemySpriteScale;
     private float enemySpriteY;
     private float enemySpriteX;
@@ -106,7 +110,7 @@ public class BattleManager : MonoBehaviour
         float total = SpriteGap * (count - 1);
         for(int i = 0; i < count; i++){
             BattleEnemy each = flow.enemies[i];
-            widths[i] = each.sprite != null ? each.sprite.bounds.size.x * FullScale(each) : PlaceholderSize().x;
+            widths[i] = Mathf.Max(MinSlotWidth, each.sprite != null ? each.sprite.bounds.size.x * FullScale(each) : PlaceholderSize().x);
             total += widths[i];
         }
         float shrink = Mathf.Min(1f, area / total);
@@ -116,6 +120,7 @@ public class BattleManager : MonoBehaviour
             Transform sprite = each.entity.transform;
             SpriteRenderer renderer = each.entity.GetComponent<SpriteRenderer>();
             float x = left + widths[i] * shrink / 2f;
+            each.slotWidth = widths[i] * shrink;
             left += (widths[i] + SpriteGap) * shrink;
             if(each.sprite != null && renderer != null){
                 renderer.sprite = each.sprite;
@@ -136,7 +141,9 @@ public class BattleManager : MonoBehaviour
         UpdateEnemySprites();
     }
 
-    private const float SpriteGap = 0.2f;
+    private const float SpriteGap = 0.15f;
+    // Each enemy gets at least its card's width (UIManager's plate), so plates and intents don't overlap.
+    private const float MinSlotWidth = 1.75f;
 
     // The scale that makes the enemy's sprite HumanHeight × spriteHeight tall.
     private static float FullScale(BattleEnemy enemy){
@@ -198,6 +205,8 @@ public class BattleManager : MonoBehaviour
         if(UIManager.Instance != null){
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
+            RunData battleRun = RunManager.Instance.run;
+            UIManager.Instance.ShowBattleInfo(battleRun.battlesWon + 1, RunManager.Instance.finalBattle, battleRun.gold, flow.enemies[0].endsBattleOnDeath);
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
             UIManager.Instance.WireDieChips(OnDieFaceClicked);
             flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);

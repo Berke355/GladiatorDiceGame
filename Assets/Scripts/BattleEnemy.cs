@@ -14,6 +14,9 @@ public class BattleEnemy
     // How the enemy looks in battle (from its EnemySO or BossSO); null keeps the scene's placeholder.
     public UnityEngine.Sprite sprite;
     public float spriteHeight = 1f;
+    // The world width BattleManager gives the enemy in the row (its sprite or its plate, whichever is wider, after a
+    // crowded row shrinks); its card is as wide.
+    public float slotWidth;
 
     public BattleEnemy(Entity entity, IEnemyBrain brain, bool endsBattleOnDeath = false){
         this.entity = entity;

@@ -3285,3 +3285,22 @@ The friend's play-test said the game is hard to enjoy without visuals. After com
 - **The attack animations were made on the 64-pixel gladiator;** they have to be made again on the new one.
 - **A UI redesign:** icons and a short card language.
 
+## Day 86 - The Arena Takes the Stage
+
+The friend said the game is hard to enjoy without a UI. Before touching Unity, a mock-up of the battle screen was made on a design canvas with the real sprites, and a "card language" page for later (numbers on screen, words on hover). The user approved the layout and the fonts (Cinzel for titles, Pixelify Sans for numbers), then made two arena backgrounds with Gemini (day, and night for bosses) from prompts in this session.
+
+### Accomplished (stage 1 of the redesign: the layout)
+- **The arena is the battle screen:** a world sprite behind everything (`BattleManager.arenaBackground`), the night arena in boss battles (`bossArena`). Both were cleaned onto a 480-pixel grid with 64 colors (`Assets/Art/Backgrounds`).
+- **Enemy cards stand on their enemies.** `UIManager.LateUpdate` places every `EnemyCardUI` on its sprite: the plate (name, HP, statuses, TARGET frame) under the feet, the intent and the traits above the head, and the card itself covers the sprite, so clicking an enemy targets it. A card is as wide as its slot in the row (`BattleEnemy.slotWidth`, at least `MinSlotWidth`), and a crowded row (the Hydra with three heads) shrinks the cards with the sprites. An enemy that joined this turn shows no empty intent box.
+- **Block and Fortify are status chips** (first in the row) instead of a text line, on the player too.
+- **The player's plate is under the player's feet.** The characters are a bit smaller (`HumanHeight` 2.2) and stand on the arena floor.
+- **A top bar** (`ShowBattleInfo`: battle number, BOSS, gold) with the items and the boss's die under it, and **a bottom HUD:** the die net on the left, the rolled face in the middle, Roll / Reroll / Pass over the three action buttons on the right, in the arena's colors.
+
+### Tests
+- **Play Mode** (started through reflection, as the Editor was in the background): a Murmillo + Tiro + Arena Wolf group, and the Hydra with three heads in the night arena. Plates and intents no longer overlap; the boss die shows under the top bar.
+
+### Next Steps
+- **Stage 2, the card language:** statuses, intents and action previews as icon + number, with the full text in the tooltip.
+- **Stage 3, the icon set** (Gemini, prompts to come) and **the fonts** (Cinzel and Pixelify Sans as TMP font assets).
+- **The Market and the run start screen** get the same look after the battle screen.
+
