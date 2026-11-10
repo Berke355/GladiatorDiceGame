@@ -45,9 +45,12 @@ public class EnemyCardUI : MonoBehaviour
         panel.Refresh(Enemy.entity);
         bool dead = Enemy.IsDead;
         string intent = dead ? "" : Enemy.brain.DescribeCurrentIntent();
+        // Over the head: the intent in the card language, plus a waiting trait; the full text is in the tooltip.
+        string summary = GameText.IntentSummary(intent);
+        if(!dead && Enemy.traits != null && Enemy.traits.HasPending) summary += "\n" + GameText.Iconize(Enemy.traits.PendingDescription) + " next turn";
         // A trait waiting for its next turn (Curl Up) is shown with the intent.
         if(!dead && Enemy.traits != null && Enemy.traits.HasPending) intent += "\n" + Enemy.traits.PendingDescription + " (at the start of its turn)";
-        intentText.text = dead ? "<color=#888888>Defeated</color>" : GameText.Colorize(intent);
+        intentText.text = dead ? "<color=#888888>Defeated</color>" : summary;
         // An enemy that joined this turn has no intent yet: no empty box over its head.
         intentTooltip.gameObject.SetActive(dead || intent != "");
         intentTooltip.text = dead ? "" : "<b>" + Enemy.entity.entityName + "'s intent</b>\n" + GameText.Colorize(intent) + GameText.Glossary(intent);

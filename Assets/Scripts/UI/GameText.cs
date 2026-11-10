@@ -36,6 +36,71 @@ public static class GameText
         new Keyword{ word = "heal", color = "#6EE7A0", definition = null },
     };
 
+    // ---- Card language: numbers on screen, words on hover (GDD "Visual Style").
+    // Icons live in the TMP sprite asset Resources/Sprite Assets/Icons (Assets/Art/Icons packed by name).
+    private static readonly string[] IconNames = {
+        "Damage", "Block", "Heal", "Health", "Fortify", "Burn", "Poison", "Bleed", "Rage", "Ritual", "Encourage",
+        "FireShield", "Vulnerable", "Weak", "Entangled", "Consumable", "Charge", "Reroll", "Gold", "Threat", "Change",
+        "Magic", "Petrified", "Target"
+    };
+    // Statuses that show as an icon when they stand alone ("consume Bleed").
+    private const string StatusWords = "Fortify|Burn|Poison|Bleed|Rage|Ritual|Encourage|FireShield|Vulnerable|Weak|Entangled";
+
+    // The inline icon for a status, a keyword or an icon name; the word itself if there is no icon.
+    public static string Icon(string name){
+        int index = IconIndex(name);
+        return index < 0 ? name : "<sprite=\"Icons\" name=\"" + IconNames[index] + "\">";
+    }
+
+    private static int IconIndex(string name){
+        if(string.Equals(name, "damage", System.StringComparison.OrdinalIgnoreCase)) name = "Damage";
+        else if(string.Equals(name, "block", System.StringComparison.OrdinalIgnoreCase)) name = "Block";
+        else if(string.Equals(name, "heal", System.StringComparison.OrdinalIgnoreCase)) name = "Heal";
+        else if(name.StartsWith("reroll", System.StringComparison.OrdinalIgnoreCase)) name = "Reroll";
+        else if(name == "HP") name = "Health";
+        return System.Array.IndexOf(IconNames, name);
+    }
+
+    // Each icon is first a single private-use character, so a later pattern never matches inside a sprite tag.
+    private static string Mark(string name){
+        int index = IconIndex(name);
+        return index < 0 ? name : ((char)(0xE000 + index)).ToString();
+    }
+
+    // Turns an effect description into the card language: "5 damage, 4 Bleed" → [Damage]5, [Bleed]4;
+    // "gain 2 Rage" → +[Rage]2; "2 x 3 damage" → 2×[Damage]3. Words with no icon stay words.
+    public static string Iconize(string text){
+        if(string.IsNullOrEmpty(text)) return text;
+        string s = text;
+        s = Regex.Replace(s, @"(\d+) x (\d+) damage", m => m.Groups[1].Value + "×" + Mark("Damage") + m.Groups[2].Value);
+        s = Regex.Replace(s, @"(\d+) \+ rerolls (left|used) (damage|block)", m => Mark(m.Groups[3].Value) + m.Groups[1].Value + " + " + Mark("Reroll") + " " + m.Groups[2].Value);
+        s = Regex.Replace(s, @"(\d+) x rerolls used damage", m => Mark("Damage") + m.Groups[1].Value + " × " + Mark("Reroll") + " used");
+        s = Regex.Replace(s, @"\bgain (\d+) (" + StatusWords + @"|rerolls?)\b", m => "+" + Mark(m.Groups[2].Value) + m.Groups[1].Value);
+        s = Regex.Replace(s, @"\bheal (\d+)", m => Mark("Heal") + m.Groups[1].Value, RegexOptions.IgnoreCase);
+        s = Regex.Replace(s, @"\blose (\d+) HP\b", m => "−" + Mark("Health") + m.Groups[1].Value);
+        s = Regex.Replace(s, @"(\d+) (damage|block)\b", m => Mark(m.Groups[2].Value) + m.Groups[1].Value, RegexOptions.IgnoreCase);
+        s = Regex.Replace(s, @"(\d+) (" + StatusWords + @"|Charge)\b", m => Mark(m.Groups[2].Value) + m.Groups[1].Value);
+        s = Regex.Replace(s, @"\b(" + StatusWords + @") x(\d+)", m => Mark(m.Groups[1].Value) + "×" + m.Groups[2].Value);
+        s = Regex.Replace(s, @"\b(" + StatusWords + @"|Consumable)\b", m => Mark(m.Groups[1].Value));
+        StringBuilder result = new StringBuilder();
+        foreach(char c in s){
+            int index = c - 0xE000;
+            if(index >= 0 && index < IconNames.Length) result.Append("<sprite=\"Icons\" name=\"" + IconNames[index] + "\">");
+            else result.Append(c);
+        }
+        return result.ToString();
+    }
+
+    // What an enemy shows over its head: the first line of its intent without the intent's name, in the card
+    // language ("Shield Wall: 2 block" → [Block]2). The full text stays in the tooltip.
+    public static string IntentSummary(string intent){
+        if(string.IsNullOrEmpty(intent)) return intent;
+        string line = intent.Split('\n')[0];
+        int colon = line.IndexOf(": ", System.StringComparison.Ordinal);
+        if(colon > 0 && colon < 32) line = line.Substring(colon + 2);
+        return Iconize(line);
+    }
+
     public static string KeywordColor(string word){
         foreach(Keyword keyword in Keywords){
             if(string.Equals(keyword.word, word, System.StringComparison.OrdinalIgnoreCase)) return keyword.color;

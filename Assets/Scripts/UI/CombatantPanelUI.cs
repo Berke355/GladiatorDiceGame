@@ -50,7 +50,8 @@ public class CombatantPanelUI : MonoBehaviour
         TooltipTrigger current = chips[index];
         current.gameObject.SetActive(true);
         string label = keyword + " " + amount;
-        current.GetComponentInChildren<TextMeshProUGUI>().text = GameText.Colorize(label);
+        // The chip is the icon and the number; the tooltip keeps the name and the rule.
+        current.GetComponentInChildren<TextMeshProUGUI>().text = GameText.Icon(keyword) + amount;
         current.text = "<b>" + label + "</b>" + GameText.Glossary(keyword);
     }
 }

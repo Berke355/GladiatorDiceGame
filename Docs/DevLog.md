@@ -3287,7 +3287,7 @@ The friend's play-test said the game is hard to enjoy without visuals. After com
 
 ## Day 86 - The Arena Takes the Stage
 
-The friend said the game is hard to enjoy without a UI. Before touching Unity, a mock-up of the battle screen was made on a design canvas with the real sprites, and a "card language" page for later (numbers on screen, words on hover). The user approved the layout and the fonts (Cinzel for titles, Pixelify Sans for numbers), then made two arena backgrounds with Gemini (day, and night for bosses) from prompts in this session.
+The friend said the game is hard to enjoy without a UI. Before touching Unity, a mock-up of the battle screen was made on a design canvas with the real sprites, and a "card language" page for later (numbers on screen, words on hover). The user approved the layout and the fonts (Cinzel for titles, Pixelify Sans for numbers, later replaced by VT323, see Day 87), then made two arena backgrounds with Gemini (day, and night for bosses) from prompts in this session.
 
 ### Accomplished (stage 1 of the redesign: the layout)
 - **The arena is the battle screen:** a world sprite behind everything (`BattleManager.arenaBackground`), the night arena in boss battles (`bossArena`). Both were cleaned onto a 480-pixel grid with 64 colors (`Assets/Art/Backgrounds`).
@@ -3301,6 +3301,25 @@ The friend said the game is hard to enjoy without a UI. Before touching Unity, a
 
 ### Next Steps
 - **Stage 2, the card language:** statuses, intents and action previews as icon + number, with the full text in the tooltip.
-- **Stage 3, the icon set** (Gemini, prompts to come) and **the fonts** (Cinzel and Pixelify Sans as TMP font assets).
+- **Stage 3, the icon set** (Gemini, prompts to come) and **the fonts** (Cinzel and a pixel font as TMP font assets).
 - **The Market and the run start screen** get the same look after the battle screen.
+
+## Day 87 - Numbers on Screen, Words on Hover
+
+Stage 2 of the redesign, with the art the user made in the meantime: 24 icons from two Gemini sheets (the first came out 5 by 3; its three extra icons were dropped) and the two fonts.
+
+### Accomplished
+- **The icons are inline text:** `Assets/Art/Icons` packed into an atlas and a TMP sprite asset (`Resources/Sprite Assets/Icons`, glyphs at 1.4×), used as `<sprite="Icons" name="Bleed">`.
+- **`GameText.Iconize`** turns every effect description into icon + number: "N damage", "N block", "heal N", "gain N Rage" (with a +), "lose N HP", "2 x 3 damage", "N + rerolls left", a status's stacks, "Burn x3" and a status standing alone ("consume Bleed"). It marks each icon as one private-use character first, so later patterns never match inside a sprite tag. Checked on every description the faces and enemy intents produce.
+- **Over an enemy's head** (`GameText.IntentSummary`): the intent's first line without its name ("Shield Wall: 2 block" → [Block]2), plus a waiting trait; the full text, name and rules stay in the tooltip. The Hydra's three-line intent no longer covers the arena.
+- **Status chips** are an icon and a number; **action buttons** show the action in Cinzel and its preview in icons; **gold and Reroll** carry their icons.
+- **Fonts:** Cinzel for titles (names, the battle number, the rolled face, the buttons' first line), VT323 for the rest. Pixelify Sans was dropped: its 5 reads as an S and its 2 as a Z, so "50 / 50" read "S0 / S0". VT323, Press Start 2P and Silkscreen were compared side by side; VT323 has the clearest digits and is narrow enough for the face texts. Font sizes went up 1.4× for it.
+
+### Tests
+- **Play Mode** with a Murmillo + Venefica + Arena Wolf group and statuses on every side: intents, chips, buttons and HP read as numbers and icons, nothing overlaps.
+
+### Next Steps
+- **The die net and the rolled face** still use words; face icons would finish the card language.
+- **The Market and the run start screen** in the same look.
+- **Animations** for the player (idle, attack, hit) on the new gladiator.
 

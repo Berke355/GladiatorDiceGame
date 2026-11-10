@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f5fc9020dfaa9644180682472a67f551
+guid: c2300acf16a98954e9eaecff6e091cec
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Pixelify Sans
+  - VT323
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

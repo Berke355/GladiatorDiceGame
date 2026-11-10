@@ -145,7 +145,7 @@ public class UIManager : MonoBehaviour
     // The top bar: which battle this is and the run's gold.
     public void ShowBattleInfo(int battle, int lastBattle, int gold, bool boss){
         if(battleInfoText != null) battleInfoText.text = "BATTLE " + battle + " / " + lastBattle + (boss ? "  <color=#E2B23C>BOSS</color>" : "");
-        if(goldText != null) goldText.text = gold + " Gold";
+        if(goldText != null) goldText.text = GameText.Icon("Gold") + " " + gold;
     }
 
     // Every card's panel, intent (numbers change with Rage, Ritual and statuses) and the target marker.
@@ -195,7 +195,7 @@ public class UIManager : MonoBehaviour
         if(passButton != null) passButton.interactable = false;
         for(int i = 0; i < actionButtons.Length; i++){
             actionButtons[i].interactable = false;
-            actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>";
+            actionButtonTexts[i].text = ActionTitle((ActionType)i);
         }
         SetDieChipsClickable(true);
     }
@@ -214,7 +214,7 @@ public class UIManager : MonoBehaviour
         if(passButton != null) passButton.interactable = false;
         for(int i = 0; i < actionButtons.Length; i++){
             actionButtons[i].interactable = false;
-            actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>";
+            actionButtonTexts[i].text = ActionTitle((ActionType)i);
         }
     }
 
@@ -234,8 +234,8 @@ public class UIManager : MonoBehaviour
         for(int i = 0; i < actionButtons.Length; i++){
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
-            actionButtonTexts[i].text = "<b>" + ActionLabel((ActionType)i) + "</b>"
-                + (preview != "" ? "\n<size=75%>" + GameText.Colorize(preview) + "</size>" : "");
+            actionButtonTexts[i].text = ActionTitle((ActionType)i)
+                + (preview != "" ? "\n<size=85%>" + GameText.Iconize(preview) + "</size>" : "");
         }
     }
 
@@ -264,6 +264,11 @@ public class UIManager : MonoBehaviour
         return action.ToString().ToUpperInvariant();
     }
 
+    // The button's title line in the title font (the rest of the button is in the number font).
+    private static string ActionTitle(ActionType action){
+        return "<font=\"Cinzel SDF\"><b>" + ActionLabel(action) + "</b></font>";
+    }
+
     // Short text of every effect the face runs for this action with the real numbers (Rage, Ritual, stacks),
     // e.g. "5 damage, 4 Bleed". Empty if the face has no effect for this action.
     private string DescribeAction(DieFace face, List<DieFace> die, ActionType action){
@@ -286,7 +291,7 @@ public class UIManager : MonoBehaviour
     private void UpdateRerollButton(bool canReroll){
         if(rerollButton == null) return;
         rerollButton.interactable = canReroll;
-        rerollButtonText.text = "Reroll (" + (flow != null ? flow.rerolls.Left : 0) + ")";
+        rerollButtonText.text = GameText.Icon("Reroll") + " Reroll " + (flow != null ? flow.rerolls.Left : 0);
     }
 
     private int ValueOf(DieFace face){
