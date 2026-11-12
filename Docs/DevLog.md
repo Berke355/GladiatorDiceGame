@@ -3565,3 +3565,12 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The corner gem** (a face's second family) puzzled the user; keep it, explain it on hover, or drop it.
 - **The corner gem is gone** (`FaceTileUI`, the `FaceTile` prefab, the GDD and the prompts): it showed a face's second family, but nothing explained it and the user couldn't tell what it meant. A face's other tags speak through its rules, which are written out now.
 
+## Day 101 - Shields on the Bar
+
+### Accomplished
+- **Block and Fortify on the HP bar** (the user's idea): after the red HP come a light blue segment for Fortify and a grey one for Block, each as wide as its share of max HP (`CombatantPanelUI.RefreshShields`), on the player and every enemy. They follow the order a hit is absorbed in, from the outside in: Block at the very end, then Fortify, then HP. When the bar has no room left (HP near full), the shields slide back over the HP's end, half transparent, so they always show. The chips still give the exact numbers.
+- **The run start's cards are taller** (780) with Choose at their bottom, and the gold line and Reroll moved down: Gambit's Defense line was cut off.
+
+### Tests
+- **Play Mode:** the Murmillo at 10/20 with 3 Fortify and 4 Block (red, blue, grey in a row), the Arena Wolf at full HP with 5 Block (grey over the bar's end), the player at full HP with 6 Block; the run start with Gambit, Exploit and Rally.
+
