@@ -54,7 +54,7 @@ public class OfferCardUI : MonoBehaviour
                 if(description != "") parts.Add(description);
             }
             if(parts.Count == 0) continue;
-            lines.Add("<size=70%><color=#C9B796>" + action.ToString().ToUpperInvariant() + "</color></size>  " + GameText.Iconize(string.Join(", ", parts)));
+            lines.Add(GameText.ActionLabel(action) + "  " + GameText.Iconize(string.Join(", ", parts)));
         }
         if(face.definition.keywords != null){
             foreach(FaceKeyword keyword in face.definition.keywords) lines.Add(GameText.Colorize(keyword.ToString()));

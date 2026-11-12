@@ -3519,3 +3519,20 @@ From the user's play of Day 97: a banner for the change of side, longer pauses, 
 ### Next Steps
 - **The user's play** to judge the new pauses and the banners.
 
+## Day 99 - Less Box, More Gladiator
+
+From the user's play: the timing is right now, but the big rectangles around the fighters took away from them, and a face's actions, its main parts, were too faint.
+
+### Accomplished
+- **Slim combatant UI:** the plate under each fighter has no background or name any more, only an outlined HP bar (the number inside) and the status chips under it; the player's too. An enemy's name is in its intent's tooltip.
+- **Intents as wide as their content:** the intent box over a head is just the icon and the number (its layout group no longer expands to the card's width), and so are the trait chips.
+- **Actions stand out in every face description:** each line starts with the action's icon and its name in its color, Attack red, Defense blue, Magic purple (`GameText.ActionLabel`), in the Market's cards, the selected face, the run start's offers and now the dice tray, which shows these lines instead of the face's prose (the rules stay in the tooltip).
+- **`Iconize` reads "N + Bleed damage"** (Lacerate before a target) as [Damage]N + [Bleed].
+
+### Tests
+- **Play Mode:** a Murmillo + Venefica + Arena Wolf battle (slim bars, tight intents, the tray's Lacerate with its two colored lines) and a Market with Bloodscent, Gambler's Strike and Shield Burst on offer and Lacerate selected.
+
+### Next Steps
+- **The Market's cards are narrow** for two action lines with conditions (Shield Burst, Bloodscent); wider cards or a smaller font may help.
+- **A real play** of the slim UI.
+

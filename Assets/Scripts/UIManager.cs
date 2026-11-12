@@ -256,7 +256,8 @@ public class UIManager : MonoBehaviour
     public void ShowRolledFace(DieFace face, List<DieFace> die, bool landed = false){
         bool stone = flow != null && flow.petrification.IsStone(face);
         rolledFaceTitle.text = face.DisplayName + "  <size=70%>" + (stone ? "<color=#A8B0B8>Petrified</color>" : "Value " + ValueOf(face)) + "</size>";
-        rolledFaceText.text = GameText.Colorize(face.FullDescription);
+        // The tray shows the face in the card language, one line per action; the full rules are in its tooltip.
+        rolledFaceText.text = stone ? "<color=#A8B0B8>Petrified: its only action is Defense.</color>" : OfferCardUI.DescribeActions(face, ValueOf(face));
         rolledFaceTooltip.text = GameText.FaceTooltip(face);
         if(landed) PlayRoll(face, die, stone);
         else ShowRolledTile(face, stone);

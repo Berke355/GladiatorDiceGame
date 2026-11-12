@@ -75,6 +75,7 @@ public static class GameText
         s = Regex.Replace(s, @"(\d+) x (\d+) damage", m => m.Groups[1].Value + "×" + Mark("Damage") + m.Groups[2].Value);
         s = Regex.Replace(s, @"(\d+) \+ rerolls (left|used) (damage|block)", m => Mark(m.Groups[3].Value) + m.Groups[1].Value + " + " + Mark("Reroll") + " " + m.Groups[2].Value);
         s = Regex.Replace(s, @"(\d+) x rerolls used damage", m => Mark("Damage") + m.Groups[1].Value + " × " + Mark("Reroll") + " used");
+        s = Regex.Replace(s, @"(\d+) \+ (" + StatusWords + @") damage", m => Mark("Damage") + m.Groups[1].Value + " + " + Mark(m.Groups[2].Value));
         s = Regex.Replace(s, @"\bgain (\d+) (" + StatusWords + @"|rerolls?)\b", m => "+" + Mark(m.Groups[2].Value) + m.Groups[1].Value);
         s = Regex.Replace(s, @"\bheal (\d+)", m => Mark("Heal") + m.Groups[1].Value, RegexOptions.IgnoreCase);
         s = Regex.Replace(s, @"\blose (\d+) HP\b", m => "−" + Mark("Health") + m.Groups[1].Value);
@@ -99,6 +100,14 @@ public static class GameText
         int colon = line.IndexOf(": ", System.StringComparison.Ordinal);
         if(colon > 0 && colon < 32) line = line.Substring(colon + 2);
         return Iconize(line);
+    }
+
+    // A face's action as the head of its line: the action's icon and its name in its color (Attack red, Defense blue,
+    // Magic purple), so the three actions, a face's main parts, stand out.
+    public static string ActionLabel(ActionType action){
+        string icon = action == ActionType.Attack ? "Damage" : action == ActionType.Defense ? "Block" : "Magic";
+        string color = action == ActionType.Attack ? "#FF7A6B" : action == ActionType.Defense ? "#8FC1EA" : "#C39BE0";
+        return Icon(icon) + "<size=80%><font=\"Cinzel SDF\"><b><color=" + color + ">" + action.ToString().ToUpperInvariant() + "</color></b></font></size>";
     }
 
     public static string KeywordColor(string word){
