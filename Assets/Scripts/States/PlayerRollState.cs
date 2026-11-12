@@ -16,6 +16,7 @@ public class PlayerRollState : BattleState
             battleManager.flow.StartPlayerTurn();
             if(battleManager.CheckBattleOver()) return;
             if(UIManager.Instance != null) UIManager.Instance.ShowTurnBanner("YOUR TURN");
+            AudioManager.Play(Sfx.YourTurn);
         }
 
         if(UIManager.Instance != null){

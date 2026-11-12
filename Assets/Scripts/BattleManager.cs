@@ -235,6 +235,7 @@ public class BattleManager : MonoBehaviour
             player.HitDealt += OnPlayerHitDealt;
             player.HitTaken += OnPlayerHitTaken;
         }
+        AudioManager.PlayMusic(flow.enemies[0].endsBattleOnDeath ? MusicTrack.Boss : MusicTrack.Battle);
         flow.StartBattle();
         if(CheckBattleOver()) return;
         ChangeState(new PlayerRollState(this));

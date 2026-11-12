@@ -84,22 +84,23 @@ public class MarketUI : MonoBehaviour
         // Usually picked already by GoToMarket; also covers playing the Market scene directly.
         RunManager.Instance.PickNextBattle();
         ShowNextBattle();
+        AudioManager.PlayMusic(MusicTrack.Market);
 
         // Buttons are wired here because each one needs its own index.
         for(int i = 0; i < offerCards.Length; i++){
             int index = i;
             offerCards[i].buyButton.onClick.AddListener(() => OnBuyClicked(index));
-            offerCards[i].lockButton.onClick.AddListener(() => { market.ToggleFaceLock(index); Refresh(); });
+            offerCards[i].lockButton.onClick.AddListener(() => { market.ToggleFaceLock(index); AudioManager.Play(Sfx.Lock); Refresh(); });
         }
         for(int i = 0; i < enchantmentCards.Length; i++){
             int index = i;
             enchantmentCards[i].buyButton.onClick.AddListener(() => OnEnchantmentClicked(index));
-            enchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEnchantmentLock(index); Refresh(); });
+            enchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEnchantmentLock(index); AudioManager.Play(Sfx.Lock); Refresh(); });
         }
         for(int i = 0; i < dieEnchantmentCards.Length; i++){
             int index = i;
             dieEnchantmentCards[i].buyButton.onClick.AddListener(() => OnDieEnchantmentClicked(index));
-            dieEnchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleDieEnchantmentLock(index); Refresh(); });
+            dieEnchantmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleDieEnchantmentLock(index); AudioManager.Play(Sfx.Lock); Refresh(); });
         }
         for(int i = 0; i < dieEnchantmentSlots.Length; i++){
             int index = i;
@@ -109,7 +110,7 @@ public class MarketUI : MonoBehaviour
         for(int i = 0; i < equipmentCards.Length; i++){
             int index = i;
             equipmentCards[i].buyButton.onClick.AddListener(() => OnEquipmentClicked(index));
-            equipmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEquipmentLock(index); Refresh(); });
+            equipmentCards[i].lockButton.onClick.AddListener(() => { market.ToggleEquipmentLock(index); AudioManager.Play(Sfx.Lock); Refresh(); });
         }
         for(int i = 0; i < dieSlots.Length; i++){
             int index = i;
@@ -126,14 +127,14 @@ public class MarketUI : MonoBehaviour
         }
         cancelButton.onClick.AddListener(CancelBuy);
         rerollButton.onClick.AddListener(OnRerollClicked);
-        if(healButton != null) healButton.onClick.AddListener(() => { if(market.Heal()) Refresh(); });
+        if(healButton != null) healButton.onClick.AddListener(() => { if(market.Heal()){ AudioManager.Play(Sfx.Heal); Refresh(); } });
         skipRewardButton.onClick.AddListener(OnSkipRewardClicked);
 
         Refresh();
     }
 
     private void OnRerollClicked(){
-        market.Reroll();
+        if(market.Reroll()) AudioManager.Play(Sfx.Reroll);
         ClearPending();
         Refresh();
     }
@@ -155,24 +156,24 @@ public class MarketUI : MonoBehaviour
     // With a free slot it goes straight on; with both full the player picks the one to replace.
     private void OnDieEnchantmentClicked(int offerIndex){
         if(!market.CanBuyDieEnchantment(offerIndex)) return;
-        if(market.HasFreeDieEnchantmentSlot) market.BuyDieEnchantment(offerIndex, -1);
+        if(market.HasFreeDieEnchantmentSlot){ if(market.BuyDieEnchantment(offerIndex, -1)) AudioManager.Play(Sfx.Enchant); }
         else pendingDieEnchantment = offerIndex;
         Refresh();
     }
 
     private void OnDieEnchantmentSlotClicked(int slot){
-        if(pendingDieEnchantment >= 0) market.BuyDieEnchantment(pendingDieEnchantment, slot);
+        if(pendingDieEnchantment >= 0 && market.BuyDieEnchantment(pendingDieEnchantment, slot)) AudioManager.Play(Sfx.Enchant);
         ClearPending();
         Refresh();
     }
 
     private void OnEquipmentClicked(int offerIndex){
-        market.BuyEquipment(offerIndex);
+        if(market.BuyEquipment(offerIndex)) AudioManager.Play(Sfx.Buy);
         Refresh();
     }
 
     private void OnRewardClicked(int choiceIndex){
-        market.ClaimReward(choiceIndex);
+        if(market.ClaimReward(choiceIndex)) AudioManager.Play(Sfx.Buy);
         Refresh();
     }
 
@@ -183,11 +184,11 @@ public class MarketUI : MonoBehaviour
 
     private void OnDieSlotClicked(int dieSlot){
         if(pendingOffer >= 0){
-            market.Buy(pendingOffer, dieSlot);
+            if(market.Buy(pendingOffer, dieSlot)) AudioManager.Play(Sfx.Buy);
             selectedSlot = dieSlot;
         }
         else if(pendingEnchantment >= 0){
-            market.BuyEnchantment(pendingEnchantment, dieSlot);
+            if(market.BuyEnchantment(pendingEnchantment, dieSlot)) AudioManager.Play(Sfx.Enchant);
             selectedSlot = dieSlot;
         }
         else if(pendingSwap < 0 && HasSelectedPanel){
@@ -203,7 +204,7 @@ public class MarketUI : MonoBehaviour
             return;
         }
         else{
-            market.SwapFaces(pendingSwap, dieSlot);
+            if(market.SwapFaces(pendingSwap, dieSlot)) AudioManager.Play(Sfx.Swap);
             // The selection follows the moved face to its new place.
             if(selectedSlot == pendingSwap) selectedSlot = dieSlot;
         }
@@ -219,7 +220,7 @@ public class MarketUI : MonoBehaviour
     }
 
     private void OnUpgradeClicked(int dieSlot){
-        market.Upgrade(dieSlot);
+        if(market.Upgrade(dieSlot)) AudioManager.Play(Sfx.Upgrade);
         Refresh();
     }
 

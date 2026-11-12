@@ -18,6 +18,7 @@ public class RunStartUI : MonoBehaviour
             offerCards[i].buyButton.onClick.AddListener(() => OnFaceChosen(index));
         }
         if(rerollButton != null) rerollButton.onClick.AddListener(OnReroll);
+        AudioManager.PlayMusic(MusicTrack.RunStart);
         Refresh();
     }
 
@@ -40,12 +41,13 @@ public class RunStartUI : MonoBehaviour
     }
 
     private void OnReroll(){
-        if(RunManager.Instance.RerollStartingFaces()) Refresh();
+        if(RunManager.Instance.RerollStartingFaces()){ AudioManager.Play(Sfx.Reroll); Refresh(); }
     }
 
     private void OnFaceChosen(int index){
         RunData run = RunManager.Instance.run;
         if(index >= run.startingFaceOffers.Count) return;
+        AudioManager.Play(Sfx.Buy);
         RunManager.Instance.ChooseStartingFace(run.startingFaceOffers[index]);
         RunManager.Instance.GoToNextBattle();
     }

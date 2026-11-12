@@ -83,6 +83,7 @@ public class UIManager : MonoBehaviour
         player.OnHealthChanged += UpdatePlayerUI;
         UpdatePlayerUI();
         if(floatingNumbers != null) floatingNumbers.Track(player);
+        CombatSounds.Watch(player, true);
     }
 
     void OnDestroy(){
@@ -130,6 +131,7 @@ public class UIManager : MonoBehaviour
         card.Bind(enemy, () => onClick(index));
         enemy.entity.OnHealthChanged += RefreshEnemies;
         if(floatingNumbers != null) floatingNumbers.Track(enemy.entity);
+        CombatSounds.Watch(enemy.entity, false);
         enemyCards.Add(card);
         RefreshEnemies();
     }
@@ -173,6 +175,7 @@ public class UIManager : MonoBehaviour
         if(shownEquipment == null) return;
         int index = shownEquipment.IndexOf(item);
         if(index >= 0 && index < equipmentChips.Length) equipmentChips[index].Flash();
+        AudioManager.Play(Sfx.ItemTrigger);
     }
 
     private List<EquipmentSO> shownEquipment;
@@ -292,6 +295,8 @@ public class UIManager : MonoBehaviour
             ? "RUN COMPLETE\n<size=50%>The arena is yours</size>"
             : playerWon ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>" : "DEFEAT";
         battleResultButtonText.text = playerWon && !runComplete ? "Continue" : "New Run";
+        AudioManager.StopMusic();
+        AudioManager.Play(runComplete ? Sfx.RunComplete : playerWon ? Sfx.Victory : Sfx.Defeat);
     }
 
     // die is null for normal enemies, which hides the strip.
@@ -357,6 +362,7 @@ public class UIManager : MonoBehaviour
         rollAnimation = null;
         rolledFaceTile.gameObject.SetActive(true);
         rollAnimation = StartCoroutine(RollAnimation(face, die, stone));
+        AudioManager.Play(Sfx.DieRoll);
     }
 
     private IEnumerator RollAnimation(DieFace face, List<DieFace> die, bool stone){

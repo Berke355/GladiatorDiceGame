@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2735874837123234399}
   - component: {fileID: 299578198944569209}
+  - component: {fileID: 6754578716004510914}
   m_Layer: 0
   m_Name: RunManager
   m_TagString: Untagged
@@ -68,9 +69,35 @@ MonoBehaviour:
     metEnemies: []
     startingFaceOffers: []
     startingFaceChosen: 0
+    startingOfferRerolls: 0
     equipment: []
     lockedFaces: []
     lockedEnchantments: []
     lockedEquipment: []
+    dieEnchantments: []
+    lockedDieEnchantments: []
     rerollsPerBattle: 0
     bossRewardPending: 0
+    nextBattlePicked: 0
+    nextBoss: {fileID: 0}
+    nextEncounter:
+      groupName: 
+      tier: 0
+      members: []
+      hpMultiplier: 0.6
+    startingDie: []
+--- !u!114 &6754578716004510914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104094959342152551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f261a8f4f713cd341a55be5eb09fa6e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  library: {fileID: 11400000, guid: ad56331d375b2fd45ab2dd91f5d36d79, type: 2}
+  voices: 10
+  musicFadeSeconds: 1.2

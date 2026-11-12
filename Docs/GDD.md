@@ -1215,3 +1215,22 @@ All boss numbers were set by simulation (DevLog Days 44–46) and are still to b
 - **Face tiles: every face is recognized by its look.** A face is always the same object, an ivory die-face tile, in the Market, on the die net and in the dice tray, so buying one feels like fitting a new face to your die. Three layers, read from far to near: the tile's **ground color is its family** (the first tag other than Physical: Bleed dark red, Burn orange, Poison green, Ritual purple, Rage crimson brown, Block steel blue, Hammer iron grey, Fortune gold, General plain bone; the starting faces plain ivory; a face's other tags show in its rules, not on the tile), **its emblem is the face itself** (one bold object named by the face, never a status icon), and **its rim is its rarity** (bronze, silver, gold; a purple seal when enchanted). The value sits in a corner. Emblems are listed in `Docs/ArtPrompts.md`.
 - **Items and enchantments have pictures too**, one look per kind so they never mix up: an item is the object alone (like a face emblem), a die enchantment is its motif on a round bronze medallion (bound to the die's places like a stamp), a face enchantment is its motif pressed into a purple wax seal, which also sits in the corner of the face it is inscribed on. In battle an item is only its picture (its name and rules on hover); in the Market its picture sits next to its name. Prompts are in `Docs/ArtPrompts.md`.
 - **One look on every screen:** the Market and the run start screen sit on the dimmed arena, with the same dark brown panels, bronze buttons and fonts as the battle.
+
+## Sound
+
+Sound is feedback first: every thing the player does or suffers has its own short sound, so a fight can be followed with
+the eyes half closed. Music sets each screen's mood and fades from one screen to the next.
+
+- **The die is the star.** Rolling plays a real die thrown on a table (a different take each time).
+- **Hits tell what happened:** a punch when a hit costs HP (heavier when the player is hit), a metal clang when Block or
+  Fortify stops it, a wooden knock when Block is raised, a rising chime for healing and a thud for a death. Poison and
+  Bleed ticks are silent: they come in a row at every turn's end and the numbers already show them.
+- **Turns:** a blade drawn for YOUR TURN, a low bell for ENEMY TURN. An item that fires plucks a string as its chip flashes.
+- **The Market:** coins for buying, an anvil for upgrades, glass for enchanting, shuffled cards for a reroll, a latch for
+  a lock, a sliding card for moving a face. Every button clicks.
+- **Music:** a feast tune at the run start, a market tune in the Market, an epic theme in battle and a heavier one for the
+  bosses. Victory, defeat and the end of the run stop the music for a short jingle.
+- **Small and repeatable:** every sound has a few takes and a little pitch variation, so the hundredth hit doesn't sound
+  like the first one played again.
+- All sounds and music are public domain (CC0); sources are in `Docs/Credits.md`.
+

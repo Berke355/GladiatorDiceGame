@@ -27,6 +27,7 @@ public class EnemyTurnState : BattleState
     private IEnumerator Run(){
         yield return new WaitForSeconds(PauseAfterPlayer);
         if(UIManager.Instance != null) UIManager.Instance.ShowTurnBanner("ENEMY TURN");
+        AudioManager.Play(Sfx.EnemyTurn);
         yield return new WaitForSeconds(PauseAfterBanner);
         BattleFlow flow = battleManager.flow;
         // By index: an enemy can join while enemies act (a Hydra head).

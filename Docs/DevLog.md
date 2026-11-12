@@ -3594,3 +3594,24 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - Sound and music, then a playtest build for friends.
 
+## Day 103 - Sound and Music
+
+### Accomplished
+- **The game has sound** (GDD "Sound"). PixelLab's sound and music tools need a paid tier, so everything comes from public domain (CC0) packs: five Kenney packs for the effects and four OpenGameArt tracks for the music (`Docs/Credits.md`).
+- **`AudioManager`** on the RunManager prefab, so it lives through scene loads: `AudioManager.Play(Sfx.X)` plays one of a sound's takes with a little pitch variation (on a pool of 10 sources; the same sound within 0.06 s is skipped, so a multi-hit isn't just louder), `PlayMusic(MusicTrack.X)` crossfades to a screen's track, `StopMusic` clears it for a jingle. Music and effect volumes are kept in PlayerPrefs (no settings screen yet). Every interactable button clicks: a mouse press is checked against what the pointer is over, so copied cards click without wiring.
+- **`SoundLibrarySO`** (`Assets/Audio/SoundLibrary.asset`): every `Sfx` and `MusicTrack` with its clips, volume and pitch variation. Both enums are append only.
+- **`CombatSounds`** watches each combatant like the floating numbers: a hit that costs HP (heavier for the player), Block or Fortify absorbing, Block gained, healing, death. Ticks are silent.
+- **Hooks:** the roll animation (die thrown), the turn banners, an item firing, the battle result (jingle), each Market action (buy, upgrade, enchant, reroll, lock, move, heal, boss reward) and the run start (choose, reroll). Each screen starts its music: run start, Market, battle, boss.
+
+### Decisions
+- **Callers name what happened, the library decides how it sounds**, so a sound can be swapped in the asset without touching code, and the rules never know about sound.
+- **The jingles were picked by measuring them**, as nothing here can listen: the start and end pitch of 51 candidates, a rising one for victory, a longer rising one for the end of the run and a falling one for defeat.
+- **Music is streamed** (Vorbis 0.5), effects are decompressed on load.
+
+### Tests
+- Compiles; in Play Mode the AudioManager comes from the prefab, the run start's track is loaded and effects play on the pool. Not yet heard: the user's play-test will tell which sounds and volumes to change.
+
+### Next Steps
+- Play-test the sounds and tune volumes; a settings screen with music and effect sliders.
+- A playtest build for friends.
+
