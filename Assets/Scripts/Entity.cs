@@ -37,6 +37,9 @@ public class Entity : MonoBehaviour
     public event Action<Entity, int> HitDealt;
     // Raised when a hit makes this entity lose HP (HP lost). Damage over time and HP costs don't count.
     public event Action<int> HitTaken;
+    // Raised when Block or Fortify absorbed some of a hit (the amount absorbed). For the UI only: nothing in the rules
+    // listens to it.
+    public event Action<int> HitAbsorbed;
 
     private Dictionary<StatusType, int> activeStatuses = new Dictionary<StatusType, int>();
     // Burn applied since this entity's last Burn tick does not decay on the next tick,
@@ -113,6 +116,9 @@ public class Entity : MonoBehaviour
 
         OnHealthChanged?.Invoke();
 
+        if(LastHitAbsorbed > 0){
+            HitAbsorbed?.Invoke(LastHitAbsorbed);
+        }
         if(remaining > 0){
             HitTaken?.Invoke(remaining);
         }

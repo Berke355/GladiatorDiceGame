@@ -2,8 +2,8 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
-// Numbers that pop over a combatant's head when its HP changes: red for HP lost (hits and ticks alike), green for HP
-// healed. They rise and fade; only the picture, the rules never wait for them. The layer stretches over the whole
+// Numbers that pop over a combatant when its HP changes: red for HP lost (hits and ticks alike), green for HP healed,
+// and a grey shield with the amount when Block or Fortify absorbed a hit. They rise and fade; only the picture, the rules never wait for them. The layer stretches over the whole
 // canvas with its pivot at the bottom left, like the enemy cards' layer.
 public class FloatingNumbersUI : MonoBehaviour
 {
@@ -12,6 +12,7 @@ public class FloatingNumbersUI : MonoBehaviour
     public TextMeshProUGUI template;
     public Color lossColor = new Color32(0xFF, 0x5A, 0x4A, 0xFF);
     public Color healColor = new Color32(0x7F, 0xE0, 0x7A, 0xFF);
+    public Color blockColor = new Color32(0xC9, 0xD3, 0xDA, 0xFF);
 
     private const float Lifetime = 0.9f;
     private const float Rise = 110f;
@@ -27,6 +28,7 @@ public class FloatingNumbersUI : MonoBehaviour
 
     private readonly Dictionary<Entity, int> lastHP = new Dictionary<Entity, int>();
     private readonly Dictionary<Entity, System.Action> handlers = new Dictionary<Entity, System.Action>();
+    private readonly Dictionary<Entity, System.Action<int>> absorbHandlers = new Dictionary<Entity, System.Action<int>>();
     private readonly List<Number> numbers = new List<Number>();
 
     // Starts watching a combatant; its current HP is the baseline, so nothing pops for the battle's setup.
@@ -36,11 +38,18 @@ public class FloatingNumbersUI : MonoBehaviour
         System.Action handler = () => OnHealthChanged(entity);
         handlers[entity] = handler;
         entity.OnHealthChanged += handler;
+        // Left of and below the HP number, so a hit that is partly blocked shows both apart.
+        System.Action<int> absorbed = amount => Spawn(entity, "<size=50%>" + GameText.Icon("Block") + "</size>" + amount, blockColor, new Vector2(-90f, -50f));
+        absorbHandlers[entity] = absorbed;
+        entity.HitAbsorbed += absorbed;
     }
 
     void OnDestroy(){
         foreach(KeyValuePair<Entity, System.Action> pair in handlers){
             if(pair.Key != null) pair.Key.OnHealthChanged -= pair.Value;
+        }
+        foreach(KeyValuePair<Entity, System.Action<int>> pair in absorbHandlers){
+            if(pair.Key != null) pair.Key.HitAbsorbed -= pair.Value;
         }
     }
 
@@ -53,15 +62,19 @@ public class FloatingNumbersUI : MonoBehaviour
     }
 
     private void Spawn(Entity entity, string value, Color color){
+        Spawn(entity, value, color, new Vector2(Random.Range(-20f, 60f), 0f));
+    }
+
+    private void Spawn(Entity entity, string value, Color color, Vector2 offset){
         Camera view = Camera.main;
         SpriteRenderer sprite = entity.GetComponent<SpriteRenderer>();
         if(view == null || sprite == null || sprite.sprite == null) return;
-        // At chest height (clear of the intent over the head), a little to one side so numbers in a row don't sit
-        // on top of each other.
+        // At chest height (clear of the intent over the head), shifted by the offset (HP numbers a little to the right,
+        // varying so numbers in a row don't sit on top of each other).
         Bounds local = sprite.sprite.bounds;
         Vector3 head = sprite.transform.TransformPoint(new Vector3(local.center.x, Mathf.Lerp(local.min.y, local.max.y, 0.6f), 0f));
         Vector2 point = Vector2.Scale(view.WorldToViewportPoint(head), layer.rect.size);
-        point.x += Random.Range(-40f, 40f);
+        point += offset;
 
         TextMeshProUGUI text = Instantiate(template, layer);
         text.gameObject.SetActive(true);

@@ -3474,3 +3474,16 @@ Enemies have one still sprite each, so they now react on screen without new art.
 - **Blocked hits** could show their own grey number (today a fully blocked hit shows nothing).
 - **The starting Sword's emblem** reads small.
 
+## Day 96 - Blocked Hits Show Too
+
+### Accomplished
+- **A grey shield and the amount** pops when Block or Fortify absorbs a hit, so a fully blocked hit is no longer silent. A partly blocked hit shows both numbers: the shield to the left and below, the red HP loss to the right.
+- **`Entity.HitAbsorbed`**, raised by `TakeDamage` with `LastHitAbsorbed` when it is above 0. It is for the UI only: nothing in the rules listens to it, and the turn-start Block reset, which isn't a hit, doesn't raise it.
+
+### Tests
+- **Play Mode:** the player with 4 Block taking 6 shows the shield 4 and -2; the Murmillo with 5 Block taking 3 shows the shield 3 and no HP number. The shield icon first drew at the number's full size and covered the red number; it is now half size.
+
+### Next Steps
+- **A real play** to judge the tray, the animations, the reactions and the numbers together.
+- **The starting Sword's emblem** reads small.
+
