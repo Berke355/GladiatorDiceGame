@@ -3541,4 +3541,5 @@ From the user's play: the timing is right now, but the big rectangles around the
 - **The TARGET frame wraps just the HP bar**, tightly: it is now a child of the bar instead of the whole plate, with 5-pixel sides.
 - **Face tooltips put each action on its own line** under its colored name, with the same half-height gap (`GameText.ActionLines`, used by both `FaceTooltip`s): "Attack: ... Defense: ..." reads as ATTACK: ... / DEFENSE: .... A keyword before the actions (Consumable) stays on top, and Charge's rule after them gets its own line.
 - **Ignitions read in one line:** "ignite Burn (0 damage)" over Lampadarius's head was two lines with a 0 in it; `Iconize` now writes it [Damage]N = [Burn] (damage equal to the target's Burn, the real number when it burns), and Detonate-like ones add "consume [Burn]".
+- **Wider Market cards:** 440 pixels (were 340), with wider Buy and Lock buttons, so a face's two action lines no longer shrink to fit. The fullest shelf, a Grand Market's three faces and two items (or the Enchanting Table's three and two), still fits.
 
