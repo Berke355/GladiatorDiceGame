@@ -3563,4 +3563,5 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Next Steps
 - **The corner gem** (a face's second family) puzzled the user; keep it, explain it on hover, or drop it.
+- **The corner gem is gone** (`FaceTileUI`, the `FaceTile` prefab, the GDD and the prompts): it showed a face's second family, but nothing explained it and the user couldn't tell what it meant. A face's other tags speak through its rules, which are written out now.
 

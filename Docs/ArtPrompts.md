@@ -141,7 +141,7 @@ Every die face gets its own emblem, so a player who knows the game recognizes a 
 
 ## Families (ground color of the tile, drawn by the game)
 
-The family is the face's first tag other than Physical; Lifesteal counts as Bleed. A second tag shows as a small gem in a corner. The starting faces (Sword, Shield, Health Potion) stay plain ivory.
+The family is the face's first tag other than Physical; Lifesteal counts as Bleed. The starting faces (Sword, Shield, Health Potion) stay plain ivory.
 
 | Family | Ground | Faces |
 |---|---|---|

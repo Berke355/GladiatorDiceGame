@@ -3,17 +3,15 @@ using UnityEngine.UI;
 using TMPro;
 
 // A die face drawn as a tile (GDD "Visual Style", Face tiles): the rim is the rarity, the band the family (the first
-// tag other than Physical; Lifesteal counts as Bleed), the center a pale tint of the family, the emblem the face itself,
-// a corner gem the second family and a badge the value. The same tile shows a face on the die net, in the dice tray
-// and in the Market, so a face always looks the same.
+// tag other than Physical; Lifesteal counts as Bleed), the center a pale tint of the family, the emblem the face itself
+// and a badge the value. The same tile shows a face on the die net, in the dice tray and in the Market, so a face
+// always looks the same. (A corner gem for a second family was dropped: players didn't know what it meant.)
 public class FaceTileUI : MonoBehaviour
 {
     public Image rim;
     public Image band;
     public Image center;
     public Image emblem;
-    // The second family, if the face has one.
-    public Image gem;
     public TextMeshProUGUI valueText;
     // Dims the tile (a stone or used face).
     public Image overlay;
@@ -25,13 +23,12 @@ public class FaceTileUI : MonoBehaviour
     }
 
     public void Set(DieFaceSO face, int value, string valueSuffix = "", bool dimmed = false){
-        FaceTag? first = null, second = null;
+        FaceTag? first = null;
         if(face != null && !face.plainTile){
             foreach(FaceTag tag in face.tags){
                 if(tag == FaceTag.Physical) continue;
-                FaceTag family = tag == FaceTag.Lifesteal ? FaceTag.Bleed : tag;
-                if(first == null) first = family;
-                else if(second == null && family != first) second = family;
+                first = tag == FaceTag.Lifesteal ? FaceTag.Bleed : tag;
+                break;
             }
         }
         Color familyColor = first != null ? FamilyColor(first.Value) : Ivory;
@@ -40,10 +37,6 @@ public class FaceTileUI : MonoBehaviour
         center.color = first != null ? Color.Lerp(Ivory, familyColor, 0.22f) : Ivory;
         emblem.sprite = face != null ? face.emblem : null;
         emblem.enabled = emblem.sprite != null;
-        if(gem != null){
-            gem.gameObject.SetActive(second != null);
-            if(second != null) gem.color = FamilyColor(second.Value);
-        }
         if(valueText != null) valueText.text = face != null && face.hasNoValue ? valueSuffix : value + valueSuffix;
         if(overlay != null) overlay.enabled = dimmed;
     }
