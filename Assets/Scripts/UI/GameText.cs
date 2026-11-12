@@ -72,6 +72,8 @@ public static class GameText
     public static string Iconize(string text){
         if(string.IsNullOrEmpty(text)) return text;
         string s = text;
+        // An ignition: damage equal to the target's Burn ("ignite Burn (3 damage)" → [Damage]3 = [Burn]).
+        s = Regex.Replace(s, @"\bignite Burn \((\d+) damage(, consume Burn)?\)", m => Mark("Damage") + m.Groups[1].Value + " = " + Mark("Burn") + (m.Groups[2].Success ? ", consume " + Mark("Burn") : ""));
         s = Regex.Replace(s, @"(\d+) x (\d+) damage", m => m.Groups[1].Value + "×" + Mark("Damage") + m.Groups[2].Value);
         s = Regex.Replace(s, @"(\d+) \+ rerolls (left|used) (damage|block)", m => Mark(m.Groups[3].Value) + m.Groups[1].Value + " + " + Mark("Reroll") + " " + m.Groups[2].Value);
         s = Regex.Replace(s, @"(\d+) x rerolls used damage", m => Mark("Damage") + m.Groups[1].Value + " × " + Mark("Reroll") + " used");
@@ -164,7 +166,7 @@ public static class GameText
     // Tooltip text for a face definition (e.g. a Market offer): name, rarity, value, colored description, keywords.
     public static string FaceTooltip(DieFaceSO face, int value){
         return "<b>" + face.faceName + "</b>  <size=80%>" + face.rarity + " · Value " + value + "</size>\n"
-            + Colorize(face.description)
+            + ActionLines(Colorize(face.description))
             + Glossary(face.description);
     }
 
@@ -172,8 +174,24 @@ public static class GameText
     public static string FaceTooltip(DieFace face){
         string description = face.FullDescription;
         return "<b>" + face.DisplayName + "</b>  <size=80%>" + face.definition.rarity + " · Value " + face.value + "</size>\n"
-            + Colorize(description)
+            + ActionLines(Colorize(description))
             + Glossary(description);
+    }
+
+    // A face's rules with each action on its own line under its colored name ("Attack: ... Defense: ..." becomes
+    // ATTACK: ... / DEFENSE: ...), like the face's lines in the card language. Text before the first action (a keyword
+    // such as Consumable) stays on top.
+    private static string ActionLines(string description){
+        if(string.IsNullOrEmpty(description)) return description;
+        string text = Regex.Replace(description, @"\s*\b(Attack|Defense|Magic):\s*", m => {
+            ActionType action = (ActionType)System.Enum.Parse(typeof(ActionType), m.Groups[1].Value);
+            return "\n<size=45%> </size>\n" + ActionLabel(action) + " ";
+        });
+        // A whole-face rule written after the actions (Charge) gets its own line too.
+        text = Regex.Replace(text, @"\s+(Charge:)", "\n$1");
+        // No empty line above the first action when it opens the description.
+        const string Gap = "\n<size=45%> </size>\n";
+        return text.StartsWith(Gap) ? text.Substring(Gap.Length) : text;
     }
 
     // Tooltip text for an equipped item: name, rarity, colored description, keywords.

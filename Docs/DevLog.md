@@ -3539,4 +3539,6 @@ From the user's play: the timing is right now, but the big rectangles around the
 ### Day 99, later: from the user's screenshot
 - **The action lines are further apart** (a half-height empty line between them), **without the icon in front** and **with a colon** after the name: "ATTACK:", "DEFENSE:".
 - **The TARGET frame wraps just the HP bar**, tightly: it is now a child of the bar instead of the whole plate, with 5-pixel sides.
+- **Face tooltips put each action on its own line** under its colored name, with the same half-height gap (`GameText.ActionLines`, used by both `FaceTooltip`s): "Attack: ... Defense: ..." reads as ATTACK: ... / DEFENSE: .... A keyword before the actions (Consumable) stays on top, and Charge's rule after them gets its own line.
+- **Ignitions read in one line:** "ignite Burn (0 damage)" over Lampadarius's head was two lines with a 0 in it; `Iconize` now writes it [Damage]N = [Burn] (damage equal to the target's Burn, the real number when it burns), and Detonate-like ones add "consume [Burn]".
 
