@@ -274,3 +274,156 @@ For this sheet, change "exactly 12 emblems in a grid of 4 columns and 3 rows" in
 5. Gambler's Strike: a pair of Roman knucklebones (astragali)
 6. Patient Blade: a sheathed sword leaning on an hourglass
 ```
+
+# Items, die enchantments and face enchantments
+
+Same rules as the face emblems (one object named by the thing, a bold silhouette, never a status icon), with one look per kind so they never mix up:
+
+- **Items:** the object alone, like the face emblems.
+- **Die enchantments:** the motif in relief on a round bronze medallion (they are bound to the die's places, like a stamp on the die).
+- **Face enchantments:** the motif pressed into a glowing purple wax seal (the purple seal an enchanted face carries).
+
+A new chat per sheet, no reference image, the kind's style block and the sheet's list in one message.
+
+## Item style block
+
+```
+A pixel art sheet of item emblems for a Roman gladiator dice game: exactly 12
+emblems in a grid of 4 columns and 3 rows, equal square cells, evenly spaced,
+every emblem centered in its cell and filling about 75% of it, all the same
+size and weight.
+Strict pixel art like 48x48 game sprites: hard pixel edges, no anti-aliasing,
+no blur, no gradients, no glow, a 2-pixel dark brown outline around every
+emblem, one bold object per cell with a clear silhouette that reads at small
+size, ancient Roman look, natural colors for each object.
+Plain solid magenta background (#FF00FF) in every cell, no circles or tiles
+behind the objects, no grid lines, no frames, no text, no letters, no numbers.
+Emblems, in this order (left to right, top to bottom):
+```
+
+### Items 1
+
+```
+1. Alchemist's Belt: a leather belt with three small glass vials tucked in it
+2. Ambusher's Knife: a short curved dagger half hidden in a dark cloth
+3. Balance Scales: a large standing bronze balance with two pans
+4. Barbed Hook: an iron hook with backward barbs on a short chain
+5. Berserker Torc: a thick twisted bronze neck ring with red gem ends
+6. Blood Pact: a rolled contract sealed with a red blood drop of wax
+7. Bone Fetish: a small charm of tied bones and feathers
+8. Censer: a hanging bronze incense burner with green smoke
+9. Challenger's Mark: a red cloth glove thrown down
+10. Compass: a bronze compass rose with a needle
+11. Drill Banner: a small square Roman legion standard with an eagle on top
+12. Haggler's Scale: a merchant's hand scale with gold coins on one pan
+```
+
+### Items 2
+
+```
+1. Herald's Horn: a long straight bronze trumpet with a red banner
+2. Hourglass: a wooden hourglass with golden sand
+3. Iron Bracers: a pair of riveted iron forearm guards
+4. Laurel Wreath: a golden victor's crown of laurel leaves on a red cushion
+5. Loaded Die: a single white die with a dark lead weight showing inside
+6. Lucky Charm: an iron horseshoe tied with a red ribbon
+7. Merchant's Purse: a fat leather coin purse with a gold drawstring
+8. Motley Cloak: a patchwork cloak of many colored squares
+9. Plague Mask: a long-beaked leather mask with round glass eyes
+10. Rabbit's Foot: a white rabbit's foot on a leather cord
+11. Scribe's Quill: a feather quill beside a small ink pot
+12. Second Blade: two short swords, one behind the other
+```
+
+### Items 3 (8 emblems)
+
+In the style block, write "exactly 8 emblems in a grid of 4 columns and 2 rows" instead of 12 in 4 by 3.
+
+```
+1. Smelling Salts: a small corked bottle with white crystals
+2. Smoldering Gauntlet: a leather glove with glowing embers on the knuckles
+3. Spiked Greaves: iron shin guards covered in short spikes
+4. Tinder Box: an open wooden box with flint, steel and a spark
+5. Tower Helm: a tall closed bronze helmet like a little tower
+6. Whetstone: a grey sharpening stone with a blade being honed on it
+7. Witch's Knot: a tangled knot of black and green cords
+8. (spare) a coiled leather whip
+```
+
+## Die enchantment style block
+
+```
+A pixel art sheet of medallion emblems for a Roman gladiator dice game: exactly
+8 emblems in a grid of 4 columns and 2 rows, equal square cells, evenly spaced,
+every emblem centered in its cell and filling about 80% of it, all the same
+size.
+Every emblem is a round bronze medallion with a thick rim, and the motif raised
+on it in relief, in warm bronze and gold tones, so all of them clearly belong
+together; the motif must differ strongly from medallion to medallion.
+Strict pixel art like 48x48 game sprites: hard pixel edges, no anti-aliasing,
+no blur, no gradients, no glow, a 2-pixel dark brown outline around every
+medallion.
+Plain solid magenta background (#FF00FF) in every cell, no grid lines, no
+frames, no text, no letters, no numbers.
+Medallions, in this order (left to right, top to bottom):
+```
+
+### Die enchantments 1 (8)
+
+```
+1. Balance: a balance beam tipped up on one side
+2. Burnout: a candle burning down to a stub with a big flame
+3. Center of Gravity: a heavy round weight hanging in the middle
+4. Heavy Core: an iron ball inside a cracked shell
+5. Honed Edge: a blade edge with a bright gleam
+6. Keystone: the keystone at the top of a stone arch
+7. Kindred: two hands clasped together
+8. Low Guard: a shield held low with a downward arrow
+```
+
+### Die enchantments 2 (6)
+
+In the style block, write "exactly 6 emblems in a grid of 3 columns and 2 rows".
+
+```
+1. Outer Ring: a ring of small dots around an empty center
+2. Right Hand: an open right hand raised
+3. Twin Fangs: two curved fangs side by side
+4. Twin Soul: two faces back to back, one light and one dark
+5. Twin Weights: two small weights hanging from one bar
+6. Weighted Die: a die with a heavy weight tied to one side
+```
+
+## Face enchantment style block
+
+```
+A pixel art sheet of seal emblems for a Roman gladiator dice game: exactly 12
+emblems in a grid of 4 columns and 3 rows, equal square cells, evenly spaced,
+every emblem centered in its cell and filling about 80% of it, all the same
+size.
+Every emblem is a round purple wax seal with wavy dripping edges, glowing
+softly, with the motif pressed into it in lighter violet and gold, so all of
+them clearly belong together; the motif must differ strongly from seal to seal.
+Strict pixel art like 48x48 game sprites: hard pixel edges, no anti-aliasing,
+no blur, no gradients, a 2-pixel dark outline around every seal.
+Plain solid magenta background (#FF00FF) in every cell, no grid lines, no
+frames, no text, no letters, no numbers.
+Seals, in this order (left to right, top to bottom):
+```
+
+### Face enchantments (12)
+
+```
+1. Dark Rite: a skull with a lit candle on top
+2. Ignition: a single bright spark bursting
+3. Inspire: a horn with sound waves
+4. Kindling: a bundle of crossed sticks with a small flame
+5. Lucky Charm: a four-pointed star
+6. Rend: three claw marks
+7. Resonance: three rings spreading out from a center
+8. Sweep: a wide crescent slash
+9. Venom Coating: a blade edge with a dripping drop
+10. War Cry: an open shouting mouth
+11. Ward: a round rune circle like a shield
+12. Whirlwind: two blades spinning in a spiral
+```
