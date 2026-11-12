@@ -3504,3 +3504,18 @@ The user played the new screens and found the worst problem: the enemies answere
 - **Tune the three pauses** from the user's play.
 - **A turn banner** ("Your turn" / "Enemy turn") could mark the change of side, as the tray's title is easy to miss.
 
+## Day 98 - Whose Turn Is It
+
+From the user's play of Day 97: a banner for the change of side, longer pauses, and no actions while the die still tumbles.
+
+### Accomplished
+- **Turn banners:** "YOUR TURN" (at the start of each player turn, `PlayerRollState`) and "ENEMY TURN" (after the pause that follows the player's action) pop across the middle of the screen in gold Cinzel on a dark band, hold and fade in 0.9 s (`UIManager.ShowTurnBanner`). The band never takes clicks.
+- **Longer pauses:** 0.9 s after the player's action (was 0.7), then the banner and 0.6 s, 0.85 s after each enemy (was 0.65) and 0.5 s after the enemies' statuses tick (was 0.35).
+- **No action while the die tumbles:** the action, Reroll and Pass buttons stay off until the tumble ends (`UIManager.IsRolling`), and `BattleManager.OnActionSelected` ignores clicks meanwhile. The tumble's end opens them by redrawing the rolled face, unless the phase moved on (`actionPhase`, set false by the roll, choose-face, enemy-turn and result screens). Change/Flip/Tumble rolls are covered too, as their state redraws the face while it still tumbles.
+
+### Tests
+- **Play Mode:** YOUR TURN shows at the battle's start; right after a roll every button is off and clicking Attack and Defense changes nothing (the Murmillo's HP stays 20); once the die lands, the face's actions and Pass open. The ENEMY TURN band reads clearly over the arena.
+
+### Next Steps
+- **The user's play** to judge the new pauses and the banners.
+

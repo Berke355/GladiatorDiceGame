@@ -43,6 +43,10 @@ public class UIManager : MonoBehaviour
     [Header("Equipment")]
     public EquipmentChipUI[] equipmentChips;
 
+    // A band across the middle of the screen that names whose turn it is (optional).
+    public CanvasGroup turnBanner;
+    public TextMeshProUGUI turnBannerText;
+
     // HP changes pop as numbers over the heads (optional).
     public FloatingNumbersUI floatingNumbers;
 
@@ -193,6 +197,7 @@ public class UIManager : MonoBehaviour
 
     // An action lets the player choose the next face: only the faces on the net are active.
     public void ShowChooseFace(List<DieFace> die){
+        actionPhase = false;
         rolledFaceTitle.text = "Choose a face";
         rolledFaceText.text = "Click a face on your die: it comes up next.";
         rolledFaceTooltip.text = "";
@@ -212,6 +217,7 @@ public class UIManager : MonoBehaviour
 
     // The enemies act: every button waits until the player's next turn.
     public void ShowEnemyTurn(){
+        actionPhase = false;
         rolledFaceTitle.text = "Enemy turn";
         rolledFaceText.text = "";
         rolledFaceTooltip.text = "";
@@ -225,6 +231,7 @@ public class UIManager : MonoBehaviour
 
     // Start of the player's turn: only the roll button is active.
     public void ShowRollPhase(List<DieFace> die){
+        actionPhase = false;
         rolledFaceTitle.text = "Roll the die";
         rolledFaceText.text = "";
         rolledFaceTooltip.text = "";
@@ -260,11 +267,16 @@ public class UIManager : MonoBehaviour
         rollButton.interactable = false;
         // The tray holds the die now; Roll comes back at the next roll phase.
         rollButton.gameObject.SetActive(false);
-        UpdateRerollButton(flow != null && flow.CanReroll);
-        if(passButton != null) passButton.interactable = true;
+        actionPhase = true;
+        shownFace = face;
+        shownDie = die;
+        // While the die tumbles nothing can be chosen; the buttons open when it lands (RollAnimation's end).
+        bool tumbling = rollAnimation != null;
+        UpdateRerollButton(!tumbling && flow != null && flow.CanReroll);
+        if(passButton != null) passButton.interactable = !tumbling;
         for(int i = 0; i < actionButtons.Length; i++){
             string preview = DescribeAction(face, die, (ActionType)i);
-            actionButtons[i].interactable = preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
+            actionButtons[i].interactable = !tumbling && preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
             actionButtonTexts[i].text = ActionTitle((ActionType)i)
                 + (preview != "" ? "\n<size=85%>" + GameText.Iconize(preview) + "</size>" : "");
         }
@@ -272,6 +284,7 @@ public class UIManager : MonoBehaviour
 
     // runComplete: the final boss was beaten, which ends the run.
     public void ShowBattleResult(bool playerWon, int goldEarned, bool runComplete = false){
+        actionPhase = false;
         battleResultPanel.SetActive(true);
         battleResultText.text = runComplete
             ? "RUN COMPLETE\n<size=50%>The arena is yours</size>"
@@ -361,6 +374,44 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.07f);
         tile.localScale = Vector3.one;
         rollAnimation = null;
+        // The die has landed: open the buttons, unless the phase moved on meanwhile (the battle ended).
+        if(actionPhase && shownFace != null) ShowRolledFace(shownFace, shownDie);
+    }
+
+    // Whether the action buttons belong to the current phase, and the face they show (for RollAnimation's end).
+    private bool actionPhase;
+    private DieFace shownFace;
+    private List<DieFace> shownDie;
+
+    // True while the die tumbles in the tray (BattleManager ignores actions meanwhile).
+    public bool IsRolling => rollAnimation != null;
+
+    // "YOUR TURN" / "ENEMY TURN" across the middle of the screen: it pops in, holds and fades.
+    public const float BannerDuration = 0.9f;
+    private Coroutine bannerAnimation;
+
+    public void ShowTurnBanner(string text){
+        if(turnBanner == null) return;
+        if(bannerAnimation != null) StopCoroutine(bannerAnimation);
+        turnBannerText.text = text;
+        bannerAnimation = StartCoroutine(BannerAnimation());
+    }
+
+    private IEnumerator BannerAnimation(){
+        turnBanner.gameObject.SetActive(true);
+        RectTransform rect = (RectTransform)turnBanner.transform;
+        float time = 0f;
+        while(time < BannerDuration){
+            time += Time.deltaTime;
+            float t = time / BannerDuration;
+            turnBanner.alpha = t < 0.15f ? t / 0.15f : t > 0.7f ? 1f - (t - 0.7f) / 0.3f : 1f;
+            float scale = t < 0.15f ? Mathf.Lerp(1.25f, 1f, t / 0.15f) : 1f;
+            rect.localScale = new Vector3(1f, scale, 1f);
+            yield return null;
+        }
+        turnBanner.alpha = 0f;
+        turnBanner.gameObject.SetActive(false);
+        bannerAnimation = null;
     }
 
     private int ValueOf(DieFace face){

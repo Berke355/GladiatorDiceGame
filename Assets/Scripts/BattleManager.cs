@@ -251,6 +251,8 @@ public class BattleManager : MonoBehaviour
     }
 
     public void OnActionSelected(int actionIndex){
+        // Nothing is chosen while the die still tumbles in the tray.
+        if(UIManager.Instance != null && UIManager.Instance.IsRolling) return;
         ActionType selectedAction = (ActionType)actionIndex;
 
         if(currentState is PlayerActionSelectState playerState){
