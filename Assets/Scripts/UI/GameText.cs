@@ -74,6 +74,18 @@ public static class GameText
         string s = text;
         // An ignition: damage equal to the target's Burn ("ignite Burn (3 damage)" → [Damage]3 = [Burn]).
         s = Regex.Replace(s, @"\bignite Burn \((\d+) damage(, consume Burn)?\)", m => Mark("Damage") + m.Groups[1].Value + " = " + Mark("Burn") + (m.Groups[2].Success ? ", consume " + Mark("Burn") : ""));
+        // Ignitions without a target to read (a card): damage equal to the Burn.
+        s = Regex.Replace(s, @"\bignite Burn\b", m => Mark("Damage") + " = " + Mark("Burn"));
+        // Special damage formulas, written as icons: value × your highest face (Earthshaker), value + Fortify × value
+        // (Shield Burst), value + Block + Fortify (Shield Bash), Fortify with a floor (Spiked Shield), value × a
+        // status's stacks (Exsanguinate, Unleash).
+        s = Regex.Replace(s, @"(\d+) x your highest face damage", m => Mark("Damage") + m.Groups[1].Value + " × highest face");
+        s = Regex.Replace(s, @"(\d+) \+ Fortify x(\d+) damage", m => Mark("Damage") + m.Groups[1].Value + " + " + Mark("Fortify") + "×" + m.Groups[2].Value);
+        s = Regex.Replace(s, @"(\d+) \+ block \+ Fortify damage", m => Mark("Damage") + m.Groups[1].Value + " + " + Mark("Block") + " + " + Mark("Fortify"));
+        s = Regex.Replace(s, @"\bFortify damage \(at least (\d+)\)", m => Mark("Damage") + " = " + Mark("Fortify") + " (min " + m.Groups[1].Value + ")");
+        s = Regex.Replace(s, @"(\d+) x (" + StatusWords + @") damage", m => Mark("Damage") + m.Groups[1].Value + "×" + Mark(m.Groups[2].Value));
+        s = Regex.Replace(s, @"\+(\d+) per (\d+) missing HP", m => "+" + m.Groups[1].Value + " per " + m.Groups[2].Value + " " + Mark("Health") + " lost");
+        s = s.Replace("+1 value to every face except me and my opposite", "+1 value to the other faces (not my opposite)");
         s = Regex.Replace(s, @"(\d+) x (\d+) damage", m => m.Groups[1].Value + "×" + Mark("Damage") + m.Groups[2].Value);
         s = Regex.Replace(s, @"(\d+) \+ rerolls (left|used) (damage|block)", m => Mark(m.Groups[3].Value) + m.Groups[1].Value + " + " + Mark("Reroll") + " " + m.Groups[2].Value);
         s = Regex.Replace(s, @"(\d+) x rerolls used damage", m => Mark("Damage") + m.Groups[1].Value + " × " + Mark("Reroll") + " used");
