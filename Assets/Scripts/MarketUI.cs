@@ -42,6 +42,18 @@ public class MarketUI : MonoBehaviour
     public TextMeshProUGUI healButtonText;
     public Button nextBattleButton;
 
+    [Header("Selected Face")]
+    // Clicking a face on the die selects it: its tile, its rules and what can be done with it here (upgrade, move).
+    // Without this panel, each die slot has its own upgrade button and a click starts a move.
+    public GameObject selectedPanel;
+    public FaceTileUI selectedTile;
+    public TextMeshProUGUI selectedHeader;
+    public TextMeshProUGUI selectedBody;
+    public Button selectedUpgradeButton;
+    public TextMeshProUGUI selectedUpgradeText;
+    public Button selectedMoveButton;
+    public TextMeshProUGUI selectedMoveText;
+
     [Header("Boss Reward")]
     public GameObject rewardPanel;
     public OfferCardUI[] rewardCards;
@@ -57,6 +69,9 @@ public class MarketUI : MonoBehaviour
     // A die enchantment being bought with every slot full: the next slot clicked is replaced.
     private int pendingDieEnchantment = -1;
     private bool showingTable;
+    // The die face shown in the selected face panel; -1 when none.
+    private int selectedSlot = -1;
+    private bool HasSelectedPanel => selectedPanel != null;
 
     private bool ChoosingDieSlot => pendingOffer >= 0 || pendingEnchantment >= 0;
     private bool Choosing => ChoosingDieSlot || pendingSwap >= 0 || pendingDieEnchantment >= 0;
@@ -104,6 +119,10 @@ public class MarketUI : MonoBehaviour
         for(int i = 0; i < rewardCards.Length; i++){
             int index = i;
             rewardCards[i].buyButton.onClick.AddListener(() => OnRewardClicked(index));
+        }
+        if(HasSelectedPanel){
+            selectedUpgradeButton.onClick.AddListener(() => { if(selectedSlot >= 0) OnUpgradeClicked(selectedSlot); });
+            selectedMoveButton.onClick.AddListener(OnMoveClicked);
         }
         cancelButton.onClick.AddListener(CancelBuy);
         rerollButton.onClick.AddListener(OnRerollClicked);
@@ -165,9 +184,17 @@ public class MarketUI : MonoBehaviour
     private void OnDieSlotClicked(int dieSlot){
         if(pendingOffer >= 0){
             market.Buy(pendingOffer, dieSlot);
+            selectedSlot = dieSlot;
         }
         else if(pendingEnchantment >= 0){
             market.BuyEnchantment(pendingEnchantment, dieSlot);
+            selectedSlot = dieSlot;
+        }
+        else if(pendingSwap < 0 && HasSelectedPanel){
+            // Nothing is being bought: the click shows this face in the panel.
+            selectedSlot = dieSlot;
+            Refresh();
+            return;
         }
         else if(pendingSwap < 0){
             // Nothing is being bought: the click picks this face to move.
@@ -177,8 +204,17 @@ public class MarketUI : MonoBehaviour
         }
         else{
             market.SwapFaces(pendingSwap, dieSlot);
+            // The selection follows the moved face to its new place.
+            if(selectedSlot == pendingSwap) selectedSlot = dieSlot;
         }
         ClearPending();
+        Refresh();
+    }
+
+    // Starts moving the selected face (the next face clicked swaps places with it), or stops.
+    private void OnMoveClicked(){
+        if(selectedSlot < 0) return;
+        pendingSwap = pendingSwap == selectedSlot ? -1 : selectedSlot;
         Refresh();
     }
 
@@ -337,8 +373,10 @@ public class MarketUI : MonoBehaviour
             // a click picks the face to move, and the next click swaps.
             slot.slotButton.interactable = pendingOffer >= 0 || (pendingEnchantment >= 0 && market.CanEnchant(i)) || pendingSwap >= 0 || !Choosing;
 
+            if(slot.tile != null) slot.slotButton.image.color = i == selectedSlot || i == pendingSwap ? new Color32(0xE2, 0xB2, 0x3C, 0xFF) : new Color(0f, 0f, 0f, 0f);
             // The upgrade button only shows where this face can be upgraded (Normal: Common/Rare, Grand: Epic).
-            bool upgradable = market.IsUpgradableHere(i);
+            // With the selected face panel, upgrades happen there instead.
+            bool upgradable = market.IsUpgradableHere(i) && !HasSelectedPanel;
             slot.upgradeButton.gameObject.SetActive(upgradable);
             if(upgradable){
                 slot.upgradeButtonText.text = slot.tile != null ? "+1\n" + GameText.Icon("Gold") + market.GetUpgradeCost(i) : "Upgrade\n" + market.GetUpgradeCost(i) + "g";
@@ -381,6 +419,35 @@ public class MarketUI : MonoBehaviour
         // The boss reward must be taken or skipped before leaving.
         nextBattleButton.interactable = !Choosing && !market.IsRewardPending;
         hintText.text = Hint();
+        DrawSelectedFace();
+    }
+
+    // The selected face: its tile, its place, its rules at its current value, and the upgrade and move buttons.
+    private void DrawSelectedFace(){
+        if(!HasSelectedPanel) return;
+        bool has = selectedSlot >= 0 && selectedSlot < run.dieFaces.Count;
+        selectedTile.gameObject.SetActive(has);
+        selectedUpgradeButton.gameObject.SetActive(has);
+        selectedMoveButton.gameObject.SetActive(has);
+        if(!has){
+            selectedHeader.text = "<color=#C9B796>Click a face on your die to see it, upgrade it or move it.</color>";
+            selectedBody.text = "";
+            return;
+        }
+        DieFace face = run.dieFaces[selectedSlot];
+        int bonus = (face.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, selectedSlot)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, selectedSlot) - face.value;
+        selectedTile.Set(face, face.value, bonus > 0 ? "<color=#FFC857>+" + bonus + "</color>" : bonus < 0 ? "<color=#FF7A6B>" + bonus + "</color>" : "");
+        selectedHeader.text = "<font=\"Cinzel SDF\"><b>" + face.DisplayName + "</b></font>\n"
+            + OfferCardUI.RarityName(face.definition.rarity) + "  <color=#C9B796>· " + DieLayout.Name(selectedSlot) + "</color>\n"
+            + "<size=80%><color=#C9B796>Opposite: " + run.dieFaces[DieLayout.OppositeOf(selectedSlot)].DisplayName + "</color></size>";
+        selectedBody.text = OfferCardUI.DescribeActions(face, face.value) + "\n<size=80%>" + MagicStatus(face) + "</size>";
+        bool upgradable = market.IsUpgradableHere(selectedSlot);
+        selectedUpgradeButton.interactable = upgradable && !Choosing && market.CanUpgrade(selectedSlot);
+        selectedUpgradeText.text = upgradable
+            ? "Upgrade " + face.value + " → " + (face.value + 1) + "  " + GameText.Icon("Gold") + market.GetUpgradeCost(selectedSlot)
+            : "<size=80%>Upgraded at the Grand Market</size>";
+        selectedMoveButton.interactable = !ChoosingDieSlot && pendingDieEnchantment < 0;
+        selectedMoveText.text = pendingSwap == selectedSlot ? "Moving…" : "Move";
     }
 
     private string Hint(){
@@ -388,6 +455,7 @@ public class MarketUI : MonoBehaviour
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingDieEnchantment >= 0) return "Your die has 2 enchantments. Choose one to replace with " + market.dieEnchantmentOffers[pendingDieEnchantment].enchantment.enchantmentName;
         if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click";
+        if(HasSelectedPanel) return market.isGrand ? "Grand Market: every face can be upgraded, Epic ones included." : "Buy a face, then click the face on your die it replaces.";
         return (market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market.") + " Click a die face to move it (free).";
     }
 

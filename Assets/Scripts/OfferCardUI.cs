@@ -38,20 +38,32 @@ public class OfferCardUI : MonoBehaviour
     public static string DescribeFace(DieFaceSO face){
         System.Text.StringBuilder text = new System.Text.StringBuilder();
         text.Append("<font=\"Cinzel SDF\"><b>" + face.faceName + "</b></font>\n" + RarityLabel(face.rarity));
-        DieFace instance = new DieFace(face);
+        string actions = DescribeActions(new DieFace(face), face.baseValue);
+        if(actions != "") text.Append("\n" + actions);
+        return text.ToString();
+    }
+
+    // One line of icons per action the face has (its enchantment included), at the given value, then its keywords.
+    // Shared by the offer cards and the Market's selected face.
+    public static string DescribeActions(DieFace face, int value){
+        List<string> lines = new List<string>();
         foreach(ActionType action in System.Enum.GetValues(typeof(ActionType))){
             List<string> parts = new List<string>();
-            foreach(EffectSO effect in instance.GetEffects(action)){
-                string description = effect.Describe(new EffectContext{ value = face.baseValue, face = instance });
+            foreach(EffectSO effect in face.GetEffects(action)){
+                string description = effect.Describe(new EffectContext{ value = value, face = face });
                 if(description != "") parts.Add(description);
             }
             if(parts.Count == 0) continue;
-            text.Append("\n<size=70%><color=#C9B796>" + action.ToString().ToUpperInvariant() + "</color></size>  " + GameText.Iconize(string.Join(", ", parts)));
+            lines.Add("<size=70%><color=#C9B796>" + action.ToString().ToUpperInvariant() + "</color></size>  " + GameText.Iconize(string.Join(", ", parts)));
         }
-        if(face.keywords != null){
-            foreach(FaceKeyword keyword in face.keywords) text.Append("\n" + GameText.Colorize(keyword.ToString()));
+        if(face.definition.keywords != null){
+            foreach(FaceKeyword keyword in face.definition.keywords) lines.Add(GameText.Colorize(keyword.ToString()));
         }
-        return text.ToString();
+        return string.Join("\n", lines);
+    }
+
+    public static string RarityName(Rarity rarity){
+        return RarityLabel(rarity);
     }
 
     // Card text for an enchantment offer. An enchantment uses the value of the face it is inscribed on.

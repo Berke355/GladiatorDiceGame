@@ -3403,3 +3403,21 @@ The battle from the v2 mock-up: a fighting scale and a dice tray.
 - **Player animations** (idle, attack, hit) on the new gladiator.
 - **The starting Sword's emblem** reads small.
 
+## Day 92 - The Selected Face
+
+The Market's selected face panel from the v2 mock-up, which Day 90 left out.
+
+### Accomplished
+- **Clicking a face on the die selects it** (framed in gold) and shows it in a panel beside the net: a big tile, its name, rarity, place and opposite face, one line of icons per action at its current value (`OfferCardUI.DescribeActions`, now shared with the offer cards) and its Magic status. Without a selection the panel says what it is for.
+- **Upgrade and Move live in the panel:** "Upgrade 2 → 3" with its gold price (or a note that Epic faces are upgraded at the Grand Market), and Move, which starts a swap; the next face clicked swaps places, and the selection follows the moved face. A bought face is selected right away.
+- **The die net's tiles are bigger** (150, from 140 with an upgrade button beside each); the per-slot upgrade buttons are hidden when the panel exists.
+- **The die enchantments moved to the right panel**, under the items, with their own label.
+
+### Tests
+- **Play Mode, through MarketUI's own methods:** selecting Iron Rage, Move then another face (they swap and the selection follows), one upgrade (2 → 3, gold spent once), selecting another face. Pressing the buttons through their listeners upgraded twice in the test only because the test had run `Start` a second time.
+
+### Next Steps
+- **Watch the dice tray's tumble in a real play.**
+- **Player animations** (idle, attack, hit) on the new gladiator.
+- **The starting Sword's emblem** reads small.
+
