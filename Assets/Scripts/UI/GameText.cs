@@ -102,12 +102,11 @@ public static class GameText
         return Iconize(line);
     }
 
-    // A face's action as the head of its line: the action's icon and its name in its color (Attack red, Defense blue,
-    // Magic purple), so the three actions, a face's main parts, stand out.
+    // A face's action as the head of its line: its name in its color with a colon (Attack red, Defense blue, Magic
+    // purple), so the three actions, a face's main parts, stand out.
     public static string ActionLabel(ActionType action){
-        string icon = action == ActionType.Attack ? "Damage" : action == ActionType.Defense ? "Block" : "Magic";
         string color = action == ActionType.Attack ? "#FF7A6B" : action == ActionType.Defense ? "#8FC1EA" : "#C39BE0";
-        return Icon(icon) + "<size=80%><font=\"Cinzel SDF\"><b><color=" + color + ">" + action.ToString().ToUpperInvariant() + "</color></b></font></size>";
+        return "<size=80%><font=\"Cinzel SDF\"><b><color=" + color + ">" + action.ToString().ToUpperInvariant() + ":</color></b></font></size>";
     }
 
     public static string KeywordColor(string word){

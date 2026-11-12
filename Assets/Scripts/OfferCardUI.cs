@@ -59,7 +59,8 @@ public class OfferCardUI : MonoBehaviour
         if(face.definition.keywords != null){
             foreach(FaceKeyword keyword in face.definition.keywords) lines.Add(GameText.Colorize(keyword.ToString()));
         }
-        return string.Join("\n", lines);
+        // A half-height empty line between the actions keeps them apart.
+        return string.Join("\n<size=45%> </size>\n", lines);
     }
 
     public static string RarityName(Rarity rarity){

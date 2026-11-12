@@ -3536,3 +3536,7 @@ From the user's play: the timing is right now, but the big rectangles around the
 - **The Market's cards are narrow** for two action lines with conditions (Shield Burst, Bloodscent); wider cards or a smaller font may help.
 - **A real play** of the slim UI.
 
+### Day 99, later: from the user's screenshot
+- **The action lines are further apart** (a half-height empty line between them), **without the icon in front** and **with a colon** after the name: "ATTACK:", "DEFENSE:".
+- **The TARGET frame wraps just the HP bar**, tightly: it is now a child of the bar instead of the whole plate, with 5-pixel sides.
+
