@@ -3384,3 +3384,22 @@ The Market from the v2 mock-up, built on the face tiles, with its rules untouche
 - **The battle at a fighting scale and the dice tray**, from the v2 mock-up.
 - **The starting Sword's emblem** reads small (thin and horizontal).
 
+## Day 91 - A Fight You Can Read From the Couch
+
+The battle from the v2 mock-up: a fighting scale and a dice tray.
+
+### Accomplished
+- **Bigger fighters:** `HumanHeight` 3.0 (was 2.2), the enemies' row from x 0.2 to 8.6, the ground line lower, the player further left. Plates sit just under the feet and are a little shorter.
+- **Bigger intents:** 56-point numbers with icons to match over every head.
+- **The dice tray:** the rolled face panel is a red felt tray with a bronze rim. Roll is a big button inside it during the roll phase; once the die lands the tray shows the face as a big tile at a slight angle, next to its name and rules. A roll, a reroll and Change/Flip/Tumble play a short tumble (the tile flips through the die's faces, grows and lands), only for the picture: `ShowRolledFace` got a `landed` flag so a refresh (choosing a target) doesn't replay it.
+- **Bigger buttons:** Reroll and Pass above three tall action buttons on the right; the die net's tiles grew a little (98).
+
+### Tests
+- **Play Mode:** a Murmillo + Venefica + Arena Wolf group (roll phase with Roll in the tray; action phase with Fate's Hand landed) and the Hydra with three heads in the night arena. Nothing overlaps. The tumble itself wasn't seen: the Editor drew no frames in the background, so it needs a look in a real play.
+
+### Next Steps
+- **Watch the tumble in a real play** and tune its speed.
+- **The selected-face panel in the Market**, so upgrades and details live in one place.
+- **Player animations** (idle, attack, hit) on the new gladiator.
+- **The starting Sword's emblem** reads small.
+

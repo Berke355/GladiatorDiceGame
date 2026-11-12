@@ -90,10 +90,10 @@ public class BattleManager : MonoBehaviour
     // An enemy with a sprite stands on the ground line (the placeholder's bottom edge) and is HumanHeight ×
     // spriteHeight tall; one without keeps the scene's placeholder. Dead ones are hidden (a revived Hydra head shows
     // again) but keep their place.
-    private const float SpriteAreaLeft = 1.4f;
-    private const float SpriteAreaRight = 8.4f;
+    private const float SpriteAreaLeft = 0.2f;
+    private const float SpriteAreaRight = 8.6f;
     // World height of a gladiator-sized sprite.
-    private const float HumanHeight = 2.2f;
+    private const float HumanHeight = 3.0f;
     private Vector3 enemySpriteScale;
     private float enemySpriteY;
     private float enemySpriteX;
@@ -244,7 +244,7 @@ public class BattleManager : MonoBehaviour
         currentRolledFace = face;
         Debug.Log("Rolled again. Face: " + face.definition.faceName);
         if(UIManager.Instance != null){
-            UIManager.Instance.ShowRolledFace(face, currentDiceFaces);
+            UIManager.Instance.ShowRolledFace(face, currentDiceFaces, true);
         }
         if(CheckBattleOver()) return;
         ChangeState(new PlayerActionSelectState(this));

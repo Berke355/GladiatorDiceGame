@@ -28,7 +28,7 @@ public class PlayerActionSelectState : BattleState
         battleManager.currentRolledFace = face;
         Debug.Log("Rerolled. Face: " + face.definition.faceName);
         if(UIManager.Instance != null){
-            UIManager.Instance.ShowRolledFace(face, battleManager.currentDiceFaces);
+            UIManager.Instance.ShowRolledFace(face, battleManager.currentDiceFaces, true);
         }
         battleManager.CheckBattleOver();
     }

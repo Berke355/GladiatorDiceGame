@@ -39,7 +39,7 @@ public class PlayerRollState : BattleState
         battleManager.currentRolledFace = face;
 
         if(UIManager.Instance != null){
-            UIManager.Instance.ShowRolledFace(battleManager.currentRolledFace, battleManager.currentDiceFaces);
+            UIManager.Instance.ShowRolledFace(battleManager.currentRolledFace, battleManager.currentDiceFaces, true);
         }
         if(battleManager.CheckBattleOver()) return;
 

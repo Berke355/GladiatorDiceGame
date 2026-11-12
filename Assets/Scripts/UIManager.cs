@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 
 // Battle-scene UI. States tell it what phase the turn is in; entity changes refresh the panels through OnHealthChanged.
@@ -194,6 +195,7 @@ public class UIManager : MonoBehaviour
         UpdateDieChips(die, null);
         RefreshEnemies();
         rollButton.interactable = false;
+        rollButton.gameObject.SetActive(false);
         UpdateRerollButton(false);
         if(passButton != null) passButton.interactable = false;
         for(int i = 0; i < actionButtons.Length; i++){
@@ -214,6 +216,7 @@ public class UIManager : MonoBehaviour
         RefreshEnemies();
         SetDieChipsClickable(false);
         rollButton.interactable = true;
+        rollButton.gameObject.SetActive(true);
         UpdateRerollButton(false);
         if(passButton != null) passButton.interactable = false;
         for(int i = 0; i < actionButtons.Length; i++){
@@ -223,17 +226,22 @@ public class UIManager : MonoBehaviour
     }
 
     // After the roll: show the face and what each action would do; actions the face lacks stay disabled.
-    public void ShowRolledFace(DieFace face, List<DieFace> die){
+    // landed: the die was just rolled (a roll, a reroll, Change/Flip/Tumble), so the tray plays the roll; a refresh
+    // (a new target) doesn't.
+    public void ShowRolledFace(DieFace face, List<DieFace> die, bool landed = false){
         bool stone = flow != null && flow.petrification.IsStone(face);
         rolledFaceTitle.text = face.DisplayName + "  <size=70%>" + (stone ? "<color=#A8B0B8>Petrified</color>" : "Value " + ValueOf(face)) + "</size>";
         rolledFaceText.text = GameText.Colorize(face.FullDescription);
         rolledFaceTooltip.text = GameText.FaceTooltip(face);
-        ShowRolledTile(face, stone);
+        if(landed) PlayRoll(face, die, stone);
+        else ShowRolledTile(face, stone);
         UpdateDieChips(die, face);
 
         RefreshEnemies();
         SetDieChipsClickable(false);
         rollButton.interactable = false;
+        // The tray holds the die now; Roll comes back at the next roll phase.
+        rollButton.gameObject.SetActive(false);
         UpdateRerollButton(flow != null && flow.CanReroll);
         if(passButton != null) passButton.interactable = true;
         for(int i = 0; i < actionButtons.Length; i++){
@@ -300,9 +308,41 @@ public class UIManager : MonoBehaviour
     }
 
     private void ShowRolledTile(DieFace face, bool stone = false){
-        if(rolledFaceTile == null) return;
+        if(rolledFaceTile == null || rollAnimation != null) return;
         rolledFaceTile.gameObject.SetActive(face != null);
         if(face != null) rolledFaceTile.Set(face, ValueOf(face), "", stone);
+    }
+
+    // The dice tray: the tile tumbles through the die's faces, then lands on the rolled one at a slight angle.
+    // Only the picture moves; the rules already happened.
+    private Coroutine rollAnimation;
+    private const float RestAngle = -6f;
+
+    private void PlayRoll(DieFace face, List<DieFace> die, bool stone){
+        if(rolledFaceTile == null) return;
+        if(rollAnimation != null) StopCoroutine(rollAnimation);
+        rollAnimation = null;
+        rolledFaceTile.gameObject.SetActive(true);
+        rollAnimation = StartCoroutine(RollAnimation(face, die, stone));
+    }
+
+    private IEnumerator RollAnimation(DieFace face, List<DieFace> die, bool stone){
+        RectTransform tile = (RectTransform)rolledFaceTile.transform;
+        const int Tumbles = 7;
+        for(int i = 0; i < Tumbles; i++){
+            DieFace shown = die[Random.Range(0, die.Count)];
+            rolledFaceTile.Set(shown, ValueOf(shown));
+            tile.localRotation = Quaternion.Euler(0f, 0f, Random.Range(-28f, 28f));
+            float size = 0.8f + 0.15f * i / Tumbles;
+            tile.localScale = new Vector3(size, size, 1f);
+            yield return new WaitForSecondsRealtime(0.04f + 0.012f * i);
+        }
+        rolledFaceTile.Set(face, ValueOf(face), "", stone);
+        tile.localRotation = Quaternion.Euler(0f, 0f, RestAngle);
+        tile.localScale = new Vector3(1.1f, 1.1f, 1f);
+        yield return new WaitForSecondsRealtime(0.07f);
+        tile.localScale = Vector3.one;
+        rollAnimation = null;
     }
 
     private int ValueOf(DieFace face){
