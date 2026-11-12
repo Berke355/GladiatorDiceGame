@@ -3649,3 +3649,31 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - A playtest build for friends.
 
+## Day 106 - The Difficulty Moves Forward
+
+### Findings
+- **The user's play-test:** buying random faces, clicking at random and only attacking still beat the first boss. "The curve doesn't rise evenly."
+- **The simulation agreed (200 runs per bot):** battles 1–3 killed 0–3% of every bot, even the one that never shops; HP lost 4–11 per battle out of 50. The no-shopping die beat the Minotaur 45% of the time, the unplanned buyer 62%. Most deaths came later: battles 7, 8 (Medusa), 10 and 11.
+- **The bots are a poor measure of total difficulty:** the user plays far better (Burn one-shots, the Hydra "a little tense"), so the late game isn't too hard for people even though bots rarely clear it. They still show the curve's shape.
+
+### Experiments (unbuilt: no shopping + unplanned; built: every focused and hybrid bot)
+
+| Change | Minotaur kills, unbuilt | Minotaur kills, built | Built clear rate |
+|---|---|---|---|
+| Current | 52% | 18% | 7.6% |
+| Minotaur 28 HP | 61% | 31% | 8% |
+| + battle 3 Rage 2 | 69% | 34% | 6% |
+| Minotaur 22 HP, a Bellow face (gain 2 Rage) | 67% | 39% | 5% |
+| Battle 2 ×2, battle 3 Rage 2, Minotaur 28, battle 7 no Rage | 66% | 33% | 8.0% |
+| **Same with Minotaur 25 (chosen)** | **~70%** | **28%** | **8.0%** |
+
+- **Every way of toughening the Minotaur hit built dice almost as hard as unbuilt ones:** three Markets in, builds barely exist. So difficulty was moved forward instead of added: harder battles 2–3 and Minotaur, a softer battle 7 (the bots' biggest killer).
+
+### Accomplished
+- **Battle 2: enemy HP ×2 (was ×1.7). Battle 3: 2 starting Rage (was 1). Minotaur: 25 HP (was 22). Battle 7: no starting Rage (was 1).**
+- **HP lost per battle (built bots), before → after:** 5/6/7/17 → 5/7/12/19 over battles 1–4; battle 7: 16 → 12, and its deaths 20% → 8%.
+
+### Next Steps
+- **The user's play-test:** does the early game feel like a climb now, and is the first boss beaten only with some thought?
+- A playtest build for friends.
+

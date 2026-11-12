@@ -992,11 +992,11 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
 | Battle | HP | Starting Rage |
 |---|---|---|
 | 1 | ×1 | 0 |
-| 2 | ×1.7 | 0 |
-| 3 | ×1.4 | 1 |
+| 2 | ×2 | 0 |
+| 3 | ×1.4 | 2 |
 | 5 | ×1 | 0 |
 | 6 | ×1.15 | 0 |
-| 7 | ×1.3 | 1 |
+| 7 | ×1.3 | 0 |
 | 9 | ×1 | 0 |
 | 10 | ×1.15 | 0 |
 
@@ -1013,6 +1013,8 @@ Inspired by Slay the Spire: enemies have always-on **traits** that react to what
   - 1 Rage on a Weak enemy is a big step (their hits are 1–2), so battle 2 climbs through HP and battle 3 adds the Rage.
   - Stampede 12 → 9 barely mattered: most of the Minotaur's damage comes from Gore and Trample in a long fight, so its HP went down instead (26 → 22).
   - The Minotaur is still the run's first peak (about 2.4 times battle 3, was 8), and it kills about 20% of the runs that reach it, as before.
+- **Second pass (DevLog Day 106): the difficulty moved forward.** The user beat the Minotaur while clicking at random, buying random faces and only attacking; the simulation agreed (battles 1–3 killed almost nobody, a die with no shopping beat the Minotaur 45% of the time) while most runs died at battle 7 and later. Battle 2 went to HP ×2, battle 3 to 2 starting Rage, the Minotaur to 25 HP, and battle 7 lost its starting Rage, so the total stayed the same for built dice (clear rate 7.6% → 8.0%) and the climb became gradual: HP lost about 5 / 8 / 13 / 21 over battles 1–4 (the Minotaur about 1.6 times battle 3, was 2.5). A die that isn't built now dies at the Minotaur about 70% of the time (was 52%), a built one 28% (was 18%).
+  - **Why not only the Minotaur:** making it tougher (more HP, or a Bellow face that gains Rage) hit built dice almost as hard as unbuilt ones. Three Markets in, builds barely exist yet, so the first boss can't be a test only lazy dice fail; the difficulty has to be shared out instead of added.
 - **All bots with the curve and the 20-gold Healer (700 runs):** Burn 10%, Poison 13%, Shield 17%, Rage 21%, Bleed 16%, Hammer 12%, Fortune 12%, Ritual 1%, Ritual + Poison 24%, Ritual + Bleed 11%, Shield + Rage 15%, Bleed + Rage 20%. Before the curve, the 20-gold Healer had pushed them to 22–48%.
 
 - **Battle 10 became a wall (DevLog Day 68):** with 1 starting Rage it killed 50–55% of the runs reaching it, twice the Hydra. Removing the Rage gave 37%, and no scaling at all still 33%, because of one outlier: Hoplomachus Champion beat bots in 56% of forced fights (War Elephant 35%, Essedarius and Bestiarius 19%). Its uncapped Challenge and Battle Cry both pile up Rage. A cap of 3 gave 48%, removing Battle Cry barely helped (43–51%), and a cap of 3 with 40 HP (was 51) gave 37%; Spear Thrust 2 also gave 37%, but HP keeps its hits threatening.
