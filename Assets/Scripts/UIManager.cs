@@ -210,6 +210,19 @@ public class UIManager : MonoBehaviour
         SetDieChipsClickable(true);
     }
 
+    // The enemies act: every button waits until the player's next turn.
+    public void ShowEnemyTurn(){
+        rolledFaceTitle.text = "Enemy turn";
+        rolledFaceText.text = "";
+        rolledFaceTooltip.text = "";
+        rollButton.interactable = false;
+        rollButton.gameObject.SetActive(false);
+        UpdateRerollButton(false);
+        if(passButton != null) passButton.interactable = false;
+        for(int i = 0; i < actionButtons.Length; i++) actionButtons[i].interactable = false;
+        SetDieChipsClickable(false);
+    }
+
     // Start of the player's turn: only the roll button is active.
     public void ShowRollPhase(List<DieFace> die){
         rolledFaceTitle.text = "Roll the die";

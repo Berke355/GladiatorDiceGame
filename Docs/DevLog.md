@@ -3487,3 +3487,20 @@ Enemies have one still sprite each, so they now react on screen without new art.
 - **A real play** to judge the tray, the animations, the reactions and the numbers together.
 - **The starting Sword's emblem** reads small.
 
+## Day 97 - A Turn You Can Follow
+
+The user played the new screens and found the worst problem: the enemies answered in the same frame as the player's action, all at once, so their hits landed with the player's.
+
+### Accomplished
+- **The enemy turn is paced** (`EnemyTurnState`, a coroutine on `BattleManager`): 0.7 s after the player's action (the swing, the numbers, a death's fade), then each living enemy acts in turn order with 0.65 s after each (its lunge, its numbers), then their statuses tick and, 0.35 s later, the player's turn starts. A Hydra head that joins mid-turn still gets its turn, as the loop goes by index.
+- **`BattleFlow.EnemyActOne(index)`:** one enemy's turn. `EnemyAct` now loops it, so the simulator's turns are unchanged and unpaced.
+- **`UIManager.ShowEnemyTurn`:** every button is disabled and the tray reads "Enemy turn" while the enemies act.
+- **The starting Sword's emblem** is the user's new one: a wide gladius on the diagonal with a bronze guard, which fills its tile and doesn't look like the Damage icon.
+
+### Tests
+- Compiled; the simulator's steps are unchanged. The pacing can only be seen in a real play (the Editor draws no frames in the background), so the user will judge the pauses.
+
+### Next Steps
+- **Tune the three pauses** from the user's play.
+- **A turn banner** ("Your turn" / "Enemy turn") could mark the change of side, as the tray's title is easy to miss.
+

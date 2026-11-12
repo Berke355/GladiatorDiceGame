@@ -368,13 +368,20 @@ public class BattleFlow
     // (Hydra heads growing back); they have no intent yet, so they don't act.
     public void EnemyAct(){
         for(int i = 0; i < enemies.Count; i++){
-            BattleEnemy enemy = enemies[i];
-            if(enemy.IsDead) continue;
-            enemy.entity.OnTurnStart();
-            enemy.traits.RunPending();
-            enemy.brain.ExecuteCurrentIntent();
+            EnemyActOne(i);
             if(IsOver) return;
         }
+    }
+
+    // One enemy's turn (the list can grow while enemies act, so callers loop by index). Returns false for a dead one,
+    // which doesn't act. The battle scene paces these one by one; the simulator runs them all through EnemyAct.
+    public bool EnemyActOne(int index){
+        BattleEnemy enemy = enemies[index];
+        if(enemy.IsDead) return false;
+        enemy.entity.OnTurnStart();
+        enemy.traits.RunPending();
+        enemy.brain.ExecuteCurrentIntent();
+        return true;
     }
 
     // Every living enemy's statuses tick and its brain ends its turn, in turn order.
