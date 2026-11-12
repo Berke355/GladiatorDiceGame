@@ -26,6 +26,9 @@ public class EnemySO : ScriptableObject
     public List<EnemyIntent> intents = new List<EnemyIntent>();
     // Always-on rules that react to the player (see GDD "Enemy Traits").
     public List<EnemyTrait> traits = new List<EnemyTrait>();
+    // Pack tactics: when an earlier pack member already attacks this turn, this one picks something else if it can
+    // (two wolves never bite at once, so a group's damage comes in turns instead of all at once).
+    public bool packTactics;
     // Second Wind: below half HP the enemy switches to these intents for the rest of the battle (empty = never).
     public List<EnemyIntent> secondWindIntents = new List<EnemyIntent>();
 }

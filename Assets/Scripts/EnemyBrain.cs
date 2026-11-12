@@ -45,18 +45,21 @@ public class EnemyBrain : IEnemyBrain
             return;
         }
 
-        // Weighted pick, skipping the current intent if it already ran MaxRepeats times in a row.
+        // Weighted pick among the allowed intents: not the current one if it already ran MaxRepeats times in a row,
+        // not one whose required status the player lacks, and not an attack while a pack member already attacks.
+        // Each rule is dropped again if it would leave nothing to pick.
         bool blockCurrent = repeatCount >= MaxRepeats && intents.Count > 1;
-        int totalWeight = 0;
-        for(int i = 0; i < intents.Count; i++){
-            if(blockCurrent && i == currentIndex) continue;
-            totalWeight += Weight(intents[i]);
-        }
+        bool avoidAttack = definition.packTactics && PackMemberAttacks();
+        List<int> allowed = Allowed(intents, blockCurrent, true, avoidAttack);
+        if(allowed.Count == 0) allowed = Allowed(intents, blockCurrent, true, false);
+        if(allowed.Count == 0) allowed = Allowed(intents, blockCurrent, false, false);
+        if(allowed.Count == 0) allowed = Allowed(intents, false, false, false);
 
+        int totalWeight = 0;
+        foreach(int i in allowed) totalWeight += Weight(intents[i]);
         int roll = Random.Range(0, totalWeight);
-        int picked = 0;
-        for(int i = 0; i < intents.Count; i++){
-            if(blockCurrent && i == currentIndex) continue;
+        int picked = allowed[0];
+        foreach(int i in allowed){
             roll -= Weight(intents[i]);
             if(roll < 0){
                 picked = i;
@@ -148,6 +151,30 @@ public class EnemyBrain : IEnemyBrain
     // Normal enemies have no die.
     public List<DieFace> Die => null;
     public DieFace RolledFace => null;
+
+    private List<int> Allowed(List<EnemyIntent> intents, bool blockCurrent, bool checkStatus, bool avoidAttack){
+        List<int> allowed = new List<int>();
+        for(int i = 0; i < intents.Count; i++){
+            if(blockCurrent && i == currentIndex) continue;
+            StatusType needed = intents[i].requiresTargetStatus;
+            if(checkStatus && needed != StatusType.None && opponent.GetStatus(needed) <= 0) continue;
+            if(avoidAttack && intents[i].intentType == ActionType.Attack) continue;
+            allowed.Add(i);
+        }
+        return allowed;
+    }
+
+    // Whether a living pack member that picked before this one (earlier in turn order) attacks this turn.
+    private bool PackMemberAttacks(){
+        if(flow == null) return false;
+        foreach(BattleEnemy enemy in flow.enemies){
+            if(enemy.brain == this) return false;
+            EnemyBrain other = enemy.brain as EnemyBrain;
+            if(enemy.IsDead || other == null || !other.definition.packTactics || !other.HasIntent) continue;
+            if(other.currentIntent.intentType == ActionType.Attack) return true;
+        }
+        return false;
+    }
 
     private static int Weight(EnemyIntent intent){
         return intent.weight > 0 ? intent.weight : 1;

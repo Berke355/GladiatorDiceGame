@@ -303,7 +303,7 @@ public class MarketUI : MonoBehaviour
             EquipmentSlotUI slot = dieEnchantmentSlots[i];
             bool filled = i < run.dieEnchantments.Count;
             slot.Show(filled ? run.dieEnchantments[i].icon : null,
-                filled ? "<b>" + run.dieEnchantments[i].enchantmentName + "</b>" : "<color=#7F8C8D>No die enchantment</color>",
+                filled ? "<b>" + run.dieEnchantments[i].enchantmentName + "</b>" : "<color=#7F8C8D>Empty</color>",
                 filled ? "<b>" + run.dieEnchantments[i].enchantmentName + "</b>\n" + GameText.Colorize(run.dieEnchantments[i].description) : "");
             slot.slotButton.interactable = pendingDieEnchantment >= 0 && filled;
         }

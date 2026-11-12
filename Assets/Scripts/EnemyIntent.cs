@@ -11,4 +11,6 @@ public struct EnemyIntent{
     public int value;
     // Relative chance of being picked. 0 counts as 1.
     public int weight;
+    // Only picked while the player has this status (None: always), e.g. Ignite waits for Burn to ignite.
+    public StatusType requiresTargetStatus;
 }

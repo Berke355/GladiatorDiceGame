@@ -5,8 +5,9 @@ using TMPro;
 // A die face drawn as a tile (GDD "Visual Style", Face tiles): the rim is the rarity, the band the family (the first
 // tag other than Physical; Lifesteal counts as Bleed), the center a pale tint of the family, the emblem the face itself
 // and a badge the value. The same tile shows a face on the die net, in the dice tray and in the Market, so a face
-// always looks the same. Three corners show which actions the face has (GDD "Visual Style", action pips): Defense top
-// left (blue), Attack bottom left (red), Magic top right (purple; an enchanted face shows its seal there instead).
+// always looks the same. A row of pips in the top left corner shows which actions the face has (GDD "Visual Style",
+// action pips): Attack red, Defense blue, Magic purple, in that order and side by side; an enchanted face shows its
+// seal in the top right corner instead of the Magic pip.
 public class FaceTileUI : MonoBehaviour
 {
     public Image rim;
@@ -47,10 +48,31 @@ public class FaceTileUI : MonoBehaviour
         emblem.enabled = emblem.sprite != null;
         if(valueText != null) valueText.text = face != null && face.hasNoValue ? valueSuffix : value + valueSuffix;
         if(overlay != null) overlay.enabled = dimmed;
-        ShowPip(attackPip, HasAction(face, ActionType.Attack));
-        ShowPip(defensePip, HasAction(face, ActionType.Defense));
-        ShowPip(magicPip, HasAction(face, ActionType.Magic));
         ShowSeal(null);
+        ShowPips(HasAction(face, ActionType.Attack), HasAction(face, ActionType.Defense), HasAction(face, ActionType.Magic));
+    }
+
+    // Pip size and gap as a share of the tile, so the row works at any tile size.
+    private const float PipSize = 0.16f, PipGap = 0.02f, PipMargin = 0.05f;
+
+    // The shown pips sit side by side from the top left corner, without gaps for missing actions.
+    private void ShowPips(bool attack, bool defense, bool magic){
+        int slot = 0;
+        PlacePip(attackPip, attack, ref slot);
+        PlacePip(defensePip, defense, ref slot);
+        PlacePip(magicPip, magic, ref slot);
+    }
+
+    private static void PlacePip(GameObject pip, bool show, ref int slot){
+        if(pip == null) return;
+        pip.SetActive(show);
+        if(!show) return;
+        RectTransform rect = (RectTransform)pip.transform;
+        float x = PipMargin + slot * (PipSize + PipGap);
+        rect.anchorMin = new Vector2(x, 1f - PipMargin - PipSize);
+        rect.anchorMax = new Vector2(x + PipSize, 1f - PipMargin);
+        rect.offsetMin = rect.offsetMax = Vector2.zero;
+        slot++;
     }
 
     // The face's own actions (an enchantment's Magic shows as its seal).
@@ -62,16 +84,11 @@ public class FaceTileUI : MonoBehaviour
         return false;
     }
 
-    private static void ShowPip(GameObject pip, bool show){
-        if(pip != null) pip.SetActive(show);
-    }
-
-    // The seal takes the Magic corner: an enchanted face has no Magic of its own.
+    // An enchanted face has no Magic of its own, so its seal never meets a Magic pip.
     private void ShowSeal(Sprite sprite){
         if(seal == null) return;
         seal.sprite = sprite;
         seal.enabled = sprite != null;
-        if(sprite != null) ShowPip(magicPip, false);
     }
 
     public static Color FamilyColor(FaceTag family){

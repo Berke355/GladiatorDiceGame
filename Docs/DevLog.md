@@ -3677,3 +3677,25 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The user's play-test:** does the early game feel like a climb now, and is the first boss beaten only with some thought?
 - A playtest build for friends.
 
+## Day 107 - Pack Tactics and Tidier Pictures
+
+### Findings (the user's play-test of the new curve)
+- Battles 1 and 2 cost nothing, then two wolves at battle 3 (2 starting Rage) bit for 4 + 4 in the same turn and took almost half the player's HP at once. A forced Wolf Pack at battle 3 confirmed it: bots lost 23 HP and 19% died there.
+- The Lampadarius opened with Ignite while the player had no Burn: a wasted turn that made it harmless.
+
+### Accomplished
+- **Pack tactics** (`EnemySO.packTactics`, on Tiro and Arena Wolf): a pack member picks something other than an attack when one earlier in the turn order already attacks this turn. A pair now trades hits and guards. Forced Wolf Pack at battle 3: 23 → 16 HP lost, 19% → 5% deaths.
+- **Conditional intents** (`EnemyIntent.requiresTargetStatus`): an intent is only picked while the player has the status. The Lampadarius's Ignite waits for Burn.
+- **The Lampadarius is a Burn threat:** Torch Swing applies 2 Burn (was 1), so Burn piles up and the player wants to end the fight before it is ignited.
+- **Intent picking** (`EnemyBrain.Allowed`): the rules (no third repeat, the required status, pack tactics) filter the choices, and each is dropped again if nothing would be left.
+- **The Market's die enchantments are pictures** (96 px squares like the items, name and rules on hover; an empty slot says Empty).
+- **The action bubbles sit side by side in the top left corner** (red Attack, blue Defense, purple Magic, no gaps), instead of three corners that looked scattered.
+- **Curve after the change (HP lost per battle 1–4, built bots):** 5 / 6 / 10 / 19; built clear rate 9.3%.
+
+### Decisions
+- **Face merging (the user's idea, a "Mad Scientist" on the map) is discussed, not built:** technically possible (the merged face kept as a recipe of its two parents, built into a definition at runtime, the emblem split along a diagonal), but it would be strictly stronger than its parents unless it costs something, and per-action randomness fights the build-crafting pillar. See the answer in this day's conversation; to be decided with the map.
+
+### Next Steps
+- **The user's play-test** of battles 1–4 with pack tactics and the Burn torchbearer.
+- A playtest build for friends.
+
