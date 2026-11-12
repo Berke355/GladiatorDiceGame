@@ -17,6 +17,8 @@ MonoBehaviour:
     to every other enemy. Defense: Gain block equal to my value.'
   rarity: 1
   tags: 04000000
+  emblem: {fileID: 21300000, guid: 607170e2a1c80ab4f9d752ed0ef42c84, type: 3}
+  plainTile: 0
   baseValue: 2
   effects:
   - actionType: 2
@@ -25,5 +27,5 @@ MonoBehaviour:
     effectLogic: {fileID: 11400000, guid: e987640719ef7e140b9f280f74020b8e, type: 2}
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-  charges: 0
+  keywords: 
   hasNoValue: 0

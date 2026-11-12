@@ -16,10 +16,13 @@ MonoBehaviour:
   description: 'Defense: Gain block and apply Poison equal to my value.'
   rarity: 1
   tags: 0400000001000000
+  emblem: {fileID: 21300000, guid: 90b350f63a15bf8469f28d2f18a16a63, type: 3}
+  plainTile: 0
   baseValue: 2
-  softCap: 4
   effects:
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 4e09dfd69596317439eded8d7ed69021, type: 2}
+  keywords: 
+  hasNoValue: 0

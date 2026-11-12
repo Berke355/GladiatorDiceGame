@@ -17,11 +17,11 @@ MonoBehaviour:
     excess hits the next enemy. Charge: every turn I''m not rolled, I gain +1 value.'
   rarity: 1
   tags: 08000000
+  emblem: {fileID: 21300000, guid: 65ba5c7519a1d784589f443451137e78, type: 3}
+  plainTile: 0
   baseValue: 3
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: fd0d98d1eb01faa44a2e51efa3133981, type: 2}
   keywords: 01000000
-  charges: 1
   hasNoValue: 0
-  consumableActions: 

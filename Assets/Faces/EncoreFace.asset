@@ -17,6 +17,8 @@ MonoBehaviour:
     this turn, hit 2 more times. Magic: Flip.'
   rarity: 2
   tags: 09000000
+  emblem: {fileID: 21300000, guid: e74f6bd72e59cb84886374cc56bbffcd, type: 3}
+  plainTile: 0
   baseValue: 3
   effects:
   - actionType: 0
@@ -25,6 +27,5 @@ MonoBehaviour:
     effectLogic: {fileID: 11400000, guid: 81624837f7db1b441aeb573689c7607e, type: 2}
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: cf54ac4cf0ee72e43b0c10e90ca45361, type: 2}
-  charges: 0
+  keywords: 
   hasNoValue: 0
-  consumableActions: 

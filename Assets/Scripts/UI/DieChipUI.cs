@@ -10,6 +10,8 @@ public class DieChipUI : MonoBehaviour
     public TooltipTrigger tooltip;
     // Clickable only while the player chooses the next face.
     public Button button;
+    // The face as a tile (GDD "Visual Style"); without one the chip shows the face's name and value as text.
+    public FaceTileUI tile;
     public Color normalColor = new Color(0.12f, 0.14f, 0.2f, 0.9f);
     public Color highlightColor = new Color(0.85f, 0.65f, 0.2f, 0.95f);
     public Color stoneColor = new Color(0.42f, 0.44f, 0.47f, 0.95f);
@@ -21,7 +23,13 @@ public class DieChipUI : MonoBehaviour
     public void Set(DieFace face, bool highlighted, int charge = 0, int stoneTurns = 0, bool used = false, string layoutNote = ""){
         string value = face.value + (charge > 0 ? " <color=#FFC857>+" + charge + "</color>" : charge < 0 ? " <color=#FF7A6B>" + charge + "</color>" : "");
         if(used) value = "<color=#9AA5B1>used: Change</color>";
-        text.text = "<b>" + face.DisplayName + "</b>\n" + (stoneTurns > 0 ? "STONE " + stoneTurns : value);
+        if(tile != null){
+            // The tile is the face; the text only names what changed it this battle.
+            string bonus = charge > 0 ? "<color=#FFC857>+" + charge + "</color>" : charge < 0 ? "<color=#FF7A6B>" + charge + "</color>" : "";
+            tile.Set(face, face.value, bonus, stoneTurns > 0 || used);
+            text.text = stoneTurns > 0 ? "STONE " + stoneTurns : used ? "USED" : "";
+        }
+        else text.text = "<b>" + face.DisplayName + "</b>\n" + (stoneTurns > 0 ? "STONE " + stoneTurns : value);
         tooltip.text = GameText.FaceTooltip(face)
             + (stoneTurns > 0 ? "\n<color=#A8B0B8>Petrified for " + stoneTurns + (stoneTurns == 1 ? " turn" : " turns") + ": when rolled, it can only gain " + Petrification.StoneBlock + " block.</color>" : "")
             + (used ? "\n<color=#9AA5B1>Used this battle: every action on it is Change now.</color>" : "")

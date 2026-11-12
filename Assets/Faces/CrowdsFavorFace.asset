@@ -17,12 +17,13 @@ MonoBehaviour:
     buff type you have (Rage, Fortify, FireShield).'
   rarity: 2
   tags: 0500000001000000
+  emblem: {fileID: 21300000, guid: 5cfeffd6e20828941ace2e0d840ebffe, type: 3}
+  plainTile: 0
   baseValue: 1
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 408bfe447de0e9242b66e4199b8eff67, type: 2}
-  charges: 0
+  keywords: 
   hasNoValue: 0
-  consumableActions: 

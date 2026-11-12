@@ -3341,3 +3341,25 @@ After the battle screen, going to the Market dropped the player back into the ol
 - **Face icons** for the die net and the rolled face.
 - **Animations** for the player.
 
+## Day 89 - Every Face Has a Face
+
+The user said the game doesn't feel like selling die faces, the faces are small and unreadable, and a player who knows the game should recognize a face by its look, without reading it. A second round of mock-ups (battle at a fighting scale with a dice tray, a Market selling die-face tiles) led to the face tile language, now in the GDD.
+
+### Accomplished
+- **An emblem for each of the 66 faces**, made by the user with Gemini from six sheets in `Docs/ArtPrompts.md` ("Face emblems"), each object named by its face (Anvil an anvil, Exsanguinate a chalice of blood). Sheet 2 came out on an uneven grid and was cut by hand; sheet 6 drew 12 emblems instead of 6, and the extra six (a net, laurel dice, a gladiator helmet, a gold pouch, a trident, a dice cup) are kept as spares for future faces. All cleaned onto a pixel grid with 24 colors, in `Assets/Art/Faces`.
+- **`DieFaceSO.emblem` and `plainTile`**, linked for every face by name.
+- **`FaceTileUI` and `Assets/UI/FaceTile.prefab`:** the rim is the rarity (bronze, silver, gold), a thick band the family's color, the center a pale tint of it, the emblem in the middle, a gem for a second family and a value badge.
+- **The battle's die net and the rolled face use the tiles:** the chips are square tiles (the rolled one framed in gold; stone and used faces dimmed with a word), and the rolled face panel shows the face as a big tile next to its name and rules.
+
+### Decisions
+- **The family is a band, not the whole tile.** With the whole tile in the family's color, dark emblems (Dark Communion's hood, the Anvil, Iron Rage's helmet) vanished on dark grounds; with a pale center every emblem stands out and the color still reads from afar.
+- **Emblems never reuse status icons:** a face is what it is, a status what happens.
+
+### Tests
+- **Play Mode** with a die of six families (Exsanguinate, Shield, Iron Rage, Venom, Fate's Hand, Sword): every tile shows its family, rarity and second-family gem; the rolled face shows big.
+
+### Next Steps
+- **The battle at a fighting scale** (bigger characters and intents) and **the dice tray** with a roll animation, from the v2 mock-up.
+- **The Market with face tiles**, from the v2 mock-up.
+- **The starting Sword's emblem** is thin and horizontal, so it reads small; a diagonal one would fill its tile.
+

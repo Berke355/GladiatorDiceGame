@@ -17,11 +17,13 @@ MonoBehaviour:
     to your highest-value other face.'
   rarity: 1
   tags: 0800000001000000
+  emblem: {fileID: 21300000, guid: e13f23a22573c1c4ba9cdc6e48dbc47d, type: 3}
+  plainTile: 0
   baseValue: 2
-  softCap: 4
   effects:
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: cfa2d755ef0a847478da033b227d4fd3, type: 2}
-  charges: 0
+  keywords: 
+  hasNoValue: 0

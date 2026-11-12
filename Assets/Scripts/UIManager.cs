@@ -24,6 +24,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI rolledFaceTitle;
     public TextMeshProUGUI rolledFaceText;
     public TooltipTrigger rolledFaceTooltip;
+    // The rolled face as a big tile next to its name and rules; hidden until the die lands.
+    public FaceTileUI rolledFaceTile;
 
     [Header("Die")]
     public DieChipUI[] dieChips;
@@ -188,6 +190,7 @@ public class UIManager : MonoBehaviour
         rolledFaceTitle.text = "Choose a face";
         rolledFaceText.text = "Click a face on your die: it comes up next.";
         rolledFaceTooltip.text = "";
+        ShowRolledTile(null);
         UpdateDieChips(die, null);
         RefreshEnemies();
         rollButton.interactable = false;
@@ -205,6 +208,7 @@ public class UIManager : MonoBehaviour
         rolledFaceTitle.text = "Roll the die";
         rolledFaceText.text = "";
         rolledFaceTooltip.text = "";
+        ShowRolledTile(null);
         UpdateDieChips(die, null);
 
         RefreshEnemies();
@@ -224,6 +228,7 @@ public class UIManager : MonoBehaviour
         rolledFaceTitle.text = face.DisplayName + "  <size=70%>" + (stone ? "<color=#A8B0B8>Petrified</color>" : "Value " + ValueOf(face)) + "</size>";
         rolledFaceText.text = GameText.Colorize(face.FullDescription);
         rolledFaceTooltip.text = GameText.FaceTooltip(face);
+        ShowRolledTile(face, stone);
         UpdateDieChips(die, face);
 
         RefreshEnemies();
@@ -292,6 +297,12 @@ public class UIManager : MonoBehaviour
         if(rerollButton == null) return;
         rerollButton.interactable = canReroll;
         rerollButtonText.text = GameText.Icon("Reroll") + " Reroll " + (flow != null ? flow.rerolls.Left : 0);
+    }
+
+    private void ShowRolledTile(DieFace face, bool stone = false){
+        if(rolledFaceTile == null) return;
+        rolledFaceTile.gameObject.SetActive(face != null);
+        if(face != null) rolledFaceTile.Set(face, ValueOf(face), "", stone);
     }
 
     private int ValueOf(DieFace face){
