@@ -28,7 +28,7 @@ public class RunStartUI : MonoBehaviour
             bool hasOffer = i < run.startingFaceOffers.Count;
             card.gameObject.SetActive(hasOffer);
             if(!hasOffer) continue;
-            card.infoText.text = OfferCardUI.DescribeFace(run.startingFaceOffers[i]);
+            card.ShowFace(run.startingFaceOffers[i]);
             card.buyButtonText.text = "Choose";
         }
         if(goldText != null) goldText.text = "Gold: " + run.gold + "  <size=70%>(unspent gold stays for the run)</size>";

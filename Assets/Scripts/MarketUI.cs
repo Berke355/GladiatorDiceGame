@@ -257,8 +257,8 @@ public class MarketUI : MonoBehaviour
             card.gameObject.SetActive(hasOffer);
             if(!hasOffer) continue;
             DieEnchantmentOffer offer = market.dieEnchantmentOffers[i];
-            card.infoText.text = OfferCardUI.DescribeDieEnchantment(offer.enchantment);
-            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingDieEnchantment ? "Selected" : "Buy  " + offer.price + "g");
+            card.ShowText(OfferCardUI.DescribeDieEnchantment(offer.enchantment));
+            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingDieEnchantment ? "Selected" : "Buy  " + GameText.Icon("Gold") + offer.price);
             card.buyButton.interactable = !Choosing && market.CanBuyDieEnchantment(i);
             DrawLock(card, offer.sold, offer.locked, market.CanToggleDieEnchantmentLock(i));
         }
@@ -270,7 +270,7 @@ public class MarketUI : MonoBehaviour
             slot.slotButton.interactable = pendingDieEnchantment >= 0 && filled;
         }
 
-        runInfoText.text = "Gold: " + run.gold + "     HP: " + run.currentHP + " / " + run.maxHP + "     Battles won: " + run.battlesWon;
+        runInfoText.text = GameText.Icon("Gold") + " " + run.gold + "      " + GameText.Icon("Health") + " " + run.currentHP + " / " + run.maxHP + "      Battles won: " + run.battlesWon;
 
         for(int i = 0; i < offerCards.Length; i++){
             OfferCardUI card = offerCards[i];
@@ -279,8 +279,8 @@ public class MarketUI : MonoBehaviour
             if(!hasOffer) continue;
 
             MarketOffer offer = market.offers[i];
-            card.infoText.text = OfferCardUI.DescribeFace(offer.face);
-            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingOffer ? "Selected" : "Buy  " + offer.price + "g");
+            card.ShowFace(offer.face);
+            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingOffer ? "Choose a face" : "Buy  " + GameText.Icon("Gold") + offer.price);
             card.buyButton.interactable = !Choosing && market.CanBuy(i);
             DrawLock(card, offer.sold, offer.locked, market.CanToggleFaceLock(i));
         }
@@ -292,8 +292,8 @@ public class MarketUI : MonoBehaviour
             if(!hasOffer) continue;
 
             EnchantmentOffer offer = market.enchantmentOffers[i];
-            card.infoText.text = OfferCardUI.DescribeEnchantment(offer.enchantment);
-            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingEnchantment ? "Selected" : "Buy  " + offer.price + "g");
+            card.ShowText(OfferCardUI.DescribeEnchantment(offer.enchantment));
+            card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingEnchantment ? "Selected" : "Buy  " + GameText.Icon("Gold") + offer.price);
             card.buyButton.interactable = !Choosing && market.CanBuyEnchantment(i);
             DrawLock(card, offer.sold, offer.locked, market.CanToggleEnchantmentLock(i));
         }
@@ -305,8 +305,8 @@ public class MarketUI : MonoBehaviour
             if(!hasOffer) continue;
 
             EquipmentOffer offer = market.equipmentOffers[i];
-            card.infoText.text = OfferCardUI.DescribeEquipment(offer.item);
-            card.buyButtonText.text = offer.sold ? "SOLD" : "Buy  " + offer.price + "g";
+            card.ShowText(OfferCardUI.DescribeEquipment(offer.item));
+            card.buyButtonText.text = offer.sold ? "SOLD" : "Buy  " + GameText.Icon("Gold") + offer.price;
             card.buyButton.interactable = !Choosing && market.CanBuyEquipment(i);
             DrawLock(card, offer.sold, offer.locked, market.CanToggleEquipmentLock(i));
         }
@@ -324,7 +324,14 @@ public class MarketUI : MonoBehaviour
             int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
             string weightText = (weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often")
                 + (DieEnchantmentSO.ConsumableAt(run.dieEnchantments, i) ? " | Consumable" : "");
-            slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + bonusText + "\n<size=70%>" + DieLayout.Name(i) + weightText + " | " + MagicStatus(dieFace) + "</size>";
+            if(slot.tile != null){
+                // The tile is the face; the caption says only what matters now (moving, the Enchanting Table's
+                // empty Magic, a die enchantment's effect on this place).
+                slot.tile.Set(dieFace, dieFace.value, bonusText);
+                string caption = i == pendingSwap ? "<color=#E2B23C>MOVING</color>" : showingTable ? MagicStatus(dieFace) : weightText.TrimStart(' ', '|');
+                slot.faceText.text = caption;
+            }
+            else slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + bonusText + "\n<size=70%>" + DieLayout.Name(i) + weightText + " | " + MagicStatus(dieFace) + "</size>";
             slot.tooltip.text = GameText.FaceTooltip(dieFace) + "\n<color=#9AA5B1>" + DieLayout.Describe(run.dieFaces, i) + "</color>";
             // An enchantment can only go on a face whose Magic action is still empty. With nothing being bought,
             // a click picks the face to move, and the next click swaps.
@@ -334,7 +341,7 @@ public class MarketUI : MonoBehaviour
             bool upgradable = market.IsUpgradableHere(i);
             slot.upgradeButton.gameObject.SetActive(upgradable);
             if(upgradable){
-                slot.upgradeButtonText.text = "Upgrade\n" + market.GetUpgradeCost(i) + "g";
+                slot.upgradeButtonText.text = slot.tile != null ? "+1\n" + GameText.Icon("Gold") + market.GetUpgradeCost(i) : "Upgrade\n" + market.GetUpgradeCost(i) + "g";
                 slot.upgradeButton.interactable = !Choosing && market.CanUpgrade(i);
             }
         }
@@ -359,7 +366,7 @@ public class MarketUI : MonoBehaviour
             bool hasChoice = i < market.rewardChoices.Count;
             rewardCards[i].gameObject.SetActive(hasChoice);
             if(!hasChoice) continue;
-            rewardCards[i].infoText.text = OfferCardUI.DescribeEquipment(market.rewardChoices[i]);
+            rewardCards[i].ShowText(OfferCardUI.DescribeEquipment(market.rewardChoices[i]));
             rewardCards[i].buyButtonText.text = "Take";
         }
 

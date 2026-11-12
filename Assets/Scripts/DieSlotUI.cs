@@ -12,4 +12,6 @@ public class DieSlotUI : MonoBehaviour
     public TextMeshProUGUI upgradeButtonText;
     // The face's full description on hover.
     public TooltipTrigger tooltip;
+    // The face as a tile (GDD "Visual Style"); with one, faceText is only a short caption.
+    public FaceTileUI tile;
 }

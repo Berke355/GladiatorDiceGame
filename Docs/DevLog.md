@@ -3363,3 +3363,24 @@ The user said the game doesn't feel like selling die faces, the faces are small 
 - **The Market with face tiles**, from the v2 mock-up.
 - **The starting Sword's emblem** is thin and horizontal, so it reads small; a diagonal one would fill its tile.
 
+## Day 90 - A Market That Sells Faces
+
+The Market from the v2 mock-up, built on the face tiles, with its rules untouched.
+
+### Accomplished
+- **Face offers are cards with a big tile:** the tile on top, then the name in Cinzel, the rarity and one line of icons per action (`OfferCardUI.DescribeFace`, from each effect's `Describe` with the base value), plus the face's keywords; the full rules are in the card's tooltip. The run start screen's three offers use the same cards.
+- **The die is a net of big tiles** with a small "+1, gold" upgrade button beside each one. A slot's text is now only a caption: MOVING while swapping, the empty-Magic note on the Enchanting Table, a die enchantment's effect on that place.
+- **A new layout:** a top bar (title, gold, HP, battles won, Heal, Next Battle), a row for the Enchanting Table tab, Reroll, the hint and Cancel, the shelf with every offer in the middle, the die panel at the bottom left (with the die enchantments beside the net) and the next battle and the items at the bottom right.
+- **Prices show the gold icon** on every card and upgrade button; gold and HP in the top bar carry their icons.
+- **The face tile is anchored in proportion** (bands, emblem, gem, value badge), so the same prefab works from the die net to the shelf.
+
+### Decisions
+- **No "selected face" panel yet.** The mock-up's panel needs a new selection step, and clicking a die face already starts a swap; an upgrade button beside each tile keeps today's clicks.
+
+### Tests
+- **Play Mode:** the run start screen (Frenzy, Feint, Maul with its Charge keyword) and a Market after the first battle with Iron Rage on the die (its second-family gem shows). The Enchanting Table tab and the boss reward weren't seen (the Editor drew no new frames in the background).
+
+### Next Steps
+- **The battle at a fighting scale and the dice tray**, from the v2 mock-up.
+- **The starting Sword's emblem** reads small (thin and horizontal).
+
