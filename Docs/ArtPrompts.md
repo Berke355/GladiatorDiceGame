@@ -127,3 +127,150 @@ Icons, in this order (left to right, top to bottom):
 11. Change: two curved arrows chasing each other in a circle
 12. Target: a gold crosshair ring with four short lines
 ```
+
+# Face emblems
+
+Every die face gets its own emblem, so a player who knows the game recognizes a face before reading it (GDD "Visual Style", "Face tiles"). Gemini draws only the object; the tile's ground color (the family), its rim (the rarity) and the value are drawn by the game, so the color system always stays consistent.
+
+## Rules for every emblem
+
+- **One object, named by the face:** the picture reminds you of the name (Anvil is an anvil, Exsanguinate a chalice of blood). Names and pictures help each other to be remembered.
+- **A bold silhouette, no fine detail:** it must still read on a 46-pixel die net tile.
+- **Never a status icon:** a face is what it *is*, a status is what *happens*. Serrated Blade is a saw-toothed blade, not a blood drop.
+- **Distinct within its family:** faces of one family share a ground color, so their silhouettes must differ most.
+
+## Families (ground color of the tile, drawn by the game)
+
+The family is the face's first tag other than Physical; Lifesteal counts as Bleed. A second tag shows as a small gem in a corner. The starting faces (Sword, Shield, Health Potion) stay plain ivory.
+
+| Family | Ground | Faces |
+|---|---|---|
+| Bleed | dark red | Serrated Blade, Lacerate, Open Wound, Exsanguinate, Bloodscent, Bite |
+| Burn | orange | Ember, Fuel, Wildfire, Detonate, Cauterize, Flame Ward |
+| Poison | poison green | Venom, Toxic Blade, Miasma, Contagion, Plague |
+| Ritual | purple | Incantation, Dark Communion, Blood Rite, Witch's Curse |
+| Rage | crimson brown | Fury, Bloodrage, Unleash, Frenzy, Twin Axes, Cleave, Rally, Battle Hymn, Iron Rage, Crowd's Favor |
+| Block | steel blue | Shield Burst, Spiked Shield, Shield Bash |
+| Hammer | iron grey | War Hammer, Maul, Anvil, Earthshaker, Follow Through, Steady Hand |
+| Fortune | gold | Encore, Fate's Hand, Gambit, Hedge, Mirror Blade, Opening Gambit, Ricochet, Sidestep, Turnabout, Lucky Buckler, Fate's Edge, Gambler's Strike, Patient Blade |
+| General | plain bone | Catalyst, Drill Sergeant, Exploit, Feint, Last Stand, Mimic, Sharpshooter, Spare Blade, Throwing Knife, Veteran |
+
+Rarity is the rim: Common bronze, Rare silver, Epic gold. An enchanted face gets a purple seal.
+
+## How to use
+
+Same as the icon sheets: a new chat per sheet, no reference image, the **Emblem style block** and the sheet's list in one message. If a cell comes out with a frame, a background shape or a label, ask to fix that cell only.
+
+## Emblem style block
+
+```
+A pixel art sheet of item emblems for a Roman gladiator dice game: exactly 12
+emblems in a grid of 4 columns and 3 rows, equal square cells, evenly spaced,
+every emblem centered in its cell and filling about 75% of it, all the same
+size and weight.
+Strict pixel art like 48x48 game sprites: hard pixel edges, no anti-aliasing,
+no blur, no gradients, no glow, a 2-pixel dark brown outline around every
+emblem, one bold object per cell with a clear silhouette that reads at small
+size, ancient Roman look, natural colors for each object.
+Plain solid magenta background (#FF00FF) in every cell, no circles or tiles
+behind the objects, no grid lines, no frames, no text, no letters, no numbers.
+Emblems, in this order (left to right, top to bottom):
+```
+
+## Sheet 1: Bleed and Burn
+
+```
+1. Serrated Blade: a short blade with big saw teeth along its edge
+2. Lacerate: three parallel claw slashes torn through a strip of leather
+3. Open Wound: a torn, unrolling red cloth bandage
+4. Exsanguinate: a golden chalice overflowing with dark red blood
+5. Bloodscent: a snarling hound's head with red scent wisps at its nose
+6. Bite: wide open jaws with sharp fangs
+7. Ember: a single glowing orange coal held in iron tongs
+8. Fuel: a clay oil amphora with oil dripping from its spout
+9. Wildfire: a burning torch whose flame splits into three tongues
+10. Detonate: a clay pot bursting apart with fire and shards
+11. Cauterize: a red-hot iron branding rod
+12. Flame Ward: a bronze brazier on a tripod with a low fire
+```
+
+## Sheet 2: Poison, Ritual and the starting faces
+
+```
+1. Venom: a coiled cobra with dripping fangs
+2. Toxic Blade: a dagger with green liquid running down its blade
+3. Miasma: a cracked clay jar leaking thick green fog
+4. Contagion: a grey rat with glowing green eyes
+5. Plague: a hooded skull breathing green mist
+6. Incantation: a lit candle with a purple flame
+7. Dark Communion: an empty dark hood with two glowing purple eyes
+8. Blood Rite: a curved ritual knife over a small bowl of blood
+9. Witch's Curse: a straw doll pierced by a long needle
+10. Sword: a plain Roman gladius lying horizontally, hilt on the left
+11. Shield: a tall rectangular red Roman scutum with a bronze boss
+12. Health Potion: a round glass flask of red liquid with a cork
+```
+
+## Sheet 3: Rage and Block
+
+```
+1. Fury: a snorting red bull's head
+2. Bloodrage: a red heart pierced by a dagger
+3. Unleash: a heavy iron chain snapping in the middle
+4. Frenzy: a small whirlwind with a blade spinning inside
+5. Twin Axes: two crossed hand axes
+6. Cleave: a broad cleaver axe with a wide blade
+7. Rally: a curved bronze Roman war horn
+8. Battle Hymn: a wooden lyre with strings
+9. Iron Rage: a horned iron helmet with glowing red eye slits
+10. Crowd's Favor: a raised hand giving a thumbs up
+11. Shield Burst: a round shield shattering outward into shards
+12. Spiked Shield: a round shield covered in big iron spikes
+```
+
+## Sheet 4: Block, Hammer and General
+
+```
+1. Shield Bash: a shield striking forward with impact lines
+2. War Hammer: a long war hammer with a spike on the back of its head
+3. Maul: a huge maul with a big square stone head
+4. Anvil: a black iron anvil
+5. Earthshaker: a fist punching the ground, the ground cracking around it
+6. Follow Through: a hammer mid-swing with a curved motion arc
+7. Steady Hand: an open palm held flat with a plumb line hanging from it
+8. Catalyst: a glass alembic bubbling with a yellow liquid
+9. Drill Sergeant: a centurion's helmet with a sideways red crest
+10. Exploit: a dagger pointing into a crack in a bronze breastplate
+11. Feint: a smiling theater mask
+12. Last Stand: a torn war banner still standing planted in the sand
+```
+
+## Sheet 5: General and Fortune
+
+```
+1. Mimic: a green chameleon
+2. Sharpshooter: a short bow with an arrow nocked
+3. Spare Blade: a dagger in a belt sheath
+4. Throwing Knife: three throwing knives fanned out
+5. Veteran: a dented, scarred old gladiator helmet
+6. Encore: a single red rose thrown on the sand
+7. Fate's Hand: a hand holding a single die
+8. Gambit: two dice tumbling
+9. Hedge: a short wooden palisade fence
+10. Mirror Blade: a sword reflected in a round polished bronze mirror
+11. Opening Gambit: a wooden gate swinging open with light behind it
+12. Ricochet: a sling stone bouncing off a wall with an arc line
+```
+
+## Sheet 6: Fortune (6 emblems)
+
+For this sheet, change "exactly 12 emblems in a grid of 4 columns and 3 rows" in the style block to "exactly 6 emblems in a grid of 3 columns and 2 rows".
+
+```
+1. Sidestep: a sandal footprint with motion lines
+2. Turnabout: a silver coin flipping in the air
+3. Lucky Buckler: a small round buckler with a four-leaf clover painted on it
+4. Fate's Edge: a sword with dice pips running along its blade
+5. Gambler's Strike: a pair of Roman knucklebones (astragali)
+6. Patient Blade: a sheathed sword leaning on an hourglass
+```
