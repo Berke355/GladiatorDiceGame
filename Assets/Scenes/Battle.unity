@@ -4380,6 +4380,7 @@ GameObject:
   - component: {fileID: 748316985}
   - component: {fileID: 748316986}
   - component: {fileID: 748316987}
+  - component: {fileID: 748316988}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4468,7 +4469,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 80ea655875a316b40a22ad48f92269ef, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 90834e7672c445c40a7b682a00b19308, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4478,6 +4479,50 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &748316988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748316984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20d609210745bcc4bb02f58a5b87eea4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteAnimator
+  target: {fileID: 748316987}
+  idle:
+    frames:
+    - {fileID: 21300000, guid: 90834e7672c445c40a7b682a00b19308, type: 3}
+    - {fileID: 21300000, guid: 00c92a5061b18374aa2671cb5f1b3fe2, type: 3}
+    - {fileID: 21300000, guid: e343ddda7adc28d43a21889754b66e2f, type: 3}
+    - {fileID: 21300000, guid: 5577ebd0f3178c941a51b2a6de4ef8e5, type: 3}
+    - {fileID: 21300000, guid: 4083374bfc1f38745a0af0398bd782ef, type: 3}
+    - {fileID: 21300000, guid: ba16107dd407c134b8ae3b2c154a47bf, type: 3}
+    - {fileID: 21300000, guid: 69d61e07c79f26e408ed0706b12a192c, type: 3}
+    - {fileID: 21300000, guid: 0aebbad1708321e4fb07bb89a44188c7, type: 3}
+    framesPerSecond: 6
+  attack:
+    frames:
+    - {fileID: 21300000, guid: 30dd7e46b6b982147a78f743608e10f0, type: 3}
+    - {fileID: 21300000, guid: 8c6ae880e8e9b3942afacfdf833582b5, type: 3}
+    - {fileID: 21300000, guid: 0ae537adec62bf24c860376e6bf00630, type: 3}
+    - {fileID: 21300000, guid: 00f6c415e6a22654ca24fcfa8ad8d448, type: 3}
+    - {fileID: 21300000, guid: 50bd7b13bcca42549849d2fda6b00c5f, type: 3}
+    - {fileID: 21300000, guid: d8d616c3f6047324da2f6272d13ff35c, type: 3}
+    - {fileID: 21300000, guid: 70e0dfed24437a74896ccd1fbd071ade, type: 3}
+    - {fileID: 21300000, guid: f4b20c6ee2c01e146a2f71f8c2e41139, type: 3}
+    framesPerSecond: 14
+  hit:
+    frames:
+    - {fileID: 21300000, guid: 045cdf7c46af3e147b23e747c5a77f30, type: 3}
+    - {fileID: 21300000, guid: b31ff67293d625c4c8158272e3564325, type: 3}
+    - {fileID: 21300000, guid: 453e927780074854ab46c3064147ee8f, type: 3}
+    - {fileID: 21300000, guid: d51c775f243dccb429877c4784534e6c, type: 3}
+    - {fileID: 21300000, guid: 10e1e8d85554acd4ea1e66ba22cc4617, type: 3}
+    - {fileID: 21300000, guid: 6860172549d0d2f48a040fae9c805a3f, type: 3}
+    framesPerSecond: 12
 --- !u!1 &794319741
 GameObject:
   m_ObjectHideFlags: 0

@@ -173,6 +173,10 @@ public class BattleManager : MonoBehaviour
     }
 
     void OnDestroy(){
+        if(playerAnimator != null && player != null){
+            player.HitDealt -= OnPlayerHitDealt;
+            player.HitTaken -= OnPlayerHitTaken;
+        }
         if(flow != null){
             foreach(BattleEnemy each in flow.enemies){
                 if(each.entity != null) each.entity.OnHealthChanged -= UpdateEnemySprites;
@@ -212,10 +216,20 @@ public class BattleManager : MonoBehaviour
             flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);
             flow.triggers.ItemTriggered += UIManager.Instance.FlashEquipment;
         }
+        // The gladiator swings when it deals a hit and flinches when a hit costs it HP (only the picture).
+        playerAnimator = player.GetComponent<SpriteAnimator>();
+        if(playerAnimator != null){
+            player.HitDealt += OnPlayerHitDealt;
+            player.HitTaken += OnPlayerHitTaken;
+        }
         flow.StartBattle();
         if(CheckBattleOver()) return;
         ChangeState(new PlayerRollState(this));
     }
+
+    private SpriteAnimator playerAnimator;
+    private void OnPlayerHitDealt(Entity target, int damage){ playerAnimator.PlayAttack(); }
+    private void OnPlayerHitTaken(int damage){ playerAnimator.PlayHit(); }
 
     void Update(){
         if(currentState != null){

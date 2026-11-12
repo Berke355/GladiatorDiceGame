@@ -3421,3 +3421,23 @@ The Market's selected face panel from the v2 mock-up, which Day 90 left out.
 - **Player animations** (idle, attack, hit) on the new gladiator.
 - **The starting Sword's emblem** reads small.
 
+## Day 93 - The Gladiator Moves
+
+Animations for the 128-pixel PixelLab gladiator (the 64-pixel one's attacks no longer fit it).
+
+### Accomplished
+- **Three animations from PixelLab**, east only: idle (smooth mode, 8 frames, 4 generations: a ready guard, breathing, the cape moving), attack (skeleton mode's slash, 8 frames, 3 generations: the sword raised behind, a lunge with the cape flying, the blade coming down, recovery) and hit (skeleton mode's taking-punch, 6 frames, 3 generations: the head snaps back behind the shield). 10 generations in all; 13 are left plus the daily bonus.
+- **`SpriteAnimator`** plays them on the player's SpriteRenderer: idle loops (6 fps), attack (14 fps) and hit (12 fps) play once and return to idle; a multi-hit action swings once, and a counter-hit doesn't cut a swing short. All frames share one 176-pixel canvas with the pivot at the feet, so they line up on the ground line.
+- **`BattleManager` plays attack on `player.HitDealt` and hit on `player.HitTaken`** (a hit that cost HP), so items' and Thorns' hits animate too, without the rules knowing.
+
+### Decisions
+- **No blend this time:** at 128 pixels the skeleton slash already looked good and kept the shield, so the smooth-mode blend (4 more generations) wasn't needed.
+
+### Tests
+- **Play Mode:** a hit dealt by the player starts the attack clip; the gladiator stands on the ground line at the same size as before. The clips themselves weren't watched: the Editor drew no frames in the background.
+
+### Next Steps
+- **Watch the animations and the dice tray in a real play** and tune their speeds.
+- **Enemy reactions:** a hit flash or shake on the enemy that takes damage, since enemies have one still sprite each.
+- **The starting Sword's emblem** reads small.
+
