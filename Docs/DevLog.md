@@ -3460,3 +3460,17 @@ Enemies have one still sprite each, so they now react on screen without new art.
 - **Floating damage numbers** over the one who was hit would make every hit readable.
 - **The starting Sword's emblem** reads small.
 
+## Day 95 - Every Hit Has a Number
+
+### Accomplished
+- **Floating numbers:** whenever a combatant's HP changes, a big number pops at its chest height, rises and fades in 0.9 s: red "-5" for HP lost, green "+3" for HP healed. They come from HP changes, not from hits, so Poison, Bleed and HP costs show too. `FloatingNumbersUI` keeps each combatant's last HP, so setting up the battle shows nothing; `UIManager` tracks the player and every enemy card's entity, Hydra heads included.
+- **A dark outline** makes the numbers read over the sand. Each number outlines its own copy of the font's material (destroyed with it): a separate outline material asset drew blocks, because a dynamic font's atlas texture changes under it.
+
+### Tests
+- **Play Mode:** a hit on the Thraex (-5), a hit on the player (-3) and HP lost then healed on the Arena Wolf each pop a number in place. First placed over the heads, the numbers collided with the intents, so they now start at chest height.
+
+### Next Steps
+- **A real play** to judge the feel of the tray, the animations, the reactions and the numbers together.
+- **Blocked hits** could show their own grey number (today a fully blocked hit shows nothing).
+- **The starting Sword's emblem** reads small.
+

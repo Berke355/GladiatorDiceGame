@@ -43,6 +43,9 @@ public class UIManager : MonoBehaviour
     [Header("Equipment")]
     public EquipmentChipUI[] equipmentChips;
 
+    // HP changes pop as numbers over the heads (optional).
+    public FloatingNumbersUI floatingNumbers;
+
     [Header("Top Bar")]
     public TextMeshProUGUI battleInfoText;
     public TextMeshProUGUI goldText;
@@ -75,6 +78,7 @@ public class UIManager : MonoBehaviour
     void Start(){
         player.OnHealthChanged += UpdatePlayerUI;
         UpdatePlayerUI();
+        if(floatingNumbers != null) floatingNumbers.Track(player);
     }
 
     void OnDestroy(){
@@ -121,6 +125,7 @@ public class UIManager : MonoBehaviour
         card.name = "EnemyCard " + enemy.entity.entityName;
         card.Bind(enemy, () => onClick(index));
         enemy.entity.OnHealthChanged += RefreshEnemies;
+        if(floatingNumbers != null) floatingNumbers.Track(enemy.entity);
         enemyCards.Add(card);
         RefreshEnemies();
     }
