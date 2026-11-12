@@ -182,6 +182,15 @@ public class Entity : MonoBehaviour
         ConsumeStatus(StatusType.FireShield);
     }
 
+    // What OnTurnEnd will take from HP, for the HP bar's preview (kept next to the rules it mirrors): Poison's stacks,
+    // then 1 for Bleed, never more than the HP left or the round's cap (Scales).
+    public void NextTicks(out int poison, out int bleed){
+        int left = Math.Max(0, Math.Min(currentHP, HPLossLeftThisRound));
+        poison = Math.Min(GetStatus(StatusType.Poison), left);
+        left -= poison;
+        bleed = GetStatus(StatusType.Bleed) > 0 ? Math.Min(1, left) : 0;
+    }
+
     public void OnTurnEnd() {
         // Burn deals no damage on its own: it is fuel that ignitions (IgniteEffectSO) and Detonate turn
         // into damage. It decays by 2, except right after Burn was added.

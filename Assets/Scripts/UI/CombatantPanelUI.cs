@@ -13,6 +13,10 @@ public class CombatantPanelUI : MonoBehaviour
     // (HP | Fortify | Block), so the bar shows how much a hit must get through.
     public Image fortifyFill;
     public Image blockFill;
+    // Optional: the HP the owner's statuses will take at the end of its turn, marked inside the HP from its end
+    // (Poison first, then Bleed, as Entity.OnTurnEnd takes them; Entity.NextTicks).
+    public Image poisonTickFill;
+    public Image bleedTickFill;
     public Transform statusRow;
     // Inactive chip that is copied once per active status.
     public TooltipTrigger statusChipTemplate;
@@ -26,6 +30,7 @@ public class CombatantPanelUI : MonoBehaviour
         hpFill.rectTransform.anchorMax = new Vector2(ratio, 1f);
         hpText.text = entity.IsDead ? "DEFEATED" : entity.currentHP + " / " + entity.maxHP;
         RefreshShields(entity, ratio);
+        RefreshTicks(entity);
 
         RefreshStatuses(entity);
     }
@@ -41,6 +46,20 @@ public class CombatantPanelUI : MonoBehaviour
         float start = Mathf.Min(hpRatio, 1f - total);
         PlaceSegment(fortifyFill, start, Mathf.Min(1f, start + fortify));
         PlaceSegment(blockFill, Mathf.Min(1f, start + fortify), Mathf.Min(1f, start + fortify + block));
+    }
+
+    // Ticks skip Block and Fortify, so they come out of the HP itself: Poison at the HP's very end (it is taken first),
+    // Bleed just before it.
+    private void RefreshTicks(Entity entity){
+        if(poisonTickFill == null || bleedTickFill == null) return;
+        int poison = 0, bleed = 0;
+        if(!entity.IsDead) entity.NextTicks(out poison, out bleed);
+        float max = Mathf.Max(1, entity.maxHP);
+        float end = Mathf.Clamp01(entity.currentHP / max);
+        float afterPoison = Mathf.Clamp01((entity.currentHP - poison) / max);
+        float afterBleed = Mathf.Clamp01((entity.currentHP - poison - bleed) / max);
+        PlaceSegment(poisonTickFill, afterPoison, end);
+        PlaceSegment(bleedTickFill, afterBleed, afterPoison);
     }
 
     private static void PlaceSegment(Image segment, float from, float to){

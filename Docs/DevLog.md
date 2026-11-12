@@ -3573,4 +3573,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Tests
 - **Play Mode:** the Murmillo at 10/20 with 3 Fortify and 4 Block (red, blue, grey in a row), the Arena Wolf at full HP with 5 Block (grey over the bar's end), the player at full HP with 6 Block; the run start with Gambit, Exploit and Rally.
+- **The end of the turn on the HP bar** (the user's next idea): the HP that Poison and Bleed will take at the end of the owner's turn is marked inside the HP from its end, Poison in dark green (taken first, at the very end), Bleed in dark red before it. `Entity.NextTicks` computes it next to the `OnTurnEnd` rules it mirrors (Poison's stacks, then 1 for Bleed, never more than the HP left or the round's cap). Burn shows nothing: it deals no damage on its own. The marks are drawn over the shields, which can slide over a full bar's end, so a tick is never hidden. The first, light poison green vanished on the player's green bar.
+- **Tested in Play Mode:** the player at 40/50 with 3 Poison and 1 Bleed, the Murmillo at 14/20 with 5 Poison and Bleed, the Arena Wolf at full HP with 3 Block and Bleed.
 
