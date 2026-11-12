@@ -4381,6 +4381,7 @@ GameObject:
   - component: {fileID: 748316986}
   - component: {fileID: 748316987}
   - component: {fileID: 748316988}
+  - component: {fileID: 748316989}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4523,6 +4524,21 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 10e1e8d85554acd4ea1e66ba22cc4617, type: 3}
     - {fileID: 21300000, guid: 6860172549d0d2f48a040fae9c805a3f, type: 3}
     framesPerSecond: 12
+--- !u!114 &748316989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748316984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb6a67d9b993554191fb186712aceb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitReaction
+  lungeDistance: 0
+  shakeDistance: 0.08
+  flashColor: {r: 1, g: 0.35, b: 0.35, a: 1}
 --- !u!1 &794319741
 GameObject:
   m_ObjectHideFlags: 0
@@ -6186,6 +6202,7 @@ GameObject:
   - component: {fileID: 1097898070}
   - component: {fileID: 1097898071}
   - component: {fileID: 1097898072}
+  - component: {fileID: 1097898073}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -6284,6 +6301,21 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1097898073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097898069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb6a67d9b993554191fb186712aceb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitReaction
+  lungeDistance: -0.6
+  shakeDistance: 0.14
+  flashColor: {r: 1, g: 0.35, b: 0.35, a: 1}
 --- !u!1 &1115985152
 GameObject:
   m_ObjectHideFlags: 0

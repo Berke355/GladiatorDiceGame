@@ -127,6 +127,7 @@ public class BattleManager : MonoBehaviour
                 renderer.color = Color.white;
                 float scale = FullScale(each) * shrink;
                 sprite.position = new Vector3(x, groundY, sprite.position.z);
+                SetRest(each, sprite.position);
                 sprite.localScale = new Vector3(scale, scale, 1f);
             }
             else{
@@ -135,6 +136,7 @@ public class BattleManager : MonoBehaviour
                     renderer.color = placeholderColor;
                 }
                 sprite.position = new Vector3(x, enemySpriteY, sprite.position.z);
+                SetRest(each, sprite.position);
                 sprite.localScale = new Vector3(enemySpriteScale.x * shrink, enemySpriteScale.y * shrink, enemySpriteScale.z);
             }
         }
@@ -156,9 +158,20 @@ public class BattleManager : MonoBehaviour
 
     private void UpdateEnemySprites(){
         foreach(BattleEnemy each in flow.enemies){
+            // A HitReaction fades a dying enemy out instead of hiding it at once.
+            HitReaction reaction = each.entity.GetComponent<HitReaction>();
+            if(reaction != null){
+                reaction.SetVisible(!each.IsDead);
+                continue;
+            }
             SpriteRenderer renderer = each.entity.GetComponent<SpriteRenderer>();
             if(renderer != null) renderer.enabled = !each.IsDead;
         }
+    }
+
+    private static void SetRest(BattleEnemy enemy, Vector3 position){
+        HitReaction reaction = enemy.entity.GetComponent<HitReaction>();
+        if(reaction != null) reaction.SetRest(position);
     }
 
     // Enemy names, with a letter when the same enemy appears twice ("Tiro A", "Tiro B").

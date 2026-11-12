@@ -3441,3 +3441,22 @@ Animations for the 128-pixel PixelLab gladiator (the 64-pixel one's attacks no l
 - **Enemy reactions:** a hit flash or shake on the enemy that takes damage, since enemies have one still sprite each.
 - **The starting Sword's emblem** reads small.
 
+## Day 94 - Enemies Feel the Blows
+
+Enemies have one still sprite each, so they now react on screen without new art.
+
+### Accomplished
+- **`HitReaction`**, on the scene's Enemy object (every group member and Hydra head is a copy of it) and on the player:
+  - a hit that costs HP flashes the sprite red and shakes it for a quarter second;
+  - dealing a hit lunges the enemy toward the player and back (0.3 s), standing in for an attack animation; the player has none, since it swings;
+  - a dying enemy fades out instead of vanishing (`SetVisible`, which `BattleManager.UpdateEnemySprites` now calls); a revived Hydra head shows again at once.
+- **The row and the reactions don't fight over positions:** `ArrangeEnemySprites` tells each reaction its resting place (`SetRest`), and a reaction only moves its sprite while it plays and then puts it back.
+
+### Tests
+- **Play Mode:** a hit on the Murmillo starts its shake and flash, its hit on the player starts its lunge and the player's flash, and both end with the Murmillo back in place in its own colors; a killed Tiro fades and is hidden, its alpha reset for a revival. The motion itself wasn't watched (the Editor drew no frames in the background).
+
+### Next Steps
+- **Watch the reactions, the gladiator's animations and the dice tray in a real play** and tune their timing.
+- **Floating damage numbers** over the one who was hit would make every hit readable.
+- **The starting Sword's emblem** reads small.
+
