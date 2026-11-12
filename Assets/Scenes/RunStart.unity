@@ -281,11 +281,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 190
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 190
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_LocalPosition.x
@@ -321,7 +321,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -16
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1269,8 +1269,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -56}
-  m_SizeDelta: {x: -32, y: -332}
+  m_AnchoredPosition: {x: 0, y: -41}
+  m_SizeDelta: {x: -40, y: -290}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &494026681
 CanvasRenderer:
@@ -1331,8 +1331,8 @@ MonoBehaviour:
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 28
-  m_fontSizeMax: 46
+  m_fontSizeMin: 20
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -1418,11 +1418,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 190
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 190
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1458,7 +1458,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -16
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1932,8 +1932,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -56}
-  m_SizeDelta: {x: -32, y: -332}
+  m_AnchoredPosition: {x: 0, y: -41}
+  m_SizeDelta: {x: -40, y: -290}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1074148868
 MonoBehaviour:
@@ -1986,8 +1986,8 @@ MonoBehaviour:
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 28
-  m_fontSizeMax: 46
+  m_fontSizeMin: 20
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -2001,7 +2001,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -2355,11 +2355,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 190
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 190
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2395,7 +2395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -16
       objectReference: {fileID: 0}
     - target: {fileID: 6597108244975429829, guid: 08a7bbf13c9aa904fbf8e89c2d4ae066, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3011,8 +3011,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -56}
-  m_SizeDelta: {x: -32, y: -332}
+  m_AnchoredPosition: {x: 0, y: -41}
+  m_SizeDelta: {x: -40, y: -290}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1637696319
 MonoBehaviour:
@@ -3065,8 +3065,8 @@ MonoBehaviour:
   m_fontSizeBase: 46
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 28
-  m_fontSizeMax: 46
+  m_fontSizeMin: 20
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -3080,7 +3080,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0

@@ -3544,3 +3544,23 @@ From the user's play: the timing is right now, but the big rectangles around the
 - **Wider Market cards:** 440 pixels (were 340), with wider Buy and Lock buttons, so a face's two action lines no longer shrink to fit. The fullest shelf, a Grand Market's three faces and two items (or the Enchanting Table's three and two), still fits.
 - **Special effects read in the card language too** (`Iconize`, display only): Earthshaker [Damage]1 × highest face, Shield Burst [Damage]2 + [Fortify]×2, Shield Bash [Damage]2 + [Block] + [Fortify], Spiked Shield [Damage] = [Fortify] (min 2), Ember and Fuel [Damage] = [Burn], Exsanguinate and Unleash [Damage]2×[Bleed] / ×[Rage], Last Stand "+1 per 5 [Health] lost", Drill Sergeant "+1 value to the other faces (not my opposite)". All 66 faces' lines were listed and checked.
 
+## Day 100 - Faces Speak in Words
+
+The user, who knows every face, still couldn't tell what a face did from its icon line ("icons, numbers, commas... nothing reads") without hovering over it. Faces now show their full rules everywhere.
+
+### Accomplished
+- **Full rules on every face** (`GameText.FaceRules`): the Market's cards, the selected face, the run start's offers and the battle's dice tray write the face's description out, each action on its own line under its colored name (ATTACK:, DEFENSE:, MAGIC:), keywords colored. `OfferCardUI.DescribeActions`, the icon lines, is gone.
+- **Keyword definitions on hover:** every text that shows a face's rules has a `KeywordLinkTooltip` (the selected face's panel got one), so hovering Bleed or Burn opens its definition. Face cards and the tray have no tooltip of their own any more, since the rules are written out.
+- **The action buttons preview in words**, with real numbers and colored keywords ("2 damage, 2 Bleed").
+- **Intents over the heads and status chips stay icons:** they must read at a glance, and the user had no trouble with them.
+- **Room for the prose:** the run start's and the Market's face tiles are a little smaller and the card texts can shrink further (20) before they would overflow.
+
+### Decisions
+- **Faces are the exception to the card language** (GDD "Visual Style"). A face is the thing the player builds and compares, so its rules must read as sentences; icons and numbers are for what the enemies are about to do.
+
+### Tests
+- **Play Mode:** the run start (Frenzy, Exploit, Spiked Shield, whose long rules first ran under the Choose button) and a Grand Market (Shield Burst, Dark Communion, Fate's Hand, Health Potion selected).
+
+### Next Steps
+- **The corner gem** (a face's second family) puzzled the user; keep it, explain it on hover, or drop it.
+

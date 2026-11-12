@@ -256,9 +256,10 @@ public class UIManager : MonoBehaviour
     public void ShowRolledFace(DieFace face, List<DieFace> die, bool landed = false){
         bool stone = flow != null && flow.petrification.IsStone(face);
         rolledFaceTitle.text = face.DisplayName + "  <size=70%>" + (stone ? "<color=#A8B0B8>Petrified</color>" : "Value " + ValueOf(face)) + "</size>";
-        // The tray shows the face in the card language, one line per action; the full rules are in its tooltip.
-        rolledFaceText.text = stone ? "<color=#A8B0B8>Petrified: its only action is Defense.</color>" : OfferCardUI.DescribeActions(face, ValueOf(face));
-        rolledFaceTooltip.text = GameText.FaceTooltip(face);
+        // The tray shows the face's full rules, one action per line; keywords show their definitions on hover, so the
+        // tray itself has no tooltip.
+        rolledFaceText.text = stone ? "<color=#A8B0B8>Petrified: its only action is Defense.</color>" : GameText.FaceRules(face.FullDescription);
+        rolledFaceTooltip.text = "";
         if(landed) PlayRoll(face, die, stone);
         else ShowRolledTile(face, stone);
         UpdateDieChips(die, face);
@@ -279,7 +280,7 @@ public class UIManager : MonoBehaviour
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = !tumbling && preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
             actionButtonTexts[i].text = ActionTitle((ActionType)i)
-                + (preview != "" ? "\n<size=85%>" + GameText.Iconize(preview) + "</size>" : "");
+                + (preview != "" ? "\n<size=85%>" + GameText.Colorize(preview) + "</size>" : "");
         }
     }
 

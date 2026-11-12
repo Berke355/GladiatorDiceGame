@@ -440,7 +440,7 @@ public class MarketUI : MonoBehaviour
         selectedHeader.text = "<font=\"Cinzel SDF\"><b>" + face.DisplayName + "</b></font>\n"
             + OfferCardUI.RarityName(face.definition.rarity) + "  <color=#C9B796>· " + DieLayout.Name(selectedSlot) + "</color>\n"
             + "<size=80%><color=#C9B796>Opposite: " + run.dieFaces[DieLayout.OppositeOf(selectedSlot)].DisplayName + "</color></size>";
-        selectedBody.text = OfferCardUI.DescribeActions(face, face.value) + "\n<size=80%>" + MagicStatus(face) + "</size>";
+        selectedBody.text = GameText.FaceRules(face.FullDescription) +"\n<size=80%>" + MagicStatus(face) + "</size>";
         bool upgradable = market.IsUpgradableHere(selectedSlot);
         selectedUpgradeButton.interactable = upgradable && !Choosing && market.CanUpgrade(selectedSlot);
         selectedUpgradeText.text = upgradable

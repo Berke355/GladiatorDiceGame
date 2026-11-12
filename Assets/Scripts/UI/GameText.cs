@@ -190,6 +190,12 @@ public static class GameText
             + Glossary(description);
     }
 
+    // A face's full rules for a card, a panel or the dice tray: keywords colored and linked (KeywordLinkTooltip shows
+    // their definitions), one action per line under its colored name.
+    public static string FaceRules(string description){
+        return ActionLines(Colorize(description));
+    }
+
     // A face's rules with each action on its own line under its colored name ("Attack: ... Defense: ..." becomes
     // ATTACK: ... / DEFENSE: ...), like the face's lines in the card language. Text before the first action (a keyword
     // such as Consumable) stays on top.

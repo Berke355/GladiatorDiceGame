@@ -16,14 +16,15 @@ public class OfferCardUI : MonoBehaviour
     public FaceTileUI tile;
     public TooltipTrigger tooltip;
 
-    // A face offer: its tile, its card text and its full rules in the tooltip. Shared by the Market and the run start.
+    // A face offer: its tile and its full rules on the card. Shared by the Market and the run start. The card itself has
+    // no tooltip: the rules are written out, and a keyword's definition shows when the pointer is over it.
     public void ShowFace(DieFaceSO face){
         if(tile != null){
             tile.gameObject.SetActive(true);
             tile.Set(face, face.baseValue);
         }
         infoText.text = DescribeFace(face);
-        if(tooltip != null) tooltip.text = GameText.FaceTooltip(face, face.baseValue);
+        if(tooltip != null) tooltip.text = "";
     }
 
     // Any other offer (an enchantment, an item): text only.
@@ -33,34 +34,10 @@ public class OfferCardUI : MonoBehaviour
         if(tooltip != null) tooltip.text = tooltipText;
     }
 
-    // Card text shared by every screen that offers a face, in the card language (GDD "Visual Style"): the name, the
-    // rarity and one line of icons per action; the value is on the tile and the rules are on hover.
+    // Card text shared by every screen that offers a face: the name, the rarity and the face's full rules, one action per
+    // line under its colored name (GameText.FaceRules); the value is on the tile.
     public static string DescribeFace(DieFaceSO face){
-        System.Text.StringBuilder text = new System.Text.StringBuilder();
-        text.Append("<font=\"Cinzel SDF\"><b>" + face.faceName + "</b></font>\n" + RarityLabel(face.rarity));
-        string actions = DescribeActions(new DieFace(face), face.baseValue);
-        if(actions != "") text.Append("\n" + actions);
-        return text.ToString();
-    }
-
-    // One line of icons per action the face has (its enchantment included), at the given value, then its keywords.
-    // Shared by the offer cards and the Market's selected face.
-    public static string DescribeActions(DieFace face, int value){
-        List<string> lines = new List<string>();
-        foreach(ActionType action in System.Enum.GetValues(typeof(ActionType))){
-            List<string> parts = new List<string>();
-            foreach(EffectSO effect in face.GetEffects(action)){
-                string description = effect.Describe(new EffectContext{ value = value, face = face });
-                if(description != "") parts.Add(description);
-            }
-            if(parts.Count == 0) continue;
-            lines.Add(GameText.ActionLabel(action) + "  " + GameText.Iconize(string.Join(", ", parts)));
-        }
-        if(face.definition.keywords != null){
-            foreach(FaceKeyword keyword in face.definition.keywords) lines.Add(GameText.Colorize(keyword.ToString()));
-        }
-        // A half-height empty line between the actions keeps them apart.
-        return string.Join("\n<size=45%> </size>\n", lines);
+        return "<font=\"Cinzel SDF\"><b>" + face.faceName + "</b></font>\n" + RarityLabel(face.rarity) + "\n" + GameText.FaceRules(face.description);
     }
 
     public static string RarityName(Rarity rarity){
