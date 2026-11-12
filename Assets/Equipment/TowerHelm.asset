@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Tower Helm
   description: 'When you choose Defense: gain 1 Fortify (up to 3 times each battle).'
   rarity: 1
+  icon: {fileID: 21300000, guid: 999b5b0c223291d4b99b1528d1d83fa9, type: 3}
   tags: 01000000
   triggers:
   - trigger: 3
@@ -26,6 +27,8 @@ MonoBehaviour:
     position: 0
     requireSteered: 0
     requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
     value: 1
@@ -33,3 +36,5 @@ MonoBehaviour:
     maxPerBattle: 3
   goldPerVictory: 0
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

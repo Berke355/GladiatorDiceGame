@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'At the start of each battle: lose 3 HP (never your last) and gain
     1 Rage.'
   rarity: 1
+  icon: {fileID: 21300000, guid: e583ee25f32a5cc45b9ac8f8f0a91a07, type: 3}
   tags: 05000000
   triggers:
   - trigger: 0
@@ -27,6 +28,8 @@ MonoBehaviour:
     position: 0
     requireSteered: 0
     requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: 5c606f5714e41ec498bdfbbe58f8857b, type: 2}
     - {fileID: 11400000, guid: fc67e8bc43a146547a7711c342318f18, type: 2}
@@ -35,3 +38,5 @@ MonoBehaviour:
     maxPerBattle: 0
   goldPerVictory: 0
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

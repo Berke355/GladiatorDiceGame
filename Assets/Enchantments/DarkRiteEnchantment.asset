@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Dark Rite
   description: 'Magic: Gain Ritual equal to the face''s value.'
   rarity: 2
+  icon: {fileID: 21300000, guid: bf89f701c4b10564e8b1a9d44e2cfb13, type: 3}
   tags: 06000000
   effects:
   - {fileID: 11400000, guid: 9040a9bae91a0e8488e90f88ee5323a9, type: 2}

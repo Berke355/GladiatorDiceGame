@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Balance Scales
   description: 'When you choose an action other than your last one: gain 1 block.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 2d4c8077e5ace9b4dbf0e3625a0e0f87, type: 3}
   tags: 
   triggers:
   - trigger: 3
@@ -26,6 +27,8 @@ MonoBehaviour:
     position: 0
     requireSteered: 0
     requireDifferentAction: 1
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 1
@@ -33,3 +36,5 @@ MonoBehaviour:
     maxPerBattle: 0
   goldPerVictory: 0
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

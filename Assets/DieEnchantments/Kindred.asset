@@ -15,6 +15,9 @@ MonoBehaviour:
   enchantmentName: Kindred
   description: Every face that shares a tag with its opposite face gets +1.
   rarity: 2
+  icon: {fileID: 21300000, guid: 8d7cc8d5561acdd4cade004b75daf607, type: 3}
   positionBonuses: []
   oppositeTagBonus: 1
   rollWeights: []
+  positionMultipliers: []
+  consumablePositions: 

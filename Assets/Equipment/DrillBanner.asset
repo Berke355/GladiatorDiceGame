@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'At the start of each battle: your lowest-value face gains +1 value
     this battle.'
   rarity: 0
+  icon: {fileID: 21300000, guid: 748db914064d97d4eb682a5e883b4a20, type: 3}
   tags: 
   triggers:
   - trigger: 0

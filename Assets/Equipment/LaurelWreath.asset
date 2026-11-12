@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Laurel Wreath
   description: 'When you win a battle: heal 2.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 83256d6b98ff59d4ca6e0739866b477e, type: 3}
   tags: 
   triggers:
   - trigger: 7
@@ -22,8 +23,18 @@ MonoBehaviour:
     faceTag: 0
     requireAction: 0
     action: 0
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: 91f8f3dac020d9548be31f72645bb149, type: 2}
     value: 2
     maxPerRound: 0
     maxPerBattle: 0
+  goldPerVictory: 0
+  extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

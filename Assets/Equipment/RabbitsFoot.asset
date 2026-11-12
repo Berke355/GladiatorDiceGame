@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Rabbit's Foot
   description: 'The first time you reroll each turn: gain 1 block.'
   rarity: 0
+  icon: {fileID: 21300000, guid: 95e7a88d722184540a75aab3d2cac0a0, type: 3}
   tags: 09000000
   triggers:
   - trigger: 8

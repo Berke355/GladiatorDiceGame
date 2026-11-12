@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Merchant's Purse
   description: Every victory pays 5 more gold.
   rarity: 2
+  icon: {fileID: 21300000, guid: 6f8ba0116200d5b42994c06ef81151d4, type: 3}
   tags: 
   triggers: []
   goldPerVictory: 5

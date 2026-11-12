@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Ward
   description: 'Magic: Gain block equal to the face''s value.'
   rarity: 0
+  icon: {fileID: 21300000, guid: 0fb3c0e5fc6c1b542ab3d93e0d2f4feb, type: 3}
   tags: 01000000
   effects:
   - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}

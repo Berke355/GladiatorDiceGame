@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Burnout
   description: Right face +3, and it is Consumable.
   rarity: 1
+  icon: {fileID: 21300000, guid: 9d4576d0e52d51942909fc1fec38dece, type: 3}
   positionBonuses:
   - position: 3
     amount: 3

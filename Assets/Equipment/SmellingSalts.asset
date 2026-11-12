@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Smelling Salts
   description: 'The first time each battle a hit leaves you below half HP: heal 3.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 55aac077ae33bbb4d9f5d9e3631004cb, type: 3}
   tags: 
   triggers:
   - trigger: 5

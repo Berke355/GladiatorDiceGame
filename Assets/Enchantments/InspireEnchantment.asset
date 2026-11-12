@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Inspire
   description: 'Magic: Gain Encourage equal to the face''s value.'
   rarity: 2
+  icon: {fileID: 21300000, guid: 81d11c2213816de4ca661d69f26cab8b, type: 3}
   tags: 0500000001000000
   effects:
   - {fileID: 11400000, guid: c14f7dce7b93ff9468999e4ccda485be, type: 2}

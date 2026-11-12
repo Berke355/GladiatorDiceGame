@@ -20,6 +20,8 @@ public class DieEnchantmentSO : ScriptableObject
     [TextArea]
     public string description;
     public Rarity rarity;
+    // Its bronze medallion (Assets/Art/DieEnchantments/), on its card and Market slot.
+    public Sprite icon;
     // Added to the battle value of the face on each position (Value Is the Effect: shown on the die).
     public List<PositionAmount> positionBonuses = new List<PositionAmount>();
     // Added to every face sharing a tag with its opposite face (Kindred).

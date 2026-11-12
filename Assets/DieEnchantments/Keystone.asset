@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Keystone
   description: Middle face +2. Right face -1.
   rarity: 0
+  icon: {fileID: 21300000, guid: c31a20bef3deff740bc2527f70ebab8c, type: 3}
   positionBonuses:
   - position: 2
     amount: 2

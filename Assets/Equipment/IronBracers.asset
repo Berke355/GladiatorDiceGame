@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Iron Bracers
   description: 'At the start of each battle: gain 3 Fortify.'
   rarity: 1
+  icon: {fileID: 21300000, guid: ee91f5a0cb4c89b409300d3b23fbd10d, type: 3}
   tags: 
   triggers:
   - trigger: 0

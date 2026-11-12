@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Ignition
   description: 'Magic: Ignite the enemy''s Burn.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 0be0ed13a79eec744a04d76cac5c5e3d, type: 3}
   tags: 03000000
   effects:
   - {fileID: 11400000, guid: 8b6a869f4e5efd64d824f9b5a5183b3d, type: 2}

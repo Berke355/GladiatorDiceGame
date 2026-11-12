@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Hourglass
   description: 'At the start of your 5th turn each battle: gain 1 Rage.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 4a50ca2ec665fb046b911a90e536a832, type: 3}
   tags: 
   triggers:
   - trigger: 1

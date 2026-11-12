@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Honed Edge
   description: Rightmost face +2. Left face -1.
   rarity: 0
+  icon: {fileID: 21300000, guid: b7734eaf142f74f459779e46cf5b5bfa, type: 3}
   positionBonuses:
   - position: 4
     amount: 2
@@ -22,3 +23,5 @@ MonoBehaviour:
     amount: -1
   oppositeTagBonus: 0
   rollWeights: []
+  positionMultipliers: []
+  consumablePositions: 

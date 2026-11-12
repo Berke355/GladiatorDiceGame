@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Center of Gravity
   description: The Middle face comes up twice as often.
   rarity: 2
+  icon: {fileID: 21300000, guid: 5a452917fb20dc44d9e4fd26ff154081, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights:

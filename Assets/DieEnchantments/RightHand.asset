@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Right Hand
   description: Right face +2. Top face -1.
   rarity: 0
+  icon: {fileID: 21300000, guid: d23c8895d1a965346b7ab72eebc2b765, type: 3}
   positionBonuses:
   - position: 3
     amount: 2

@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Twin Weights
   description: The Left and Right faces come up twice as often.
   rarity: 2
+  icon: {fileID: 21300000, guid: 4fc42a4f0a1f7da478fa6b327310715f, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights:

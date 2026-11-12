@@ -15,11 +15,14 @@ public class FaceTileUI : MonoBehaviour
     public TextMeshProUGUI valueText;
     // Dims the tile (a stone or used face).
     public Image overlay;
+    // Optional: the seal of the face's enchantment in a corner (only a DieFace can carry one).
+    public Image seal;
 
     private static readonly Color Ivory = new Color32(0xE9, 0xDC, 0xC0, 0xFF);
 
     public void Set(DieFace face, int value, string valueSuffix = "", bool dimmed = false){
         Set(face != null ? face.definition : null, value, valueSuffix, dimmed);
+        ShowSeal(face != null && face.enchantment != null ? face.enchantment.icon : null);
     }
 
     public void Set(DieFaceSO face, int value, string valueSuffix = "", bool dimmed = false){
@@ -39,6 +42,13 @@ public class FaceTileUI : MonoBehaviour
         emblem.enabled = emblem.sprite != null;
         if(valueText != null) valueText.text = face != null && face.hasNoValue ? valueSuffix : value + valueSuffix;
         if(overlay != null) overlay.enabled = dimmed;
+        ShowSeal(null);
+    }
+
+    private void ShowSeal(Sprite sprite){
+        if(seal == null) return;
+        seal.sprite = sprite;
+        seal.enabled = sprite != null;
     }
 
     public static Color FamilyColor(FaceTag family){

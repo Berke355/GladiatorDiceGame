@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Rend
   description: 'Magic: Apply Bleed equal to the face''s value.'
   rarity: 0
+  icon: {fileID: 21300000, guid: 7d4ff780c5062e34cb897f5181b0bb64, type: 3}
   tags: 07000000
   effects:
   - {fileID: 11400000, guid: 9236ed9622649e74582c8c6b7b9dc1bf, type: 2}

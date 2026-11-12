@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'Your first hit on each of your first 2 turns each battle: hit again
     for 1 damage.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 90916fa56b4f2fa428675b5c7ac65180, type: 3}
   tags: 05000000
   triggers:
   - trigger: 4

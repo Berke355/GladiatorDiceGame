@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'The first 3 times each battle a hit makes you lose HP: deal 1 damage
     to the attacker.'
   rarity: 1
+  icon: {fileID: 21300000, guid: c0ae0a8e06724544d889d4bc7eebd3f2, type: 3}
   tags: 
   triggers:
   - trigger: 5
@@ -27,6 +28,8 @@ MonoBehaviour:
     position: 0
     requireSteered: 0
     requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: eb3494da333260a4f83d86adba089264, type: 2}
     value: 1
@@ -34,3 +37,5 @@ MonoBehaviour:
     maxPerBattle: 3
   goldPerVictory: 0
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

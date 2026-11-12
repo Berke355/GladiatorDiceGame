@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Heavy Core
   description: Middle face +3. Top and Bottom faces -1.
   rarity: 1
+  icon: {fileID: 21300000, guid: 52979902475178a4bba7530e3847323a, type: 3}
   positionBonuses:
   - position: 2
     amount: 3
@@ -24,3 +25,5 @@ MonoBehaviour:
     amount: -1
   oppositeTagBonus: 0
   rollWeights: []
+  positionMultipliers: []
+  consumablePositions: 

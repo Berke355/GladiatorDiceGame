@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Witch's Knot
   description: 'At the start of each battle: apply 1 Poison and 1 Bleed.'
   rarity: 0
+  icon: {fileID: 21300000, guid: a5f106ef8f99cde4da50f966aab0467b, type: 3}
   tags: 060000000400000007000000
   triggers:
   - trigger: 0

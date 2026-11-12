@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'Magic: Hit twice, dealing damage equal to the face''s value each
     time.'
   rarity: 2
+  icon: {fileID: 21300000, guid: 3c78f9177cde3a8479fafc4dab373524, type: 3}
   tags: 0500000008000000
   effects:
   - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}

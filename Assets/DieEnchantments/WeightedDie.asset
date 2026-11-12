@@ -15,8 +15,11 @@ MonoBehaviour:
   enchantmentName: Weighted Die
   description: The Rightmost face comes up twice as often.
   rarity: 2
+  icon: {fileID: 21300000, guid: 463952e60354cc64396ce04cc67f196a, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights:
   - position: 4
     amount: 2
+  positionMultipliers: []
+  consumablePositions: 

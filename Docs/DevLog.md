@@ -3576,3 +3576,21 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The end of the turn on the HP bar** (the user's next idea): the HP that Poison and Bleed will take at the end of the owner's turn is marked inside the HP from its end, Poison in dark green (taken first, at the very end), Bleed in dark red before it. `Entity.NextTicks` computes it next to the `OnTurnEnd` rules it mirrors (Poison's stacks, then 1 for Bleed, never more than the HP left or the round's cap). Burn shows nothing: it deals no damage on its own. The marks are drawn over the shields, which can slide over a full bar's end, so a tick is never hidden. The first, light poison green vanished on the player's green bar.
 - **Tested in Play Mode:** the player at 40/50 with 3 Poison and 1 Bleed, the Murmillo at 14/20 with 5 Poison and Bleed, the Arena Wolf at full HP with 3 Block and Bleed.
 
+## Day 102 - Pictures for Items and Enchantments
+
+### Accomplished
+- **57 new pictures** from six Gemini sheets (prompts in `Docs/ArtPrompts.md`), cut and cleaned like the face emblems: 31 items in `Assets/Art/Items` (plus a spare whip kept outside the project), 14 bronze medallions in `Assets/Art/DieEnchantments`, 12 purple wax seals in `Assets/Art/Enchantments`.
+- **`icon`** on `EquipmentSO`, `DieEnchantmentSO` and `EnchantmentSO`, assigned to every asset by name.
+- **Where they show:** the Market's item, enchantment and die enchantment cards (the picture where a face card has its tile, `OfferCardUI.icon`), the boss reward cards (taller for it), the Market's item and die enchantment slots (picture left of the name, `EquipmentSlotUI.Show`), the battle's item strip (picture only, name and rules on hover, `EquipmentChipUI.icon`; trait chips keep their names) and the face tile: an enchanted face carries its enchantment's seal in the top right corner (`FaceTileUI.seal`), on the die net, in the dice tray and in the Market.
+- **Item and enchantment card titles** use Cinzel like the face cards.
+
+### Decisions
+- **One look per kind** (object, medallion, seal), so a player never confuses an item with an enchantment, and the seal on a face says at once that it is enchanted.
+- **The magenta mask was too loose for purple:** it took the seals' violet for background. Cutting now only removes colors close to pure magenta.
+
+### Tests
+- **Play Mode:** a Market with four items, Twin Soul and War Cry on the Top Sword (seal on its tile), both tabs; the battle's item strip with seven items in edit mode.
+
+### Next Steps
+- Sound and music, then a playtest build for friends.
+

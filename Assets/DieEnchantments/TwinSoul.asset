@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Twin Soul
   description: The Top face's value is doubled. The Bottom face's value is 0.
   rarity: 2
+  icon: {fileID: 21300000, guid: a1e0b69b265f17546ae65d5b48027127, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []

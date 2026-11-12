@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Scribe's Quill
   description: Faces with an enchantment have +1 value.
   rarity: 1
+  icon: {fileID: 21300000, guid: 881cc9cadbe0d614ca0cad8d21abe125, type: 3}
   tags: 
   triggers: []
   goldPerVictory: 0

@@ -15,6 +15,8 @@ public class OfferCardUI : MonoBehaviour
     // Optional (face offers): the face as a tile, and its full rules on hover.
     public FaceTileUI tile;
     public TooltipTrigger tooltip;
+    // Optional: the picture of an item or an enchantment, where a face offer shows its tile.
+    public Image icon;
 
     // A face offer: its tile and its full rules on the card. Shared by the Market and the run start. The card itself has
     // no tooltip: the rules are written out, and a keyword's definition shows when the pointer is over it.
@@ -23,15 +25,23 @@ public class OfferCardUI : MonoBehaviour
             tile.gameObject.SetActive(true);
             tile.Set(face, face.baseValue);
         }
+        ShowIcon(null);
         infoText.text = DescribeFace(face);
         if(tooltip != null) tooltip.text = "";
     }
 
-    // Any other offer (an enchantment, an item): text only.
-    public void ShowText(string text, string tooltipText = ""){
+    // Any other offer (an enchantment, an item): its picture, if it has one, and its text.
+    public void ShowText(string text, string tooltipText = "", Sprite picture = null){
         if(tile != null) tile.gameObject.SetActive(false);
+        ShowIcon(picture);
         infoText.text = text;
         if(tooltip != null) tooltip.text = tooltipText;
+    }
+
+    private void ShowIcon(Sprite picture){
+        if(icon == null) return;
+        icon.sprite = picture;
+        icon.gameObject.SetActive(picture != null);
     }
 
     // Card text shared by every screen that offers a face: the name, the rarity and the face's full rules, one action per
@@ -46,20 +56,20 @@ public class OfferCardUI : MonoBehaviour
 
     // Card text for an enchantment offer. An enchantment uses the value of the face it is inscribed on.
     public static string DescribeEnchantment(EnchantmentSO enchantment){
-        return "<b>" + enchantment.enchantmentName + "</b>\n"
+        return "<font=\"Cinzel SDF\"><b>" + enchantment.enchantmentName + "</b></font>\n"
             + RarityLabel(enchantment.rarity) + "\n"
             + "<size=80%>" + GameText.Colorize(enchantment.description) + "</size>";
     }
 
     public static string DescribeDieEnchantment(DieEnchantmentSO enchantment){
-        return "<b>" + enchantment.enchantmentName + "</b>\n"
+        return "<font=\"Cinzel SDF\"><b>" + enchantment.enchantmentName + "</b></font>\n"
             + RarityLabel(enchantment.rarity) + "\n"
             + "<size=80%>" + GameText.Colorize(enchantment.description) + "</size>";
     }
 
     // Card text for an equipment item (Grand Market offers, boss reward).
     public static string DescribeEquipment(EquipmentSO item){
-        return "<b>" + item.equipmentName + "</b>\n"
+        return "<font=\"Cinzel SDF\"><b>" + item.equipmentName + "</b></font>\n"
             + RarityLabel(item.rarity) + "\n"
             + "<size=80%>" + GameText.Colorize(item.description) + "</size>";
     }

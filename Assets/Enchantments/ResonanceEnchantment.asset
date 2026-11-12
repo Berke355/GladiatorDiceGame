@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'Magic: Add the face''s value as Charge to every other face with Charge,
     past the usual limit. This face keeps its Charge.'
   rarity: 2
+  icon: {fileID: 21300000, guid: f8b3d7b7c15580c41a98c0bc3ff677c7, type: 3}
   tags: 08000000
   effects:
   - {fileID: 11400000, guid: b922a5ea57af4554e8fa435b057c1a91, type: 2}

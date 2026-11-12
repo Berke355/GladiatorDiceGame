@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Ambusher's Knife
   description: 'Your first hit each battle: hit again for 3 damage.'
   rarity: 1
+  icon: {fileID: 21300000, guid: 6be0d4dd1cbc4a142ad64a118642cc8d, type: 3}
   tags: 
   triggers:
   - trigger: 4
@@ -26,6 +27,8 @@ MonoBehaviour:
     position: 0
     requireSteered: 0
     requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 3
@@ -33,3 +36,5 @@ MonoBehaviour:
     maxPerBattle: 1
   goldPerVictory: 0
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0

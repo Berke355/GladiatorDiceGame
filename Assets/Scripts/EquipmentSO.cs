@@ -62,6 +62,8 @@ public class EquipmentSO : ScriptableObject
     [TextArea]
     public string description;
     public Rarity rarity;
+    // Its picture (Assets/Art/Items/<name without spaces and apostrophes>.png), on its card, Market slot and battle chip.
+    public Sprite icon;
     // Archetype tags, for build-aware offers.
     public List<FaceTag> tags = new List<FaceTag>();
     public List<TriggeredEffect> triggers = new List<TriggeredEffect>();

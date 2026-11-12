@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Outer Ring
   description: Top and Bottom faces +1. Middle face -1.
   rarity: 1
+  icon: {fileID: 21300000, guid: 1db28ed2d79a03c41b2583f9aa486742, type: 3}
   positionBonuses:
   - position: 0
     amount: 1

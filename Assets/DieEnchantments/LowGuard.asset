@@ -15,6 +15,7 @@ MonoBehaviour:
   enchantmentName: Low Guard
   description: Bottom face +3. Left and Right faces -1.
   rarity: 1
+  icon: {fileID: 21300000, guid: 8954c56f33016174d856a5a3bd8a7d02, type: 3}
   positionBonuses:
   - position: 5
     amount: 3

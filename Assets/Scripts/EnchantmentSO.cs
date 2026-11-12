@@ -12,6 +12,8 @@ public class EnchantmentSO : ScriptableObject
     [TextArea]
     public string description;
     public Rarity rarity;
+    // Its purple wax seal (Assets/Art/Enchantments/), on its card and in the corner of the face it is inscribed on.
+    public Sprite icon;
     public List<FaceTag> tags = new List<FaceTag>();
     // Run as the face's Magic action.
     public List<EffectSO> effects = new List<EffectSO>();

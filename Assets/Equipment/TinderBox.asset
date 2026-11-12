@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Tinder Box
   description: 'At the start of each battle: apply 2 Burn.'
   rarity: 0
+  icon: {fileID: 21300000, guid: 5766bba6d9ba4784d9d0084ee4b0d8ba, type: 3}
   tags: 03000000
   triggers:
   - trigger: 0

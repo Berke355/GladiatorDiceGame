@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Alchemist's Belt
   description: Consumable faces work 2 times each battle before they become Change.
   rarity: 1
+  icon: {fileID: 21300000, guid: a151e7da8bea3ab4d9a14378d0fdc506, type: 3}
   tags: 
   triggers: []
   goldPerVictory: 0

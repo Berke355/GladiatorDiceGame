@@ -15,6 +15,7 @@ MonoBehaviour:
   equipmentName: Compass
   description: 'The first time each turn your Rightmost face comes up: gain 2 block.'
   rarity: 1
+  icon: {fileID: 21300000, guid: ee899d49576884f40a9b5363da779dc4, type: 3}
   tags: 
   triggers:
   - trigger: 2
@@ -26,6 +27,8 @@ MonoBehaviour:
     position: 4
     requireSteered: 0
     requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
     effects:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
@@ -33,3 +36,5 @@ MonoBehaviour:
     maxPerBattle: 0
   goldPerVictory: 0
   extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0
