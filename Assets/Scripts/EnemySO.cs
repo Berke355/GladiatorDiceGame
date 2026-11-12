@@ -29,6 +29,9 @@ public class EnemySO : ScriptableObject
     // Pack tactics: when an earlier pack member already attacks this turn, this one picks something else if it can
     // (two wolves never bite at once, so a group's damage comes in turns instead of all at once).
     public bool packTactics;
+    // The pack keeps its tactics for this many turns (0: the whole battle); after that a long fight lets them all
+    // attack at once, so dragging it out is punished.
+    public int packTacticsTurns;
     // Second Wind: below half HP the enemy switches to these intents for the rest of the battle (empty = never).
     public List<EnemyIntent> secondWindIntents = new List<EnemyIntent>();
 }

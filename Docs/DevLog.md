@@ -3699,3 +3699,19 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The user's play-test** of battles 1–4 with pack tactics and the Burn torchbearer.
 - A playtest build for friends.
 
+## Day 108 - Packs Tire, and the Mad Scientist's Rules
+
+### Accomplished
+- **Pack tactics break down in a long fight** (the user's idea, `EnemySO.packTacticsTurns`): Tiro and Arena Wolf keep them for 3 turns; from turn 4 a pack can attack at once again. Forced Wolf Pack at battle 3 (100 runs × 3 bots): 16.2 HP lost with tactics for the whole battle, 17.4 with 3 turns, 16.4 with 4. Most pack fights end before turn 4, so this only punishes dragging one out.
+- **The Mad Scientist's rules are written into the Roadmap** (Phase B, next to the Blacksmith), as agreed with the user.
+
+### Decisions (face merging, the user's design)
+- **The price of a merge is a Blank face** in the freed place: no action, so landing on it costs a reroll or a pass, at least until the next Market. (My worry was that a merged face is strictly stronger than both parents; this makes concentrating power a real trade.)
+- **The 50% chances stay:** the player knows the rules, so they can merge two faces that don't clash and get no randomness at all, or knowingly take the risk with a pair that does. If play-tests show it feels bad, the player gets the choice instead.
+- **A keyword action** is one whose text names a status (Bleed, Burn, Poison, Ritual, Fortify, Rage...); damage and block don't count. My earlier "unclear" was wrong: the status words are a fixed list (`GameText`'s glossary).
+- Left open: the child's tags and rarity, and merging two copies of one face.
+
+### Next Steps
+- **The user's play-test** of battles 1–4.
+- A playtest build for friends.
+

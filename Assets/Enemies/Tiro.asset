@@ -35,4 +35,5 @@ MonoBehaviour:
     requiresTargetStatus: 0
   traits: []
   packTactics: 1
+  packTacticsTurns: 3
   secondWindIntents: []

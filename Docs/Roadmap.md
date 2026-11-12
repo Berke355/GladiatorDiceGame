@@ -25,6 +25,15 @@ Slay the Spire is the main reference for this phase. The order matters: the batt
     - "?" event nodes with risk/reward choices, as in Slay the Spire.
     - The map shows what is coming, which replaces the Market's "next battle" line.
     - **The Blacksmith (the user's idea):** the Enchanting Table's twin for the other actions. It fits an empty Attack or Defense action onto a face (the corner pips already show which are empty), using the face's value like everything else. It must stay a choice, not "give every face three actions": a price that rises per added action or one forge per face. It may be a map node rather than a Market tab.
+    - **The Mad Scientist: face merging (the user's idea, rules agreed on DevLog Day 108).** A map node where two faces of the die are merged into one, for gold:
+      - **The child** takes the place the player chooses; **the other place gets a Blank face**, which has no action: landing on it means a reroll or a pass. That is the price of concentrating power, at least until the next Market.
+      - **Value:** the higher parent value. **Name:** the player types it.
+      - **Picture:** the two parents' emblems split by a line from the top left to the bottom right corner, so no new art is needed.
+      - **Face keywords** (Consumable, Charge...): one parent's keyword is inherited; if both have one, a 50% chance picks one of them.
+      - **Actions:** the union of both parents' actions. When both have the same action, the one with a keyword wins (a keyword is a status word in its text: Bleed, Burn, Poison, Ritual, Fortify, Rage and the like; damage and block don't count); if both or neither have one, a 50% chance picks one. E.g. Sword + Shield: Attack from Sword (damage and Bleed), Defense from Shield (Fortify).
+      - **The randomness is a risk the player chooses to take:** knowing the rules, they can pick two faces that merge without any chance (the "it clicks" moment), or risk a pair that clashes. If play-tests show it feels bad, the player may choose instead.
+      - **Open questions:** the child's tags (both parents' for synergies like Plague?) and rarity (the higher one, for upgrade costs); whether two copies of one face can merge.
+      - **Technically:** a merged face is stored in the run as a recipe (the two parents, the name and the 50% outcomes), built into a definition at runtime, so the run can still be saved. Its rules text is joined per action. Faces that read their own value or the opposite face (Mimic, Patient Blade, Charge) need checks, and the simulator needs the merge rules to tune the price.
 - **Longer runs (the user's target: 25-30 minutes, today 10-15).** More enemies and bosses between the start and the last boss, inside a single run, with the difficulty curve scaled carefully to match.
   - The map does half of the work: the die can't improve after every battle, so reaching full strength takes longer, and six faces no longer fill up too early.
   - **Decided against, to keep the project finishable (visual effects, content, optimization, marketing and the Steam release are still ahead):** an Act 2, a second die, face evolution and die levels.

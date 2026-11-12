@@ -49,7 +49,7 @@ public class EnemyBrain : IEnemyBrain
         // not one whose required status the player lacks, and not an attack while a pack member already attacks.
         // Each rule is dropped again if it would leave nothing to pick.
         bool blockCurrent = repeatCount >= MaxRepeats && intents.Count > 1;
-        bool avoidAttack = definition.packTactics && PackMemberAttacks();
+        bool avoidAttack = PackTacticsHold && PackMemberAttacks();
         List<int> allowed = Allowed(intents, blockCurrent, true, avoidAttack);
         if(allowed.Count == 0) allowed = Allowed(intents, blockCurrent, true, false);
         if(allowed.Count == 0) allowed = Allowed(intents, blockCurrent, false, false);
@@ -163,6 +163,9 @@ public class EnemyBrain : IEnemyBrain
         }
         return allowed;
     }
+
+    // Pack tactics hold for the first packTacticsTurns turns of the battle (0: always).
+    private bool PackTacticsHold => definition.packTactics && (definition.packTacticsTurns <= 0 || flow == null || flow.TurnNumber <= definition.packTacticsTurns);
 
     // Whether a living pack member that picked before this one (earlier in turn order) attacks this turn.
     private bool PackMemberAttacks(){
