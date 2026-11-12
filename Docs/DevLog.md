@@ -3615,3 +3615,20 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Play-test the sounds and tune volumes; a settings screen with music and effect sliders.
 - A playtest build for friends.
 
+## Day 104 - Settings Screen
+
+### Accomplished
+- **A settings screen** (GDD "Sound"): a bronze pixel gear in the top right corner of every screen, or Esc, opens a panel over a dimmed screen with Music and Effects sliders (percent shown; the effects slider plays a coin sound at most four times a second while it moves, so the volume can be heard) and Close. In a build it also has Quit Game, which a playtest build needs.
+- **`SettingsUI`** on its own prefab, `Resources/SettingsOverlay` (an overlay canvas above the scenes' canvases), created by `RunManager.Bootstrap` next to the RunManager and kept through scene loads. The volumes are `AudioManager.MusicVolume` / `SfxVolume` (PlayerPrefs, saved when the panel closes); the music changes at once.
+- **Room for the gear:** the Market's Heal, Next Battle and Cancel buttons and the battle's gold moved 90 px left.
+- The gear is drawn in code (Python, 26 px, the bronze and gold of the buttons) at `Assets/Art/UI/Gear.png`, outside the icon atlas.
+
+### Decisions
+- **One persistent overlay instead of a copy per scene:** the settings work the same everywhere and a new scene gets them for free.
+
+### Tests
+- Play Mode in the Market: the gear in the corner, the panel with both sliders, the music slider changing the saved volume.
+
+### Next Steps
+- A playtest build for friends.
+

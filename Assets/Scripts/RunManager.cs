@@ -51,6 +51,14 @@ public class RunManager : MonoBehaviour
             return;
         }
         Instantiate(prefab).name = "RunManager";
+
+        // The settings screen (gear and Esc) lives through scene loads like the run.
+        SettingsUI settings = Resources.Load<SettingsUI>("SettingsOverlay");
+        if(settings != null){
+            SettingsUI overlay = Instantiate(settings);
+            overlay.name = "SettingsOverlay";
+            DontDestroyOnLoad(overlay.gameObject);
+        }
     }
 
     void Awake(){

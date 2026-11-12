@@ -1232,5 +1232,6 @@ the eyes half closed. Music sets each screen's mood and fades from one screen to
   bosses. Victory, defeat and the end of the run stop the music for a short jingle.
 - **Small and repeatable:** every sound has a few takes and a little pitch variation, so the hundredth hit doesn't sound
   like the first one played again.
+- **Settings:** a bronze gear in the top right corner of every screen (or Esc) opens a panel with Music and Effects volume sliders (the effects slider plays a sample as it moves) and, in a build, Quit Game. The choices are kept between sessions.
 - All sounds and music are public domain (CC0); sources are in `Docs/Credits.md`.
 
