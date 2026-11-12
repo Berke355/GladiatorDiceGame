@@ -3632,3 +3632,20 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - A playtest build for friends.
 
+## Day 105 - Boss Reward Fix and Action Pips
+
+### Accomplished
+- **The boss reward could not be taken from its third card** (the user's Iron Bracers): the reward panel sat in the middle of the Market canvas's children, so four later ones (Heal, the next battle line and two labels) were drawn over it, and the next battle line lay right on the third card's Take button and swallowed the click. The panel is now the last child before the Tooltip.
+- **The reward screen was redone:** a framed window like the settings, the title and hint above the cards instead of on them, taller cards with the picture on top, and the card text at 40 instead of 62 (it overflowed).
+- **Action pips on every face tile** (the user's idea): a blue bubble top left for Defense, a red one bottom left for Attack, a purple one top right for Magic, from the face's own actions. An enchanted face shows its seal there instead. The die slots' "Can be enchanted" / "Has its own Magic" caption on the Enchanting Table is gone: an empty top right corner says it.
+- **The Market's owned items are pictures only** (`EquipmentSlotUI.iconOnly`), ten to a row, the name and rules on hover: with many items the named slots ran out of room.
+
+### Decisions
+- **The Blacksmith goes to the Roadmap** (the user's idea): fitting an empty Attack or Defense action onto a face, the Enchanting Table's twin. The pips already make empty actions visible. It needs a rule that keeps it a choice (a rising price or one forge per face) and may become a map node.
+
+### Tests
+- Play Mode: a boss reward with three items, a raycast at the center of each Take button hits that button first, taking the third card adds it; 13 owned items in two rows of pictures; the pips on the die net and the face offers.
+
+### Next Steps
+- A playtest build for friends.
+

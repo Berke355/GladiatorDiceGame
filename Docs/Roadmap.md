@@ -24,6 +24,7 @@ Slay the Spire is the main reference for this phase. The order matters: the batt
     - The Enchanting Table may become its own node.
     - "?" event nodes with risk/reward choices, as in Slay the Spire.
     - The map shows what is coming, which replaces the Market's "next battle" line.
+    - **The Blacksmith (the user's idea):** the Enchanting Table's twin for the other actions. It fits an empty Attack or Defense action onto a face (the corner pips already show which are empty), using the face's value like everything else. It must stay a choice, not "give every face three actions": a price that rises per added action or one forge per face. It may be a map node rather than a Market tab.
 - **Longer runs (the user's target: 25-30 minutes, today 10-15).** More enemies and bosses between the start and the last boss, inside a single run, with the difficulty curve scaled carefully to match.
   - The map does half of the work: the die can't improve after every battle, so reaching full strength takes longer, and six faces no longer fill up too early.
   - **Decided against, to keep the project finishable (visual effects, content, optimization, marketing and the Steam release are still ahead):** an Act 2, a second die, face evolution and die levels.

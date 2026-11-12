@@ -363,10 +363,10 @@ public class MarketUI : MonoBehaviour
             string weightText = (weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often")
                 + (DieEnchantmentSO.ConsumableAt(run.dieEnchantments, i) ? " | Consumable" : "");
             if(slot.tile != null){
-                // The tile is the face; the caption says only what matters now (moving, the Enchanting Table's
-                // empty Magic, a die enchantment's effect on this place).
+                // The tile is the face (its corner pips show its actions, so an empty Magic corner means it can be
+                // enchanted); the caption says only what matters now (moving, a die enchantment's effect on this place).
                 slot.tile.Set(dieFace, dieFace.value, bonusText);
-                string caption = i == pendingSwap ? "<color=#E2B23C>MOVING</color>" : showingTable ? MagicStatus(dieFace) : weightText.TrimStart(' ', '|');
+                string caption = i == pendingSwap ? "<color=#E2B23C>MOVING</color>" : weightText.TrimStart(' ', '|');
                 slot.faceText.text = caption;
             }
             else slot.faceText.text = moving + "<b>" + dieFace.DisplayName + "</b>  " + dieFace.value + bonusText + "\n<size=70%>" + DieLayout.Name(i) + weightText + " | " + MagicStatus(dieFace) + "</size>";
