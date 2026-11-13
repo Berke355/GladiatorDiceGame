@@ -14,6 +14,10 @@ public interface IEnemyBrain
     void OnTurnEnd();
     // Damage the enemy is about to deal this turn, with its Rage (0 if it isn't attacking). Used by bots to block big hits.
     int IncomingDamage { get; }
+    // Whether the current intent is an attack (threats included), e.g. for Bait and Provoke.
+    bool IntendsAttack { get; }
+    // Provoke: if the current intent isn't an attack, switch to the enemy's weakest attack and return true.
+    bool ProvokeToWeakestAttack();
     // Damage the current intent's threats would deal if the player acted with this face and action (0 if none).
     int ThreatAgainst(DieFace face, int battleValue, ActionType action);
     // The enemy's traits (empty for bosses, whose mechanics live in their brain).

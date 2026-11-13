@@ -150,6 +150,7 @@ public static class RunSimulator
             new Bot("Focused: Hammer", Shopping.Focused, FaceTag.Hammer),
             new Bot("Focused: Fortune", Shopping.Focused, FaceTag.Fortune),
             new Bot("Focused: Net", Shopping.Focused, FaceTag.Net),
+            new Bot("Focused: Riposte", Shopping.Focused, FaceTag.Riposte),
             // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
             new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
             new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
@@ -157,6 +158,7 @@ public static class RunSimulator
             // Lose HP for power, heal it back from a bleeding enemy (Bloodrage + Bloodscent loop).
             new Bot("Hybrid: Bleed + Rage", Shopping.Focused, FaceTag.Bleed, FaceTag.Rage),
             new Bot("Hybrid: Net + Ritual", Shopping.Focused, FaceTag.Net, FaceTag.Ritual),
+            new Bot("Hybrid: Riposte + Shield", Shopping.Focused, FaceTag.Riposte, FaceTag.Block),
         };
     }
 
@@ -708,6 +710,14 @@ public static class RunSimulator
             case "Contagion": return bigHit ? ActionType.Defense : ActionType.Magic;
             // Nets the enemy for this turn's hits and its next attacks, unless a big hit needs blocking.
             case "Tangle": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // Vigil waits for the first hit, so set it once and keep blocking while it waits.
+            case "Vigil": return !bigHit && player.GetStatus(StatusType.Vigil) == 0 ? ActionType.Magic : ActionType.Defense;
+            // Provoke an enemy that isn't attacking (its plan is the threat); against an attack, just block.
+            // Provoke a utility intent (Magic: debuffs, petrify, buffs), never a block: turning a harmless turn into an
+            // attack and giving Rage for it is a bad trade.
+            case "Provoke":
+                if(IntentAction(flow.Target.brain) == ActionType.Magic) return ActionType.Magic;
+                break;
             case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
@@ -715,6 +725,14 @@ public static class RunSimulator
         if(face.HasAction(ActionType.Attack)) return ActionType.Attack;
         if(face.HasAction(ActionType.Defense)) return ActionType.Defense;
         return ActionType.Magic;
+    }
+
+    // The kind of the enemy's current intent: a normal enemy's intent type, a boss's rolled face's action.
+    private static ActionType? IntentAction(IEnemyBrain brain){
+        EnemyBrain normal = brain as EnemyBrain;
+        if(normal != null) return normal.HasIntent ? (ActionType?)normal.currentIntent.intentType : null;
+        if(brain.RolledFace != null && brain.RolledFace.definition.effects.Count > 0) return brain.RolledFace.definition.effects[0].actionType;
+        return null;
     }
 
     // Switches to another action the face can take if the chosen one sets off a threat (e.g. Lash on Attack).

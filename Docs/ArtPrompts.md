@@ -128,6 +128,16 @@ Icons, in this order (left to right, top to bottom):
 12. Target: a gold crosshair ring with four short lines
 ```
 
+## Sheet 3: Provocator statuses (3 icons)
+
+For this sheet, change "exactly 12 icons in a grid of 4 columns and 3 rows" in the style block to "exactly 3 icons in a row". Until they exist, the status chips show the word.
+
+```
+1. Riposte: a sword pointing back toward the viewer with a curved return arrow
+2. Vigil: a small lit oil lamp
+3. Reversal: a round shield with a curved arrow bouncing off it
+```
+
 # Face emblems
 
 Every die face gets its own emblem, so a player who knows the game recognizes a face before reading it (GDD "Visual Style", "Face tiles"). Gemini draws only the object; the tile's ground color (the family), its rim (the rarity) and the value are drawn by the game, so the color system always stays consistent.
@@ -155,6 +165,7 @@ The family is the face's first tag other than Physical; Lifesteal counts as Blee
 | Fortune | gold | Encore, Fate's Hand, Gambit, Hedge, Mirror Blade, Opening Gambit, Ricochet, Sidestep, Turnabout, Lucky Buckler, Fate's Edge, Gambler's Strike, Patient Blade |
 | General | plain bone | Catalyst, Drill Sergeant, Exploit, Feint, Last Stand, Mimic, Sharpshooter, Spare Blade, Throwing Knife, Veteran |
 | Net (Retiarius) | sea teal | Net, Trident, Harpoon, Tangle, Snare, Haul In |
+| Riposte (Provocator) | wine | Parry, Bait, Grudge, Vigil, Wrath, Perfect Counter, Provoke |
 
 Rarity is the rim: Common bronze, Rare silver, Epic gold. An enchanted face gets a purple seal.
 
@@ -287,6 +298,20 @@ For this sheet, change "exactly 12 emblems in a grid of 4 columns and 3 rows" in
 4. Tangle: a knotted mass of rope twisted into a tight tangle
 5. Snare: a rope noose snare tied to a bent wooden stake
 6. Haul In: two hands pulling a rope taut, a full net hanging from it
+```
+
+## Sheet 8: Provocator (7 emblems)
+
+Gemini tends to fill a whole 4 x 3 sheet anyway; only the first seven cells are used. Save them as `Assets/Art/Faces/Parry.png`, `Bait.png`, `Grudge.png`, `Vigil.png`, `Wrath.png`, `PerfectCounter.png` and `Provoke.png`.
+
+```
+1. Parry: a short sword held crosswise, deflecting a spear tip
+2. Bait: a raw piece of meat hanging from a hook on a chain
+3. Grudge: a clenched fist wrapped in a bloodied cloth bandage
+4. Vigil: a bronze helmet with a single lit oil lamp beside it
+5. Wrath: a bull's horn helmet crest with red steam rising
+6. Perfect Counter: two crossed swords with a bright spark where they meet
+7. Provoke: a gladiator's open hand beckoning, palm up, fingers curling
 ```
 
 # Items, die enchantments and face enchantments

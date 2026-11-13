@@ -137,6 +137,42 @@ public class EnemyBrain : IEnemyBrain
         return damage;
     }
 
+    public bool IntendsAttack => HasIntent && currentIntent.intentType == ActionType.Attack;
+
+    public bool ProvokeToWeakestAttack(){
+        if(!HasIntent || IntendsAttack) return false;
+        List<EnemyIntent> intents = InSecondWind ? definition.secondWindIntents : definition.intents;
+        int weakest = -1;
+        // An attack that needs a status the player lacks (Ignite without Burn) is a last resort.
+        foreach(bool checkStatus in new[]{ true, false }){
+            for(int i = 0; i < intents.Count; i++){
+                if(intents[i].intentType != ActionType.Attack) continue;
+                StatusType needed = intents[i].requiresTargetStatus;
+                if(checkStatus && needed != StatusType.None && opponent.GetStatus(needed) <= 0) continue;
+                if(weakest < 0 || Strength(intents[i]) < Strength(intents[weakest])) weakest = i;
+            }
+            if(weakest >= 0) break;
+        }
+        if(weakest < 0) return false;
+        currentIndex = weakest;
+        repeatCount = 1;
+        currentIntent = intents[weakest];
+        Debug.Log(definition.enemyName + " was provoked: " + DescribeCurrentIntent());
+        return true;
+    }
+
+    // An attack's damage before Rage, for picking the weakest one: its value, times its hits for a multi-hit.
+    private static int Strength(EnemyIntent intent){
+        int hits = 1;
+        if(intent.effects != null){
+            foreach(EffectSO effect in intent.effects){
+                MultiHitDamageEffectSO multi = effect as MultiHitDamageEffectSO;
+                if(multi != null) hits = Mathf.Max(hits, multi.hits);
+            }
+        }
+        return intent.value * hits;
+    }
+
     private static bool IsThreat(EnemyIntent intent){
         return intent.effects != null && intent.effects.Exists(effect => effect is PunishChoiceEffectSO);
     }

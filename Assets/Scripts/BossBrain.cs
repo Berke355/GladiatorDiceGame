@@ -216,6 +216,23 @@ public class BossBrain : IEnemyBrain, IDisposable
         }
     }
 
+    public bool IntendsAttack => RolledFace != null && ActionOf(RolledFace) == ActionType.Attack;
+
+    // Provoke: the die turns to its weakest attack face (never one that starts a countdown).
+    public bool ProvokeToWeakestAttack(){
+        if(RolledFace == null || IntendsAttack) return false;
+        DieFace weakest = null;
+        foreach(DieFace face in die){
+            if(ActionOf(face) != ActionType.Attack || StartsCountdown(face)) continue;
+            if(weakest == null || face.value < weakest.value) weakest = face;
+        }
+        if(weakest == null) return false;
+        RolledFace = weakest;
+        lockedTarget = null;
+        Debug.Log(definition.bossName + " was provoked: " + DescribeCurrentIntent());
+        return true;
+    }
+
     public int IncomingDamage{
         get{
             int damage = 0;

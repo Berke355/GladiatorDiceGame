@@ -581,6 +581,9 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 | **Vulnerable** | Target | — | −1 per tick (stacks are turns) | Every hit it takes deals +1 damage |
 | **Weak** | Target | — | −1 per tick (stacks are turns) | Every hit it deals deals −1 damage |
 | **Entangled** | Target | — | −1 per tick (stacks are turns) | Can't reroll |
+| **Riposte** | Self | — | Cleared at the start of its owner's turn | Every attacker that hits its owner takes its stacks as damage (Provocator) |
+| **Vigil** | Self | — | Spent by the first hit its owner takes | Like Riposte, but it waits for the first hit, across turns |
+| **Reversal** | Self | — | Cleared at the start of its owner's turn | A hit Block and Fortify absorb completely is dealt back to the attacker in full |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.
 - **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that halve), Bleed is duration (always 1, for as many turns as it has stacks).
@@ -861,15 +864,34 @@ The net-fighter of the arena: throw the net, then stab what's caught in it. The 
 - **Net has an Attack on purpose:** with only Defense, the Net bot put Nets in the place of Swords, and its Net rolls dealt nothing (a quarter of its rolls). Standalone Faces rule.
 - **To watch after the map:** Haul In with Ritual and Rage (both raise it every turn), and Medusa, where the Net bot died most (its upgraded Trident is the face she turns to stone).
 
+### Provocator (implemented)
+
+The challenger of the arena: invite the attack and make the enemy pay for it. The other builds fear an enemy's attack; this one wants it, so it reads every intent.
+
+- **Resource:** **Riposte** on yourself: every attacker that hits you takes its stacks as damage, per hit, so multi-hit intents and packs feed it most. It is cleared at the start of your turn ("read this turn", the user's choice), and Rage doesn't add to it (the Rage bridge is Wrath).
+- **The strike back lands without a source,** so nothing answers it (no chains with Thorns or FireShield), but the attacker's Vulnerable adds to it: Retiarius and Provocator fit together (Weak softens the enemy's hits, Riposte doesn't care).
+- **Tile color:** wine (`FaceTag.Riposte`).
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Parry** | Starter | Common | 2 | Defense: gain block and Riposte equal to my value. |
+| **Bait** | Starter (attack) | Common | 2 | Attack: deal damage equal to my value; if the enemy intends to attack, also gain Riposte equal to my value. |
+| **Grudge** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the times you struck back this battle (Riposte, Vigil, Reversal). Defense: gain block equal to my value. |
+| **Vigil** | Engine | Rare | 3 | Magic: gain Vigil equal to my value: Riposte that waits for the first hit, across turns. Defense: gain block equal to my value. |
+| **Wrath** | Bridge (Riposte + Rage) | Rare | 2 | Defense: gain block equal to my value, and 1 Rage for each hit you took on the enemies' last turn (at most my value). |
+| **Perfect Counter** | Payoff | Epic | 3 | Defense: gain block equal to my value, 2 Riposte and Reversal: until your next turn, a hit you absorb completely is dealt back in full. |
+| **Provoke** | Payoff (intent control) | Epic | 3 | Attack: deal damage equal to my value. Magic: if the enemy doesn't intend to attack, it switches to its weakest attack and gains 1 Rage; gain Riposte equal to my value. |
+
+- **Vigil replaced Taunt** (the user's catch): Taunt turned any intent into an attack, which erased the enemies' plans (Rage, petrify, healing) with nothing to pay, a lock instead of a clock. Vigil solves the build's real problem, Riposte wasted on a turn the enemy doesn't attack, without touching the enemy's plan.
+- **Provoke keeps the intent idea as an Epic with a price** (the user's design): only a non-attack intent changes (otherwise Provoke would cut Stomp 7 to Trunk Swat 2 every turn), into the weakest attack, and the enemy gains 1 Rage for good. 1 because Battle Cry, the only Rage intent, gives 1: provoking it gains nothing, so Provoke can't stop an enemy's escalation, only trade a utility (a debuff, petrify, healing) for a permanent Rage. Bosses switch to their weakest attack face (never one that starts a countdown).
+- **Value is the effect:** Vigil and Provoke give Riposte equal to their value, so they have higher values (3) instead of "twice my value".
+- **Measured (DevLog Day 112, 150 runs):** Provocator 3%, Provocator + Shield 2% (Net 1%, Burn 11% in the same runs); 62% of its Strong battles won (Net 36%). Free from battle 5 to the unfocused bots, in the Health Potion's place: Haul In beats a Sword clearly (160 arrivals at Medusa against 110, 50% deaths there against 58%), Perfect Counter is level with it, and **Provoke is below it**. With Defense it was a block face on a die that needs damage, so it got an Attack instead; the bots' Provoke on utility intents is about even with never provoking (the permanent Rage costs as much as the utility it cancels, for a bot that doesn't judge which utility matters). The user's play decides whether it needs more; the next lever is a cheaper cost or utility intents worth cancelling (see Enemies).
+
 ### Future Archetypes
 
-Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius first (above), then Provocator, then Bestiarius; Commons for Burn, Poison and Ritual in between (each has only one, and 70% of a Normal Market's offers are Common).
+Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius and Provocator (above), then Bestiarius; Commons for Burn, Poison and Ritual in between (each has only one, and 70% of a Normal Market's offers are Common).
 
-- **Provocator (counter-attack, next):** built on the telegraphed intents, the game's most unique part. A new status **Riposte**: every attacker that hits you this round takes its stacks as damage (like FireShield, with damage instead of Burn), cleared at the start of your turn; it can reuse `RetaliateDamageEffectSO`.
-  - Faces: *Parry* (Common: gain Riposte equal to my value), *Bait* (Rare: if the enemy intends to attack, value + 3 Riposte, else deal my value; needs a small "the intent is an attack" condition), *Perfect Counter* (Epic: block equal to my value; a hit you block fully is dealt back to the attacker).
-  - Pairs with Block (Spiked Shield) and shines against packs (every attacking wolf takes it).
-  - The risk is the point: Riposte is wasted on a turn the enemy doesn't attack, so the player reads the intent. The bots need to learn it.
-- **Bestiarius (the beast tamer, after it):** a new permanent status **Hound** on the player. A battle starts without the beast; the first Hound face summons it (its sprite appears beside the player) and later ones make it stronger. At the end of every player turn it hits the target once for its stacks: a hit, so Rage adds to it once and Block, Thorns and Parry apply, unlike Poison's ticks. It leaves when the battle ends.
+- **Bestiarius (the beast tamer, next):** a new permanent status **Hound** on the player. A battle starts without the beast; the first Hound face summons it (its sprite appears beside the player) and later ones make it stronger. At the end of every player turn it hits the target once for its stacks: a hit, so Rage adds to it once and Block, Thorns and Parry apply, unlike Poison's ticks. It leaves when the battle ends.
   - Faces: *Whistle* (Common: gain Hound equal to my value), *Feed* (Rare: pay HP, gain twice my value of Hound), *Sic 'Em* (Epic: the beast attacks twice my value times at once).
   - Summoned by faces, not by a hero (the user asked): any run can find it, it mixes with other builds (a Rage die with two hound faces), and giving the beast a place on the die is its price. A future Bestiarius hero (Roadmap: heroes) can start with Whistle or a 2-stack beast, like a Necrobinder with a die.
   - The beast can't be hit for now: a target for enemies would touch intents and bots. Enemies can answer it later with intents (e.g. "Scare": halves Hound).
@@ -987,6 +1009,8 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 
 - **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
 - **Escalation through Rage** (Essedarius, Hoplomachus, Arena Lion): rising damage uses the same visible Rage status as the player. An enemy can gain Rage from an intent (Battle Cry, Roar), which the player sees coming. Rage every turn (`escalationPerTurn`) is still supported but no enemy uses it: on Essedarius it became a wall that slow builds could not get past (Essedarius alone caused about half of the Bleed, Rage and Shield deaths), so it was replaced with Battle Cry. Its intents show the boosted numbers, and the Rage chip's tooltip explains why.
+
+- **Utility intents (future content, the user's idea on DevLog Day 112):** most non-attack intents today are plain blocks (Guard, Shield Wall), which the player never has to answer. Intents that change something make reading them, and Provoke, matter. Today: Howl, Net, Poison Dart, Hamstring, Feed the Beast, Envenom, Torch Swing. Ideas: rallying the pack (Rage or block to the other enemies), striking the die (a face unusable for a turn, a lighter Medusa, or a face's value lowered), healing or Fortify (kept small), stealing a reroll or some gold.
 
 #### Enemy Traits
 

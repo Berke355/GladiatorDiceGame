@@ -50,6 +50,12 @@ public class BattleFlow
     public int ActionsThisTurn { get; private set; }
     // The player's turn number in this battle (1 on the first turn).
     public int TurnNumber { get; private set; }
+    // Provocator: Riposte, Vigil and Reversal strikes this battle, and the hits the player took on the enemies' last turn.
+    public int Retaliations { get; private set; }
+    public int HitsTakenLastEnemyTurn { get; private set; }
+    private int hitsSinceTurnStart;
+    private void OnRetaliated(int damage){ Retaliations++; }
+    private void OnStruck(Entity attacker){ hitsSinceTurnStart++; }
     // How many times each face came up this turn.
     private readonly Dictionary<DieFace, int> landingsThisTurn = new Dictionary<DieFace, int>();
     public int LandingsThisTurn(DieFace face){
@@ -98,6 +104,8 @@ public class BattleFlow
         this.die = die;
         this.entityFactory = entityFactory;
         triggers = new TriggerSystem(player, () => Target.entity, LivingEnemyEntities, die, equipment, charge, rerolls);
+        player.Retaliated += OnRetaliated;
+        player.Struck += OnStruck;
         if(equipment != null){
             foreach(EquipmentSO item in equipment) consumables.usesPerBattle += item.extraConsumableUses;
         }
@@ -194,6 +202,8 @@ public class BattleFlow
         ChangesThisTurn = 0;
         ActionsThisTurn = 0;
         TurnNumber++;
+        HitsTakenLastEnemyTurn = hitsSinceTurnStart;
+        hitsSinceTurnStart = 0;
         landingsThisTurn.Clear();
         actedThisTurn.Clear();
         keptChargeThisTurn.Clear();
@@ -297,7 +307,7 @@ public class BattleFlow
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged };
+        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged, targetBrain = Target.brain, retaliations = Retaliations, hitsTakenLastEnemyTurn = HitsTakenLastEnemyTurn };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
@@ -403,6 +413,8 @@ public class BattleFlow
 
     public void Dispose(){
         triggers.Dispose();
+        player.Retaliated -= OnRetaliated;
+        player.Struck -= OnStruck;
         foreach(BattleEnemy enemy in enemies){
             if(enemy.traits != null) enemy.traits.Dispose();
             IDisposable disposableBrain = enemy.brain as IDisposable;

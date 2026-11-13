@@ -192,6 +192,10 @@ public class UIManager : MonoBehaviour
         foreach(EnemyCardUI card in enemyCards){
             card.Refresh(card.Enemy == target);
         }
+        // The boss's rolled face can change mid-turn (Provoke), so its die strip follows.
+        if(flow != null && flow.enemies.Count > 0 && flow.enemies[0].brain.Die != null && bossDieStrip != null && bossDieStrip.activeSelf){
+            ShowBossDie(flow.enemies[0].brain.Die, flow.enemies[0].brain.RolledFace);
+        }
     }
 
     // Called when an item triggers.
@@ -353,7 +357,7 @@ public class UIManager : MonoBehaviour
         if(flow != null && flow.IsChange(face, action)){
             return flow.ChangesThisTurn < BattleFlow.MaxChangesPerTurn ? "Change: roll another face" : "";
         }
-        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null, faceLandings = flow != null ? flow.LandingsThisTurn(face) : 0, arrivedBySteer = flow != null && flow.ArrivedBySteer, turnNumber = flow != null ? flow.TurnNumber : 0, actionChanged = flow != null && flow.WouldChangeAction(action) };
+        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null, faceLandings = flow != null ? flow.LandingsThisTurn(face) : 0, arrivedBySteer = flow != null && flow.ArrivedBySteer, turnNumber = flow != null ? flow.TurnNumber : 0, actionChanged = flow != null && flow.WouldChangeAction(action), targetBrain = flow != null ? flow.Target.brain : null, retaliations = flow != null ? flow.Retaliations : 0, hitsTakenLastEnemyTurn = flow != null ? flow.HitsTakenLastEnemyTurn : 0 };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);

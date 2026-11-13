@@ -96,7 +96,8 @@ public class CombatantPanelUI : MonoBehaviour
         current.gameObject.SetActive(true);
         string label = keyword + " " + amount;
         // The chip is the icon and the number; the tooltip keeps the name and the rule.
-        current.GetComponentInChildren<TextMeshProUGUI>().text = GameText.Icon(keyword) + amount;
+        string icon = GameText.Icon(keyword);
+        current.GetComponentInChildren<TextMeshProUGUI>().text = icon + (icon == keyword ? " " : "") + amount;
         current.text = "<b>" + label + "</b>" + GameText.Glossary(keyword);
     }
 }

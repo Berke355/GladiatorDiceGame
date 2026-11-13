@@ -16,5 +16,7 @@ public enum FaceTag
     // Pragmatist faces: no archetype, they read states many builds produce (see GDD "Pragmatist Faces").
     General,
     // Retiarius: nets the enemy with Weak and Vulnerable (see GDD "Retiarius").
-    Net
+    Net,
+    // Provocator: invites the enemy's attacks and punishes them (see GDD "Provocator").
+    Riposte
 }

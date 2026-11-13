@@ -3770,3 +3770,27 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Provocator, then Bestiarius; Commons for Burn, Poison and Ritual.
 - The friends' feedback on the playtest build.
 
+## Day 112 - Provocator
+
+### Accomplished
+- **Provocator** (`FaceTag.Riposte`, wine tiles): Parry, Bait, Grudge (Common), Vigil, Wrath (Rare), Perfect Counter, Provoke (Epic), in the Market pool. Three new statuses: Riposte, Vigil, Reversal (their chips show the word until their icons exist).
+- **Striking back** happens in `Entity.TakeDamage`, per hit and without a source, so it never chains. Tested on a real `BattleFlow` against Murmillo: Riposte, Vigil waiting through a turn without a hit and spent by the first one, Perfect Counter's turn (3 Vigil + 4 Riposte + 2 Reversal = 9), Grudge counting the strikes, Wrath counting the hits, and Provoke turning Shield Wall into Strike with 1 Rage, then doing nothing while the enemy already attacks. (Riposte 4 once dealt 2: Murmillo's Curl Up had given it 2 block, which is right.)
+- **Enemy intents can be read and changed by effects:** `IEnemyBrain.IntendsAttack` and `ProvokeToWeakestAttack` (normal enemies: their weakest attack by value × hits; bosses: their weakest attack face). The boss's die strip follows a changed face.
+- The simulator has a Provocator bot and a Provocator + Shield bot; Vigil is set once and Provoke is used on utility (Magic) intents.
+
+### Decisions (with the user)
+- **Taunt became Vigil:** the user saw that Taunt was close to a stun with no weakness. Vigil keeps Riposte waiting for the first hit instead, and the enemy keeps its plan.
+- **Intent control lives on as the Epic Provoke** (the user's idea): weakest attack and 1 Rage (the user's numbers, lighter than my strongest attack and 2 Rage), only for a non-attack intent (my addition, or it cuts every big attack).
+- Riposte is cleared every turn and Rage doesn't add to it.
+- **Utility intents** go into the GDD as future enemy content (the user's idea): most non-attack intents are plain blocks today.
+
+### Findings
+- **Provoke is the weakest Epic for the bots:** free from battle 5 it did worse than a Sword in the same place. With Defense it was a block face on a die that lacks damage, so it got an Attack; its provoking is about even with never provoking, for bots that don't judge which utility is worth a permanent Rage. Left for the user's play, then cheaper costs or stronger utility intents.
+- Provocator bots: 3% (with Shield 2%), Net 1%, Burn 11% in the same 150-run batch: the new archetypes sit with the old weak ones. Detailed tuning waits for the map.
+- A Describe that returns "" makes the action preview show the effect's asset name ("ProvokeEffect"); Provoke now says the enemy already attacks.
+
+### Next Steps
+- The emblems (ArtPrompts Sheet 8) and the three status icons (icon Sheet 3).
+- The user plays Retiarius and Provocator.
+- Bestiarius; Commons for Burn, Poison and Ritual.
+

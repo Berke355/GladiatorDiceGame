@@ -22,7 +22,14 @@ public enum StatusType {
     Weak,
     Entangled,
     // Permanent for the battle: added to every Rage, Fortify and FireShield the owner gains on itself (Ritual's mirror).
-    Encourage
+    Encourage,
+    // Provocator (see GDD "Provocator"): every attacker that hits the owner takes the stacks as damage. Cleared at the
+    // start of the owner's turn.
+    Riposte,
+    // Like Riposte, but it waits: it isn't cleared at turn start, only spent by the first hit the owner takes.
+    Vigil,
+    // Until the owner's next turn, a hit Block and Fortify absorb completely is dealt back to the attacker in full.
+    Reversal
 }
 
 public class Entity : MonoBehaviour
@@ -40,6 +47,10 @@ public class Entity : MonoBehaviour
     // Raised when Block or Fortify absorbed some of a hit (the amount absorbed). For the UI only: nothing in the rules
     // listens to it.
     public event Action<int> HitAbsorbed;
+    // Raised for every hit with an attacker, even one Block absorbed completely (the attacker), e.g. Wrath counts them.
+    public event Action<Entity> Struck;
+    // Raised when Riposte, Vigil or Reversal dealt damage back to an attacker (the damage), e.g. Grudge counts them.
+    public event Action<int> Retaliated;
 
     private Dictionary<StatusType, int> activeStatuses = new Dictionary<StatusType, int>();
     // Burn applied since this entity's last Burn tick does not decay on the next tick,
@@ -114,6 +125,19 @@ public class Entity : MonoBehaviour
             source.ApplyStatus(StatusType.Burn, GetStatus(StatusType.FireShield));
         }
 
+        // Provocator: the attacker takes Riposte (every hit), Vigil (the first hit, then it's spent) and, with Reversal,
+        // a hit absorbed completely. It lands without a source, so nothing answers it back (no chains), but the
+        // attacker's Vulnerable still counts.
+        if (source != null) {
+            int back = GetStatus(StatusType.Riposte) + GetStatus(StatusType.Vigil);
+            if (GetStatus(StatusType.Reversal) > 0 && remaining == 0 && damageAmount > 0) back += damageAmount;
+            if (GetStatus(StatusType.Vigil) > 0) activeStatuses[StatusType.Vigil] = 0;
+            if (back > 0 && !source.IsDead) {
+                source.TakeDamage(back);
+                Retaliated?.Invoke(back);
+            }
+        }
+
         OnHealthChanged?.Invoke();
 
         if(LastHitAbsorbed > 0){
@@ -123,6 +147,7 @@ public class Entity : MonoBehaviour
             HitTaken?.Invoke(remaining);
         }
         if(source != null){
+            Struck?.Invoke(source);
             source.HitDealt?.Invoke(this, damageAmount);
         }
     }
@@ -180,6 +205,8 @@ public class Entity : MonoBehaviour
     public void OnTurnStart() {
         ResetBlock();
         ConsumeStatus(StatusType.FireShield);
+        ConsumeStatus(StatusType.Riposte);
+        ConsumeStatus(StatusType.Reversal);
     }
 
     // What OnTurnEnd will take from HP, for the HP bar's preview (kept next to the rules it mirrors): Poison's stacks,
