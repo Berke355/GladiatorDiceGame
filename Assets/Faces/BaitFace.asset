@@ -17,7 +17,7 @@ MonoBehaviour:
     also gain Riposte equal to my value.'
   rarity: 0
   tags: 0c00000000000000
-  emblem: {fileID: 0}
+  emblem: {fileID: 21300000, guid: 1f408f656c868dd48bce7eb72c6bfd4d, type: 3}
   plainTile: 0
   baseValue: 2
   effects:
