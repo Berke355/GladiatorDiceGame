@@ -192,6 +192,7 @@ public class BossBrain : IEnemyBrain, IDisposable
         if(flow == null) return false;
         BattleEnemy head = flow.SpawnEnemy(definition.headEnemy, definition.headEnemy.enemyName + " " + (heads.Count + 1));
         if(head == null) return false;
+        head.mountedOn = flow.enemies.Find(enemy => enemy.brain == this);
         heads.Add(head);
         WatchHead(head);
         return true;

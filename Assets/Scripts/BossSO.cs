@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -27,6 +28,12 @@ public class BossSO : ScriptableObject
     [Header("Heads (Hydra)")]
     // Each head is a separate enemy of this kind, fought next to the boss (see GDD "Hydra"). Null = no heads.
     public EnemySO headEnemy;
+    // Where the heads sit on the body's picture (GDD "Visual Style": the Hydra's heads grow from its neck stumps), one
+    // per head up to maxHeads: point is the neck's bottom on the body sprite (0..1 from its bottom left corner) and tilt
+    // the head's lean in degrees. Heads are drawn behind the body, so the stumps cover where the necks join.
+    public List<HeadMount> headMounts = new List<HeadMount>();
+    // A mounted head's size compared with its own spriteHeight (its neck is as wide as the body's stump cluster).
+    public float mountedHeadScale = 0.65f;
     public int startingHeads;
     // Living heads at most; a cut head that can't grow back stays dead.
     public int maxHeads = 3;
@@ -45,4 +52,12 @@ public class BossSlot
 {
     public int battle;
     public List<BossSO> bosses = new List<BossSO>();
+}
+
+// One place on a boss's body picture where a head is mounted.
+[Serializable]
+public struct HeadMount
+{
+    public UnityEngine.Vector2 point;
+    public float tilt;
 }

@@ -17,6 +17,12 @@ public class BattleEnemy
     // The world width BattleManager gives the enemy in the row (its sprite or its plate, whichever is wider, after a
     // crowded row shrinks); its card is as wide.
     public float slotWidth;
+    // A head growing from another enemy's body (the Hydra's): drawn on that body's picture instead of standing in the row.
+    public BattleEnemy mountedOn;
+    // Which of the body's mounts the head sits on (-1: none yet). It keeps it, so a head never jumps to another neck.
+    public int mountIndex = -1;
+    // A dead head has let its mount go: when it grows back it takes a free one.
+    public bool releasedMount;
 
     public BattleEnemy(Entity entity, IEnemyBrain brain, bool endsBattleOnDeath = false){
         this.entity = entity;

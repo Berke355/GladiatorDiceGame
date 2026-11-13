@@ -103,20 +103,22 @@ public class BattleManager : MonoBehaviour
     // Each enemy takes its own width; if the row doesn't fit, all of them shrink by the same factor, so a boss stays
     // bigger than its heads. The row is centered on the placeholder's x and kept inside the sprite area.
     private void ArrangeEnemySprites(){
-        int count = flow.enemies.Count;
+        // Heads mounted on a body (the Hydra's) don't stand in the row; they are placed on the body afterwards.
+        List<BattleEnemy> row = flow.enemies.FindAll(enemy => enemy.mountedOn == null);
+        int count = row.Count;
         float area = SpriteAreaRight - SpriteAreaLeft;
         float groundY = enemySpriteY - PlaceholderSize().y / 2f;
         float[] widths = new float[count];
         float total = SpriteGap * (count - 1);
         for(int i = 0; i < count; i++){
-            BattleEnemy each = flow.enemies[i];
+            BattleEnemy each = row[i];
             widths[i] = Mathf.Max(MinSlotWidth, each.sprite != null ? each.sprite.bounds.size.x * FullScale(each) : PlaceholderSize().x);
             total += widths[i];
         }
         float shrink = Mathf.Min(1f, area / total);
         float left = Mathf.Clamp(enemySpriteX - total * shrink / 2f, SpriteAreaLeft, SpriteAreaRight - total * shrink);
         for(int i = 0; i < count; i++){
-            BattleEnemy each = flow.enemies[i];
+            BattleEnemy each = row[i];
             Transform sprite = each.entity.transform;
             SpriteRenderer renderer = each.entity.GetComponent<SpriteRenderer>();
             float x = left + widths[i] * shrink / 2f;
@@ -143,7 +145,70 @@ public class BattleManager : MonoBehaviour
         UpdateEnemySprites();
     }
 
+    // Puts each mounted head on its body's picture. A head keeps its mount; a new head, or one growing back onto a neck
+    // a living head now holds, takes the first mount no living head holds. The neck's bottom (the head sprite's pivot)
+    // sits on the mount, the head leans by the mount's tilt and is drawn behind the body.
+    private void PlaceMountedHeads(){
+        foreach(BattleEnemy body in flow.enemies){
+            BossBrain boss = body.brain as BossBrain;
+            if(boss == null || body.sprite == null) continue;
+            List<BattleEnemy> heads = flow.enemies.FindAll(enemy => enemy.mountedOn == body);
+            if(heads.Count == 0) continue;
+            List<HeadMount> mounts = boss.definition.headMounts;
+            AssignMounts(heads, Mathf.Max(1, mounts.Count));
+            SpriteRenderer bodyRenderer = body.entity.GetComponent<SpriteRenderer>();
+            Transform bodyTransform = body.entity.transform;
+            Vector3 bodySize = Vector3.Scale(body.sprite.bounds.size, bodyTransform.localScale);
+            // The body's scale against its full size, so heads shrink with a crowded row like their body does.
+            float bodyShrink = bodyTransform.localScale.x / FullScale(body);
+            foreach(BattleEnemy head in heads){
+                SpriteRenderer renderer = head.entity.GetComponent<SpriteRenderer>();
+                if(head.sprite == null || renderer == null) continue;
+                // A dead head's picture fades out where it was.
+                if(head.IsDead && head.releasedMount && head.mountIndex >= 0 && renderer.sprite == head.sprite) continue;
+                int i = Mathf.Max(0, head.mountIndex);
+                HeadMount mount = mounts.Count > 0 ? mounts[Mathf.Clamp(i, 0, mounts.Count - 1)] : new HeadMount{ point = new Vector2(0.2f, 0.7f) };
+                Vector3 bodyBottomLeft = bodyTransform.position - new Vector3(bodySize.x / 2f, 0f, 0f);
+                Vector3 neck = bodyBottomLeft + new Vector3(mount.point.x * bodySize.x, mount.point.y * bodySize.y, 0f);
+                float scale = FullScale(head) * boss.definition.mountedHeadScale * bodyShrink;
+                renderer.sprite = head.sprite;
+                renderer.color = Color.white;
+                renderer.sortingOrder = (bodyRenderer != null ? bodyRenderer.sortingOrder : 0) - 1 - i;
+                Transform sprite = head.entity.transform;
+                sprite.position = new Vector3(neck.x, neck.y, sprite.position.z);
+                sprite.rotation = Quaternion.Euler(0f, 0f, mount.tilt);
+                sprite.localScale = new Vector3(scale, scale, 1f);
+                SetRest(head, sprite.position);
+                // Narrower than the picture, so the heads' plates fit side by side in their row.
+                head.slotWidth = Mathf.Min(head.sprite.bounds.size.x * scale, MountedHeadSlot);
+            }
+        }
+    }
+
+    // Living heads keep their mounts, so a head never moves. A dead head lets its neck go (its fading picture stays
+    // where it was), and a new head or one growing back takes the first mount no living head holds.
+    private static void AssignMounts(List<BattleEnemy> heads, int mountCount){
+        List<int> held = new List<int>();
+        foreach(BattleEnemy head in heads){
+            if(head.IsDead){
+                if(head.mountIndex >= 0) head.releasedMount = true;
+                continue;
+            }
+            if(head.mountIndex >= 0 && !head.releasedMount && !held.Contains(head.mountIndex)) held.Add(head.mountIndex);
+            else head.mountIndex = -1;
+        }
+        foreach(BattleEnemy head in heads){
+            if(head.IsDead || head.mountIndex >= 0) continue;
+            int free = 0;
+            while(held.Contains(free) && free < mountCount - 1) free++;
+            head.mountIndex = free;
+            head.releasedMount = false;
+            held.Add(free);
+        }
+    }
+
     private const float SpriteGap = 0.15f;
+    private const float MountedHeadSlot = 1.45f;
     // Each enemy gets at least its card's width (UIManager's plate), so plates and intents don't overlap.
     private const float MinSlotWidth = 1.75f;
 
@@ -157,6 +222,8 @@ public class BattleManager : MonoBehaviour
     }
 
     private void UpdateEnemySprites(){
+        // A head that grew back may take another neck, so the mounts are handed out again.
+        PlaceMountedHeads();
         foreach(BattleEnemy each in flow.enemies){
             // A HitReaction fades a dying enemy out instead of hiding it at once.
             HitReaction reaction = each.entity.GetComponent<HitReaction>();

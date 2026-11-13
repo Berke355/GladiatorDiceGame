@@ -3060,6 +3060,7 @@ MonoBehaviour:
   selectButton: {fileID: 437468411}
   canvasGroup: {fileID: 437468410}
   head: {fileID: 1620091006}
+  plate: {fileID: 942237860}
 --- !u!225 &437468410
 CanvasGroup:
   m_ObjectHideFlags: 0

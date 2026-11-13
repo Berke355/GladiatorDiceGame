@@ -28,6 +28,14 @@ MonoBehaviour:
   staggerDamage: 12
   whileCountingDown: {fileID: 0}
   headEnemy: {fileID: 11400000, guid: 4cecd9c8f3e05e14dbf1171f1ee0c31e, type: 2}
+  headMounts:
+  - point: {x: 0.18, y: 0.68}
+    tilt: 8
+  - point: {x: 0.04, y: 0.55}
+    tilt: 30
+  - point: {x: 0.35, y: 0.76}
+    tilt: -10
+  mountedHeadScale: 0.62
   startingHeads: 2
   maxHeads: 3
   regrowthBlockedBy: 01000000

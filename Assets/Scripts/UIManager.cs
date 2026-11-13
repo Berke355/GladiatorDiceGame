@@ -150,11 +150,35 @@ public class UIManager : MonoBehaviour
             Transform sprite = renderer.transform;
             Vector3 feet = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.min.y, 0f)));
             Vector3 top = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.max.y, 0f)));
+            if(card.Enemy.mountedOn != null){
+                // A mounted head (tilted, growing from its body): its card spans its picture's box, and all the heads of
+                // one body put their plates on one line over the highest head, so they read as a row.
+                Bounds box = renderer.bounds;
+                feet = view.WorldToViewportPoint(new Vector3(box.center.x, box.min.y, 0f));
+                top = view.WorldToViewportPoint(new Vector3(box.center.x, MountedHeadsTop(card.Enemy.mountedOn), 0f));
+            }
             float worldWidth = 2f * view.orthographicSize * view.aspect;
             float slot = card.Enemy.slotWidth > 0f ? card.Enemy.slotWidth : worldWidth * 0.1f;
-            card.Place(Vector2.Scale(feet, canvasSize), (top.y - feet.y) * canvasSize.y, slot / worldWidth * canvasSize.x);
+            card.Place(Vector2.Scale(feet, canvasSize), (top.y - feet.y) * canvasSize.y, slot / worldWidth * canvasSize.x, card.Enemy.mountedOn != null);
         }
     }
+
+    // The highest top of the heads mounted on this body (living or not, so the row doesn't jump when one dies).
+    private float MountedHeadsTop(BattleEnemy body){
+        float highest = float.MinValue;
+        foreach(EnemyCardUI card in enemyCards){
+            if(card == null || card.Enemy == null || card.Enemy.mountedOn != body) continue;
+            SpriteRenderer renderer = card.Enemy.entity.GetComponent<SpriteRenderer>();
+            if(renderer == null || renderer.sprite == null) continue;
+            // The tilted picture's top center, not its box (whose corners are empty and reach much higher).
+            Bounds local = renderer.sprite.bounds;
+            highest = Mathf.Max(highest, renderer.transform.TransformPoint(new Vector3(local.center.x, local.max.y, 0f)).y);
+        }
+        // The picture's top is its spines; the plates sit a little lower, on the crowns, to stay clear of the boss's die.
+        return highest - MountedPlateDrop;
+    }
+
+    private const float MountedPlateDrop = 0.35f;
 
     // The top bar: which battle this is and the run's gold.
     public void ShowBattleInfo(int battle, int lastBattle, int gold, bool boss){

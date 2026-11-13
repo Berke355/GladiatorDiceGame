@@ -3715,3 +3715,21 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The user's play-test** of battles 1–4.
 - A playtest build for friends.
 
+## Day 109 - The Hydra's Heads on Its Body
+
+### Findings
+- **The Hydra's heads stood on the ground beside its body** (the user: "they should be one with the body"). Not on purpose: every enemy, heads included, was laid out in one row on the ground line, which made sense with the grey placeholders. The body picture already has cut neck stumps, so the art was ready for heads on it.
+- Serrated Blade's misleading preview (an old Next Step) was already fixed on Day 70 (`cbe079a`).
+
+### Accomplished
+- **Heads are mounted on the body** (`BossSO.headMounts`, `mountedHeadScale` 0.62): three mounts on the stump cluster, the front one leaning toward the player (30°), one in the middle (8°), one rising from the shoulder (−10°). Heads are drawn behind the body, so the stumps hide where the necks join, and they shrink with the body if the row ever does.
+- **Mounted heads are left out of the row** (`ArrangeEnemySprites`), so the body stands alone and bigger, and `PlaceMountedHeads` puts them on it.
+- **A head never jumps to another neck** (`AssignMounts`): living heads keep their mount, a cut head lets its neck go and fades where it was (its stump shows again), and a new or regrown head takes a free mount. Tested: cut, regrow, a fourth head while one is dead, and a dead head growing back while the fourth lives.
+- **The heads' cards:** each spans its head's picture (clicking a head still targets it), and all the heads' HP bars stand in one row over them with their intents above, below the boss's die (`EnemyCardUI.Place(..., plateOnTop)`, `UIManager.MountedHeadsTop`).
+
+### Decisions
+- **Tuned by eye in Play Mode:** at a larger size the heads' intents ran into the boss's die strip, so the heads are 0.62 of their own height and the plate row sits a little below their tilted tops.
+
+### Next Steps
+- A playtest build for friends.
+
