@@ -3795,3 +3795,25 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - The user plays Retiarius and Provocator.
 - Bestiarius; Commons for Burn, Poison and Ritual.
 
+## Day 113 - The Beastmaster
+
+### Accomplished
+- **Beastmaster** (`FaceTag.Hound`, leather brown tiles): Whistle, Command, Guard Dog (Common), Feed, Bloodhound (Rare), Sic 'Em (Epic), in the Market pool. A new status, Hound: the player's beast.
+- **The bite** (`Beast.Bite`): the player's own hit for the Hound stacks, at the end of a turn the player didn't only defend in, and value times from Sic 'Em. Tested on a real `BattleFlow`: no bite without a beast, Whistle summons it and it bites for 2, Feed pays 3 HP for 3 Hound, Guard Dog and Command add the Hound, Bloodhound doubles on a bleeding enemy, and Sic 'Em with 11 Hound and 1 Rage bit 2 x 12, as its preview said.
+- **The beast on screen** (`UI/BeastView`, the Battle scene's `Beast` object in front of the player): hidden until the first Hound, it fades in, and lunges on every bite. Its picture is the Arena Wolf's, flipped, until the war dog exists.
+- Simulator: a Hound bot and a Hound + Rage bot; Whistle and Bloodhound grow the beast unless a big hit is coming, Feed only with HP to spare.
+
+### Decisions (with the user)
+- The beast is "Beastmaster" in the documents, because Bestiarius is an enemy; a bite is the player's own hit (Rage, items); the user makes the war dog in Gemini (a still, which lunges like the enemies).
+- **"Twice my value" broke Value Is the Effect,** so Feed and Sic 'Em use their value (Feed 3, Sic 'Em bites value times).
+
+### Findings (the beast was too strong)
+- **A bite every turn:** the Hound bot cleared 26–29%, Strong battles ended in 8 turns (12–14 for others), and one Whistle on a die lifted it to 19%. The beast is a free extra hit every turn, and each Whistle grows it for the rest of the fight (the total grows with the square of the turns, like Poison before it halved).
+- Tried: Whistle at 1 (26%), bites only on attack turns (2%: the build's own Magic faces silenced the beast), only on attack turns but every Hound Magic bites once (23%), no Rage on bites (19%), a Magic-only Whistle (17–19%).
+- **Kept: no bite on a defend-only turn, Whistle at 1:** Hound 20%, Bleed 20%, Rage 12% in the same runs. A free Whistle still lifts the Opportunist from 2% to 5–8% (500 runs; Fury, Venom and Ember give 2–3%), mostly because it then shops for the whole Hound build. One of the strong archetypes; to revisit after the map.
+
+### Next Steps
+- The war dog (ArtPrompts "The Beastmaster's war dog"), the emblems (Sheet 9) and the Hound icon (icon Sheet 4).
+- The user plays the three new archetypes.
+- Commons for Burn, Poison and Ritual.
+

@@ -26,6 +26,12 @@ One single character only, centered, plain solid magenta background (#FF00FF)
 filling the whole image, no ground, no shadow, no text, no frame, no border.
 ```
 
+## The Beastmaster's war dog (the player's side)
+
+The beast stands beside the player, so it faces RIGHT: change "facing LEFT" in the style block to "facing RIGHT". Save it as `WarDog.png`.
+
+`Subject: a Roman war dog (molossus), smaller than a human, muscular and broad-chested, short brown and tan coat, a spiked bronze collar and a leather harness, standing alert and ready to lunge, facing right.`
+
 ## Subjects
 
 Size words keep the enemies in scale with each other: the gladiator is "human-sized".
@@ -138,6 +144,14 @@ For this sheet, change "exactly 12 icons in a grid of 4 columns and 3 rows" in t
 3. Reversal: a round shield with a curved arrow bouncing off it
 ```
 
+## Sheet 4: Hound (1 icon)
+
+For this one, change "exactly 12 icons in a grid of 4 columns and 3 rows" in the style block to "exactly 1 icon".
+
+```
+1. Hound: a brown dog's paw print
+```
+
 # Face emblems
 
 Every die face gets its own emblem, so a player who knows the game recognizes a face before reading it (GDD "Visual Style", "Face tiles"). Gemini draws only the object; the tile's ground color (the family), its rim (the rarity) and the value are drawn by the game, so the color system always stays consistent.
@@ -166,6 +180,7 @@ The family is the face's first tag other than Physical; Lifesteal counts as Blee
 | General | plain bone | Catalyst, Drill Sergeant, Exploit, Feint, Last Stand, Mimic, Sharpshooter, Spare Blade, Throwing Knife, Veteran |
 | Net (Retiarius) | sea teal | Net, Trident, Harpoon, Tangle, Snare, Haul In |
 | Riposte (Provocator) | wine | Parry, Bait, Grudge, Vigil, Wrath, Perfect Counter, Provoke |
+| Hound (Beastmaster) | leather brown | Whistle, Command, Guard Dog, Feed, Bloodhound, Sic 'Em |
 
 Rarity is the rim: Common bronze, Rare silver, Epic gold. An enchanted face gets a purple seal.
 
@@ -312,6 +327,19 @@ Gemini tends to fill a whole 4 x 3 sheet anyway; only the first seven cells are 
 5. Wrath: a bull's horn helmet crest with red steam rising
 6. Perfect Counter: two crossed swords with a bright spark where they meet
 7. Provoke: a gladiator's open hand beckoning, palm up, fingers curling
+```
+
+## Sheet 9: Beastmaster (6 emblems)
+
+Only the first six cells are used. Save them as `Assets/Art/Faces/Whistle.png`, `Command.png`, `GuardDog.png`, `Feed.png`, `Bloodhound.png` and `SicEm.png`.
+
+```
+1. Whistle: a small bronze whistle on a leather cord
+2. Command: a pointing hand with a leather wrist strap
+3. Guard Dog: a spiked bronze dog collar lying in a circle
+4. Feed: a big meat bone with a bite taken out of it
+5. Bloodhound: a dog's nose sniffing a single red drop
+6. Sic 'Em: a snarling dog's head with bared fangs, side view
 ```
 
 # Items, die enchantments and face enchantments

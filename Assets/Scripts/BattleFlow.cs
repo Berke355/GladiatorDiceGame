@@ -26,6 +26,9 @@ public class BattleFlow
     private DieFace changeFrom;
     // The player passed this turn (no action): the rolled face counts as unused.
     public bool Passed { get; private set; }
+    // Whether the player chose Attack or Magic at least once this turn: the beast (Hound) stays by your side on a turn
+    // you only defended (or passed), and bites on the others.
+    public bool AttackedThisTurn { get; private set; }
     public int ChangesThisTurn { get; private set; }
     // The last action steered the die (Change, Flip, Tumble): it is rolled again at once and the turn goes on.
     public bool RollsAgainAtOnce { get; private set; }
@@ -210,6 +213,7 @@ public class BattleFlow
         steerTo = null;
         ChoicePending = false;
         Passed = false;
+        AttackedThisTurn = false;
         LastActedFace = null;
         triggers.StartRound();
         triggers.turnNumber = TurnNumber;
@@ -291,6 +295,7 @@ public class BattleFlow
         triggers.actionChanged = actionChanged;
         hasActedThisBattle = true;
         LastAction = action;
+        if(action != ActionType.Defense) AttackedThisTurn = true;
         triggers.Fire(TriggerType.ActionChosen, action);
         if(IsOver) return;
         BattleEnemy target = Target;
@@ -363,6 +368,9 @@ public class BattleFlow
     // TurnEnd items run before the player's statuses tick.
     // The face you acted with spends its Charge (unless its action kept it); every other charging face gains 1.
     public void EndPlayerTurn(){
+        if(AttackedThisTurn && !Target.IsDead){
+            Beast.Bite(new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), die = die, charge = charge, rerolls = rerolls });
+        }
         triggers.Fire(TriggerType.TurnEnd);
         player.OnTurnEnd();
         foreach(DieFace face in die){

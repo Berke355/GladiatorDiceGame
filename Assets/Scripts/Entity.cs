@@ -29,7 +29,10 @@ public enum StatusType {
     // Like Riposte, but it waits: it isn't cleared at turn start, only spent by the first hit the owner takes.
     Vigil,
     // Until the owner's next turn, a hit Block and Fortify absorb completely is dealt back to the attacker in full.
-    Reversal
+    Reversal,
+    // Beastmaster (see GDD "Beastmaster"): the owner's beast. At the end of the owner's turn it hits the target once
+    // for the stacks. Permanent for the battle; 0 means no beast.
+    Hound
 }
 
 public class Entity : MonoBehaviour
@@ -51,6 +54,9 @@ public class Entity : MonoBehaviour
     public event Action<Entity> Struck;
     // Raised when Riposte, Vigil or Reversal dealt damage back to an attacker (the damage), e.g. Grudge counts them.
     public event Action<int> Retaliated;
+    // Raised when this entity's beast (Hound) bites (the bitten entity), for the beast's picture.
+    public event Action<Entity> BeastBit;
+    public void RaiseBeastBit(Entity bitten){ BeastBit?.Invoke(bitten); }
 
     private Dictionary<StatusType, int> activeStatuses = new Dictionary<StatusType, int>();
     // Burn applied since this entity's last Burn tick does not decay on the next tick,

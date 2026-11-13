@@ -151,6 +151,7 @@ public static class RunSimulator
             new Bot("Focused: Fortune", Shopping.Focused, FaceTag.Fortune),
             new Bot("Focused: Net", Shopping.Focused, FaceTag.Net),
             new Bot("Focused: Riposte", Shopping.Focused, FaceTag.Riposte),
+            new Bot("Focused: Hound", Shopping.Focused, FaceTag.Hound),
             // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
             new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
             new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
@@ -159,6 +160,7 @@ public static class RunSimulator
             new Bot("Hybrid: Bleed + Rage", Shopping.Focused, FaceTag.Bleed, FaceTag.Rage),
             new Bot("Hybrid: Net + Ritual", Shopping.Focused, FaceTag.Net, FaceTag.Ritual),
             new Bot("Hybrid: Riposte + Shield", Shopping.Focused, FaceTag.Riposte, FaceTag.Block),
+            new Bot("Hybrid: Hound + Rage", Shopping.Focused, FaceTag.Hound, FaceTag.Rage),
         };
     }
 
@@ -710,6 +712,11 @@ public static class RunSimulator
             case "Contagion": return bigHit ? ActionType.Defense : ActionType.Magic;
             // Nets the enemy for this turn's hits and its next attacks, unless a big hit needs blocking.
             case "Tangle": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // The beast is permanent for the battle, so grow it early; a big hit still comes first.
+            case "Whistle":
+            case "Bloodhound": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // Paying HP for the beast is only worth it with HP to spare.
+            case "Feed": return !bigHit && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Defense;
             // Vigil waits for the first hit, so set it once and keep blocking while it waits.
             case "Vigil": return !bigHit && player.GetStatus(StatusType.Vigil) == 0 ? ActionType.Magic : ActionType.Defense;
             // Provoke an enemy that isn't attacking (its plan is the threat); against an attack, just block.
@@ -782,6 +789,8 @@ public static class RunSimulator
             case "Unleash": return value * (player.GetStatus(StatusType.Rage) + 1);
             case "Exsanguinate": return value * (target.GetStatus(StatusType.Bleed) + value);
             // Applies 2 Vulnerable, then hits once per Vulnerable and Weak, each +1 from Vulnerable.
+            // Gains 2 Hound, then the beast bites value times.
+            case "Sic 'Em": return value * (player.GetStatus(StatusType.Hound) + 2);
             case "Haul In": return (value + 1) * (target.GetStatus(StatusType.Vulnerable) + target.GetStatus(StatusType.Weak) + 2);
             case "Fuel": return value * (target.GetStatus(StatusType.Burn) + value);
             case "Plague": return value * Mathf.Max(1, die.FindAll(f => f.definition.tags.Contains(FaceTag.Poison)).Count);

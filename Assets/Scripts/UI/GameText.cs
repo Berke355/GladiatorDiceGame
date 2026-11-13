@@ -29,6 +29,7 @@ public static class GameText
         new Keyword{ word = "Riposte", color = "#D9668F", definition = "Every attacker that hits its owner takes damage equal to its stacks. Lasts until its owner's next turn." },
         new Keyword{ word = "Vigil", color = "#D9668F", definition = "The first attacker that hits its owner takes damage equal to its stacks, then it is spent. Waits until then." },
         new Keyword{ word = "Reversal", color = "#D9668F", definition = "Until its owner's next turn, a hit that Block and Fortify absorb completely is dealt back to the attacker in full." },
+        new Keyword{ word = "Hound", color = "#C9A46A", definition = "Your beast. At the end of your turn it bites your target once for its stacks: a hit, so Rage adds to it and Block stops it. Lasts the whole battle." },
         new Keyword{ word = "Consumable", color = "#E8C170", definition = "This face can be used once per battle, whichever action you choose. Afterwards every action on it is Change, usable once per turn." },
         new Keyword{ word = "Change", color = "#E8C170", definition = "Roll the die again and land on a face other than this one: your turn goes on and the enemy doesn't act. Not a reroll: it spends no rerolls." },
         new Keyword{ word = "Flip", color = "#E8C170", definition = "Roll the die again and land on the face opposite this one: your turn goes on. Not a reroll." },

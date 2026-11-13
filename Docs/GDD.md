@@ -584,6 +584,7 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 | **Riposte** | Self | — | Cleared at the start of its owner's turn | Every attacker that hits its owner takes its stacks as damage (Provocator) |
 | **Vigil** | Self | — | Spent by the first hit its owner takes | Like Riposte, but it waits for the first hit, across turns |
 | **Reversal** | Self | — | Cleared at the start of its owner's turn | A hit Block and Fortify absorb completely is dealt back to the attacker in full |
+| **Hound** | Self | Its beast bites the target once for its stacks, unless the owner only defended (or passed) this turn | Lasts the whole battle | The Beastmaster's beast; a bite is the owner's own hit |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.
 - **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that halve), Bleed is duration (always 1, for as many turns as it has stacks).
@@ -887,15 +888,32 @@ The challenger of the arena: invite the attack and make the enemy pay for it. Th
 - **Value is the effect:** Vigil and Provoke give Riposte equal to their value, so they have higher values (3) instead of "twice my value".
 - **Measured (DevLog Day 112, 150 runs):** Provocator 3%, Provocator + Shield 2% (Net 1%, Burn 11% in the same runs); 62% of its Strong battles won (Net 36%). Free from battle 5 to the unfocused bots, in the Health Potion's place: Haul In beats a Sword clearly (160 arrivals at Medusa against 110, 50% deaths there against 58%), Perfect Counter is level with it, and **Provoke is below it**. With Defense it was a block face on a die that needs damage, so it got an Attack instead; the bots' Provoke on utility intents is about even with never provoking (the permanent Rage costs as much as the utility it cancels, for a bot that doesn't judge which utility matters). The user's play decides whether it needs more; the next lever is a cheaper cost or utility intents worth cancelling (see Enemies).
 
+### Beastmaster (implemented)
+
+The beast tamer: a war dog fights beside you, and your die commands it (summon, feed, set it on the enemy). Called Beastmaster in the documents, because Bestiarius is already an enemy (tag `Hound`).
+
+- **Resource:** **Hound** on yourself, permanent for the battle; its stacks are the beast's strength. A battle starts without a beast: the first Hound face summons it (its picture fades in beside the player), later ones make it stronger. It leaves when the battle ends.
+- **The bite:** at the end of your turn the beast hits your target once for its stacks, **unless you only defended (or passed) that turn**: it stays by your side then. A bite is your own hit (`Beast.Bite` through `EffectContext.Hit`): Rage adds to it once, Weak and Vulnerable count, Block stops it, Thorns and Parry answer it, and your on-hit items fire.
+- **Summoned by faces, not a hero** (the user's choice): any run can find it and mix it with its build; a future Beastmaster hero (Roadmap: heroes) can start with Whistle.
+- **The beast can't be hit** for now; enemies may answer it later with utility intents (e.g. "Scare": halve Hound).
+- **Tile color:** leather brown (`FaceTag.Hound`).
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Whistle** | Starter | Common | 1 | Magic: gain Hound equal to my value. Defense: gain block equal to my value. |
+| **Command** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus your Hound. |
+| **Guard Dog** | Starter (defense) | Common | 2 | Defense: gain block equal to my value plus your Hound. |
+| **Feed** | Bridge (Hound + Berserker) | Rare | 3 | Magic: lose HP equal to my value and gain Hound equal to my value. Defense: gain block equal to my value. |
+| **Bloodhound** | Bridge (Hound + Bleed) | Rare | 2 | Magic: gain Hound equal to my value; if the enemy is bleeding, gain it again. Defense: gain block equal to my value. |
+| **Sic 'Em** | Payoff | Epic | 2 | Attack: gain 2 Hound, then your beast bites my value times. |
+
+- **Value is the effect:** the first plan ("Feed: gain twice my value", "Sic 'Em: twice my value times") broke the rule, so Feed pays and gains its value, and Sic 'Em bites value times with 2 Hound of its own fuel (on any die: 2 bites of 2 from nothing).
+- **Tuned by simulation (DevLog Day 113):** the first rule, a bite at the end of every turn, gave the Hound bot 26–29% and made one Whistle on an unfocused die worth far more than any other Common: the beast is a free extra hit every turn, and every Whistle grows it for the rest of the fight. Only the attack turns: 2% (the build's own Magic faces silenced it). Not on defend-only turns: 23%. Without Rage on the bite, or a Magic-only Whistle, changed little. Whistle at 1: the Hound bot clears about 20%, as much as Bleed (20%) and above Rage (12%) in the same runs, so it is one of the strong archetypes; a free Whistle still lifts the Opportunist (2% → 5–8%), mostly because the Opportunist then shops for the whole Hound build. To revisit after the map.
+
 ### Future Archetypes
 
-Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius and Provocator (above), then Bestiarius; Commons for Burn, Poison and Ritual in between (each has only one, and 70% of a Normal Market's offers are Common).
+Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius, Provocator and Beastmaster (above); Commons for Burn, Poison and Ritual in between (each has only one, and 70% of a Normal Market's offers are Common).
 
-- **Bestiarius (the beast tamer, next):** a new permanent status **Hound** on the player. A battle starts without the beast; the first Hound face summons it (its sprite appears beside the player) and later ones make it stronger. At the end of every player turn it hits the target once for its stacks: a hit, so Rage adds to it once and Block, Thorns and Parry apply, unlike Poison's ticks. It leaves when the battle ends.
-  - Faces: *Whistle* (Common: gain Hound equal to my value), *Feed* (Rare: pay HP, gain twice my value of Hound), *Sic 'Em* (Epic: the beast attacks twice my value times at once).
-  - Summoned by faces, not by a hero (the user asked): any run can find it, it mixes with other builds (a Rage die with two hound faces), and giving the beast a place on the die is its price. A future Bestiarius hero (Roadmap: heroes) can start with Whistle or a 2-stack beast, like a Necrobinder with a die.
-  - The beast can't be hit for now: a target for enemies would touch intents and bots. Enemies can answer it later with intents (e.g. "Scare": halves Hound).
-  - Needs its sprite (PixelLab) and the hit at the end of `BattleFlow.EndPlayerTurn`.
 - **Lifesteal stays a single face (Bite), not an archetype** (the user's worry): healing back what you deal every battle would undo HP carrying over between battles, which is where a run's tension lives. If it ever comes back, it heals a capped amount per battle.
 
 - **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.

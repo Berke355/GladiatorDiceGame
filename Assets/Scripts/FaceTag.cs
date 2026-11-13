@@ -18,5 +18,7 @@ public enum FaceTag
     // Retiarius: nets the enemy with Weak and Vulnerable (see GDD "Retiarius").
     Net,
     // Provocator: invites the enemy's attacks and punishes them (see GDD "Provocator").
-    Riposte
+    Riposte,
+    // Beastmaster: a beast that grows and bites at the end of every turn (see GDD "Beastmaster").
+    Hound
 }

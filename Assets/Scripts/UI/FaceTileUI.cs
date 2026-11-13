@@ -103,6 +103,7 @@ public class FaceTileUI : MonoBehaviour
             case FaceTag.Fortune: return new Color32(0xA8, 0x80, 0x28, 0xFF);
             case FaceTag.Net: return new Color32(0x2C, 0x6B, 0x73, 0xFF);
             case FaceTag.Riposte: return new Color32(0x8A, 0x3A, 0x5C, 0xFF);
+            case FaceTag.Hound: return new Color32(0x6B, 0x55, 0x2E, 0xFF);
             default: return new Color32(0xC4, 0xB2, 0x92, 0xFF);
         }
     }
