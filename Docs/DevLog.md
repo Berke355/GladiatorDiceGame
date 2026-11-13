@@ -3755,6 +3755,7 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Retiarius** (`FaceTag.Net`, sea teal tiles): Net, Trident, Harpoon (Common), Tangle, Snare (Rare), Haul In (Epic), in the Market pool. The player nets enemies with Vulnerable and Weak, whose rules already worked on any entity.
 - **Damage previews count Weak and Vulnerable** (`EffectContext.PreviewHit`), on the player's faces and the enemies' intents: a Weak enemy's 5-damage intent previews 4, a hit on a Vulnerable enemy previews one more. Tested on all six faces: every preview matched the damage dealt.
 - New effects: `StatusStacksDamageEffectSO.alsoStatus` (Harpoon reads Vulnerable and Weak), `MultiHitPerStatusEffectSO` (Haul In). The simulator has a Net bot and a Net + Ritual bot; Tangle nets unless a big hit is coming.
+- **Emblems** for the six faces (ArtPrompts Sheet 7, from Gemini): Gemini drew a 4 x 3 sheet with six extra objects, so only the first six cells were cut. Thin lines blended with the magenta turned purple when shrunk (the Net's mesh), so pixels with blue well above green are left out of each pixel's color.
 - **The next archetypes are written into the GDD** (Future Archetypes): Provocator (Riposte, reading intents) and Bestiarius (a beast summoned by faces), with the user's decisions.
 
 ### Decisions
@@ -3765,7 +3766,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Not tuned further: Medusa kills the Net bot most (61% of its arrivals; Bleed 32%), to revisit after the map.
 
 ### Next Steps
-- **The emblems:** Sheet 7 in `Docs/ArtPrompts.md` (the faces show no picture until then).
 - The user plays Retiarius.
 - Provocator, then Bestiarius; Commons for Burn, Poison and Ritual.
 - The friends' feedback on the playtest build.

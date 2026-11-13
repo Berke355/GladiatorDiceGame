@@ -17,7 +17,7 @@ MonoBehaviour:
     and Weak. Nothing is consumed. Defense: Gain block equal to my value.'
   rarity: 0
   tags: 0b00000000000000
-  emblem: {fileID: 0}
+  emblem: {fileID: 21300000, guid: 7ed189e5f976f4a469f09e372ec2afbd, type: 3}
   plainTile: 0
   baseValue: 2
   effects:
