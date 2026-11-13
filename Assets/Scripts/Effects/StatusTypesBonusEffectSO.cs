@@ -20,7 +20,7 @@ public class StatusTypesBonusEffectSO : EffectSO
 
     public override string Describe(EffectContext context){
         int amount = context.value + Types(context);
-        return block ? amount + " block" : (amount + context.RageBonus) + " damage";
+        return block ? amount + " block" : context.PreviewHit(amount) + " damage";
     }
 
     private int Types(EffectContext context){

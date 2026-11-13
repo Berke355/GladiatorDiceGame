@@ -14,7 +14,7 @@ public class DefenseScaledDamageEffectSO : EffectSO
         if(context.source == null){
             return context.value + " + block + Fortify damage";
         }
-        return (context.value + Defense(context.source) + context.RageBonus) + " damage";
+        return context.PreviewHit(context.value + Defense(context.source)) + " damage";
     }
 
     private static int Defense(Entity source){

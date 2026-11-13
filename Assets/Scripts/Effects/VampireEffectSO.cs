@@ -12,7 +12,7 @@ public class VampireEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        int damage = context.value + context.RageBonus;
+        int damage = context.PreviewHit(context.value);
         return damage + " damage, heal " + damage;
     }
 }

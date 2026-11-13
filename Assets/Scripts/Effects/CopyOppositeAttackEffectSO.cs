@@ -18,7 +18,7 @@ public class CopyOppositeAttackEffectSO : EffectSO
     public override string Describe(EffectContext context){
         if(context.die == null) return "copy the opposite face's Attack";
         List<EffectSO> copied = Copied(context);
-        if(copied == null) return (context.value + context.RageBonus) + " damage";
+        if(copied == null) return context.PreviewHit(context.value) + " damage";
         List<string> parts = new List<string>();
         foreach(EffectSO effect in copied) parts.Add(effect.Describe(context));
         return string.Join(", ", parts);

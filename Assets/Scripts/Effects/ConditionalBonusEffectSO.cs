@@ -19,7 +19,7 @@ public class ConditionalBonusEffectSO : EffectSO
 
     public override string Describe(EffectContext context){
         int amount = context.value + (Met(context) ? bonus : 0);
-        return block ? amount + " block" : (amount + context.RageBonus) + " damage";
+        return block ? amount + " block" : context.PreviewHit(amount) + " damage";
     }
 
     private bool Met(EffectContext context){

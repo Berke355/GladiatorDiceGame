@@ -9,6 +9,6 @@ public class DamageEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        return (context.value + context.RageBonus) + " damage";
+        return context.PreviewHit(context.value) + " damage";
     }
 }

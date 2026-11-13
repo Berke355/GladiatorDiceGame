@@ -14,7 +14,7 @@ public class HighestFaceDamageEffectSO : EffectSO
         if(context.die == null){
             return context.value + " x your highest face damage";
         }
-        return (BaseDamage(context) + context.RageBonus) + " damage";
+        return context.PreviewHit(BaseDamage(context)) + " damage";
     }
 
     private int BaseDamage(EffectContext context){

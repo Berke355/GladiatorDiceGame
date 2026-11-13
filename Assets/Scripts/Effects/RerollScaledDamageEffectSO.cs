@@ -24,7 +24,7 @@ public class RerollScaledDamageEffectSO : EffectSO
             if(scaling == Scaling.RerollsLeft) return context.value + " + rerolls left damage";
             return scaling == Scaling.UsedThisBattle ? context.value + " x rerolls used damage" : context.value + " + rerolls used damage";
         }
-        return (BaseDamage(context) + context.RageBonus) + " damage";
+        return context.PreviewHit(BaseDamage(context)) + " damage";
     }
 
     private int BaseDamage(EffectContext context){

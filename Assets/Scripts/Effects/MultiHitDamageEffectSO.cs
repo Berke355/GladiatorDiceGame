@@ -16,6 +16,6 @@ public class MultiHitDamageEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        return hits + " x " + (context.value + context.RageBonus) + " damage";
+        return hits + " x " + context.PreviewHit(context.value) + " damage";
     }
 }

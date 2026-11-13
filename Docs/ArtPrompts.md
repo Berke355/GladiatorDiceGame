@@ -154,6 +154,7 @@ The family is the face's first tag other than Physical; Lifesteal counts as Blee
 | Hammer | iron grey | War Hammer, Maul, Anvil, Earthshaker, Follow Through, Steady Hand |
 | Fortune | gold | Encore, Fate's Hand, Gambit, Hedge, Mirror Blade, Opening Gambit, Ricochet, Sidestep, Turnabout, Lucky Buckler, Fate's Edge, Gambler's Strike, Patient Blade |
 | General | plain bone | Catalyst, Drill Sergeant, Exploit, Feint, Last Stand, Mimic, Sharpshooter, Spare Blade, Throwing Knife, Veteran |
+| Net (Retiarius) | sea teal | Net, Trident, Harpoon, Tangle, Snare, Haul In |
 
 Rarity is the rim: Common bronze, Rare silver, Epic gold. An enchanted face gets a purple seal.
 
@@ -273,6 +274,19 @@ For this sheet, change "exactly 12 emblems in a grid of 4 columns and 3 rows" in
 4. Fate's Edge: a sword with dice pips running along its blade
 5. Gambler's Strike: a pair of Roman knucklebones (astragali)
 6. Patient Blade: a sheathed sword leaning on an hourglass
+```
+
+## Sheet 7: Retiarius (6 emblems)
+
+For this sheet, change "exactly 12 emblems in a grid of 4 columns and 3 rows" in the style block to "exactly 6 emblems in a grid of 3 columns and 2 rows". Save them as `Assets/Art/Faces/Net.png`, `Trident.png`, `Harpoon.png`, `Tangle.png`, `Snare.png` and `HaulIn.png`.
+
+```
+1. Net: a round fishing net with lead weights along its edge, spread open
+2. Trident: a three-pronged Roman fishing trident standing upright
+3. Harpoon: a barbed harpoon head on a short shaft with a coiled rope
+4. Tangle: a knotted mass of rope twisted into a tight tangle
+5. Snare: a rope noose snare tied to a bent wooden stake
+6. Haul In: two hands pulling a rope taut, a full net hanging from it
 ```
 
 # Items, die enchantments and face enchantments

@@ -96,6 +96,15 @@ public class EffectContext
         return total;
     }
 
+    // Preview: what one hit of this base damage will deal, as Hit and TakeDamage count it (Rage, the source's Weak,
+    // the target's Vulnerable), before Block. Every damage effect's Describe uses it, so the numbers match the hit.
+    public int PreviewHit(int baseDamage){
+        int weak = source != null && Stacks(source, StatusType.Weak) > 0 ? 1 : 0;
+        int total = System.Math.Max(0, baseDamage + RageBonus - weak);
+        if(total > 0 && target != null && Stacks(target, StatusType.Vulnerable) > 0) total += 1;
+        return total;
+    }
+
     // Every damage effect hits through here so Rage is never forgotten. Returns the damage of the hit.
     public int Hit(int baseDamage){
         // Weak takes 1 off every hit the source deals.

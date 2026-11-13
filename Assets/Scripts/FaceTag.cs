@@ -14,5 +14,7 @@ public enum FaceTag
     // Faces and items built around rerolls.
     Fortune,
     // Pragmatist faces: no archetype, they read states many builds produce (see GDD "Pragmatist Faces").
-    General
+    General,
+    // Retiarius: nets the enemy with Weak and Vulnerable (see GDD "Retiarius").
+    Net
 }

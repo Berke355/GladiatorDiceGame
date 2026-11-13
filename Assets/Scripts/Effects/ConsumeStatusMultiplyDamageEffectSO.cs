@@ -19,7 +19,7 @@ public class ConsumeStatusMultiplyDamageEffectSO : EffectSO
         if(context.target == null){
             return context.value + " x " + statusToConsume + " damage, consume " + statusToConsume;
         }
-        int damage = context.value * Mathf.Max(1, context.Stacks(context.target, statusToConsume)) + context.RageBonus;
+        int damage = context.PreviewHit(context.value * Mathf.Max(1, context.Stacks(context.target, statusToConsume)));
         return damage + " damage, consume " + statusToConsume;
     }
 }

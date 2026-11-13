@@ -22,7 +22,7 @@ public class OverkillDamageEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        return (context.value + context.RageBonus) + " damage, the excess carries to the next enemy";
+        return context.PreviewHit(context.value) + " damage, the excess carries to the next enemy";
     }
 
     // The first living opponent after the target in turn order, wrapping around.

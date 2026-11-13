@@ -13,7 +13,7 @@ public class MissingHPDamageEffectSO : EffectSO
 
     public override string Describe(EffectContext context){
         if(context.source == null) return context.value + " damage, +1 per " + missingHPPerBonus + " missing HP";
-        return (Amount(context) + context.RageBonus) + " damage";
+        return context.PreviewHit(Amount(context)) + " damage";
     }
 
     private int Amount(EffectContext context){

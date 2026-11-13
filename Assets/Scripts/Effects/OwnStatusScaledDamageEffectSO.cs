@@ -16,7 +16,7 @@ public class OwnStatusScaledDamageEffectSO : EffectSO
         if(context.source == null){
             return context.value + " x " + statusToScaleWith + " damage";
         }
-        return (BaseDamage(context) + context.RageBonus) + " damage";
+        return context.PreviewHit(BaseDamage(context)) + " damage";
     }
 
     private int BaseDamage(EffectContext context){

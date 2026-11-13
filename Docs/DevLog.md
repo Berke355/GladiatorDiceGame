@@ -3745,3 +3745,28 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The user plays the build once** (a real, rendered run start to finish) before sending it.
 - Send it to two friends; their answers decide what comes before the map.
 
+## Day 111 - Retiarius, the First New Archetype
+
+### Findings
+- **Content is the gap now** (the user's play while friends test the build), and the detailed balance waits for the map: the map changes how many fights, shops and heals a run has, so numbers tuned before it would be tuned again.
+- **Archetype sizes:** Physical, Block and Fortune have 13 faces each, Rage 11, General 10, Bleed 8, Burn, Poison and Hammer 6, Ritual 4, Lifesteal 1. Burn, Poison and Ritual have one Common each, while 70% of Normal Market offers are Common, so those builds are hard to start.
+
+### Accomplished
+- **Retiarius** (`FaceTag.Net`, sea teal tiles): Net, Trident, Harpoon (Common), Tangle, Snare (Rare), Haul In (Epic), in the Market pool. The player nets enemies with Vulnerable and Weak, whose rules already worked on any entity.
+- **Damage previews count Weak and Vulnerable** (`EffectContext.PreviewHit`), on the player's faces and the enemies' intents: a Weak enemy's 5-damage intent previews 4, a hit on a Vulnerable enemy previews one more. Tested on all six faces: every preview matched the damage dealt.
+- New effects: `StatusStacksDamageEffectSO.alsoStatus` (Harpoon reads Vulnerable and Weak), `MultiHitPerStatusEffectSO` (Haul In). The simulator has a Net bot and a Net + Ritual bot; Tangle nets unless a big hit is coming.
+- **The next archetypes are written into the GDD** (Future Archetypes): Provocator (Riposte, reading intents) and Bestiarius (a beast summoned by faces), with the user's decisions.
+
+### Decisions
+- **The beast is summoned by a face, not a hero** (the user asked how): any run can find it and mix it with its build; a Bestiarius hero can start with it later.
+- **Lifesteal stays one face** (the user's worry that it would be too strong): healing every battle would undo HP carrying over.
+- **Net got an Attack:** with Defense only, the Net bot replaced its Swords with Nets and a quarter of its rolls dealt nothing (0% cleared).
+- **Net's Weak and Trident's Vulnerable follow the value** instead of a fixed 2: the Net bot went from 0% to 2% (Net + Ritual 3%, 150 runs), next to Ritual 1%, Hammer 2%, Poison 5%, Burn 7% today. Haul In keeps a fixed 2 (Epic fuel rule).
+- Not tuned further: Medusa kills the Net bot most (61% of its arrivals; Bleed 32%), to revisit after the map.
+
+### Next Steps
+- **The emblems:** Sheet 7 in `Docs/ArtPrompts.md` (the faces show no picture until then).
+- The user plays Retiarius.
+- Provocator, then Bestiarius; Commons for Burn, Poison and Ritual.
+- The friends' feedback on the playtest build.
+

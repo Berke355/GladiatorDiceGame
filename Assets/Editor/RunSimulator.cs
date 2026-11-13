@@ -149,12 +149,14 @@ public static class RunSimulator
             new Bot("Focused: Bleed", Shopping.Focused, FaceTag.Bleed),
             new Bot("Focused: Hammer", Shopping.Focused, FaceTag.Hammer),
             new Bot("Focused: Fortune", Shopping.Focused, FaceTag.Fortune),
+            new Bot("Focused: Net", Shopping.Focused, FaceTag.Net),
             // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
             new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
             new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
             new Bot("Hybrid: Shield + Rage", Shopping.Focused, FaceTag.Block, FaceTag.Rage),
             // Lose HP for power, heal it back from a bleeding enemy (Bloodrage + Bloodscent loop).
             new Bot("Hybrid: Bleed + Rage", Shopping.Focused, FaceTag.Bleed, FaceTag.Rage),
+            new Bot("Hybrid: Net + Ritual", Shopping.Focused, FaceTag.Net, FaceTag.Ritual),
         };
     }
 
@@ -704,6 +706,8 @@ public static class RunSimulator
             // Area Magic faces: spread the status unless a big hit needs blocking.
             case "Wildfire":
             case "Contagion": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // Nets the enemy for this turn's hits and its next attacks, unless a big hit needs blocking.
+            case "Tangle": return bigHit ? ActionType.Defense : ActionType.Magic;
             case "Bloodrage": return rage < RageToStartAttacking && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Attack;
         }
 
@@ -759,6 +763,8 @@ public static class RunSimulator
             // They make their own fuel first.
             case "Unleash": return value * (player.GetStatus(StatusType.Rage) + 1);
             case "Exsanguinate": return value * (target.GetStatus(StatusType.Bleed) + value);
+            // Applies 2 Vulnerable, then hits once per Vulnerable and Weak, each +1 from Vulnerable.
+            case "Haul In": return (value + 1) * (target.GetStatus(StatusType.Vulnerable) + target.GetStatus(StatusType.Weak) + 2);
             case "Fuel": return value * (target.GetStatus(StatusType.Burn) + value);
             case "Plague": return value * Mathf.Max(1, die.FindAll(f => f.definition.tags.Contains(FaceTag.Poison)).Count);
             case "Shield Burst": return value + value * player.GetStatus(StatusType.Fortify);

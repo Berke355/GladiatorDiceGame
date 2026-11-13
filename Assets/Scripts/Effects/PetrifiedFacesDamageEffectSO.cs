@@ -12,7 +12,7 @@ public class PetrifiedFacesDamageEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        return (BaseDamage(context) + context.RageBonus) + " damage";
+        return context.PreviewHit(BaseDamage(context)) + " damage";
     }
 
     public int BaseDamage(EffectContext context){

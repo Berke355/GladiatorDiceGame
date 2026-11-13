@@ -21,7 +21,7 @@ public class PunishChoiceEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        string damage = (context.value + context.RageBonus) + " damage";
+        string damage = context.PreviewHit(context.value) + " damage";
         return condition == Condition.FaceValueBelow
             ? damage + " if you act with a face below " + threshold
             : damage + " if you choose " + action;

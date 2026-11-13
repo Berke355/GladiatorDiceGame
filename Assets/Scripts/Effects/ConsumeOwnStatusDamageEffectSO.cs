@@ -20,7 +20,7 @@ public class ConsumeOwnStatusDamageEffectSO : EffectSO
         if(context.source == null){
             return context.value + " + " + statusToConsume + " x" + context.value + " damage, consume " + statusToConsume;
         }
-        int damage = context.value + context.source.GetStatus(statusToConsume) * context.value + context.RageBonus;
+        int damage = context.PreviewHit(context.value + context.source.GetStatus(statusToConsume) * context.value);
         return damage + " damage, consume " + statusToConsume;
     }
 }

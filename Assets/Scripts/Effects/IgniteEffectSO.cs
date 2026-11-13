@@ -24,6 +24,6 @@ public class IgniteEffectSO : EffectSO
             return "ignite Burn";
         }
         int burn = context.Stacks(context.target, StatusType.Burn);
-        return "ignite Burn (" + (burn > 0 ? burn + context.RageBonus : 0) + " damage" + (consume ? ", consume Burn)" : ")");
+        return "ignite Burn (" + (burn > 0 ? context.PreviewHit(burn) : 0) + " damage" + (consume ? ", consume Burn)" : ")");
     }
 }

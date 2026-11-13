@@ -587,7 +587,9 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 - **Ignite:** deal damage equal to the target's Burn without consuming it. Detonate consumes Burn for one bigger hit. Small ignitions versus waiting for one big detonation is the Burn build's core decision.
 - **Rage and Ritual** are visible statuses, not hidden multipliers, so they follow the Value Is the Effect rule: the face's value stays as printed, and previews show the boosted result (e.g. a Sword with 3 Rage previews "5 damage, 1 Bleed").
 - **Ritual only boosts statuses applied to the opponent** (Burn, Poison, Bleed). Boosting self-applied statuses would break the "Fortify comes in small amounts" rule. Multiplying a status (Fuel) is not a new application, so Ritual does not apply to it.
-- **Vulnerable, Weak and Entangled** are debuffs enemies put on the player (inspired by Slay the Spire's Vulnerable and Weak). Applied on the enemy's turn, N stacks last the player's next N turns. They make some enemy turns worse for the player and interact with rerolls (e.g. Weak: is it worth rerolling for a bigger hit?).
+- **Vulnerable, Weak and Entangled** started as debuffs enemies put on the player (inspired by Slay the Spire's Vulnerable and Weak). Applied on the enemy's turn, N stacks last the player's next N turns. They make some enemy turns worse for the player and interact with rerolls (e.g. Weak: is it worth rerolling for a bigger hit?).
+- **The player nets enemies with Vulnerable and Weak too** (the Retiarius archetype). The rules are the same on both sides. Applied on the player's turn, they tick at the end of the enemy's turn, so like Bleed, N stacks reach N − 1 of the player's next turns: Vulnerable helps the hits of this turn and the next, Weak softens the enemy's next attacks. Entangled means nothing to an enemy (enemies don't reroll), so no face applies it.
+- **Previews count them:** every damage preview shows what one hit will really deal (Rage, the attacker's Weak, the target's Vulnerable), for the player's faces and the enemies' intents alike.
 - **Encourage:** the mirror of Ritual. Encourage N adds N to every buff the owner gains on itself: Rage, Fortify and FireShield. It is permanent for the battle, like Ritual. It doesn't affect Block (the basic defense of every face; boosting it would make Encourage a Shield tool instead of a bridge), Ritual, or Encourage itself (no compounding chains). It bridges Rage and Fortify (Shield + Rage). See "Encourage" under Build Archetypes for its content.
 - **Fortify is permanent, so it must come in small amounts.** Enemy intents that grant Fortify are kept at 1. A player's Shield face can grant Fortify equal to its value because it pays for it with weaker attacks than Sword.
 
@@ -835,9 +837,44 @@ Pour power into one face and set up the turn it lands. Hammer stores its resourc
 - **Earthshaker** is the multiplicative payoff: it hits with a charged face's value without using its Charge, so you can strike twice from one build-up.
 - **Standalone floor:** War Hammer hits without Charge, Anvil and Steady Hand block, and Earthshaker hits for at least its value.
 
+### Retiarius (implemented)
+
+The net-fighter of the arena: throw the net, then stab what's caught in it. The enemy is the resource: a netted enemy hits softer and is hit harder.
+
+- **Resource:** **Vulnerable** and **Weak** on the enemy. Vulnerable adds 1 to every hit it takes, Weak takes 1 off every hit it deals. Their stacks are turns, like Bleed's: they mark the enemy, they deal nothing on their own.
+- **Identity:** many hits. Vulnerable adds to every hit, so the build pays most with multi-hit faces (Twin Axes, Ricochet, Cleave) and Rage, which adds to every hit too. Weak is its defense: a netted enemy's whole turn is softer, most of all a multi-hit intent.
+- **Ritual is its glue:** Vulnerable and Weak are statuses applied to the opponent, so Ritual makes the net last longer. Tangle carries the Ritual tag as the bridge.
+- **Tile color:** sea teal (`FaceTag.Net`).
+
+| Face | Role | Rarity | Value | Actions |
+|---|---|---|---|---|
+| **Net** | Starter (defense) | Common | 2 | Attack: deal damage equal to my value. Defense: gain block equal to my value and apply Weak equal to my value. |
+| **Trident** | Starter (attack) | Common | 2 | Attack: apply Vulnerable equal to my value, then deal damage equal to my value. |
+| **Harpoon** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the enemy's Vulnerable and Weak (nothing is consumed). Defense: gain block equal to my value. |
+| **Tangle** | Bridge (Net + Ritual) | Rare | 2 | Magic: apply Weak and Vulnerable equal to my value. Defense: gain block equal to my value. |
+| **Snare** | Bridge (Net + Block) | Rare | 2 | Attack: deal damage equal to my value. Defense: gain block equal to my value; if the enemy is Weak, gain it again. |
+| **Haul In** | Payoff | Epic | 2 | Attack: apply 2 Vulnerable, then hit once for each Vulnerable and Weak on the enemy, each for my value. |
+
+- **Standalone floor:** Net and Snare hit and block, Trident is a hit that sets up the next one, Harpoon hits for at least its value, Tangle blocks.
+- **Haul In brings its own fuel** (Epics Bring Their Own Fuel): its 2 Vulnerable are a fixed amount, so on any die it hits twice for value + 1 (6 at value 2, more than a Sword). In its build, every turn of the net is another hit (with Net and Trident at value 2: about 6 hits of 3). Hits = stacks, damage per hit = value, so upgrades grow it linearly, not with the square of the value.
+- **Debuffs follow the value on the Commons:** Net's Weak and Trident's Vulnerable are their value, so upgrading them makes the net last longer, and Harpoon grows with it (the "Common that grows during a fight" rule). With fixed amounts (2) the first simulation's Net bot cleared 0%; with the value 2% (Net + Ritual 3%), in the range of the other focused bots at that time (Ritual 1%, Hammer 2%, Poison 5%, Burn 7%; DevLog Day 111). The detailed tuning waits for the map.
+- **Net has an Attack on purpose:** with only Defense, the Net bot put Nets in the place of Swords, and its Net rolls dealt nothing (a quarter of its rolls). Standalone Faces rule.
+- **To watch after the map:** Haul In with Ritual and Rage (both raise it every turn), and Medusa, where the Net bot died most (its upgraded Trident is the face she turns to stone).
+
 ### Future Archetypes
 
-Ideas to revisit after Poison and Shield.
+Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius first (above), then Provocator, then Bestiarius; Commons for Burn, Poison and Ritual in between (each has only one, and 70% of a Normal Market's offers are Common).
+
+- **Provocator (counter-attack, next):** built on the telegraphed intents, the game's most unique part. A new status **Riposte**: every attacker that hits you this round takes its stacks as damage (like FireShield, with damage instead of Burn), cleared at the start of your turn; it can reuse `RetaliateDamageEffectSO`.
+  - Faces: *Parry* (Common: gain Riposte equal to my value), *Bait* (Rare: if the enemy intends to attack, value + 3 Riposte, else deal my value; needs a small "the intent is an attack" condition), *Perfect Counter* (Epic: block equal to my value; a hit you block fully is dealt back to the attacker).
+  - Pairs with Block (Spiked Shield) and shines against packs (every attacking wolf takes it).
+  - The risk is the point: Riposte is wasted on a turn the enemy doesn't attack, so the player reads the intent. The bots need to learn it.
+- **Bestiarius (the beast tamer, after it):** a new permanent status **Hound** on the player. A battle starts without the beast; the first Hound face summons it (its sprite appears beside the player) and later ones make it stronger. At the end of every player turn it hits the target once for its stacks: a hit, so Rage adds to it once and Block, Thorns and Parry apply, unlike Poison's ticks. It leaves when the battle ends.
+  - Faces: *Whistle* (Common: gain Hound equal to my value), *Feed* (Rare: pay HP, gain twice my value of Hound), *Sic 'Em* (Epic: the beast attacks twice my value times at once).
+  - Summoned by faces, not by a hero (the user asked): any run can find it, it mixes with other builds (a Rage die with two hound faces), and giving the beast a place on the die is its price. A future Bestiarius hero (Roadmap: heroes) can start with Whistle or a 2-stack beast, like a Necrobinder with a die.
+  - The beast can't be hit for now: a target for enemies would touch intents and bots. Enemies can answer it later with intents (e.g. "Scare": halves Hound).
+  - Needs its sprite (PixelLab) and the hit at the end of `BattleFlow.EndPlayerTurn`.
+- **Lifesteal stays a single face (Bite), not an archetype** (the user's worry): healing back what you deal every battle would undo HP carrying over between battles, which is where a run's tension lives. If it ever comes back, it heals a capped amount per battle.
 
 - **Crowd Favor (cross-build mechanic):** Showy plays (overkill, a turn without block, consecutive attacks) earn Favor from the arena crowd, which turns into bonus gold after the battle. Connects combat to the economy.
 - **Die topology:** Face positions on the die matter, e.g. opposite faces (1–6, 2–5, 3–4) or adjacent faces. Turns "which face do I replace?" into "which face, in which slot?". Complex, so it stays a late idea.
