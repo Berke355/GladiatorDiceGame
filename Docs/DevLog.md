@@ -3777,6 +3777,7 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Striking back** happens in `Entity.TakeDamage`, per hit and without a source, so it never chains. Tested on a real `BattleFlow` against Murmillo: Riposte, Vigil waiting through a turn without a hit and spent by the first one, Perfect Counter's turn (3 Vigil + 4 Riposte + 2 Reversal = 9), Grudge counting the strikes, Wrath counting the hits, and Provoke turning Shield Wall into Strike with 1 Rage, then doing nothing while the enemy already attacks. (Riposte 4 once dealt 2: Murmillo's Curl Up had given it 2 block, which is right.)
 - **Enemy intents can be read and changed by effects:** `IEnemyBrain.IntendsAttack` and `ProvokeToWeakestAttack` (normal enemies: their weakest attack by value × hits; bosses: their weakest attack face). The boss's die strip follows a changed face.
 - **Emblems** for the seven faces (ArtPrompts Sheet 8, from Gemini). This sheet framed every cell with dark grid lines, so the cutter keeps only the magenta panel inside each frame.
+- **Status icons** for Riposte, Vigil and Reversal (icon Sheet 3): added as a new top row of the icon atlas (768 x 640 now), so the old icons keep their glyph rects; `GameText.IconNames` and its status words know them.
 - The simulator has a Provocator bot and a Provocator + Shield bot; Vigil is set once and Provoke is used on utility (Magic) intents.
 
 ### Decisions (with the user)
@@ -3791,7 +3792,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - A Describe that returns "" makes the action preview show the effect's asset name ("ProvokeEffect"); Provoke now says the enemy already attacks.
 
 ### Next Steps
-- The three status icons (icon Sheet 3).
 - The user plays Retiarius and Provocator.
 - Bestiarius; Commons for Burn, Poison and Ritual.
 
