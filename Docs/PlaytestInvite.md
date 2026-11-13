@@ -14,8 +14,9 @@ Selam! Geliştirdiğim bir oyunu test etmek ister misin? Adı şimdilik **Gladia
 Windows "korumalı" uyarısı çıkarsa: **Ek bilgi → Yine de çalıştır**. Oyun imzasız olduğu için bu uyarı normal.
 
 **Bilmen gerekenler**
-- Görseller geçici (kutular, renkli şekiller).
-- Harita ve öğretici henüz yok, ses de yok.
+- İlk açılışta kısa bir "How to Play" sayfası çıkıyor; sonra sağ üstteki dişliden (ya da Esc ile) tekrar açabilirsin. Ses ayarları ve oyundan çıkış da orada.
+- Renkli kelimelerin (Bleed, Burn, Poison...) üzerine gelince kuralları çıkıyor.
+- Oyun İngilizce. Harita henüz yok: savaş, market, savaş diye ilerliyor; 4., 8. ve 11. savaşlar boss.
 - Oyunu kaydetme yok; bir koşuyu bitirmeden kapatırsan baştan başlarsın.
 - Kaybetmek normal, oyun zor olabilir.
 
@@ -29,6 +30,7 @@ Mümkünse ilk koşunu Discord'da ekran paylaşarak oyna, ben sessizce izleyeyim
 3. Kaybettiysen neden kaybettiğini düşünüyorsun?
 4. Tekrar oynamak ister misin? Neden?
 5. Bu oyunu bir arkadaşına nasıl anlatırdın?
+6. İlk savaşta ne yapman gerektiğini anladın mı? "How to Play" sayfası yetti mi?
 
 **Oyun hata verirse:** şu dosyayı bana gönder, sorunu oradan görebilirim:
 `%USERPROFILE%\AppData\LocalLow\DefaultCompany\GladiatorDiceGame\Player.log`
@@ -41,6 +43,8 @@ Teşekkürler!
 
 ## Berke için notlar (bunu gönderme)
 
+- **Dosya:** `Builds/Playtest/GladiatorDiceGame-0.1-playtest.zip` (46 MB). Google Drive veya WeTransfer ile paylaş; Builds klasörü git'e girmez.
+- **İlk testten (DevLog Day 85) beri değişenler:** piksel sanat, animasyonlar, ses ve müzik, ayarlar, How to Play, yeni zorluk eğrisi, Hydra'nın kafaları. Arkadaşın görsellik yüzünden zor keyif aldığını söylemişti; bu sefer en çok ne değiştiğine bak.
 - **Önce 2 arkadaşa gönder,** diğerlerini harita gelince taze göz olarak sakla.
 - **İzlerken konuşma.** Yardım etmek içinden gelecek, etme. Takıldığı yeri not al.
 - **Asıl ölçüt:** sen demeden ikinci koşuyu başlatıyor mu, birkaç gün sonra kendiliğinden açıyor mu?

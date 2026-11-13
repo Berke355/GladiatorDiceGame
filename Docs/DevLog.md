@@ -3733,3 +3733,15 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - A playtest build for friends.
 
+## Day 110 - The Playtest Build
+
+### Accomplished
+- **How to Play:** a short rules page (the die, actions and their bubbles, reading intents, targeting, Reroll and Pass, statuses and Burn as fuel, the Market, the run's 11 battles and three bosses). It opens by itself the first time the game starts on a computer, and from the settings panel (gear or Esc) any time after. Esc closes it.
+- **The Windows build** `0.1-playtest` (`Builds/Playtest/`, git-ignored): the three scenes, full screen. A headless smoke test (`-batchmode -nographics`) started it and loaded the run start with no errors in the log.
+- **The zip for testers:** 46 MB, without the Burst debug folder (`_DoNotShip`).
+- **`Docs/PlaytestInvite.md` updated:** the visuals, sound and rules page are in now; a sixth question asks whether the first battle made sense and the rules page was enough; notes for the user on sharing the zip and on what changed since the friend's first play-test (Day 85).
+
+### Next Steps
+- **The user plays the build once** (a real, rendered run start to finish) before sending it.
+- Send it to two friends; their answers decide what comes before the map.
+
