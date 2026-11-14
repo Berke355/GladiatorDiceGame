@@ -4026,3 +4026,8 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - The user plays the beast. Then the map's step 4 (Elite).
 - **Pictures** for the nine pieces (Gemini): five face emblems, two items, the Mend seal and the Doghouse medallion, cut with the grid and blob cutters. Mend's sheet came on a darker pink than magenta (turned to magenta before cutting), and its first motif (a paw, a bandage and two dice Gemini added) was muddy at 36 pixels, so it was made again with a simpler prompt: one large paw with one bandage strip, at most 3 colors.
 
+### Day 124 (later) - Build-aware offers on, a playtest build
+- At the user's request **`weightByBuildTags` is on**: Market, Enchanting Table and item offers lean toward the tags the player added to the die (not the starting die's), for the user's play-test. It was measured on Day 67 (builds come together faster, unevenly: Burn gained most); the play-test decides whether it stays.
+- **Windows build `0.2-playtest`** (`Builds/Playtest/GladiatorDiceGame-0.2-playtest.zip`, 46.5 MB, without the Burst debug folder): the map, the beast's HP, the new content. A headless start loaded with no errors.
+- The How to Play page still describes the old run of 11 battles; it needs the map.
+
