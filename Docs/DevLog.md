@@ -3858,10 +3858,20 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Antidote was unclear:** "removes half of its Poison, Burn, Bleed" read as if Venefica put those on the player.
 
 ### Accomplished
-- **Run Down's threshold 5 → 4** (the user's call): it still catches starter faces and unupgraded Commons. Not measured yet (the Unity bridge was down).
+- **Run Down's threshold 5 → 4** (the user's call): it still catches starter faces and unupgraded Commons. Measured with every Strong battle forced to one enemy, at battle 9 (6 bots × 120 runs; the Provocator bot alone × 200):
+
+| Enemy | All bots die | Provocator dies |
+|---|---|---|
+| Essedarius, below 5 | 25% | 36% |
+| **Essedarius, below 4** | **9–11%** | **27%** |
+| War Elephant | 30% | 52% |
+| Hoplomachus Champion | 20% | 35% |
+| Bestiarius | 17% | 17% |
+
+  Essedarius went from the hardest Strong enemy to the easiest. The War Elephant is now the one that stops the Provocator die most (Stomp 7 and 64 HP against a die that hits little on its own turn).
 - **Antidote's text** now says "cleanses half of the Poison, Burn, Bleed on itself".
 
 ### Next Steps
-- Measure Essedarius's kill rate with the new threshold (`RunSimulator.DeathRateAt`).
+- If Essedarius now feels too easy: Run Down 7 → 8 damage, rather than raising the threshold again.
 - Watch Provocator's HP cost in the next play-tests (a blocked hit still sets off Riposte, so Block + Riposte is its intended way to take hits).
 
