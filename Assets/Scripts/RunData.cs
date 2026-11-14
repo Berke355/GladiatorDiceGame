@@ -29,6 +29,9 @@ public class RunData
     public const int DieEnchantmentSlots = 2;
     public List<DieEnchantmentSO> dieEnchantments = new List<DieEnchantmentSO>();
     public List<DieEnchantmentSO> lockedDieEnchantments = new List<DieEnchantmentSO>();
+    // The bench (see GDD "Bench"): faces replaced at the Market wait here, upgrades and enchantments kept, and can be
+    // swapped back onto the die for free at any Market. At most Market.BenchSlots; the oldest is sold when it overflows.
+    public List<DieFace> bench = new List<DieFace>();
     // Rerolls the player gets at the start of every battle (see GDD "Rerolls").
     public int rerollsPerBattle = 3;
     // Set by a boss victory: the next Market starts with a free equipment pick.

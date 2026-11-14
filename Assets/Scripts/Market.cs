@@ -477,13 +477,14 @@ public class Market
         return !offer.sold && run.gold >= offer.price;
     }
 
-    // The bought face replaces the die face in dieSlot.
+    // The bought face replaces the die face in dieSlot, which goes to the bench.
     public bool Buy(int offerIndex, int dieSlot){
         if(!CanBuy(offerIndex)){
             return false;
         }
         MarketOffer offer = offers[offerIndex];
         run.gold -= offer.price;
+        SendToBench(run.dieFaces[dieSlot]);
         run.dieFaces[dieSlot] = new DieFace(offer.face);
         offer.sold = true;
         if(offer.locked){ offer.locked = false; run.lockedFaces.Remove(offer.face); }
@@ -556,6 +557,44 @@ public class Market
         DieFace moved = run.dieFaces[a];
         run.dieFaces[a] = run.dieFaces[b];
         run.dieFaces[b] = moved;
+        return true;
+    }
+
+    // ---------- Bench (see GDD "Bench") ----------
+
+    public const int BenchSlots = 2;
+    // The face sold to make room the last time the bench overflowed (for the UI's hint); null if none.
+    public DieFace LastAutoSold { get; private set; }
+
+    // A benched face sells for a quarter of its rarity's price (at least 1), so the bench doesn't become a shop.
+    public int GetSellPrice(DieFace face){
+        return Mathf.Max(1, economy.GetBuyPrice(face.definition.rarity) / 4);
+    }
+
+    private void SendToBench(DieFace face){
+        LastAutoSold = null;
+        if(face == null) return;
+        if(run.bench.Count >= BenchSlots){
+            LastAutoSold = run.bench[0];
+            run.gold += GetSellPrice(run.bench[0]);
+            run.bench.RemoveAt(0);
+        }
+        run.bench.Add(face);
+    }
+
+    // Free and unlimited at any Market: the benched face takes the die place, the die face takes its bench slot.
+    public bool SwapWithBench(int dieSlot, int benchIndex){
+        if(dieSlot < 0 || dieSlot >= run.dieFaces.Count || benchIndex < 0 || benchIndex >= run.bench.Count) return false;
+        DieFace benched = run.bench[benchIndex];
+        run.bench[benchIndex] = run.dieFaces[dieSlot];
+        run.dieFaces[dieSlot] = benched;
+        return true;
+    }
+
+    public bool SellBench(int benchIndex){
+        if(benchIndex < 0 || benchIndex >= run.bench.Count) return false;
+        run.gold += GetSellPrice(run.bench[benchIndex]);
+        run.bench.RemoveAt(benchIndex);
         return true;
     }
 

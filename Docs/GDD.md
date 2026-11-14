@@ -415,6 +415,16 @@ Market services:
 - **The Grand Market reroll is much more expensive:** it only offers Epics, so hunting for one specific Epic should cost most of a battle's reward per try.
 - Simulated bots that rerolled whenever nothing fit their build did worse, because the gold went to rerolls instead of upgrades. Bots that kept at least 40 gold after a reroll did slightly better than bots that never rerolled. The tension is real.
 
+### Bench
+
+**A face you replace isn't lost: it waits on the bench** (the user's idea, DevLog Day 119).
+
+- **Two slots.** Buying a face sends the face it replaces to the bench, with its upgrades and its enchantment. A full bench sells its oldest face to make room (the Market's hint says which one before the click).
+- **Free swaps at any Market:** click a benched face, then a face on the die; they trade places. Never during a battle.
+- **Sell** a benched face for a quarter of its rarity's price (Common 2, Rare 6, Epic 11 gold), so the bench never becomes a shop.
+- **Why two:** enough for a plan B (a Burn face kept for the Hydra, a defensive face for the War Elephant), not enough for a second die. Replacing a face still matters, but a wrong buy is no longer final. Later, the Mad Scientist (Roadmap) can merge a benched face.
+- Bots don't use the bench; their replaced faces are sold when it overflows, which changed nothing measurable (Opportunist 5% → 6%, Burn 12% → 12%, Bleed 26% → 25%).
+
 ### Enchanting Table
 
 You don't only build the die, you build its faces. Every Market has an **Enchanting Table**: pay gold and inscribe an **enchantment** onto a die face. An enchantment is a **Magic action** that the face didn't have.

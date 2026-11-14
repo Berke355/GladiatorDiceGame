@@ -28,6 +28,8 @@ public class MarketUI : MonoBehaviour
     public GameObject equipmentSection;
     public OfferCardUI[] equipmentCards;
     public DieSlotUI[] dieSlots;
+    // The bench (GDD "Bench"): two slots beside the die net; their upgrade button sells the face.
+    public DieSlotUI[] benchSlots;
     // The items the player has. Only the first object is needed in the scene; it is copied as items pile up.
     public EquipmentSlotUI[] equipmentSlots;
     private List<EquipmentSlotUI> equipmentChips;
@@ -68,13 +70,15 @@ public class MarketUI : MonoBehaviour
     private int pendingSwap = -1;
     // A die enchantment being bought with every slot full: the next slot clicked is replaced.
     private int pendingDieEnchantment = -1;
+    // A benched face picked to swap in: the next die face clicked trades places with it.
+    private int pendingBench = -1;
     private bool showingTable;
     // The die face shown in the selected face panel; -1 when none.
     private int selectedSlot = -1;
     private bool HasSelectedPanel => selectedPanel != null;
 
     private bool ChoosingDieSlot => pendingOffer >= 0 || pendingEnchantment >= 0;
-    private bool Choosing => ChoosingDieSlot || pendingSwap >= 0 || pendingDieEnchantment >= 0;
+    private bool Choosing => ChoosingDieSlot || pendingSwap >= 0 || pendingDieEnchantment >= 0 || pendingBench >= 0;
 
     void Start(){
         equipmentChips = new List<EquipmentSlotUI>(equipmentSlots);
@@ -120,6 +124,13 @@ public class MarketUI : MonoBehaviour
         for(int i = 0; i < rewardCards.Length; i++){
             int index = i;
             rewardCards[i].buyButton.onClick.AddListener(() => OnRewardClicked(index));
+        }
+        if(benchSlots != null){
+            for(int i = 0; i < benchSlots.Length; i++){
+                int index = i;
+                benchSlots[i].slotButton.onClick.AddListener(() => OnBenchClicked(index));
+                benchSlots[i].upgradeButton.onClick.AddListener(() => { if(market.SellBench(index)){ AudioManager.Play(Sfx.Buy); ClearPending(); Refresh(); } });
+            }
         }
         if(HasSelectedPanel){
             selectedUpgradeButton.onClick.AddListener(() => { if(selectedSlot >= 0) OnUpgradeClicked(selectedSlot); });
@@ -182,8 +193,24 @@ public class MarketUI : MonoBehaviour
         Refresh();
     }
 
+    // A benched face: picked to swap in, or (while a die face is being moved) swapped with it at once.
+    private void OnBenchClicked(int benchIndex){
+        if(benchIndex >= run.bench.Count) return;
+        if(pendingSwap >= 0){
+            if(market.SwapWithBench(pendingSwap, benchIndex)) AudioManager.Play(Sfx.Swap);
+            selectedSlot = pendingSwap;
+            ClearPending();
+        }
+        else pendingBench = pendingBench == benchIndex ? -1 : benchIndex;
+        Refresh();
+    }
+
     private void OnDieSlotClicked(int dieSlot){
-        if(pendingOffer >= 0){
+        if(pendingBench >= 0){
+            if(market.SwapWithBench(dieSlot, pendingBench)) AudioManager.Play(Sfx.Swap);
+            selectedSlot = dieSlot;
+        }
+        else if(pendingOffer >= 0){
             if(market.Buy(pendingOffer, dieSlot)) AudioManager.Play(Sfx.Buy);
             selectedSlot = dieSlot;
         }
@@ -235,6 +262,7 @@ public class MarketUI : MonoBehaviour
         pendingEnchantment = -1;
         pendingSwap = -1;
         pendingDieEnchantment = -1;
+        pendingBench = -1;
     }
 
     // Called by the Next Battle button.
@@ -373,7 +401,7 @@ public class MarketUI : MonoBehaviour
             slot.tooltip.text = GameText.FaceTooltip(dieFace) + "\n<color=#9AA5B1>" + DieLayout.Describe(run.dieFaces, i) + "</color>";
             // An enchantment can only go on a face whose Magic action is still empty. With nothing being bought,
             // a click picks the face to move, and the next click swaps.
-            slot.slotButton.interactable = pendingOffer >= 0 || (pendingEnchantment >= 0 && market.CanEnchant(i)) || pendingSwap >= 0 || !Choosing;
+            slot.slotButton.interactable = pendingOffer >= 0 || (pendingEnchantment >= 0 && market.CanEnchant(i)) || pendingSwap >= 0 || pendingBench >= 0 || !Choosing;
 
             if(slot.tile != null) slot.slotButton.image.color = i == selectedSlot || i == pendingSwap ? new Color32(0xE2, 0xB2, 0x3C, 0xFF) : new Color(0f, 0f, 0f, 0f);
             // The upgrade button only shows where this face can be upgraded (Normal: Common/Rare, Grand: Epic).
@@ -385,6 +413,8 @@ public class MarketUI : MonoBehaviour
                 slot.upgradeButton.interactable = !Choosing && market.CanUpgrade(i);
             }
         }
+
+        DrawBench();
 
         // Equipment slots are clickable only while choosing which item to replace.
         // One chip per item, copied as items pile up; the description is on hover.
@@ -423,6 +453,32 @@ public class MarketUI : MonoBehaviour
         DrawSelectedFace();
     }
 
+    // The bench's two slots: a benched face as its tile (rules on hover) with its sell button, or an empty slot.
+    private void DrawBench(){
+        if(benchSlots == null) return;
+        for(int i = 0; i < benchSlots.Length; i++){
+            DieSlotUI slot = benchSlots[i];
+            bool filled = i < run.bench.Count;
+            slot.tile.gameObject.SetActive(filled);
+            slot.upgradeButton.gameObject.SetActive(filled);
+            if(!filled){
+                slot.faceText.text = "<color=#7F8C8D>Empty</color>";
+                slot.tooltip.text = "An empty bench slot. A face you replace at the Market waits here.";
+                slot.slotButton.interactable = false;
+                slot.slotButton.image.color = new Color(0f, 0f, 0f, 0f);
+                continue;
+            }
+            DieFace face = run.bench[i];
+            slot.tile.Set(face, face.value, "");
+            slot.faceText.text = i == pendingBench ? "<color=#E2B23C>SWAPPING</color>" : "";
+            slot.tooltip.text = GameText.FaceTooltip(face) + "\n<color=#9AA5B1>On the bench: click it, then a face on your die, to swap them.</color>";
+            slot.slotButton.interactable = !ChoosingDieSlot && pendingDieEnchantment < 0;
+            slot.slotButton.image.color = i == pendingBench ? new Color32(0xE2, 0xB2, 0x3C, 0xFF) : new Color(0f, 0f, 0f, 0f);
+            slot.upgradeButtonText.text = "Sell " + GameText.Icon("Gold") + market.GetSellPrice(face);
+            slot.upgradeButton.interactable = !Choosing;
+        }
+    }
+
     // The selected face: its tile, its place, its rules at its current value, and the upgrade and move buttons.
     private void DrawSelectedFace(){
         if(!HasSelectedPanel) return;
@@ -452,7 +508,9 @@ public class MarketUI : MonoBehaviour
     }
 
     private string Hint(){
-        if(pendingOffer >= 0) return "Choose a face to replace with " + market.offers[pendingOffer].face.faceName + " (its enchantment is lost)";
+        if(pendingOffer >= 0) return "Choose a face to replace with " + market.offers[pendingOffer].face.faceName + ": the replaced face goes to your bench"
+            + (run.bench.Count >= Market.BenchSlots ? " (the bench is full: " + run.bench[0].DisplayName + " will be sold)" : "");
+        if(pendingBench >= 0) return "Choose a face on your die to swap with " + run.bench[pendingBench].DisplayName;
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingDieEnchantment >= 0) return "Your die has 2 enchantments. Choose one to replace with " + market.dieEnchantmentOffers[pendingDieEnchantment].enchantment.enchantmentName;
         if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click";

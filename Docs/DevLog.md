@@ -3905,3 +3905,17 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - A new Pitch Pot emblem isn't needed (a pot of pitch still fits a hit that sets fire).
 - After the map: Bleed (28% with 3 rerolls) and Ritual + Poison, the strongest.
 
+## Day 119 - The Bench
+
+### Accomplished
+- **The bench** (the user's idea: replaced faces shouldn't be lost; 2 slots, free swaps, both the user's choices): `RunData.bench`, `Market.Buy` sends the replaced face there with its upgrades and enchantment, `SwapWithBench`, `SellBench` (a quarter of the rarity's price). A full bench sells its oldest face; the hint warns before the click.
+- **In the Market:** two bench slots under a BENCH label at the bottom right of the die net (copies of a die slot at 80%, their upgrade button turned into Sell). Click a benched face, then a die face, to swap; while a die face is being moved, clicking a benched face swaps at once.
+- Tested on `Market` without a scene (an upgraded Sword kept its value on the bench, the oldest face sold for 2 gold when it overflowed, swap and sell) and in Play Mode (three buys, the bench shown with Sell buttons, a swap).
+
+### Findings
+- Bots don't use the bench; selling their overflow changed nothing measurable.
+- Playing the Market scene directly gives a 5-face die (no starting face), and the selected face panel's "Opposite" line then reads a sixth face that isn't there. Never happens in a run.
+
+### Next Steps
+- The content pack: items and enchantments for Retiarius, Provocator and Beastmaster, then more creative general ones (Day 119's list).
+
