@@ -172,7 +172,7 @@ public class BattleManager : MonoBehaviour
                 if(head.IsDead && head.releasedMount && head.mountIndex >= 0 && renderer.sprite == head.sprite) continue;
                 int i = Mathf.Max(0, head.mountIndex);
                 HeadMount mount = mounts.Count > 0 ? mounts[Mathf.Clamp(i, 0, mounts.Count - 1)] : new HeadMount{ point = new Vector2(0.2f, 0.7f) };
-                Vector3 bodyBottomLeft = bodyTransform.position - new Vector3(bodySize.x / 2f, 0f, 0f);
+                Vector3 bodyBottomLeft = BodyRest(body) - new Vector3(bodySize.x / 2f, 0f, 0f);
                 Vector3 neck = bodyBottomLeft + new Vector3(mount.point.x * bodySize.x, mount.point.y * bodySize.y, 0f);
                 float scale = FullScale(head) * boss.definition.mountedHeadScale * bodyShrink;
                 renderer.sprite = head.sprite;
@@ -195,6 +195,11 @@ public class BattleManager : MonoBehaviour
     private readonly Dictionary<BattleEnemy, int> bodyNecks = new Dictionary<BattleEnemy, int>();
     private readonly HashSet<BattleEnemy> flashingHeads = new HashSet<BattleEnemy>();
     private static Sprite headBox;
+
+    private static Vector3 BodyRest(BattleEnemy body){
+        HitReaction reaction = body.entity.GetComponent<HitReaction>();
+        return reaction != null ? reaction.Rest : body.entity.transform.position;
+    }
 
     public static bool IsDrawnHead(BattleEnemy enemy){
         BossBrain boss = enemy != null && enemy.mountedOn != null ? enemy.mountedOn.brain as BossBrain : null;
@@ -232,8 +237,10 @@ public class BattleManager : MonoBehaviour
         }
         Transform bodyTransform = body.entity.transform;
         Vector3 bodySize = Vector3.Scale(body.sprite.bounds.size, bodyTransform.localScale);
-        Vector3 bodyBottomLeft = bodyTransform.position - new Vector3(bodySize.x / 2f, 0f, 0f);
         HitReaction bodyReaction = body.entity.GetComponent<HitReaction>();
+        // From where the body stands, not where a lunge or a shake has it this frame: heads grow back at the start of
+        // its turn, right as it lunges, and their boxes (and cards) used to stay where the lunge had taken it.
+        Vector3 bodyBottomLeft = BodyRest(body) - new Vector3(bodySize.x / 2f, 0f, 0f);
         foreach(BattleEnemy head in heads){
             SpriteRenderer renderer = head.entity.GetComponent<SpriteRenderer>();
             if(renderer == null) continue;

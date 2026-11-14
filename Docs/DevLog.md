@@ -4031,3 +4031,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Windows build `0.2-playtest`** (`Builds/Playtest/GladiatorDiceGame-0.2-playtest.zip`, 46.5 MB, without the Burst debug folder): the map, the beast's HP, the new content. A headless start loaded with no errors.
 - The How to Play page still describes the old run of 11 battles; it needs the map.
 
+### Day 124 (later) - The Hydra's HP bars after a regrowth
+- **The user's bug:** after heads were cut and grew back, their HP bars stood in the wrong place. Heads grow back at the start of the body's turn, right as it lunges at the player (`HitReaction`), and `PlaceDrawnHeads` put the head boxes (which the cards follow) from the body's position that frame; they stayed there until the next HP change. Now they are placed from the body's resting place (`HitReaction.Rest`), also for mounted heads. Tested: heads placed with the body pushed mid-lunge keep their places.
+

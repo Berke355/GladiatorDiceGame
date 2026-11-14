@@ -45,6 +45,10 @@ public class HitReaction : MonoBehaviour
         entity.HitDealt -= OnHitDealt;
     }
 
+    // Where the sprite stands when nothing plays, also while a lunge or shake moves it (things placed on the picture,
+    // like the Hydra's heads, must use this, or they keep the place it had mid-lunge).
+    public Vector3 Rest => Playing ? rest : transform.position;
+
     // Where the sprite stands when nothing plays (set by BattleManager when it arranges the row).
     public void SetRest(Vector3 position){
         rest = position;
