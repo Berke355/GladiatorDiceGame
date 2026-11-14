@@ -144,6 +144,14 @@ For this sheet, change "exactly 12 icons in a grid of 4 columns and 3 rows" in t
 3. Reversal: a round shield with a curved arrow bouncing off it
 ```
 
+## Sheet 5: Exposed (1 icon)
+
+For this one, change "exactly 12 icons in a grid of 4 columns and 3 rows" in the style block to "exactly 1 icon". Until it exists, the status chip shows the word.
+
+```
+1. Exposed: a round bronze shield falling out of an open hand
+```
+
 ## Sheet 4: Hound (1 icon)
 
 For this one, change "exactly 12 icons in a grid of 4 columns and 3 rows" in the style block to "exactly 1 icon".

@@ -43,6 +43,10 @@ public class EffectContext
     // A face of the target's die chosen in advance (the target shown in a boss intent), so the effect hits it
     // even if the die's values changed since. Null: the effect picks its own target when it runs.
     public DieFace targetFace;
+    // The source's living allies, itself excluded (enemies' pack and support intents). Null or empty: no allies.
+    public List<Entity> allies;
+    // The target's rerolls for this battle, for effects that take them (Kick Up Dust). Null if the target has none.
+    public RerollPool targetRerolls;
     // The brain of the target enemy, for effects that read or change its intent (Bait, Provoke). Null for enemies' effects.
     public IEnemyBrain targetBrain;
     // Provocator: how many times Riposte, Vigil or Reversal struck back this battle (Grudge), and how many hits the

@@ -22,15 +22,17 @@ MonoBehaviour:
   - intentName: Shield Wall
     intentType: 1
     effects:
-    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    - {fileID: 11400000, guid: f51b9211736dcd14f8b62d2707f12b22, type: 2}
     value: 2
     weight: 2
+    requiresTargetStatus: 0
   - intentName: Strike
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 2
     weight: 2
+    requiresTargetStatus: 0
   traits:
   - traitName: Curl Up
     description: 'Each time a hit gets through with no block: gain 2 block at the
@@ -46,4 +48,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     maxPerBattle: 0
+  packTactics: 0
+  packTacticsTurns: 0
   secondWindIntents: []

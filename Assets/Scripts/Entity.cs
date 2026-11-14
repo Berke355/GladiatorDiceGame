@@ -32,7 +32,9 @@ public enum StatusType {
     Reversal,
     // Beastmaster (see GDD "Beastmaster"): the owner's beast. At the end of the owner's turn it hits the target once
     // for the stacks. Permanent for the battle; 0 means no beast.
-    Hound
+    Hound,
+    // A debuff (stacks are turns, -1 at the owner's turn end): its owner gains no Block (Fortify still works).
+    Exposed
 }
 
 public class Entity : MonoBehaviour
@@ -87,6 +89,14 @@ public class Entity : MonoBehaviour
             burnAddedSinceLastTick = true;
         }
 
+        OnHealthChanged?.Invoke();
+    }
+
+    // Takes stacks away without counting as an application (a cleanse): Burn removed this way still decays on time.
+    public void ReduceStatus(StatusType type, int amount) {
+        int stacks = GetStatus(type);
+        if (stacks <= 0 || amount <= 0) return;
+        activeStatuses[type] = Math.Max(0, stacks - amount);
         OnHealthChanged?.Invoke();
     }
 
@@ -199,6 +209,7 @@ public class Entity : MonoBehaviour
     }
 
     public void GainBlock(int amount){
+        if(GetStatus(StatusType.Exposed) > 0) amount = 0;
         currentBlock += amount;
         OnHealthChanged?.Invoke();
     }
@@ -251,7 +262,7 @@ public class Entity : MonoBehaviour
         }
 
         // Debuffs count down their turns.
-        foreach (StatusType debuff in new[]{ StatusType.Vulnerable, StatusType.Weak, StatusType.Entangled }) {
+        foreach (StatusType debuff in new[]{ StatusType.Vulnerable, StatusType.Weak, StatusType.Entangled, StatusType.Exposed }) {
             if (GetStatus(debuff) > 0) {
                 activeStatuses[debuff] -= 1;
                 OnHealthChanged?.Invoke();

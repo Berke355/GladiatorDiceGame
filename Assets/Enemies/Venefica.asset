@@ -25,23 +25,30 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4e09dfd69596317439eded8d7ed69021, type: 2}
     value: 2
     weight: 2
+    requiresTargetStatus: 0
   - intentName: Strike
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 2
     weight: 1
-  - intentName: Smoke
-    intentType: 1
+    requiresTargetStatus: 0
+  - intentName: Antidote
+    intentType: 2
     effects:
+    - {fileID: 11400000, guid: 483626dbd8bd9224b9ca2037eb908d93, type: 2}
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 2
     weight: 1
+    requiresTargetStatus: 0
   - intentName: Hamstring
     intentType: 2
     effects:
     - {fileID: 11400000, guid: e2592283818478b47afaaeeceff6ae1f, type: 2}
     value: 2
     weight: 1
+    requiresTargetStatus: 0
   traits: []
+  packTactics: 0
+  packTacticsTurns: 0
   secondWindIntents: []

@@ -584,6 +584,7 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 | **Riposte** | Self | — | Cleared at the start of its owner's turn | Every attacker that hits its owner takes its stacks as damage (Provocator) |
 | **Vigil** | Self | — | Spent by the first hit its owner takes | Like Riposte, but it waits for the first hit, across turns |
 | **Reversal** | Self | — | Cleared at the start of its owner's turn | A hit Block and Fortify absorb completely is dealt back to the attacker in full |
+| **Exposed** | Target | — | −1 per tick (stacks are turns) | Its owner gains no Block (Fortify still works); Dimachaerus's Crossed Blades |
 | **Hound** | Self | Its beast bites the target once for its stacks, unless the owner only defended (or passed) this turn | Lasts the whole battle | The Beastmaster's beast; a bite is the owner's own hit |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.
@@ -1009,36 +1010,44 @@ Enemies are real Roman gladiator types and arena beasts. Weights are shown as (�
 | Enemy | HP | Intents | Note |
 |---|---|---|---|
 | **Tiro** (recruit) | 11 | Slash 2 (×3), Guard: block 2 (×2) | The simplest enemy, teaches the basics |
-| **Murmillo** (heavy shield gladiator) | 14 | Shield Wall: block 2 (×2), Strike 2 (×2) | A defensive enemy whose block has to be broken through |
+| **Murmillo** (heavy shield gladiator) | 14 | Shield Wall: block 2 to itself and every ally (×2), Strike 2 (×2) | A defensive enemy whose block has to be broken through; in a group it shields the others |
 | **Thraex** (curved dagger) | 13 | Sica Cut 1 (×2), Envenom: Poison 1 (×2), Guard: block 1 (×1) | Small Poison: the fight costs more HP the longer it lasts |
 | **Lampadarius** (torchbearer) | 13 | Torch Swing: Burn 2 (×2), Strike 2 (×2), Guard: block 1 (×1), Ignite: ignite Burn (×1, only while you burn) | Burn piles up on you: end the fight before it is ignited |
-| **Arena Wolf** | 9 | Bite 2 (×3), Howl: block 2 (×1) | Low HP but hits hard; finish it fast |
+| **Arena Wolf** | 9 | Bite 2 (×3), Howl: it and every ally gain 1 Rage (×1) | Low HP but hits hard; finish it fast, and a pack grows stronger with every howl |
 
 **Medium (battles 5–7), each with one danger mechanic:**
 
 | Enemy | HP | Intents | Danger |
 |---|---|---|---|
 | **Retiarius** (net and trident) | 20 | Jab 2 (×2), Net: block 3 (×1), Trident Thrust 6 (×1) | **Telegraphed spike:** ignore the intent and take 6 |
-| **Dimachaerus** (two swords) | 19 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield |
+| **Dimachaerus** (two swords) | 19 | Twin Strike: 2 × 2 damage (×2), Parry: block 2 (×1), Crossed Blades: you are Exposed for your next turn (no Block) (×1) | **Multi-hit:** each hit wears down block separately, but each hit also triggers FireShield; Crossed Blades leaves the next Twin Strike unblocked |
 | **Arena Lion** | 22 | Maul 1 (×2), Roar: gain 1 Rage (×1), Feast: 1 damage and heal by the damage (×1) | **Builds Rage:** harmless at first, deadly if the fight drags on |
-| **Venefica** (poisoner) | 19 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Smoke: block 2 (×1) | **Poisons the player:** repeated darts keep Poison ticking, so long fights cost HP |
+| **Venefica** (poisoner) | 19 | Poison Dart: Poison 2 (×2), Strike 2 (×1), Antidote: removes half of its Poison, Burn and Bleed, block 2 (×1) | **Poisons the player:** repeated darts keep Poison ticking, so long fights cost HP; Antidote halves a status build's work |
 | **Secutor** (pursuer) | 22 | Brace: Fortify 1 (×2), Shield Slam 4 (×2) | **Stacks Fortify:** its protection slowly builds up, so deal damage early |
 
 **Strong (battles 9–10), the build check:**
 
 | Enemy | HP | Intents | Clock |
 |---|---|---|---|
-| **Essedarius** (chariot fighter) | 48 | Run Down: 7 damage if you act with a face below 5 (×2), Lash: 4 damage if you choose Attack (×1), Wheel Spikes 3 (×1), Rein In: block 3 (×1) | **Threats and Momentum:** its threats push you to reroll, and every reroll gives it Rage |
+| **Essedarius** (chariot fighter) | 48 | Run Down: 7 damage if you act with a face below 5 (×2), Lash: 4 damage if you choose Attack (×1), Wheel Spikes 3 (×1), Kick Up Dust: you lose 1 reroll for the battle (×1) | **Threats and Momentum:** its threats push you to reroll, and every reroll gives it Rage |
 | **War Elephant** | 64 | Stomp 7 (×1), Trunk Swat 2 (×2), Thick Hide: Fortify 1 (×1) | **Huge HP pool** with a telegraphed crushing blow, a big target for combos |
 | **Hoplomachus Champion** | 40 | Spear Thrust 3 (×2), Shield Rush: 2 damage and block 2 (×1), Battle Cry: gain 1 Rage (×1) | **Rage:** each Battle Cry permanently raises all its damage |
-| **Bestiarius** (beast tamer) | 46 | Whip 2 (×2), Unleash 6 (×1), Feed the Beast: heal 2 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing |
+| **Bestiarius** (beast tamer) | 46 | Whip 2 (×2), Unleash 6 (×1), Feed the Beast: it and every ally heal 3 (×1) | **Healing plus spikes:** a weak build can't out-damage its healing, and in the Beast Master group it heals its beast |
 
 #### New Mechanics for Enemies
 
 - **Multi-hit damage** (Dimachaerus): one effect that deals damage N times. Player faces can use it later too.
 - **Escalation through Rage** (Essedarius, Hoplomachus, Arena Lion): rising damage uses the same visible Rage status as the player. An enemy can gain Rage from an intent (Battle Cry, Roar), which the player sees coming. Rage every turn (`escalationPerTurn`) is still supported but no enemy uses it: on Essedarius it became a wall that slow builds could not get past (Essedarius alone caused about half of the Bleed, Rage and Shield deaths), so it was replaced with Battle Cry. Its intents show the boosted numbers, and the Rage chip's tooltip explains why.
 
-- **Utility intents (future content, the user's idea on DevLog Day 112):** most non-attack intents today are plain blocks (Guard, Shield Wall), which the player never has to answer. Intents that change something make reading them, and Provoke, matter. Today: Howl, Net, Poison Dart, Hamstring, Feed the Beast, Envenom, Torch Swing. Ideas: rallying the pack (Rage or block to the other enemies), striking the die (a face unusable for a turn, a lighter Medusa, or a face's value lowered), healing or Fortify (kept small), stealing a reroll or some gold.
+- **Utility intents (the user's idea on DevLog Day 112, implemented on Day 115):** most non-attack intents were plain blocks, which the player never has to answer. Six enemies got one that changes something, each touching another kind of build, and all but Shield Wall are Magic intents, so they are what Provoke is for:
+  - **Howl** (Arena Wolf): it and every ally gain 1 Rage: a pack grows stronger, kill it before it howls.
+  - **Shield Wall** (Murmillo): block for itself and every ally: in a group, the target order matters.
+  - **Crossed Blades** (Dimachaerus): you are **Exposed** for your next turn (no Block; Fortify still works), so its next Twin Strike lands. Turning a face to stone stays Medusa's (the user's call).
+  - **Kick Up Dust** (Essedarius): you lose 1 reroll for the battle, on the enemy that already pushes you to reroll.
+  - **Antidote** (Venefica): removes half of its Poison, Burn and Bleed and blocks 2: a status build has to cash in before it.
+  - **Feed the Beast** (Bestiarius): it and every ally heal 3: a healer to kill first.
+  - Measured against the old intents in the same runs (300 per bot): Opportunist 2% → 2%, Bleed 21% → 20%, Hound 23% → 20%, Poison 17% → 15%, Rage 11% → 7%, Fortune 2% → 4%, Shield 2% → 2%: a little harder, nothing broken.
+  - Still ideas: striking the die without stone (a face's value lowered), stealing gold.
 
 #### Enemy Traits
 

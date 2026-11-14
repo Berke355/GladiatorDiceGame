@@ -120,8 +120,20 @@ public class EnemyBrain : IEnemyBrain
             value = currentIntent.value,
             targetLastFace = flow != null ? flow.LastActedFace : null,
             targetLastValue = flow != null ? flow.LastActedValue : 0,
-            targetLastAction = flow != null ? flow.LastAction : ActionType.Attack
+            targetLastAction = flow != null ? flow.LastAction : ActionType.Attack,
+            allies = Allies(),
+            targetRerolls = flow != null ? flow.rerolls : null
         };
+    }
+
+    // The other living enemies of this battle.
+    private List<Entity> Allies(){
+        List<Entity> allies = new List<Entity>();
+        if(flow == null) return allies;
+        foreach(BattleEnemy enemy in flow.enemies){
+            if(!enemy.IsDead && enemy.entity != self) allies.Add(enemy.entity);
+        }
+        return allies;
     }
 
     // Threat intents (PunishChoiceEffectSO) only hit if the player's choice sets them off, so they don't count here.

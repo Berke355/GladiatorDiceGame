@@ -659,6 +659,8 @@ public static class RunSimulator
             else realAction = true;
         }
         if(!realAction && change != null) return change.Value;
+        // Exposed: Defense gains no Block this turn, so a face that can attack does.
+        if(player.GetStatus(StatusType.Exposed) > 0 && flow.CanAct(face, ActionType.Attack)) return ActionType.Attack;
         if(PlayEnchantments && face.enchantment != null && PlaysEnchantment(face, die, player, flow, bigHit, rage)) return ActionType.Magic;
 
         if(definition.faceName == "Shield"){

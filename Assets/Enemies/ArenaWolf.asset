@@ -27,10 +27,10 @@ MonoBehaviour:
     weight: 3
     requiresTargetStatus: 0
   - intentName: Howl
-    intentType: 1
+    intentType: 2
     effects:
-    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-    value: 2
+    - {fileID: 11400000, guid: e9ff60dea511d9944aee03ba5a508a5e, type: 2}
+    value: 1
     weight: 1
     requiresTargetStatus: 0
   traits: []
