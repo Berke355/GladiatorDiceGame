@@ -709,7 +709,9 @@ public static class RunSimulator
             case "Hedge": return bigHit || flow.rerolls.Left >= 2 ? ActionType.Defense : ActionType.Attack;
             // Area Magic faces: spread the status unless a big hit needs blocking.
             case "Wildfire":
-            case "Contagion": return bigHit ? ActionType.Defense : ActionType.Magic;
+            case "Contagion":
+            case "Smoke Pot":
+            case "Hex": return bigHit ? ActionType.Defense : ActionType.Magic;
             // Nets the enemy for this turn's hits and its next attacks, unless a big hit needs blocking.
             case "Tangle": return bigHit ? ActionType.Defense : ActionType.Magic;
             // The beast is permanent for the battle, so grow it early; a big hit still comes first.

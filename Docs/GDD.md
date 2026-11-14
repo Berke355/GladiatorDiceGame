@@ -703,10 +703,13 @@ Burst damage over a short time. Build Burn up, then cash it out.
 
 - **Resource:** Burn on the enemy. It deals no damage on its own and decays by 2 (not on the tick right after it was applied). Ignitions turn it into damage without consuming it; Detonate consumes it.
 - **Identity:** Ignite small and often, or stack it up and detonate? Ember applies Burn and ignites it in one action; Detonate trades all the stacks for one big hit.
+- **Pitch Pot and Smolder** (DevLog Day 114) split Ember's two jobs into safe Commons: Pitch Pot only builds Burn (with a block to fall back on), Smolder blocks and ignites, so the fire keeps burning on a turn spent defending. Burn 3% → 8%.
 
 | Face | Role | Rarity |
 |---|---|---|
 | Ember | Starter | Common |
+| Pitch Pot | Starter (fuel; value 3: Attack: apply Burn equal to my value. Defense: gain block equal to my value) | Common |
+| Smolder | Starter (grows, Burn + Block; value 2: Defense: gain block equal to my value, then ignite Burn) | Common |
 | Detonate | Engine (cash-out) | Rare |
 | Flame Ward | Bridge (Burn + Block) | Rare |
 | Fuel | Payoff (Magic: apply 2 Burn, multiply it, then consume it all for that much damage) | Epic |
@@ -724,9 +727,13 @@ Slow and inevitable. Strongest in long fights, which makes it the boss-fighting 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
 | **Venom** | Starter | Common | 2 | Attack: apply Poison equal to my value. Defense: gain block equal to my value. |
+| **Blowgun** | Starter (Poison + Ritual) | Common | 1 | Attack: apply Poison equal to my value, then 1 more Poison (two applications, so Ritual counts twice). |
+| **Smoke Pot** | Starter (area) | Common | 2 | Magic: apply Poison equal to my value to every enemy. Defense: gain block equal to my value. |
 | **Toxic Blade** | Bridge (Poison + Physical) | Rare | 2 | Attack: deal damage and apply Poison equal to my value. |
 | **Miasma** | Bridge (Poison + Block) | Rare | 2 | Defense: gain block and apply Poison equal to my value. |
 | **Plague** | Payoff | Epic | 2 | Magic: apply Poison equal to my value for each Poison face on your die. Attack: apply Poison equal to my value. |
+
+**Three Commons, not one** (DevLog Day 114): with Venom alone a Poison die rarely came together (7%). Blowgun and Smoke Pot brought it back to 22%, near the 28% it had when halving came in. Blowgun first applied its value twice, so every cheap upgrade added 2 Poison (27% with Smoke Pot); value + 1 keeps the double Ritual without the double upgrade.
 
 Plague introduces a new Epic pattern: **die-composition scaling** ("for each X face on your die"). It directly rewards building the die around one archetype, and alone it still applies its value (it counts itself).
 
@@ -779,10 +786,13 @@ The glue between status builds. Ritual makes every status you apply stronger.
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
 | **Incantation** | Starter | Common | 1 | Magic: gain Ritual equal to my value. Defense: gain block equal to my value. |
+| **Offering** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus your Ritual. |
+| **Hex** | Starter (Ritual + Burn + Poison) | Common | 1 | Magic: apply Burn and Poison equal to my value (two applications). Defense: gain block equal to my value. |
 | **Witch's Curse** | Engine | Rare | 2 | Magic: apply Bleed and Poison equal to my value (two applications, so Ritual counts twice). |
 | **Blood Rite** | Bridge (Ritual + Physical) | Rare | 3 | Attack: deal damage and apply Bleed equal to my value. |
 | **Dark Communion** | Payoff | Epic | 2 | Magic: apply Poison equal to my value, then gain Ritual equal to my value for each status type (Burn, Poison, Bleed) on the enemy, at least my value. |
 
+- **Ritual needed a face that hits** (DevLog Day 114): Ritual does nothing on its own, and with Incantation as its only Common the Ritual bot cleared 1%. Offering turns the Ritual it gathered into damage that grows all fight, and Hex is a Common that Ritual counts twice. Ritual 1% → 10%.
 - **Dark Communion rewards variety:** the more different statuses the enemy carries, the more Ritual it gives. It is the "reward variety" payoff noted under Hybrid Builds.
 
 ### Bleed (implemented)
@@ -912,7 +922,7 @@ The beast tamer: a war dog fights beside you, and your die commands it (summon, 
 
 ### Future Archetypes
 
-Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius, Provocator and Beastmaster (above); Commons for Burn, Poison and Ritual in between (each has only one, and 70% of a Normal Market's offers are Common).
+Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111: Retiarius, Provocator and Beastmaster (above), and two more Commons each for Burn, Poison and Ritual (done on Day 114: each had only one, and 70% of a Normal Market's offers are Common).
 
 - **Lifesteal stays a single face (Bite), not an archetype** (the user's worry): healing back what you deal every battle would undo HP carrying over between battles, which is where a run's tension lives. If it ever comes back, it heals a capped amount per battle.
 

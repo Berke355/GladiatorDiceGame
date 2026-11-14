@@ -170,9 +170,9 @@ The family is the face's first tag other than Physical; Lifesteal counts as Blee
 | Family | Ground | Faces |
 |---|---|---|
 | Bleed | dark red | Serrated Blade, Lacerate, Open Wound, Exsanguinate, Bloodscent, Bite |
-| Burn | orange | Ember, Fuel, Wildfire, Detonate, Cauterize, Flame Ward |
-| Poison | poison green | Venom, Toxic Blade, Miasma, Contagion, Plague |
-| Ritual | purple | Incantation, Dark Communion, Blood Rite, Witch's Curse |
+| Burn | orange | Ember, Fuel, Wildfire, Detonate, Cauterize, Flame Ward, Pitch Pot, Smolder |
+| Poison | poison green | Venom, Toxic Blade, Miasma, Contagion, Plague, Blowgun, Smoke Pot |
+| Ritual | purple | Incantation, Dark Communion, Blood Rite, Witch's Curse, Offering, Hex |
 | Rage | crimson brown | Fury, Bloodrage, Unleash, Frenzy, Twin Axes, Cleave, Rally, Battle Hymn, Iron Rage, Crowd's Favor |
 | Block | steel blue | Shield Burst, Spiked Shield, Shield Bash |
 | Hammer | iron grey | War Hammer, Maul, Anvil, Earthshaker, Follow Through, Steady Hand |
@@ -340,6 +340,19 @@ Only the first six cells are used. Save them as `Assets/Art/Faces/Whistle.png`, 
 4. Feed: a big meat bone with a bite taken out of it
 5. Bloodhound: a dog's nose sniffing a single red drop
 6. Sic 'Em: a snarling dog's head with bared fangs, side view
+```
+
+## Sheet 10: Burn, Poison and Ritual Commons (6 emblems)
+
+Only the first six cells are used. Save them as `Assets/Art/Faces/PitchPot.png`, `Smolder.png`, `Blowgun.png`, `SmokePot.png`, `Offering.png` and `Hex.png`.
+
+```
+1. Pitch Pot: a small clay pot of black pitch with a burning rag stuffed in its mouth
+2. Smolder: a pile of glowing red embers with a thin curl of smoke
+3. Blowgun: a long thin reed blowgun with a green-tipped dart beside it
+4. Smoke Pot: a round clay pot pouring thick green smoke from holes in its lid
+5. Offering: a bronze ritual dagger lying across a small stone altar
+6. Hex: a purple wax tablet carved with a glowing curse sign
 ```
 
 # Items, die enchantments and face enchantments
