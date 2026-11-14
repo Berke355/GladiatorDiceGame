@@ -497,7 +497,7 @@ public static class RunSimulator
         };
 
         // The same turn steps as the battle states (BattleFlow), so equipment triggers fire at the same points.
-        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.rerollsPerBattle, factory, run.dieEnchantments);
+        BattleFlow flow = new BattleFlow(player, enemies, run.dieFaces, run.equipment, run.RerollsThisBattle, factory, run.dieEnchantments);
         EnemyTier statsTier = boss != null ? EnemyTier.Boss : encounter.tier;
         FightStats stats = Stats != null && statsTier == Stats.statsTier ? Stats : null;
         turns = 0;

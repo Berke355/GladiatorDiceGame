@@ -175,6 +175,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e65ccb53a91463842bc0d80dbcc1b4b4, type: 2}
   - {fileID: 11400000, guid: 319da483dea84df4a971509fd4afdc5b, type: 2}
   - {fileID: 11400000, guid: a8da8008e27a32748bcf652327195864, type: 2}
+  - {fileID: 11400000, guid: a8010fdfe6b2f0f4489459add67a8cb5, type: 2}
   bossRewardChoices: 3
   equipmentPerMarket: 1
   equipmentPerGrandMarket: 2

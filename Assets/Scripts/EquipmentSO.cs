@@ -75,6 +75,8 @@ public class EquipmentSO : ScriptableObject
     public int enchantedFaceBonus;
     // Rerolls per Market visit that cost nothing and don't raise the price (Haggler's Scale), read by Market.
     public int freeMarketRerolls;
+    // Rerolls at the start of every battle for each face on the bench (Reserve Roster), read by RunData.RerollsThisBattle.
+    public int rerollsPerBenchedFace;
 
     public static int TotalGoldPerVictory(List<EquipmentSO> equipment){
         int gold = 0;

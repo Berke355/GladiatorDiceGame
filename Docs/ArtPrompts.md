@@ -446,6 +446,14 @@ In the style block, write "exactly 8 emblems in a grid of 4 columns and 2 rows" 
 8. (spare) a coiled leather whip
 ```
 
+### Reserve Roster (1 item)
+
+In the style block, write "exactly 1 emblem" instead of 12 in 4 by 3. Save it as `Assets/Art/Items/ReserveRoster.png`.
+
+```
+1. Reserve Roster: a rolled-up wax tablet list with a short row of names and a bronze stylus across it
+```
+
 ## Die enchantment style block
 
 ```

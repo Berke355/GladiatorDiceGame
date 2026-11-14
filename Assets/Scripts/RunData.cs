@@ -34,6 +34,15 @@ public class RunData
     public List<DieFace> bench = new List<DieFace>();
     // Rerolls the player gets at the start of every battle (see GDD "Rerolls").
     public int rerollsPerBattle = 3;
+
+    // The rerolls a battle starts with: the base, plus items that count the bench (Reserve Roster).
+    public int RerollsThisBattle{
+        get{
+            int perBenched = 0;
+            foreach(EquipmentSO item in equipment) if(item != null) perBenched += item.rerollsPerBenchedFace;
+            return rerollsPerBattle + perBenched * bench.Count;
+        }
+    }
     // Set by a boss victory: the next Market starts with a free equipment pick.
     public bool bossRewardPending;
     // The next battle, picked ahead (when the Market opens) so the Market can show it: a boss or an encounter.

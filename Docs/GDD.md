@@ -425,6 +425,7 @@ Market services:
 - **Buy straight onto the bench:** a bought face can go to an empty bench slot instead of replacing a die face.
 - **Sell** a benched face for a quarter of its rarity's price (Common 2, Rare 6, Epic 11 gold), so the bench never becomes a shop.
 - **Why two:** enough for a plan B (a Burn face kept for the Hydra, a defensive face for the War Elephant), not enough for a second die. Replacing a face still matters, but a wrong buy is no longer final. Later, the Mad Scientist (Roadmap) can merge a benched face.
+- **Reserve Roster** (Rare item, Fortune): at the start of each battle, gain 1 reroll for each face on your bench (`EquipmentSO.rerollsPerBenchedFace`, read by `RunData.RerollsThisBattle`). The user's idea of an item that counts the bench; it pays for a benched face (and its Blank) with the rerolls that skip a Blank, at most +2.
 - Bots don't use the bench; their replaced faces are sold when it overflows, which changed nothing measurable (Opportunist 5% → 6%, Burn 12% → 12%, Bleed 26% → 25%).
 
 ### Enchanting Table
