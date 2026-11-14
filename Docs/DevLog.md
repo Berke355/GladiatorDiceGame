@@ -3953,3 +3953,19 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Day 121 (later) - Hoplomachus Champion faced away
 - The user saw an enemy fighting with its back to the player: the Hoplomachus Champion's sprite faced right (spear point and face), the only one of 18. Mirrored the PNG; its pivot is bottom-center, so it stands where it did.
 
+## Day 122 - The Hydra in One Piece
+
+### Accomplished
+- **Seven whole pictures of the Hydra** (the user's idea: separate heads still looked bad): the original 2-headed form, 1 head + 1 stump, 2 stumps, the 3-headed form, and 2, 1 and 0 heads with stumps on three necks. The user's rule: the first fight starts from a Hydra with no stump, and a 2-headed Hydra after the regrowth is a different picture from the first.
+- **Made from Gemini edits of one picture.** Gemini's third edit drew a ghost copy, and it couldn't cut the middle head of the 3-headed form in two tries, so I put those pictures together from the aligned ones (measured: no shift at all between them): the lower stump from one, the upper stump from another, the middle stump as the lower one scaled. All seven cut with one crop box, one 11-pixel grid and one palette (236 x 137).
+- **In battle** (`BossSO.headStates`, `PlaceDrawnHeads`, `SpriteCrossfade`): the picture follows the necks and living heads with a crossfade; the heads are invisible boxes over their drawn heads, so cards and targeting work as before; a hit on a head flashes the whole Hydra; plates are pushed apart when heads are close; dead heads hide their cards; the body's intent sits on its back (`cardTop` 0.58).
+- Tested in Play Mode: the start (2 heads), a cut (stump, body −5 HP), the regrowth into 3 heads, and cuts down to 1 head on three necks, each with a screenshot.
+
+### Fixed on the way
+- A head spawned while growing back was laid out in the enemy row for a moment, which shrank the Hydra: `SpawnEnemy` now mounts it before announcing it.
+- A spawned head is a copy of the scene's enemy object and carried the body's crossfade picture, drawn as a small Hydra: hidden.
+- The plate row stayed at the height of a cut head: it now counts only living heads.
+
+### Next Steps
+- The user plays the Hydra fight.
+

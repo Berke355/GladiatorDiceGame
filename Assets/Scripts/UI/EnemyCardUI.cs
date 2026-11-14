@@ -62,13 +62,19 @@ public class EnemyCardUI : MonoBehaviour
     // feet: the sprite's bottom center in the parent's space (anchored at its bottom left); spriteHeight: its height;
     // slotWidth: the width the enemy has in the row. The plate and the head stretch to the card's width; a slot
     // narrower than MinWidth shrinks the whole card instead.
-    public void Place(Vector2 feet, float spriteHeight, float slotWidth, bool plateOnTop = false){
+    // plateShift moves the plate and the intent sideways (canvas units), so the plates of heads drawn close together on
+    // one body stand side by side; the card's clickable root stays over its head.
+    public void Place(Vector2 feet, float spriteHeight, float slotWidth, bool plateOnTop = false, float plateShift = 0f){
         SetPlateOnTop(plateOnTop);
         RectTransform rect = (RectTransform)transform;
         float scale = Mathf.Min(1f, slotWidth / MinWidth);
         rect.anchoredPosition = feet;
         rect.localScale = new Vector3(scale, scale, 1f);
         rect.sizeDelta = new Vector2(Mathf.Max(slotWidth, MinWidth), spriteHeight / scale);
+        if(plate != null){
+            plate.anchoredPosition = new Vector2(plateShift / scale, plate.anchoredPosition.y);
+            head.anchoredPosition = new Vector2(plateShift / scale, head.anchoredPosition.y);
+        }
     }
 
     private const float MinWidth = 240f;

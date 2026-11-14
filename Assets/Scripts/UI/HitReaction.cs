@@ -64,6 +64,11 @@ public class HitReaction : MonoBehaviour
         }
     }
 
+    // The flash and shake of a hit, for a hit that landed elsewhere on this picture (a Hydra head drawn on its body).
+    public void Flash(){
+        OnHitTaken(0);
+    }
+
     private void OnHitTaken(int damage){
         if(!Playing){
             rest = transform.position;

@@ -126,13 +126,14 @@ public class BattleFlow
 
     // Adds a normal enemy to the battle (at the back of the turn order) with full HP. It picks its first intent at the
     // next player turn, so it doesn't act on the turn it appears.
-    public BattleEnemy SpawnEnemy(EnemySO data, string name){
+    // mountedOn: the body a head grows from (the Hydra's), set before EnemyAdded so the UI never lays it out in the row.
+    public BattleEnemy SpawnEnemy(EnemySO data, string name, BattleEnemy mountedOn = null){
         if(entityFactory == null) return null;
         Entity entity = entityFactory();
         entity.entityName = name;
         entity.maxHP = data.maxHP;
         entity.currentHP = data.maxHP;
-        BattleEnemy enemy = new BattleEnemy(entity, new EnemyBrain(data, entity, player)){ sprite = data.sprite, spriteHeight = data.spriteHeight };
+        BattleEnemy enemy = new BattleEnemy(entity, new EnemyBrain(data, entity, player)){ sprite = data.sprite, spriteHeight = data.spriteHeight, mountedOn = mountedOn };
         enemies.Add(enemy);
         Setup(enemy);
         EnemyAdded?.Invoke(enemy);

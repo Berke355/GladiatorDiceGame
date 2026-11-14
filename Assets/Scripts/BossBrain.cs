@@ -190,9 +190,8 @@ public class BossBrain : IEnemyBrain, IDisposable
             return true;
         }
         if(flow == null) return false;
-        BattleEnemy head = flow.SpawnEnemy(definition.headEnemy, definition.headEnemy.enemyName + " " + (heads.Count + 1));
+        BattleEnemy head = flow.SpawnEnemy(definition.headEnemy, definition.headEnemy.enemyName + " " + (heads.Count + 1), flow.enemies.Find(enemy => enemy.brain == this));
         if(head == null) return false;
-        head.mountedOn = flow.enemies.Find(enemy => enemy.brain == this);
         heads.Add(head);
         WatchHead(head);
         return true;

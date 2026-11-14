@@ -155,7 +155,11 @@ public class BattleManager : MonoBehaviour
             List<BattleEnemy> heads = flow.enemies.FindAll(enemy => enemy.mountedOn == body);
             if(heads.Count == 0) continue;
             List<HeadMount> mounts = boss.definition.headMounts;
-            AssignMounts(heads, Mathf.Max(1, mounts.Count));
+            AssignMounts(heads, Mathf.Max(1, Mathf.Max(mounts.Count, boss.definition.maxHeads)));
+            if(boss.definition.headStates.Count > 0){
+                PlaceDrawnHeads(body, boss, heads);
+                continue;
+            }
             SpriteRenderer bodyRenderer = body.entity.GetComponent<SpriteRenderer>();
             Transform bodyTransform = body.entity.transform;
             Vector3 bodySize = Vector3.Scale(body.sprite.bounds.size, bodyTransform.localScale);
@@ -182,6 +186,78 @@ public class BattleManager : MonoBehaviour
                 // Narrower than the picture, so the heads' plates fit side by side in their row.
                 head.slotWidth = Mathf.Min(head.sprite.bounds.size.x * scale, MountedHeadSlot);
             }
+        }
+    }
+
+    // The Hydra drawn in one piece (BossSO.headStates): the body shows the picture for its necks and living heads, with a
+    // crossfade when it changes, and each living head becomes an invisible box over its drawn head, which places its card.
+    // A hit on a head flashes the whole picture.
+    private readonly Dictionary<BattleEnemy, int> bodyNecks = new Dictionary<BattleEnemy, int>();
+    private readonly HashSet<BattleEnemy> flashingHeads = new HashSet<BattleEnemy>();
+    private static Sprite headBox;
+
+    public static bool IsDrawnHead(BattleEnemy enemy){
+        BossBrain boss = enemy != null && enemy.mountedOn != null ? enemy.mountedOn.brain as BossBrain : null;
+        return boss != null && boss.definition.headStates.Count > 0;
+    }
+
+    private void PlaceDrawnHeads(BattleEnemy body, BossBrain boss, List<BattleEnemy> heads){
+        List<HeadState> states = boss.definition.headStates;
+        List<BattleEnemy> living = heads.FindAll(head => !head.IsDead);
+        living.Sort((a, b) => a.mountIndex.CompareTo(b.mountIndex));
+        int fewest = int.MaxValue;
+        foreach(HeadState each in states) fewest = Mathf.Min(fewest, each.necks);
+        int necks;
+        if(!bodyNecks.TryGetValue(body, out necks)) necks = fewest;
+        // A neck, once grown, stays (as a stump when its head is cut).
+        necks = Mathf.Max(necks, living.Count);
+        bodyNecks[body] = necks;
+        HeadState state = states[0];
+        int best = int.MaxValue;
+        foreach(HeadState each in states){
+            int distance = Mathf.Abs(each.necks - necks) * 10 + Mathf.Abs(each.heads - living.Count);
+            if(distance < best){ best = distance; state = each; }
+        }
+        SpriteRenderer bodyRenderer = body.entity.GetComponent<SpriteRenderer>();
+        if(bodyRenderer != null && state.sprite != null && bodyRenderer.sprite != state.sprite){
+            SpriteCrossfade fade = body.entity.GetComponent<SpriteCrossfade>();
+            if(fade == null) fade = body.entity.gameObject.AddComponent<SpriteCrossfade>();
+            fade.Swap(state.sprite);
+        }
+        if(headBox == null){
+            Texture2D pixel = new Texture2D(1, 1);
+            pixel.SetPixel(0, 0, Color.white);
+            pixel.Apply();
+            headBox = Sprite.Create(pixel, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
+        }
+        Transform bodyTransform = body.entity.transform;
+        Vector3 bodySize = Vector3.Scale(body.sprite.bounds.size, bodyTransform.localScale);
+        Vector3 bodyBottomLeft = bodyTransform.position - new Vector3(bodySize.x / 2f, 0f, 0f);
+        HitReaction bodyReaction = body.entity.GetComponent<HitReaction>();
+        foreach(BattleEnemy head in heads){
+            SpriteRenderer renderer = head.entity.GetComponent<SpriteRenderer>();
+            if(renderer == null) continue;
+            HitReaction reaction = head.entity.GetComponent<HitReaction>();
+            if(reaction != null) reaction.enabled = false;
+            if(bodyReaction != null && flashingHeads.Add(head)) head.entity.HitTaken += damage => bodyReaction.Flash();
+            renderer.sprite = headBox;
+            renderer.color = new Color(1f, 1f, 1f, 0f);
+            renderer.enabled = !head.IsDead;
+            // A head is a copy of the scene's enemy object, so it may carry the body's crossfade picture: hide it.
+            foreach(SpriteRenderer child in head.entity.GetComponentsInChildren<SpriteRenderer>(true)){
+                if(child != renderer) child.enabled = false;
+            }
+            SpriteCrossfade copiedFade = head.entity.GetComponent<SpriteCrossfade>();
+            if(copiedFade != null) copiedFade.enabled = false;
+            int i = living.IndexOf(head);
+            if(i < 0 || state.headBoxes == null || i >= state.headBoxes.Count) continue;
+            Rect box = state.headBoxes[i];
+            Transform sprite = head.entity.transform;
+            Vector3 center = bodyBottomLeft + new Vector3(box.center.x * bodySize.x, box.center.y * bodySize.y, 0f);
+            sprite.position = new Vector3(center.x, center.y, sprite.position.z);
+            sprite.rotation = Quaternion.identity;
+            sprite.localScale = new Vector3(box.width * bodySize.x, box.height * bodySize.y, 1f);
+            head.slotWidth = MountedHeadSlot;
         }
     }
 
@@ -226,6 +302,8 @@ public class BattleManager : MonoBehaviour
         PlaceMountedHeads();
         foreach(BattleEnemy each in flow.enemies){
             // A HitReaction fades a dying enemy out instead of hiding it at once.
+            // A drawn head is an invisible box: PlaceMountedHeads handles it.
+            if(IsDrawnHead(each)) continue;
             HitReaction reaction = each.entity.GetComponent<HitReaction>();
             if(reaction != null){
                 reaction.SetVisible(!each.IsDead);

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossSO
   bossName: Hydra
   maxHP: 60
-  sprite: {fileID: 21300000, guid: b31964c1315f8ae46b4fbdc886ff3cda, type: 3}
-  spriteHeight: 1.35
+  sprite: {fileID: 21300000, guid: f87cf52660f4e704fb6e67147cac9c41, type: 3}
+  spriteHeight: 1.6
   maxHPLossPerRound: 12
   faces:
   - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}
@@ -35,6 +35,81 @@ MonoBehaviour:
     tilt: 30
   - point: {x: 0.35, y: 0.76}
     tilt: -10
+  headStates:
+  - necks: 2
+    heads: 2
+    sprite: {fileID: 21300000, guid: f87cf52660f4e704fb6e67147cac9c41, type: 3}
+    headBoxes:
+    - serializedVersion: 2
+      x: 0.16525424
+      y: 0.57664233
+      width: 0.19915254
+      height: 0.42335767
+    - serializedVersion: 2
+      x: 0.012711864
+      y: 0.23357664
+      width: 0.13559322
+      height: 0.32846716
+  - necks: 2
+    heads: 1
+    sprite: {fileID: 21300000, guid: 7b9e4b3774189a24f911865775f4cf64, type: 3}
+    headBoxes:
+    - serializedVersion: 2
+      x: 0.012711864
+      y: 0.23357664
+      width: 0.13559322
+      height: 0.32846716
+  - necks: 2
+    heads: 0
+    sprite: {fileID: 21300000, guid: e70d6336cbe8d4544832c05bb7ca3cd9, type: 3}
+    headBoxes: []
+  - necks: 3
+    heads: 3
+    sprite: {fileID: 21300000, guid: 0983768f14c4d3e4fae3787983577d74, type: 3}
+    headBoxes:
+    - serializedVersion: 2
+      x: 0.1779661
+      y: 0.66423357
+      width: 0.18644068
+      height: 0.33576643
+    - serializedVersion: 2
+      x: 0
+      y: 0.50364965
+      width: 0.19915254
+      height: 0.37956205
+    - serializedVersion: 2
+      x: 0.012711864
+      y: 0.23357664
+      width: 0.13559322
+      height: 0.32846716
+  - necks: 3
+    heads: 2
+    sprite: {fileID: 21300000, guid: 5b80f0adbf0bf88438cd4dd397cbfd23, type: 3}
+    headBoxes:
+    - serializedVersion: 2
+      x: 0
+      y: 0.50364965
+      width: 0.19915254
+      height: 0.32846716
+    - serializedVersion: 2
+      x: 0.012711864
+      y: 0.23357664
+      width: 0.13559322
+      height: 0.32846716
+  - necks: 3
+    heads: 1
+    sprite: {fileID: 21300000, guid: 18472d9d79455fa45b49159265453f91, type: 3}
+    headBoxes:
+    - serializedVersion: 2
+      x: 0
+      y: 0.50364965
+      width: 0.19915254
+      height: 0.32846716
+  - necks: 3
+    heads: 0
+    sprite: {fileID: 21300000, guid: 6aa94993ccdc24241b298a28a3e6eafe, type: 3}
+    headBoxes: []
+  cardTop: 0.58
   mountedHeadScale: 0.62
   startingHeads: 2
   maxHeads: 3

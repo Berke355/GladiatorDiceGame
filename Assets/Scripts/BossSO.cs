@@ -32,6 +32,13 @@ public class BossSO : ScriptableObject
     // per head up to maxHeads: point is the neck's bottom on the body sprite (0..1 from its bottom left corner) and tilt
     // the head's lean in degrees. Heads are drawn behind the body, so the stumps cover where the necks join.
     public List<HeadMount> headMounts = new List<HeadMount>();
+    // Whole pictures of the boss for each count of necks and living heads (the Hydra drawn in one piece, GDD "Visual
+    // Style"). When set, the body shows the matching one and the heads' own pictures are hidden: each living head is an
+    // invisible box over its drawn head, which places its card. Empty: heads are separate pictures on headMounts.
+    public List<HeadState> headStates = new List<HeadState>();
+    // How high the boss's own card reaches on its picture (0..1 from the feet): below 1 for a picture whose top is its
+    // heads, so the body's intent sits on its back, under the heads' plates.
+    public float cardTop = 1f;
     // A mounted head's size compared with its own spriteHeight (its neck is as wide as the body's stump cluster).
     public float mountedHeadScale = 0.65f;
     public int startingHeads;
@@ -60,4 +67,16 @@ public struct HeadMount
 {
     public UnityEngine.Vector2 point;
     public float tilt;
+}
+
+// One whole picture of a boss with heads: how many necks it has (the Hydra gains its third after growing three
+// heads), how many of them carry a living head, and where each living head is drawn, as boxes from the picture's
+// bottom left corner (0..1), in the order the living heads take them.
+[Serializable]
+public struct HeadState
+{
+    public int necks;
+    public int heads;
+    public Sprite sprite;
+    public List<Rect> headBoxes;
 }

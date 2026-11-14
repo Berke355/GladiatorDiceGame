@@ -150,6 +150,10 @@ public class UIManager : MonoBehaviour
             Transform sprite = renderer.transform;
             Vector3 feet = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.min.y, 0f)));
             Vector3 top = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.max.y, 0f)));
+            BossBrain bodyBrain = card.Enemy.brain as BossBrain;
+            if(bodyBrain != null && bodyBrain.definition.cardTop < 1f){
+                top = view.WorldToViewportPoint(sprite.TransformPoint(new Vector3(local.center.x, local.min.y + local.size.y * bodyBrain.definition.cardTop, 0f)));
+            }
             if(card.Enemy.mountedOn != null){
                 // A mounted head (tilted, growing from its body): its card spans its picture's box, and all the heads of
                 // one body put their plates on one line over the highest head, so they read as a row.
@@ -159,8 +163,28 @@ public class UIManager : MonoBehaviour
             }
             float worldWidth = 2f * view.orthographicSize * view.aspect;
             float slot = card.Enemy.slotWidth > 0f ? card.Enemy.slotWidth : worldWidth * 0.1f;
-            card.Place(Vector2.Scale(feet, canvasSize), (top.y - feet.y) * canvasSize.y, slot / worldWidth * canvasSize.x, card.Enemy.mountedOn != null);
+            bool drawn = BattleManager.IsDrawnHead(card.Enemy);
+            if(drawn) card.gameObject.SetActive(!card.Enemy.IsDead);
+            card.Place(Vector2.Scale(feet, canvasSize), (top.y - feet.y) * canvasSize.y, slot / worldWidth * canvasSize.x, card.Enemy.mountedOn != null, drawn ? PlateShift(card, canvasSize.x * slot / worldWidth) : 0f);
         }
+    }
+
+    // Heads drawn close together on one body (the Hydra in one piece): their plates, in one row, are pushed apart just
+    // enough to stand side by side, keeping the row centered where the heads are.
+    private float PlateShift(EnemyCardUI card, float plateWidth){
+        List<EnemyCardUI> row = enemyCards.FindAll(other => other != null && other.Enemy != null && !other.Enemy.IsDead && other.Enemy.mountedOn == card.Enemy.mountedOn);
+        row.Sort((a, b) => ((RectTransform)a.transform).anchoredPosition.x.CompareTo(((RectTransform)b.transform).anchoredPosition.x));
+        float gap = plateWidth + 8f;
+        float[] x = new float[row.Count], placed = new float[row.Count];
+        for(int i = 0; i < row.Count; i++){
+            x[i] = ((RectTransform)row[i].transform).anchoredPosition.x;
+            placed[i] = i == 0 ? x[i] : Mathf.Max(x[i], placed[i - 1] + gap);
+        }
+        float drift = 0f;
+        for(int i = 0; i < row.Count; i++) drift += placed[i] - x[i];
+        drift /= Mathf.Max(1, row.Count);
+        int me = row.IndexOf(card);
+        return me < 0 ? 0f : placed[me] - drift - x[me];
     }
 
     // The highest top of the heads mounted on this body (living or not, so the row doesn't jump when one dies).
@@ -168,6 +192,8 @@ public class UIManager : MonoBehaviour
         float highest = float.MinValue;
         foreach(EnemyCardUI card in enemyCards){
             if(card == null || card.Enemy == null || card.Enemy.mountedOn != body) continue;
+            // Heads drawn on the body (the Hydra in one piece): only the living ones, so the row comes down to them.
+            if(card.Enemy.IsDead && BattleManager.IsDrawnHead(card.Enemy)) continue;
             SpriteRenderer renderer = card.Enemy.entity.GetComponent<SpriteRenderer>();
             if(renderer == null || renderer.sprite == null) continue;
             // The tilted picture's top center, not its box (whose corners are empty and reach much higher).
