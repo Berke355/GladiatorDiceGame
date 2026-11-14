@@ -34,6 +34,9 @@ public class TriggerSystem
 
     private readonly Action<Entity, int> onHitDealt;
     private readonly Action<int> onHitTaken;
+    private readonly Action<Entity> onBeastBit;
+    // The enemy the beast just bit, the target of BeastBit reactions.
+    private Entity bitten;
 
     public TriggerSystem(Entity player, Func<Entity> target, Func<List<Entity>> opponents, List<DieFace> die, List<EquipmentSO> equipment, DieCharge charge = null, RerollPool rerolls = null){
         this.player = player;
@@ -50,14 +53,21 @@ public class TriggerSystem
             Fire(TriggerType.HitTaken);
             attacker = null;
         };
+        onBeastBit = enemy => {
+            bitten = enemy;
+            Fire(TriggerType.BeastBit);
+            bitten = null;
+        };
         player.HitDealt += onHitDealt;
         player.HitTaken += onHitTaken;
+        player.BeastBit += onBeastBit;
     }
 
     // Unsubscribes from the player's events; call when the battle ends.
     public void Dispose(){
         player.HitDealt -= onHitDealt;
         player.HitTaken -= onHitTaken;
+        player.BeastBit -= onBeastBit;
     }
 
     // Called at the start of each player turn.
@@ -78,7 +88,7 @@ public class TriggerSystem
                     Count(firedThisRound, reaction);
                     Count(firedThisBattle, reaction);
 
-                    EffectContext context = new EffectContext{ source = player, target = attacker != null ? attacker : target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
+                    EffectContext context = new EffectContext{ source = player, target = attacker != null ? attacker : bitten != null ? bitten : target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
                     foreach(EffectSO effect in reaction.effects){
                         effect.Execute(context);
                     }

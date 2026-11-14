@@ -32,6 +32,13 @@ public class DieEnchantmentSO : ScriptableObject
     public List<PositionAmount> positionMultipliers = new List<PositionAmount>();
     // The face on each listed position counts as Consumable (Burnout).
     public List<int> consumablePositions = new List<int>();
+    // When the face at one of these places lands, the player gains (or the target gets) the status (Kennel, War Paint,
+    // Fisher's Corner), at most once per turn per enchantment, so rerolls can't farm it. Through GainSelf / ApplyToTarget,
+    // so Encourage and Ritual count.
+    public List<int> rolledPositions = new List<int>();
+    public StatusType rolledStatus = StatusType.None;
+    public int rolledAmount;
+    public bool rolledOnTarget;
 
     // The total bonus of these enchantments for the face on a position.
     public static int BonusAt(List<DieEnchantmentSO> enchantments, List<DieFace> die, int position){

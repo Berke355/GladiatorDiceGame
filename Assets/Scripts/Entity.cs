@@ -34,7 +34,9 @@ public enum StatusType {
     // for the stacks. Permanent for the battle; 0 means no beast.
     Hound,
     // A debuff (stacks are turns, -1 at the owner's turn end): its owner gains no Block (Fortify still works).
-    Exposed
+    Exposed,
+    // Phoenix Feather: HP that would drop to 0 stops at 1 and one stack is spent (any HP loss: hits, ticks, costs).
+    Undying
 }
 
 public class Entity : MonoBehaviour
@@ -179,6 +181,11 @@ public class Entity : MonoBehaviour
         amount = Math.Min(amount, HPLossLeftThisRound);
         hpLostThisRound += amount;
         currentHP -= amount;
+        if(currentHP <= 0 && GetStatus(StatusType.Undying) > 0){
+            activeStatuses[StatusType.Undying] -= 1;
+            currentHP = 1;
+            Debug.Log(entityName + " refused to die.");
+        }
         if(currentHP <= 0){
             currentHP = 0;
             Debug.Log(entityName + " died.");

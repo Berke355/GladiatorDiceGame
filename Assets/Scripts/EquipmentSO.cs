@@ -20,7 +20,9 @@ public enum TriggerType
     // The enemy died, before the player's HP is saved to the run.
     BattleWon,
     // The player spent a reroll, after the die landed again.
-    Rerolled
+    Rerolled,
+    // The player's beast bit (Beastmaster); the bitten enemy is the target.
+    BeastBit
 }
 
 // One reaction of an item: when the trigger fires (and its condition holds), its effects run with the value.

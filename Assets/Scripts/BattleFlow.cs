@@ -208,6 +208,7 @@ public class BattleFlow
         HitsTakenLastEnemyTurn = hitsSinceTurnStart;
         hitsSinceTurnStart = 0;
         landingsThisTurn.Clear();
+        rolledEnchantmentsThisTurn.Clear();
         actedThisTurn.Clear();
         keptChargeThisTurn.Clear();
         steerTo = null;
@@ -241,8 +242,24 @@ public class BattleFlow
         landingsThisTurn[RolledFace] = LandingsThisTurn(RolledFace) + 1;
         triggers.currentFace = RolledFace;
         triggers.arrivedBySteer = ArrivedBySteer;
+        ApplyRolledEnchantments();
         triggers.Fire(TriggerType.FaceRolled);
         return RolledFace;
+    }
+
+    // Die enchantments that give a status when the face at their place lands (Kennel), once per turn each.
+    private readonly HashSet<DieEnchantmentSO> rolledEnchantmentsThisTurn = new HashSet<DieEnchantmentSO>();
+    private void ApplyRolledEnchantments(){
+        if(dieEnchantments == null) return;
+        int place = die.IndexOf(RolledFace);
+        foreach(DieEnchantmentSO enchantment in dieEnchantments){
+            if(enchantment == null || enchantment.rolledStatus == StatusType.None || !enchantment.rolledPositions.Contains(place)) continue;
+            if(!rolledEnchantmentsThisTurn.Add(enchantment)) continue;
+            if(enchantment.rolledOnTarget && Target.IsDead) continue;
+            EffectContext context = new EffectContext{ source = player, target = Target.entity, value = enchantment.rolledAmount };
+            if(enchantment.rolledOnTarget) context.ApplyToTarget(enchantment.rolledStatus, enchantment.rolledAmount);
+            else context.GainSelf(enchantment.rolledStatus, enchantment.rolledAmount);
+        }
     }
 
     // A random face, weighted by the die's enchantments (Weighted Die). Change guarantees a face other than the one it

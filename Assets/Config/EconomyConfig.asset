@@ -127,6 +127,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 87bcda076086d734c8f5f00d7fd4ef76, type: 2}
   - {fileID: 11400000, guid: 04dc3e9042871cc4f94849f0720fcbda, type: 2}
   - {fileID: 11400000, guid: c8f08909025931842b36a4b6612006b7, type: 2}
+  - {fileID: 11400000, guid: a130f402d428e594d81ef00a159ec288, type: 2}
+  - {fileID: 11400000, guid: 749b4a35646921043a9128b1bc72be68, type: 2}
+  - {fileID: 11400000, guid: 8412eb314f9a6c745941f3bafaf6a86b, type: 2}
+  - {fileID: 11400000, guid: 10cb943ab88214441ae5e4ee458ebc13, type: 2}
   enchantmentsPerMarket: 3
   dieEnchantmentPool:
   - {fileID: 11400000, guid: a2d352fda36dcfc44abd8ce2ea09e491, type: 2}
@@ -143,6 +147,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a474f41bf98765541b6c8c3bb25c3a6c, type: 2}
   - {fileID: 11400000, guid: ffe773c24b02ce840822279624c59abd, type: 2}
   - {fileID: 11400000, guid: d9de2c843f83ef34db19303c3655abb0, type: 2}
+  - {fileID: 11400000, guid: 4f9d99af7685fae46824e102b4100764, type: 2}
+  - {fileID: 11400000, guid: 9d027f650d9ddee4b8254e29c29c0cd2, type: 2}
+  - {fileID: 11400000, guid: 8472dc333bd76ec4eb9c752e36983c73, type: 2}
   dieEnchantmentsPerMarket: 2
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
@@ -176,6 +183,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 319da483dea84df4a971509fd4afdc5b, type: 2}
   - {fileID: 11400000, guid: a8da8008e27a32748bcf652327195864, type: 2}
   - {fileID: 11400000, guid: a8010fdfe6b2f0f4489459add67a8cb5, type: 2}
+  - {fileID: 11400000, guid: 9368fbc47a88512419f4107eeccb51fa, type: 2}
+  - {fileID: 11400000, guid: b7022f2944af38d4fbee076e53bcf70d, type: 2}
+  - {fileID: 11400000, guid: f7deaaae0864cc14385cbd5c8fa69eae, type: 2}
+  - {fileID: 11400000, guid: 4b74e0fd5cfd5b04f99e26569809972f, type: 2}
+  - {fileID: 11400000, guid: 2d3b2024a698ef14abef69d2f5130b56, type: 2}
+  - {fileID: 11400000, guid: f4a4009b7d2d81749a287b1da938d391, type: 2}
+  - {fileID: 11400000, guid: faa6a87f42d8cf74c961083f558ce2e6, type: 2}
   bossRewardChoices: 3
   equipmentPerMarket: 1
   equipmentPerGrandMarket: 2

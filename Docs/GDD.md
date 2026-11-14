@@ -572,6 +572,30 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 
 - **Merchant's Purse is Epic too.** With gold as the limit on items, it pushes hardest against that limit.
 
+### Fourth Set: the New Archetypes (DevLog Day 121)
+
+Items, face enchantments and die enchantments for Retiarius, Provocator and Beastmaster, which had none, and two general ideas (the user's content pass after the bench).
+
+| Name | Kind | Rarity | Effect |
+|---|---|---|---|
+| **Weighted Net** | Item (Net) | Common | At the start of each battle: apply 1 Weak to every enemy. |
+| **Fisher's Barb** | Item (Net) | Common | The first hit you deal each turn applies 1 Vulnerable. |
+| **Spiked Pauldron** | Item (Riposte) | Rare | At the start of each battle: gain 2 Vigil. |
+| **Old Scars** | Item (Riposte) | Common | When a hit makes you lose HP: gain 1 Riposte (up to 3 times each round). |
+| **Kennel Key** | Item (Hound) | Rare | At the start of each battle: gain 1 Hound, so the beast is there from the first turn. |
+| **Bone Collar** | Item (Hound + Bleed) | Common | Every time your beast bites: apply 2 Bleed (a new trigger, `BeastBit`). |
+| **Phoenix Feather** | Item (General) | Epic | At the start of each battle: gain 1 **Undying** (a new status: the first time you would drop to 0 HP, you stay at 1). |
+| **Entangle** | Face enchantment (Net) | Rare | Magic: apply Weak and Vulnerable equal to the face's value. |
+| **Mirror Stance** | Face enchantment (Riposte) | Rare | Magic: gain Riposte equal to the face's value. |
+| **Call the Pack** | Face enchantment (Hound) | Epic | Magic: gain Hound equal to the face's value. |
+| **Transmute** | Face enchantment (General) | Rare | Magic: do what the opposite face does on Attack, with this face's value. The die layout as a weapon. |
+| **Kennel** | Die enchantment (Hound) | Rare | When the Left or Right face lands: gain 1 Hound. |
+| **War Paint** | Die enchantment (Riposte) | Common | When the Top or Bottom face lands: gain 2 Riposte. |
+| **Fisher's Corner** | Die enchantment (Net) | Common | When the Middle face lands: apply 2 Weak to your target. |
+
+- **The die enchantments are a new kind:** a status when the face at a place lands (`DieEnchantmentSO.rolledPositions` / `rolledStatus`), at most **once per turn per enchantment**, so rerolls can't farm it (tested: 30 rolls in a turn, 14 on Left or Right, 1 Hound).
+- **Measured (200–250 runs):** Hound 20% → 23–26%, Hound + Rage 13% → 25%: **Kennel Key** does most of it (without it 19% and 17%), as a beast from the first turn is a free bite every turn. Hound now sits level with Bleed (25%); left for the tuning after the map. Net (0–2%) and Provocator (2%) barely moved: their items help in play more than the bots use them.
+
 ### Balance Notes
 
 - **Items that fire on every hit or every turn need small numbers or a cap.** In the difficulty pass (DevLog Day 60) the two uncapped items carried their builds: Smoldering Gauntlet (3 Burn per hit, on 92% of Burn bots at battle 8) lifted Burn to 22% (12% without it); it now applies 1 Burn per hit (16%). Censer is capped at 3 per battle (see "Area Effects").
@@ -600,6 +624,7 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 | **Vigil** | Self | — | Spent by the first hit its owner takes | Like Riposte, but it waits for the first hit, across turns |
 | **Reversal** | Self | — | Cleared at the start of its owner's turn | A hit Block and Fortify absorb completely is dealt back to the attacker in full |
 | **Exposed** | Target | — | −1 per tick (stacks are turns) | Its owner gains no Block (Fortify still works); Dimachaerus's Crossed Blades |
+| **Undying** | Self | — | Spent when it saves its owner | HP that would drop to 0 stops at 1 (Phoenix Feather) |
 | **Hound** | Self | Its beast bites the target once for its stacks, unless the owner only defended (or passed) this turn | Lasts the whole battle | The Beastmaster's beast; a bite is the owner's own hit |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.

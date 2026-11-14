@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 045e8e4e1ebe37943821798a5e55da6a, type: 3}
+  m_Name: PhoenixFeather
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
+  equipmentName: Phoenix Feather
+  description: 'At the start of each battle: gain 1 Undying (the first time you would
+    drop to 0 HP, you stay at 1).'
+  rarity: 2
+  icon: {fileID: 0}
+  tags: 0a000000
+  triggers:
+  - trigger: 0
+    requireFaceTag: 0
+    faceTag: 0
+    requireAction: 0
+    action: 0
+    requirePosition: 0
+    position: 0
+    requireSteered: 0
+    requireDifferentAction: 0
+    requireBelowHalfHP: 0
+    onTurn: 0
+    effects:
+    - {fileID: 11400000, guid: b6e1a16c26e54b94c9c0db79a253c1e1, type: 2}
+    value: 1
+    maxPerRound: 0
+    maxPerBattle: 0
+  goldPerVictory: 0
+  extraConsumableUses: 0
+  enchantedFaceBonus: 0
+  freeMarketRerolls: 0
+  rerollsPerBenchedFace: 0

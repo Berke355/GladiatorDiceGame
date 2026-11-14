@@ -144,6 +144,14 @@ For this sheet, change "exactly 12 icons in a grid of 4 columns and 3 rows" in t
 3. Reversal: a round shield with a curved arrow bouncing off it
 ```
 
+## Sheet 6: Undying (1 icon)
+
+For this one, change "exactly 12 icons in a grid of 4 columns and 3 rows" in the style block to "exactly 1 icon". Until it exists, the status chip shows the word.
+
+```
+1. Undying: a small red and gold phoenix with spread wings
+```
+
 ## Sheet 5: Exposed (1 icon)
 
 For this one, change "exactly 12 icons in a grid of 4 columns and 3 rows" in the style block to "exactly 1 icon". Until it exists, the status chip shows the word.
@@ -446,6 +454,21 @@ In the style block, write "exactly 8 emblems in a grid of 4 columns and 2 rows" 
 8. (spare) a coiled leather whip
 ```
 
+### Items 4 (7)
+
+In the style block, write "exactly 8 emblems in a grid of 4 columns and 2 rows" (the eighth cell is a spare). Save them in `Assets/Art/Items/` as `WeightedNet.png`, `FishersBarb.png`, `SpikedPauldron.png`, `OldScars.png`, `KennelKey.png`, `BoneCollar.png`, `PhoenixFeather.png`.
+
+```
+1. Weighted Net: a folded fishing net with round lead weights hanging from it
+2. Fisher's Barb: a single large barbed fishhook
+3. Spiked Pauldron: a bronze shoulder guard covered in short spikes
+4. Old Scars: a muscled forearm crossed with pale old scars
+5. Kennel Key: a big iron key with a dog's head on its bow
+6. Bone Collar: a leather dog collar studded with small bones
+7. Phoenix Feather: a single long feather of red and gold flame
+8. (spare) a bronze gladiator's armband
+```
+
 ### Reserve Roster (1 item)
 
 In the style block, write "exactly 1 emblem" instead of 12 in 4 by 3. Save it as `Assets/Art/Items/ReserveRoster.png`.
@@ -498,6 +521,16 @@ In the style block, write "exactly 6 emblems in a grid of 3 columns and 2 rows".
 6. Weighted Die: a die with a heavy weight tied to one side
 ```
 
+### Die enchantments 3 (3)
+
+In the style block, write "exactly 3 emblems in a row". Save them in `Assets/Art/DieEnchantments/` as `Kennel.png`, `WarPaint.png`, `FishersCorner.png`.
+
+```
+1. Kennel: a dog's head seen from the side
+2. War Paint: two diagonal stripes of paint like on a warrior's face
+3. Fisher's Corner: a fishhook in the center of a square frame
+```
+
 ## Face enchantment style block
 
 ```
@@ -530,4 +563,15 @@ Seals, in this order (left to right, top to bottom):
 10. War Cry: an open shouting mouth
 11. Ward: a round rune circle like a shield
 12. Whirlwind: two blades spinning in a spiral
+```
+
+### Face enchantments 2 (4)
+
+In the style block, write "exactly 4 emblems in a grid of 2 columns and 2 rows". Save them in `Assets/Art/Enchantments/` as `Entangle.png`, `MirrorStance.png`, `CallThePack.png`, `Transmute.png`.
+
+```
+1. Entangle: a knot of rope tied around itself
+2. Mirror Stance: a round mirror with a sword reflected in it
+3. Call the Pack: three paw prints in a curve
+4. Transmute: two arrows forming a circle around a die
 ```
