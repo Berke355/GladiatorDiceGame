@@ -3822,12 +3822,13 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Accomplished
 - **Six Commons, two per archetype** (agreed with the user on Day 111): Pitch Pot and Smolder (Burn), Blowgun and Smoke Pot (Poison), Offering and Hex (Ritual), in the Market pool. All made from existing effects. Tested with 2 Ritual on the player: Pitch Pot 5 Burn, Smolder ignited 5 and the Burn stayed, Blowgun 3 + 3 Poison, Smoke Pot 4 Poison on both enemies, Offering 4 damage, Hex 3 Burn and 3 Poison.
 - Bots use Smoke Pot's and Hex's Magic unless a big hit is coming.
+- **Emblems** for the six faces (ArtPrompts Sheet 10, a 3 x 2 sheet this time). Hex's purple tablet was taken for the magenta background, so it was cut keeping only the magenta that touches the cell's border.
 
 ### Findings (200 runs per bot, before → after)
 - Burn 3% → 8%, Poison 7% → 22%, Ritual 1% → 10%, Ritual + Poison 5% → 22%, Ritual + Bleed 14% → 10% (noise).
 - **Blowgun first applied its value twice,** so each upgrade, cheap on a value-1 Common, added 2 Poison: Poison 27%. Without Blowgun 12%, without Smoke Pot 21%. Now it applies its value, then 1 more: Ritual still counts twice, upgrades count once. Poison stays about 22%, near its 28% from when halving came in, in the strong group with Bleed and Hound (20%).
 
 ### Next Steps
-- The emblems (ArtPrompts Sheet 10).
+- **A new Smoke Pot emblem:** its green smoke vanishes on the Poison family's green tile, and Gemini clipped the cloud's edges.
 - The user plays them.
 
