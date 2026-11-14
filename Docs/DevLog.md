@@ -3969,3 +3969,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - The user plays the Hydra fight.
 
+
+### Day 122 (later) - A test button for the Hydra
+- The user asked for a way to reach the Hydra without playing ten battles: the starting face screen has a **TEST: Hydra** button (`RunStartUI.bossTestButton`, shown only in the Editor and development builds). `RunManager.JumpToFinalBoss` takes the first starting offer if none was chosen, sets the run to battle 11 with 150 HP (`BossTestHP`; the starting die alone can't survive the Hydra at 50) and loads the battle. Tested in Play Mode: the button lands on BATTLE 11/11 BOSS with the 2-headed Hydra.

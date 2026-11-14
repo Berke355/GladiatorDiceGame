@@ -167,6 +167,20 @@ public class RunManager : MonoBehaviour
         run.nextEncounter = null;
     }
 
+    // A test shortcut (only in the Editor and development builds, RunStartUI.bossTestButton): takes the first starting
+    // offer and goes straight to the final boss with the starting die, with extra HP so the fight lasts long enough to
+    // watch its mechanics.
+    public const int BossTestHP = 150;
+    public void JumpToFinalBoss(){
+        if(!run.startingFaceChosen && run.startingFaceOffers.Count > 0) ChooseStartingFace(run.startingFaceOffers[0]);
+        run.battlesWon = finalBattle - 1;
+        run.maxHP = BossTestHP;
+        run.currentHP = BossTestHP;
+        run.nextBattlePicked = false;
+        PickNextBattle();
+        GoToNextBattle();
+    }
+
     public void GoToNextBattle(){
         SceneManager.LoadScene(battleSceneName);
     }

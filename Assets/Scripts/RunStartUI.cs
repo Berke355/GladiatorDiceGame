@@ -10,6 +10,8 @@ public class RunStartUI : MonoBehaviour
     public Button rerollButton;
     public TextMeshProUGUI rerollButtonText;
     public TextMeshProUGUI goldText;
+    // A test shortcut to the final boss (RunManager.JumpToFinalBoss), shown only in the Editor and development builds.
+    public Button bossTestButton;
 
     void Start(){
         // Each button needs its own index, so they are wired here instead of in the Inspector.
@@ -18,6 +20,10 @@ public class RunStartUI : MonoBehaviour
             offerCards[i].buyButton.onClick.AddListener(() => OnFaceChosen(index));
         }
         if(rerollButton != null) rerollButton.onClick.AddListener(OnReroll);
+        if(bossTestButton != null){
+            bossTestButton.gameObject.SetActive(Application.isEditor || Debug.isDebugBuild);
+            bossTestButton.onClick.AddListener(() => RunManager.Instance.JumpToFinalBoss());
+        }
         AudioManager.PlayMusic(MusicTrack.RunStart);
         Refresh();
     }
