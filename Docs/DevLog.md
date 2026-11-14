@@ -3935,5 +3935,5 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - The bench item (the user asked for ideas: an effect at the start of every battle per benched face).
 
 ### Day 120 (later) - Reserve Roster
-- **Reserve Roster** (the user's pick from four ideas; Rare, Fortune, 15 gold): +1 reroll at the start of each battle for each benched face. `EquipmentSO.rerollsPerBenchedFace`, `RunData.RerollsThisBattle` (3 with an empty bench, 4 with one face, 5 with two). Its icon: ArtPrompts "Reserve Roster". Bots don't bench faces, so it does nothing for them.
+- **Reserve Roster** (the user's pick from four ideas; Rare, Fortune, 15 gold): +1 reroll at the start of each battle for each benched face. `EquipmentSO.rerollsPerBenchedFace`, `RunData.RerollsThisBattle` (3 with an empty bench, 4 with one face, 5 with two). Its icon (Gemini): a wax tablet with a scroll and a stylus. Bots don't bench faces, so it does nothing for them.
 

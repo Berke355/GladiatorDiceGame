@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'At the start of each battle: gain 1 reroll for each face on your
     bench.'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 66b6a701bb86c3a4180fe1460929b6ee, type: 3}
   tags: 09000000
   triggers: []
   goldPerVictory: 0
