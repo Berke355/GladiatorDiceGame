@@ -16,6 +16,8 @@ public class BattleFlow
     public readonly DieCharge charge = new DieCharge();
     // The player's rerolls for this battle (see GDD "Rerolls").
     public readonly RerollPool rerolls;
+    // The beast's HP for this battle (GDD "Beastmaster"); effects reach it through player.beast.
+    public readonly BeastCompanion beast;
     // Stone faces on the die for this battle (Medusa's Petrify).
     public readonly Petrification petrification = new Petrification();
     // Consumable faces used this battle; a used one is Change (see GDD "Consumable and Change").
@@ -109,9 +111,16 @@ public class BattleFlow
         triggers = new TriggerSystem(player, () => Target.entity, LivingEnemyEntities, die, equipment, charge, rerolls);
         player.Retaliated += OnRetaliated;
         player.Struck += OnStruck;
+        int beastMaxHP = 0;
+        bool beastLastStand = false;
         if(equipment != null){
-            foreach(EquipmentSO item in equipment) consumables.usesPerBattle += item.extraConsumableUses;
+            foreach(EquipmentSO item in equipment){
+                consumables.usesPerBattle += item.extraConsumableUses;
+                beastMaxHP += item.beastMaxHP;
+                beastLastStand |= item.beastLastStand;
+            }
         }
+        beast = new BeastCompanion(player, beastMaxHP, beastLastStand);
         // Binding can spawn enemies (the Hydra grows its heads), which SpawnEnemy sets up itself.
         int initial = enemies.Count;
         for(int i = 0; i < initial; i++){
@@ -210,6 +219,7 @@ public class BattleFlow
         hitsSinceTurnStart = 0;
         landingsThisTurn.Clear();
         rolledEnchantmentsThisTurn.Clear();
+        beast.OnOwnerTurnStart();
         actedThisTurn.Clear();
         keptChargeThisTurn.Clear();
         steerTo = null;
@@ -254,8 +264,10 @@ public class BattleFlow
         if(dieEnchantments == null) return;
         int place = die.IndexOf(RolledFace);
         foreach(DieEnchantmentSO enchantment in dieEnchantments){
-            if(enchantment == null || enchantment.rolledStatus == StatusType.None || !enchantment.rolledPositions.Contains(place)) continue;
+            if(enchantment == null || (enchantment.rolledStatus == StatusType.None && enchantment.rolledBeastHeal <= 0) || !enchantment.rolledPositions.Contains(place)) continue;
             if(!rolledEnchantmentsThisTurn.Add(enchantment)) continue;
+            if(enchantment.rolledBeastHeal > 0) beast.Heal(enchantment.rolledBeastHeal);
+            if(enchantment.rolledStatus == StatusType.None) continue;
             if(enchantment.rolledOnTarget && Target.IsDead) continue;
             EffectContext context = new EffectContext{ source = player, target = Target.entity, value = enchantment.rolledAmount };
             if(enchantment.rolledOnTarget) context.ApplyToTarget(enchantment.rolledStatus, enchantment.rolledAmount);
@@ -385,10 +397,18 @@ public class BattleFlow
 
     // TurnEnd items run before the player's statuses tick.
     // The face you acted with spends its Charge (unless its action kept it); every other charging face gains 1.
-    public void EndPlayerTurn(){
-        if(AttackedThisTurn && !Target.IsDead){
-            Beast.Bite(new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), die = die, charge = charge, rerolls = rerolls });
-        }
+    // The beast bites at the end of the turn unless the player only defended or passed (and it needs to be out).
+    public bool BeastWillBite => AttackedThisTurn && !Target.IsDead && beast.IsOut && player.GetStatus(StatusType.Hound) > 0;
+
+    // The end-of-turn bite on its own, so the battle screen can show it a moment after the player's action.
+    public void BeastBite(){
+        if(!BeastWillBite) return;
+        Beast.Bite(new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), die = die, charge = charge, rerolls = rerolls });
+    }
+
+    // biteFirst: the bite as the turn's first end step (the simulator); the battle screen calls BeastBite itself first.
+    public void EndPlayerTurn(bool biteFirst = true){
+        if(biteFirst) BeastBite();
         triggers.Fire(TriggerType.TurnEnd);
         player.OnTurnEnd();
         foreach(DieFace face in die){

@@ -47,6 +47,8 @@ public class Entity : MonoBehaviour
     public int currentBlock;
 
     public event Action OnHealthChanged;
+    // The owner's beast in the current battle (Beastmaster), set by BattleFlow; null for enemies.
+    [NonSerialized] public BeastCompanion beast;
     // Raised on the attacker for each hit it deals (target, damage before Block), e.g. for equipment triggers.
     public event Action<Entity, int> HitDealt;
     // Raised when a hit makes this entity lose HP (HP lost). Damage over time and HP costs don't count.

@@ -4007,3 +4007,21 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - The user plays the map (step 3's play-test).
 - Step 4: Elite.
+
+## Day 124 - The Beast Can Die
+
+### Accomplished
+- **The user's design:** the play-test found Hound too strong ("a stronger Rage"): an immortal beast that only grows is an extra hit every turn, Magic turns included, with Rage on top. Instead of a decay (too many statuses already lose 1 a turn) or a block-only counter (rejected: Hound shouldn't only be played with Block), **the beast has its own HP**: 4 when the first Hound calls it, 1 lost for every hit that costs the player HP, and at 0 it dies and **Hound resets**. A new Hound calls a fresh beast.
+- **`BeastCompanion`** (owned by `BattleFlow`, `Entity.beast`): summon, hurt, shelter (Heel!), heal, max HP, the last stand; tested on a real flow (block absorbs, three hits, shelter, death resets Hound, a new summon, Alpha from a dead beast, one beast per entity across battles).
+- **Toughness content** (GDD "Beastmaster"): faces Groom, Leather Barding, Heel!, Pack Bond and Alpha (Epic: toughness turned into strength); items Studded Harness and Loyal to the End; enchantments Mend and Doghouse (die enchantments can now heal the beast, `rolledBeastHeal`). All in their pools; the simulator's bots play them (heal a hurt beast, toughen it while it is out, Heel! to block).
+- **The bite comes later** (the user's request): `BeastBiteState` waits a moment after the player's action, then the beast bites on its own, before the turn ends; the simulator still bites at once.
+- **The beast's bar:** HP over its back (orange) with its HP and Hound; a red flash and shake when it is hurt, a fade when it dies.
+
+### Findings
+- Same runs, same content: Hound about 14% → 11%, Hound + Rage 15% → 12%, Rage 11%, Bleed 21%. Before the toughness content the Hound bot cleared 20-26%; it now also spends on toughness, which an immortal beast didn't need.
+- Single 300-run batches swing by 5 points (Hound 9-15%), so beast rules need 1000+ runs per side.
+
+### Next Steps
+- Pictures for the nine new pieces (`Docs/ArtPrompts.md`: Sheet 11, Items 5, Face enchantments 3, Die enchantments 4).
+- The user plays the beast. Then the map's step 4 (Elite).
+

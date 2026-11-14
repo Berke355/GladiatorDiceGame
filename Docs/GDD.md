@@ -643,7 +643,7 @@ Items, face enchantments and die enchantments for Retiarius, Provocator and Beas
 | **Reversal** | Self | — | Cleared at the start of its owner's turn | A hit Block and Fortify absorb completely is dealt back to the attacker in full |
 | **Exposed** | Target | — | −1 per tick (stacks are turns) | Its owner gains no Block (Fortify still works); Dimachaerus's Crossed Blades |
 | **Undying** | Self | — | Spent when it saves its owner | HP that would drop to 0 stops at 1 (Phoenix Feather) |
-| **Hound** | Self | Its beast bites the target once for its stacks, unless the owner only defended (or passed) this turn | Lasts the whole battle | The Beastmaster's beast; a bite is the owner's own hit |
+| **Hound** | Self | Its beast bites the target once for its stacks, unless the owner only defended (or passed) this turn | Lasts the battle, or until the beast dies (its HP: 4, 1 lost per hit that costs the owner HP) | The Beastmaster's beast; a bite is the owner's own hit |
 
 - Damage over time (Poison, Bleed) bypasses Block and Fortify.
 - **Three distinct roles:** Burn is fuel (stored, then ignited or detonated), Poison is front-loaded attrition (big early ticks that halve), Bleed is duration (always 1, for as many turns as it has stacks).
@@ -968,9 +968,14 @@ The challenger of the arena: invite the attack and make the enemy pay for it. Th
 The beast tamer: a war dog fights beside you, and your die commands it (summon, feed, set it on the enemy). Called Beastmaster in the documents, because Bestiarius is already an enemy (tag `Hound`).
 
 - **Resource:** **Hound** on yourself, permanent for the battle; its stacks are the beast's strength. A battle starts without a beast: the first Hound face summons it (its picture fades in beside the player), later ones make it stronger. It leaves when the battle ends.
-- **The bite:** at the end of your turn the beast hits your target once for its stacks, **unless you only defended (or passed) that turn**: it stays by your side then. A bite is your own hit (`Beast.Bite` through `EffectContext.Hit`): Rage adds to it once, Weak and Vulnerable count, Block stops it, Thorns and Parry answer it, and your on-hit items fire.
+- **The bite:** at the end of your turn the beast hits your target once for its stacks, **unless you only defended (or passed) that turn**: it stays by your side then. A bite is your own hit (`Beast.Bite` through `EffectContext.Hit`): Rage adds to it once, Weak and Vulnerable count, Block stops it, Thorns and Parry answer it, and your on-hit items fire. On the battle screen it comes **a moment after your own action** (`BeastBiteState`), so the beast reads as a partner acting on its own, not as part of your swing (the user's request).
+- **The beast's HP (the user's design, DevLog Day 124):** Hound is the beast's strength, **HP** its toughness, shown as a small bar over its back.
+  - The first Hound calls it with **4 HP** (items add to it). Every hit that costs you HP costs the beast 1 HP; a hit Block or Fortify absorbs completely, Poison, Bleed and paying HP (Feed) don't.
+  - **At 0 HP it dies and Hound resets to 0.** A new Hound calls a fresh beast in the same battle (4 HP, only the new Hound).
+  - So a Beastmaster splits the die between **strength** (Whistle, Feed, Bloodhound, Sic 'Em) and **toughness** (Groom, Leather Barding, Heel!, Pack Bond), or plays not to be hit and only feeds it. Why: an immortal beast that only grew was a stronger Rage (an extra hit every turn, Magic turns included, with Rage on top), the strongest archetype with Bleed. A beast that dies is a resource to look after, unlike any other status.
+  - Measured (1200-1500 runs per rule, same content): Hound about 14% → 11%, Hound + Rage 15% → 12%, next to Rage (11%), under Bleed (21%). Before the toughness content joined the pool the Hound bot cleared 20-26% (it now also buys toughness faces, which an immortal beast doesn't need).
 - **Summoned by faces, not a hero** (the user's choice): any run can find it and mix it with its build; a future Beastmaster hero (Roadmap: heroes) can start with Whistle.
-- **The beast can't be hit** for now; enemies may answer it later with utility intents (e.g. "Scare": halve Hound).
+- **Enemies don't target the beast;** it is hurt only through you (above). Utility intents that answer it (e.g. "Scare") stay an option for later.
 - **Tile color:** leather brown (`FaceTag.Hound`).
 
 | Face | Role | Rarity | Value | Actions |
@@ -981,6 +986,13 @@ The beast tamer: a war dog fights beside you, and your die commands it (summon, 
 | **Feed** | Bridge (Hound + Berserker) | Rare | 3 | Magic: lose HP equal to my value and gain Hound equal to my value. Defense: gain block equal to my value. |
 | **Bloodhound** | Bridge (Hound + Bleed) | Rare | 2 | Magic: gain Hound equal to my value; if the enemy is bleeding, gain it again. Defense: gain block equal to my value. |
 | **Sic 'Em** | Payoff | Epic | 2 | Attack: gain 2 Hound, then your beast bites my value times. |
+| **Groom** | Toughness | Common | 2 | Magic: heal your beast equal to my value. Defense: gain block equal to my value. |
+| **Leather Barding** | Toughness | Common | 1 | Magic: your beast gains max HP equal to my value. Defense: gain block equal to my value. |
+| **Heel!** | Toughness | Rare | 3 | Defense: gain block equal to my value; your beast takes no damage until your next turn. |
+| **Pack Bond** | Toughness (attack) | Rare | 3 | Attack: deal damage equal to my value; your beast heals half of the damage dealt. |
+| **Alpha** | Payoff (both) | Epic | 2 | Magic: your beast gains max HP equal to my value (it is called if it isn't out), then gain Hound equal to its HP. |
+
+Toughness items and enchantments: **Studded Harness** (item, Common: every beast has 3 more max HP), **Loyal to the End** (item, Rare: once per battle a killing blow leaves the beast at 1 HP), **Mend** (face enchantment, Common: Magic, heal your beast equal to the face's value), **Doghouse** (die enchantment, Common: when the Top or Bottom face lands, heal your beast 1, once per turn).
 
 - **Value is the effect:** the first plan ("Feed: gain twice my value", "Sic 'Em: twice my value times") broke the rule, so Feed pays and gains its value, and Sic 'Em bites value times with 2 Hound of its own fuel (on any die: 2 bites of 2 from nothing).
 - **Tuned by simulation (DevLog Day 113):** the first rule, a bite at the end of every turn, gave the Hound bot 26–29% and made one Whistle on an unfocused die worth far more than any other Common: the beast is a free extra hit every turn, and every Whistle grows it for the rest of the fight. Only the attack turns: 2% (the build's own Magic faces silenced it). Not on defend-only turns: 23%. Without Rage on the bite, or a Magic-only Whistle, changed little. Whistle at 1: the Hound bot clears about 20%, as much as Bleed (20%) and above Rage (12%) in the same runs, so it is one of the strong archetypes; a free Whistle still lifts the Opportunist (2% → 5–8%), mostly because the Opportunist then shops for the whole Hound build. To revisit after the map.

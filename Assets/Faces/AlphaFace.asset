@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6d51d3e27c0bc41b5124a77aaffd2d, type: 3}
+  m_Name: AlphaFace
+  m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
+  faceName: Alpha
+  description: 'Magic: Your beast gains max HP equal to my value (it is called if
+    it isn''t out), then gain Hound equal to its HP.'
+  rarity: 2
+  tags: 0d000000
+  emblem: {fileID: 0}
+  plainTile: 0
+  baseValue: 2
+  effects:
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: d1558478bcd67b447bbc1a62b17b9e9a, type: 2}
+  keywords: 
+  hasNoValue: 0
+  isBlank: 0

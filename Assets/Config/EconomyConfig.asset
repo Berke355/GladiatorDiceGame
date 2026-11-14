@@ -109,6 +109,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9d5fa46857557ef41ba04a353951690d, type: 2}
   - {fileID: 11400000, guid: 23f86c05eb6bb9f42969b463dd471eeb, type: 2}
   - {fileID: 11400000, guid: 8d2012d316675b6448f877022ee1e754, type: 2}
+  - {fileID: 11400000, guid: f957eb04e6ff7af468c7f38c2e4bb356, type: 2}
+  - {fileID: 11400000, guid: e55029129a13f324099a27bf0629e3ed, type: 2}
+  - {fileID: 11400000, guid: 1b058bced17398349a5dadac715970cf, type: 2}
+  - {fileID: 11400000, guid: e09323407144d4844a37cd7e6e3a32ab, type: 2}
+  - {fileID: 11400000, guid: b81a4e8c5bd9b274c9dcaaaf652c2703, type: 2}
   offersPerMarket: 3
   commonWeight: 70
   rareWeight: 25
@@ -131,6 +136,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 749b4a35646921043a9128b1bc72be68, type: 2}
   - {fileID: 11400000, guid: 8412eb314f9a6c745941f3bafaf6a86b, type: 2}
   - {fileID: 11400000, guid: 10cb943ab88214441ae5e4ee458ebc13, type: 2}
+  - {fileID: 11400000, guid: b1fe494cd32c9a44e888f999ed70d171, type: 2}
   enchantmentsPerMarket: 3
   dieEnchantmentPool:
   - {fileID: 11400000, guid: a2d352fda36dcfc44abd8ce2ea09e491, type: 2}
@@ -150,6 +156,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f9d99af7685fae46824e102b4100764, type: 2}
   - {fileID: 11400000, guid: 9d027f650d9ddee4b8254e29c29c0cd2, type: 2}
   - {fileID: 11400000, guid: 8472dc333bd76ec4eb9c752e36983c73, type: 2}
+  - {fileID: 11400000, guid: eaf62e41fb74812419e149b7b1707d85, type: 2}
   dieEnchantmentsPerMarket: 2
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
@@ -190,6 +197,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2d3b2024a698ef14abef69d2f5130b56, type: 2}
   - {fileID: 11400000, guid: f4a4009b7d2d81749a287b1da938d391, type: 2}
   - {fileID: 11400000, guid: faa6a87f42d8cf74c961083f558ce2e6, type: 2}
+  - {fileID: 11400000, guid: ae36d159cab3a1b4ebde35ab1357c183, type: 2}
+  - {fileID: 11400000, guid: 81033f0f23b7e594bb42687fc6f2832f, type: 2}
   bossRewardChoices: 3
   equipmentPerMarket: 1
   equipmentPerGrandMarket: 2

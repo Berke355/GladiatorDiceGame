@@ -273,9 +273,9 @@ public class UIManager : MonoBehaviour
     }
 
     // The enemies act: every button waits until the player's next turn.
-    public void ShowEnemyTurn(){
+    public void ShowEnemyTurn(string title = "Enemy turn"){
         actionPhase = false;
-        rolledFaceTitle.text = "Enemy turn";
+        rolledFaceTitle.text = title;
         rolledFaceText.text = "";
         rolledFaceTooltip.text = "";
         rollButton.interactable = false;

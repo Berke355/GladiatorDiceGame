@@ -358,6 +358,19 @@ Only the first six cells are used. Save them as `Assets/Art/Faces/Whistle.png`, 
 6. Sic 'Em: a snarling dog's head with bared fangs, side view
 ```
 
+## Sheet 11: the beast's toughness (5 emblems)
+
+In the style block, write "exactly 6 emblems in a grid of 3 columns and 2 rows" (the sixth cell is a spare). Save them as `Assets/Art/Faces/Groom.png`, `LeatherBarding.png`, `Heel.png`, `PackBond.png` and `Alpha.png`.
+
+```
+1. Groom: a wooden brush with stiff bristles and a tuft of brown dog fur
+2. Leather Barding: a dog's leather chest armour with bronze studs
+3. Heel!: a gladiator's hand held flat and low, palm down, a dog's ear just under it
+4. Pack Bond: a human hand and a dog's paw pressed together
+5. Alpha: a proud dog's head with a small bronze crown of laurel leaves
+6. (spare) a dog's paw print
+```
+
 ## Sheet 10: Burn, Poison and Ritual Commons (6 emblems)
 
 Only the first six cells are used. Save them as `Assets/Art/Faces/PitchPot.png`, `Smolder.png`, `Blowgun.png`, `SmokePot.png`, `Offering.png` and `Hex.png`.
@@ -469,6 +482,15 @@ In the style block, write "exactly 8 emblems in a grid of 4 columns and 2 rows" 
 8. (spare) a bronze gladiator's armband
 ```
 
+### Items 5 (2)
+
+In the style block, write "exactly 2 emblems in a row". Save them in `Assets/Art/Items/` as `StuddedHarness.png`, `LoyalToTheEnd.png`.
+
+```
+1. Studded Harness: a dog's leather harness covered in bronze studs
+2. Loyal to the End: a worn dog collar with a small bronze heart-shaped tag
+```
+
 ### Reserve Roster (1 item)
 
 In the style block, write "exactly 1 emblem" instead of 12 in 4 by 3. Save it as `Assets/Art/Items/ReserveRoster.png`.
@@ -521,6 +543,14 @@ In the style block, write "exactly 6 emblems in a grid of 3 columns and 2 rows".
 6. Weighted Die: a die with a heavy weight tied to one side
 ```
 
+### Die enchantments 4 (1)
+
+In the style block, write "exactly 1 emblem". Save it as `Assets/Art/DieEnchantments/Doghouse.png`.
+
+```
+1. Doghouse: a small wooden kennel with a pointed roof and a round door
+```
+
 ### Die enchantments 3 (3)
 
 In the style block, write "exactly 3 emblems in a row". Save them in `Assets/Art/DieEnchantments/` as `Kennel.png`, `WarPaint.png`, `FishersCorner.png`.
@@ -563,6 +593,14 @@ Seals, in this order (left to right, top to bottom):
 10. War Cry: an open shouting mouth
 11. Ward: a round rune circle like a shield
 12. Whirlwind: two blades spinning in a spiral
+```
+
+### Face enchantments 3 (1)
+
+In the style block, write "exactly 1 emblem". Save it as `Assets/Art/Enchantments/Mend.png`.
+
+```
+1. Mend: a paw print with a small stitched bandage across it
 ```
 
 ### Face enchantments 2 (4)

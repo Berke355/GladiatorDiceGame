@@ -66,7 +66,13 @@ public class PlayerActionSelectState : BattleState
             return;
         }
 
-        battleManager.flow.EndPlayerTurn();
+        // The beast bites a moment later, as a partner of its own, before the turn ends.
+        if(battleManager.flow.BeastWillBite){
+            battleManager.ChangeState(new BeastBiteState(battleManager));
+            return;
+        }
+
+        battleManager.flow.EndPlayerTurn(false);
         if(battleManager.CheckBattleOver()) return;
 
         battleManager.ChangeState(new EnemyTurnState(battleManager));

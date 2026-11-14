@@ -79,6 +79,10 @@ public class EquipmentSO : ScriptableObject
     public int freeMarketRerolls;
     // Rerolls at the start of every battle for each face on the bench (Reserve Roster), read by RunData.RerollsThisBattle.
     public int rerollsPerBenchedFace;
+    // The beast (GDD "Beastmaster"): extra max HP for every beast summoned (Studded Harness), and surviving one killing
+    // blow per battle at 1 HP (Loyal to the End). Read by BattleFlow.
+    public int beastMaxHP;
+    public bool beastLastStand;
 
     public static int TotalGoldPerVictory(List<EquipmentSO> equipment){
         int gold = 0;

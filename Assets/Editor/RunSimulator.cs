@@ -719,6 +719,13 @@ public static class RunSimulator
             // The beast is permanent for the battle, so grow it early; a big hit still comes first.
             case "Whistle":
             case "Bloodhound": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // The beast's toughness (GDD "Beastmaster"): heal it when it is hurt, toughen it while it is out, shelter it
+            // under a block; a big hit still comes first.
+            case "Groom": return !bigHit && BeastHurt(player, 2) ? ActionType.Magic : ActionType.Defense;
+            case "Leather Barding": return !bigHit && player.beast != null && player.beast.IsOut ? ActionType.Magic : ActionType.Defense;
+            case "Heel!": return ActionType.Defense;
+            case "Pack Bond": return ActionType.Attack;
+            case "Alpha": return ActionType.Magic;
             // Paying HP for the beast is only worth it with HP to spare.
             case "Feed": return !bigHit && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Defense;
             // Vigil waits for the first hit, so set it once and keep blocking while it waits.
@@ -797,6 +804,8 @@ public static class RunSimulator
             // Applies 2 Vulnerable, then hits once per Vulnerable and Weak, each +1 from Vulnerable.
             // Gains 2 Hound, then the beast bites value times.
             case "Sic 'Em": return value * (player.GetStatus(StatusType.Hound) + 2);
+            // Calls the beast if needed and turns its HP into Hound.
+            case "Alpha": return value + (player.beast != null && player.beast.IsOut ? player.beast.HP : BeastCompanion.BaseMaxHP);
             case "Haul In": return (value + 1) * (target.GetStatus(StatusType.Vulnerable) + target.GetStatus(StatusType.Weak) + 2);
             case "Fuel": return value * (target.GetStatus(StatusType.Burn) + value);
             case "Plague": return value * Mathf.Max(1, die.FindAll(f => f.definition.tags.Contains(FaceTag.Poison)).Count);
@@ -819,10 +828,16 @@ public static class RunSimulator
 
     // When to play an enchantment. Epic ones are combo pieces with their own timing; the others bring an
     // archetype onto a face outside it (e.g. Venom Coating on a Sword), so they are that face's build action.
+    // The beast is out and has lost at least this much HP.
+    private static bool BeastHurt(Entity player, int missing){
+        return player.beast != null && player.beast.IsOut && player.beast.MaxHP - player.beast.HP >= missing;
+    }
+
     private static bool PlaysEnchantment(DieFace face, List<DieFace> die, Entity player, BattleFlow flow, bool bigHit, int rage){
         EnchantmentSO enchantment = face.enchantment;
         switch(enchantment.enchantmentName){
             case "War Cry": return !bigHit && rage < RageToStartAttacking;
+            case "Mend": return !bigHit && BeastHurt(player, 2);
             // Worth more than the face's own action only against a group.
             case "Sweep": return !bigHit && flow.LivingEnemies.Count >= 2;
             case "Dark Rite": return player.GetStatus(StatusType.Ritual) == 0;
