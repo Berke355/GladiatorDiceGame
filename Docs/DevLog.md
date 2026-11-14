@@ -3950,3 +3950,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Next Steps
 
+### Day 121 (later) - Hoplomachus Champion faced away
+- The user saw an enemy fighting with its back to the player: the Hoplomachus Champion's sprite faced right (spear point and face), the only one of 18. Mirrored the PNG; its pivot is bottom-center, so it stands where it did.
+
