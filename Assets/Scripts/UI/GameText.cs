@@ -45,10 +45,10 @@ public static class GameText
     private static readonly string[] IconNames = {
         "Damage", "Block", "Heal", "Health", "Fortify", "Burn", "Poison", "Bleed", "Rage", "Ritual", "Encourage",
         "FireShield", "Vulnerable", "Weak", "Entangled", "Consumable", "Charge", "Reroll", "Gold", "Threat", "Change",
-        "Magic", "Petrified", "Target", "Riposte", "Vigil", "Reversal"
+        "Magic", "Petrified", "Target", "Riposte", "Vigil", "Reversal", "Hound"
     };
     // Statuses that show as an icon when they stand alone ("consume Bleed").
-    private const string StatusWords = "Fortify|Burn|Poison|Bleed|Rage|Ritual|Encourage|FireShield|Vulnerable|Weak|Entangled|Riposte|Vigil|Reversal";
+    private const string StatusWords = "Fortify|Burn|Poison|Bleed|Rage|Ritual|Encourage|FireShield|Vulnerable|Weak|Entangled|Riposte|Vigil|Reversal|Hound";
 
     // The inline icon for a status, a keyword or an icon name; the word itself if there is no icon.
     public static string Icon(string name){
