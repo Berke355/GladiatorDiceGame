@@ -96,7 +96,8 @@ public class EffectContext
     }
 
     public static bool IsEncouraged(StatusType status){
-        return status == StatusType.Rage || status == StatusType.Fortify || status == StatusType.FireShield;
+        return status == StatusType.Rage || status == StatusType.Fortify || status == StatusType.FireShield
+            || status == StatusType.Riposte || status == StatusType.Vigil;
     }
 
     // Every status an effect gives its own source goes through here so Encourage is never forgotten.

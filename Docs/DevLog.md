@@ -3875,3 +3875,19 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - Watch Provocator's HP cost in the next play-tests (a blocked hit still sets off Riposte, so Block + Riposte is its intended way to take hits).
 
+## Day 117 - Lex Talionis, Encourage on Riposte, Three Rerolls
+
+### Accomplished (the user's three ideas)
+- **Lex Talionis** (Provocator, Rare, value 2): Magic: if the enemy intends to attack, gain Riposte equal to the damage of its hit (its Rage included); Defense: block. In the Market pool, and bots take the hit with it when one of 3 or more is coming. Tested with 2 Encourage: Stomp 7 → 9 Riposte (7 taken, 9 back), Twin Strike 2 × 2 → 4 Riposte (4 taken, 8 back).
+- **Encourage now boosts Riposte and Vigil**, as it did FireShield, Riposte's twin (`EffectContext.IsEncouraged`, the glossary). Not Reversal or Hound.
+- **Rerolls per battle 2 → 3** (`RunData.rerollsPerBattle`): with 2 the game felt like it played itself.
+
+### Findings
+- Before → after, all three changes (200 runs per bot): Opportunist 4% → 3%, Bleed 21% → 31%, Fortune 2% → 9%, Provocator 2% → 4%, Hound 18% → 20%, Poison 18% → 21%, Rage 13% → 11%, Burn 7% → 9%, the rest within 1%.
+- Rerolls alone, 2 → 3 (400 runs): **Bleed 17% → 28%**, Fortune 3% → 6%, Hound 18% → 21%, Opportunist 3% → 3%. Bleed profits most and is now the strongest archetype; not tuned (the detailed balance waits for the map).
+- At battle 9: Essedarius kills all bots 17% (11% with 2 rerolls; each reroll feeds its Momentum), Provocator 33%; the War Elephant kills all bots 22% (30% before) and Provocator 35% (52% before).
+
+### Next Steps
+- The Lex Talionis emblem (ArtPrompts "Lex Talionis").
+- After the map: Bleed with 3 rerolls.
+

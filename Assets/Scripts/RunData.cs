@@ -30,7 +30,7 @@ public class RunData
     public List<DieEnchantmentSO> dieEnchantments = new List<DieEnchantmentSO>();
     public List<DieEnchantmentSO> lockedDieEnchantments = new List<DieEnchantmentSO>();
     // Rerolls the player gets at the start of every battle (see GDD "Rerolls").
-    public int rerollsPerBattle = 2;
+    public int rerollsPerBattle = 3;
     // Set by a boss victory: the next Market starts with a free equipment pick.
     public bool bossRewardPending;
     // The next battle, picked ahead (when the Market opens) so the Market can show it: a boss or an encounter.

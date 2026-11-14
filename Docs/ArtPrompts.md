@@ -187,7 +187,7 @@ The family is the face's first tag other than Physical; Lifesteal counts as Blee
 | Fortune | gold | Encore, Fate's Hand, Gambit, Hedge, Mirror Blade, Opening Gambit, Ricochet, Sidestep, Turnabout, Lucky Buckler, Fate's Edge, Gambler's Strike, Patient Blade |
 | General | plain bone | Catalyst, Drill Sergeant, Exploit, Feint, Last Stand, Mimic, Sharpshooter, Spare Blade, Throwing Knife, Veteran |
 | Net (Retiarius) | sea teal | Net, Trident, Harpoon, Tangle, Snare, Haul In |
-| Riposte (Provocator) | wine | Parry, Bait, Grudge, Vigil, Wrath, Perfect Counter, Provoke |
+| Riposte (Provocator) | wine | Parry, Bait, Grudge, Vigil, Wrath, Perfect Counter, Provoke, Lex Talionis |
 | Hound (Beastmaster) | leather brown | Whistle, Command, Guard Dog, Feed, Bloodhound, Sic 'Em |
 
 Rarity is the rim: Common bronze, Rare silver, Epic gold. An enchanted face gets a purple seal.
@@ -361,6 +361,14 @@ Only the first six cells are used. Save them as `Assets/Art/Faces/PitchPot.png`,
 4. Smoke Pot: a round clay pot pouring thick green smoke from holes in its lid
 5. Offering: a bronze ritual dagger lying across a small stone altar
 6. Hex: a purple wax tablet carved with a glowing curse sign
+```
+
+## Lex Talionis (1 emblem)
+
+For this one, change the sheet to "exactly 1 emblem". Save it as `Assets/Art/Faces/LexTalionis.png`.
+
+```
+1. Lex Talionis: a pair of bronze scales of justice with a sword lying across the beam
 ```
 
 # Items, die enchantments and face enchantments

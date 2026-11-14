@@ -207,7 +207,9 @@ The number printed on a face is exactly what its effects use. There are no hidde
 
 ### Rerolls
 
-Every battle gives the player a small pool of **rerolls** (2 for now), refilled at the start of each battle.
+Every battle gives the player a small pool of **rerolls** (3), refilled at the start of each battle.
+
+- **3, not 2** (the user's play, DevLog Day 117): with 2, most turns meant taking whatever face came up, and the game felt like it played itself. Measured against 2 (400 runs per bot): Bleed 17% → 28%, Fortune 3% → 6%, Hound 18% → 21%, the Opportunist 3% → 3%. Bleed profits most (rerolling into its conditional faces) and is now the strongest archetype; left for the tuning after the map. Essedarius kills more again (all bots 11% → 17% at battle 9): more rerolls dodge Run Down, but each one feeds Momentum.
 
 - **When:** after the die lands, before choosing an action, the player may spend a reroll to roll the die again. A reroll can be spent on any turn, and several can be spent on the same turn.
 - **The new face must be used:** there is no going back to the face before the reroll. That is where the risk comes from: a reroll can land on something worse.
@@ -595,7 +597,7 @@ These fill the last empty spots: Burn and Ritual had almost nothing, and enchant
 - **Vulnerable, Weak and Entangled** started as debuffs enemies put on the player (inspired by Slay the Spire's Vulnerable and Weak). Applied on the enemy's turn, N stacks last the player's next N turns. They make some enemy turns worse for the player and interact with rerolls (e.g. Weak: is it worth rerolling for a bigger hit?).
 - **The player nets enemies with Vulnerable and Weak too** (the Retiarius archetype). The rules are the same on both sides. Applied on the player's turn, they tick at the end of the enemy's turn, so like Bleed, N stacks reach N − 1 of the player's next turns: Vulnerable helps the hits of this turn and the next, Weak softens the enemy's next attacks. Entangled means nothing to an enemy (enemies don't reroll), so no face applies it.
 - **Previews count them:** every damage preview shows what one hit will really deal (Rage, the attacker's Weak, the target's Vulnerable), for the player's faces and the enemies' intents alike.
-- **Encourage:** the mirror of Ritual. Encourage N adds N to every buff the owner gains on itself: Rage, Fortify and FireShield. It is permanent for the battle, like Ritual. It doesn't affect Block (the basic defense of every face; boosting it would make Encourage a Shield tool instead of a bridge), Ritual, or Encourage itself (no compounding chains). It bridges Rage and Fortify (Shield + Rage). See "Encourage" under Build Archetypes for its content.
+- **Encourage:** the mirror of Ritual. Encourage N adds N to every buff the owner gains on itself: Rage, Fortify, FireShield, Riposte and Vigil (the last two since DevLog Day 117: Riposte is FireShield's twin). It is permanent for the battle, like Ritual. It doesn't affect Block (the basic defense of every face; boosting it would make Encourage a Shield tool instead of a bridge), Ritual, or Encourage itself (no compounding chains). It bridges Rage and Fortify (Shield + Rage). See "Encourage" under Build Archetypes for its content.
 - **Fortify is permanent, so it must come in small amounts.** Enemy intents that grant Fortify are kept at 1. A player's Shield face can grant Fortify equal to its value because it pays for it with weaker attacks than Sword.
 
 ## Build Archetypes
@@ -891,9 +893,12 @@ The challenger of the arena: invite the attack and make the enemy pay for it. Th
 | **Grudge** | Starter (grows) | Common | 2 | Attack: deal damage equal to my value plus the times you struck back this battle (Riposte, Vigil, Reversal). Defense: gain block equal to my value. |
 | **Vigil** | Engine | Rare | 3 | Magic: gain Vigil equal to my value: Riposte that waits for the first hit, across turns. Defense: gain block equal to my value. |
 | **Wrath** | Bridge (Riposte + Rage) | Rare | 2 | Defense: gain block equal to my value, and 1 Rage for each hit you took on the enemies' last turn (at most my value). |
+| **Lex Talionis** | Engine (the big hits) | Rare | 2 | Magic: if the enemy intends to attack, gain Riposte equal to the damage of its hit. Defense: gain block equal to my value. |
 | **Perfect Counter** | Payoff | Epic | 3 | Defense: gain block equal to my value, 2 Riposte and Reversal: until your next turn, a hit you absorb completely is dealt back in full. |
 | **Provoke** | Payoff (intent control) | Epic | 3 | Attack: deal damage equal to my value. Magic: if the enemy doesn't intend to attack, it switches to its weakest attack and gains 1 Rage; gain Riposte equal to my value. |
 
+- **Lex Talionis** (the user's idea, Day 117; Roman law: an eye for an eye): take the enemy's hit and give it back in full, per hit, so it answers the big hitters that stopped the Provocator die most (the War Elephant killed 52% of its arrivals). Its Riposte comes from the enemy's hit, not its value (like Ignite reads Burn); its value is its Defense. With Block on the same turn the hit is absorbed and still comes back. Tested: Stomp 7 with 2 Encourage → 9 Riposte, the player took 7 and the Elephant 9; Twin Strike 2 × 2 → 4 Riposte, 4 taken, 8 back. With it and 3 rerolls, the War Elephant kills 35% of the Provocator bot's arrivals (all bots 30% → 22%).
+- **Encourage boosts Riposte and Vigil** (Day 117, the user's question): Riposte is FireShield's twin, which Encourage already boosted. Not Reversal (its stacks don't matter) and not Hound (the beast would grow too fast; Hound is already one of the strong archetypes).
 - **Vigil replaced Taunt** (the user's catch): Taunt turned any intent into an attack, which erased the enemies' plans (Rage, petrify, healing) with nothing to pay, a lock instead of a clock. Vigil solves the build's real problem, Riposte wasted on a turn the enemy doesn't attack, without touching the enemy's plan.
 - **Provoke keeps the intent idea as an Epic with a price** (the user's design): only a non-attack intent changes (otherwise Provoke would cut Stomp 7 to Trunk Swat 2 every turn), into the weakest attack, and the enemy gains 1 Rage for good. 1 because Battle Cry, the only Rage intent, gives 1: provoking it gains nothing, so Provoke can't stop an enemy's escalation, only trade a utility (a debuff, petrify, healing) for a permanent Rage. Bosses switch to their weakest attack face (never one that starts a countdown).
 - **Value is the effect:** Vigil and Provoke give Riposte equal to their value, so they have higher values (3) instead of "twice my value".
@@ -934,7 +939,7 @@ Ideas to revisit after Poison and Shield. Agreed with the user on DevLog Day 111
 
 The crowd's favor: the arena cheers, and every buff you gain on yourself grows. Ritual is a dark rite that boosts what you do to the enemy; Encourage is its bright mirror, boosting what you do for yourself.
 
-- **Rule:** see "Status Effects". Encourage adds to every gain of Rage, Fortify and FireShield, each gain separately, so many small gains (items such as Tower Helm, Berserker Torc, Iron Bracers) profit most, just as Ritual does with Plague Mask.
+- **Rule:** see "Status Effects". Encourage adds to every gain of Rage, Fortify, FireShield, Riposte and Vigil, each gain separately, so many small gains (items such as Tower Helm, Berserker Torc, Iron Bracers) profit most, just as Ritual does with Plague Mask.
 - **A bridge, not an archetype:** Encourage content carries the **Rage and Block** tags, so the Market offers it to Shield and Rage players and the number of archetypes stays the same.
 - **The set mirrors Ritual's, so players recognize the pattern:**
 

@@ -722,6 +722,8 @@ public static class RunSimulator
             // Paying HP for the beast is only worth it with HP to spare.
             case "Feed": return !bigHit && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Defense;
             // Vigil waits for the first hit, so set it once and keep blocking while it waits.
+            // Lex Talionis: take the hit in Riposte when one is coming, else block.
+            case "Lex Talionis": return flow.Target.brain.IntendsAttack && flow.Target.brain.IncomingDamage >= 3 ? ActionType.Magic : ActionType.Defense;
             case "Vigil": return !bigHit && player.GetStatus(StatusType.Vigil) == 0 ? ActionType.Magic : ActionType.Defense;
             // Provoke an enemy that isn't attacking (its plan is the threat); against an attack, just block.
             // Provoke a utility intent (Magic: debuffs, petrify, buffs), never a block: turning a harmless turn into an
