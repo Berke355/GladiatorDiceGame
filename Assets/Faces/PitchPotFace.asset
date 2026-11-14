@@ -13,16 +13,18 @@ MonoBehaviour:
   m_Name: PitchPotFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Pitch Pot
-  description: 'Attack: Apply Burn equal to my value. Defense: Gain block equal to
-    my value.'
+  description: 'Attack: Deal damage equal to my value and apply 2 Burn. Defense:
+    Gain block equal to my value.'
   rarity: 0
   tags: 03000000
   emblem: {fileID: 21300000, guid: 27253f29f8ef58c4f9e43a26dabadfec, type: 3}
   plainTile: 0
-  baseValue: 3
+  baseValue: 2
   effects:
   - actionType: 0
-    effectLogic: {fileID: 11400000, guid: 6b11e72c35be2e344b7e718b742f902d, type: 2}
+    effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+  - actionType: 0
+    effectLogic: {fileID: 11400000, guid: 3bb10aae0ebf56b47894abe5c4e2b1a2, type: 2}
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   keywords: 

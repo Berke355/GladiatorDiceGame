@@ -3891,3 +3891,17 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - After the map: Bleed with 3 rerolls.
 
+## Day 118 - Burn's Slow Start
+
+### Findings
+- **Burn was weak only early:** 82% of its Strong battles won and 75% cleared with 4 build faces at battle 8, but the Minotaur killed it in about half its runs (Bleed about 5%) and it lost 26 HP in battles 1–3 (others about 22).
+- **Why:** in boss battles its die was mostly starting faces (Shield 29% of rolls, Sword 21%, Ember 8%), dealing 1.5 damage per turn (Bleed 2.5). Bleed's starting Swords are Bleed faces it upgrades from battle 1; Burn starts from nothing, and Pitch Pot and Hex dealt nothing alone (their Burn faded with nothing to ignite it), against the Standalone Faces rule.
+
+### Accomplished
+- **Pitch Pot is Burn's Sword:** Attack: deal damage equal to my value (2) and apply 2 Burn; Defense: block. **Ember 3 → 4.**
+- Burn bot 6% → 12–14%, Minotaur deaths 56% → 36%. Tried and dropped: Burn decaying 1 instead of 2 (11% alone, nothing added on top), the old Pitch Pot +1.
+
+### Next Steps
+- A new Pitch Pot emblem isn't needed (a pot of pitch still fits a hit that sets fire).
+- After the map: Bleed (28% with 3 rerolls) and Ritual + Poison, the strongest.
+

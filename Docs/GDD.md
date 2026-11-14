@@ -706,12 +706,15 @@ Burst damage over a short time. Build Burn up, then cash it out.
 
 - **Resource:** Burn on the enemy. It deals no damage on its own and decays by 2 (not on the tick right after it was applied). Ignitions turn it into damage without consuming it; Detonate consumes it.
 - **Identity:** Ignite small and often, or stack it up and detonate? Ember applies Burn and ignites it in one action; Detonate trades all the stacks for one big hit.
-- **Pitch Pot and Smolder** (DevLog Day 114) split Ember's two jobs into safe Commons: Pitch Pot only builds Burn (with a block to fall back on), Smolder blocks and ignites, so the fire keeps burning on a turn spent defending. Burn 3% → 8%.
+- **Pitch Pot and Smolder** (DevLog Day 114) split Ember's two jobs into safe Commons: Smolder blocks and ignites, so the fire keeps burning on a turn spent defending. Burn 3% → 8%.
+- **Burn's slow start** (DevLog Day 118): Burn's late game was fine (82% of Strong battles won, 75% cleared with 4 build faces at battle 8), but it died at the Minotaur in about half its runs (Bleed about 5%). Bleed starts with its build: the starting Swords are Bleed faces, upgraded from battle 1 (44% of its boss rolls, 3.6 damage each). A Burn die has 1–2 Burn faces by battle 4, and Pitch Pot and Hex dealt nothing on their own: their Burn faded by 2 a turn with nothing to ignite it.
+  - **Pitch Pot became Burn's Sword:** value damage and 2 Burn (Sword: 2 damage and 2 Bleed), so it hits on any die and still fuels Ember and Detonate. **Ember 3 → 4.**
+  - Tried (Burn bot, 300–400 runs; Minotaur deaths): today 6% (56%); Burn decaying 1 instead of 2: 11% (52%); Ember +1: 10% (48%); old Pitch Pot +1: 12% (55%); new Pitch Pot: 12% (41%); **new Pitch Pot + Ember 4: 14% (36%)**; adding the slower decay to that: 10% (42%). The decay rule stays: it didn't help where Burn was weak.
 
 | Face | Role | Rarity |
 |---|---|---|
-| Ember | Starter | Common |
-| Pitch Pot | Starter (fuel; value 3: Attack: apply Burn equal to my value. Defense: gain block equal to my value) | Common |
+| Ember | Starter (value 4: Attack: apply Burn equal to my value, then ignite it) | Common |
+| Pitch Pot | Starter (Burn's Sword; value 2: Attack: deal damage equal to my value and apply 2 Burn. Defense: gain block equal to my value) | Common |
 | Smolder | Starter (grows, Burn + Block; value 2: Defense: gain block equal to my value, then ignite Burn) | Common |
 | Detonate | Engine (cash-out) | Rare |
 | Flame Ward | Bridge (Burn + Block) | Rare |
