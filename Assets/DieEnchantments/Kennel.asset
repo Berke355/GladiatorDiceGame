@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Kennel
   description: 'When the Left or Right face lands: gain 1 Hound (once per turn).'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 47202698b33e93748a88141e6a8d5bbd, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []

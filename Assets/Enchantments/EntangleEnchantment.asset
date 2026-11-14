@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Entangle
   description: 'Magic: apply Weak and Vulnerable equal to the face''s value.'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8a7e3db66506e0d4cb4a4533b71b5879, type: 3}
   tags: 0b000000
   effects:
   - {fileID: 11400000, guid: e2592283818478b47afaaeeceff6ae1f, type: 2}

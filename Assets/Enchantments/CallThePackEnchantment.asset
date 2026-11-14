@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Call the Pack
   description: 'Magic: gain Hound equal to the face''s value.'
   rarity: 2
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 85ca72e019d8d1d4990a367d81f02edf, type: 3}
   tags: 0d000000
   effects:
   - {fileID: 11400000, guid: c0e0f1bdf43215843995c9d557edfd05, type: 2}

@@ -15,7 +15,7 @@ MonoBehaviour:
   equipmentName: Spiked Pauldron
   description: 'At the start of each battle: gain 2 Vigil.'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 7d1aa81b4d247bc4684d46101d274774, type: 3}
   tags: 0c00000001000000
   triggers:
   - trigger: 0

@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'At the start of each battle: gain 1 Hound (your beast is there from
     the first turn).'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 293b9e9baa8f495488b116fa107f6843, type: 3}
   tags: 0d000000
   triggers:
   - trigger: 0

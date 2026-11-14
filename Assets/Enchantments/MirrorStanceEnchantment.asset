@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Mirror Stance
   description: 'Magic: gain Riposte equal to the face''s value.'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 58eb72338292a86479af53a83527320e, type: 3}
   tags: 0c000000
   effects:
   - {fileID: 11400000, guid: ef0d4cf8dc6f02048a8c9e8e0ce72382, type: 2}

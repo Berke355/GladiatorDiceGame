@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'When a hit makes you lose HP: gain 1 Riposte (up to 3 times each
     round).'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 3f94cd7df26498841acc40501af66c70, type: 3}
   tags: 0c000000
   triggers:
   - trigger: 5

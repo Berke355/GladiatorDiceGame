@@ -15,7 +15,7 @@ MonoBehaviour:
   equipmentName: Weighted Net
   description: 'At the start of each battle: apply 1 Weak to every enemy.'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c85bfea18063e85419dab8a00a100678, type: 3}
   tags: 0b000000
   triggers:
   - trigger: 0

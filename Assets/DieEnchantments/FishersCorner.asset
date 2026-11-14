@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'When the Middle face lands: apply 2 Weak to your target (once per
     turn).'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: af0ec11ac5ca18747aecebbc99a07014, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []

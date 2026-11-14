@@ -15,7 +15,7 @@ MonoBehaviour:
   equipmentName: Fisher's Barb
   description: The first hit you deal each turn applies 1 Vulnerable.
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 90ae1473182042847a5d613d97ffeafd, type: 3}
   tags: 0b000000
   triggers:
   - trigger: 4

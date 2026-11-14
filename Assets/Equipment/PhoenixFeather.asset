@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'At the start of each battle: gain 1 Undying (the first time you would
     drop to 0 HP, you stay at 1).'
   rarity: 2
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 36126d0206223b34390c267d86646a3e, type: 3}
   tags: 0a000000
   triggers:
   - trigger: 0

@@ -3941,6 +3941,7 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Accomplished
 - **14 new pieces** (GDD "Fourth Set"): items Weighted Net, Fisher's Barb (Net), Spiked Pauldron, Old Scars (Riposte), Kennel Key, Bone Collar (Hound), Phoenix Feather (General); face enchantments Entangle, Mirror Stance, Call the Pack, Transmute; die enchantments Kennel, War Paint, Fisher's Corner. All in their pools.
+- **Pictures** for all 14 and the Undying icon (Gemini). A new cutter finds each object as a blob instead of a grid; the purple seals keep their purple because only magenta that touches the sheet's border is background, while the items' sheet treats all magenta as background so the holes in Bone Collar and Kennel Key turn transparent. Undying took the last cell of the icon atlas's top row.
 - **Three new mechanics:** `TriggerType.BeastBit` (items that react to the beast's bite), `StatusType.Undying` (survive a killing blow once, in `Entity.LoseHP`), and die enchantments that give a status when the face at a place lands, once per turn each.
 - Tested on a real `BattleFlow`: Weak on both enemies at the start, Fisher's Barb's Vulnerable, Bone Collar's Bleed on a bite (2 → 4), Old Scars' Riposte, Phoenix Feather saving the player once and not twice, Kennel giving 1 Hound in a turn of 30 rolls.
 
@@ -3948,5 +3949,4 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Hound 20% → 23–26%, Hound + Rage 13% → 25%, mostly Kennel Key (19% and 17% without it). Net and Provocator barely moved. Left for the tuning after the map.
 
 ### Next Steps
-- The pictures: ArtPrompts "Items 4", "Face enchantments 2", "Die enchantments 3" and the Undying icon (icon Sheet 6).
 

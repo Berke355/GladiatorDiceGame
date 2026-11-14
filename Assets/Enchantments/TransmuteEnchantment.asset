@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'Magic: do what the opposite face does on Attack, with this face''s
     value (a plain hit if it has no Attack).'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: fe4cf8544adad3e4189a35746a0f39f6, type: 3}
   tags: 0a000000
   effects:
   - {fileID: 11400000, guid: c1570ea9788ec1a49824c797e40f22ae, type: 2}

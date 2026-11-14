@@ -15,7 +15,7 @@ MonoBehaviour:
   equipmentName: Bone Collar
   description: 'Every time your beast bites: apply 2 Bleed.'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d46cf4b0e4506144e90bc538b80f6a1d, type: 3}
   tags: 0d00000007000000
   triggers:
   - trigger: 9
