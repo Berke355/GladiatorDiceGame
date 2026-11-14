@@ -3868,10 +3868,10 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 | Hoplomachus Champion | 20% | 35% |
 | Bestiarius | 17% | 17% |
 
-  Essedarius went from the hardest Strong enemy to the easiest. The War Elephant is now the one that stops the Provocator die most (Stomp 7 and 64 HP against a die that hits little on its own turn).
+  Essedarius went from the hardest Strong enemy to the easiest, so **Run Down's damage went 7 → 8** (the user's call, instead of raising the threshold again): all bots die 11% (unchanged), the Provocator bot 43% (only 56 arrivals, so very rough; 27% at 7 with 44).
+  The War Elephant is now the one that stops the Provocator die most (Stomp 7 and 64 HP against a die that hits little on its own turn).
 - **Antidote's text** now says "cleanses half of the Poison, Burn, Bleed on itself".
 
 ### Next Steps
-- If Essedarius now feels too easy: Run Down 7 → 8 damage, rather than raising the threshold again.
 - Watch Provocator's HP cost in the next play-tests (a blocked hit still sets off Riposte, so Block + Riposte is its intended way to take hits).
 

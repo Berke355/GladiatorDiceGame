@@ -23,7 +23,7 @@ MonoBehaviour:
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 86ce53da172ad1145a0ef2b57ca4160b, type: 2}
-    value: 7
+    value: 8
     weight: 2
     requiresTargetStatus: 0
   - intentName: Lash
