@@ -39,7 +39,8 @@ public class DieFace
     }
 
     // Only a face with an empty Magic action can be enchanted, which also means one enchantment per face.
-    public bool CanEnchant => !HasAction(ActionType.Magic);
+    public bool CanEnchant => !definition.isBlank && !HasAction(ActionType.Magic);
+    public bool IsBlank => definition.isBlank;
 
     public void Enchant(EnchantmentSO newEnchantment){
         if(CanEnchant){

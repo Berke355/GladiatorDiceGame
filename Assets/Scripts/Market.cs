@@ -484,7 +484,8 @@ public class Market
         }
         MarketOffer offer = offers[offerIndex];
         run.gold -= offer.price;
-        SendToBench(run.dieFaces[dieSlot]);
+        if(!run.dieFaces[dieSlot].IsBlank) SendToBench(run.dieFaces[dieSlot]);
+        else LastAutoSold = null;
         run.dieFaces[dieSlot] = new DieFace(offer.face);
         offer.sold = true;
         if(offer.locked){ offer.locked = false; run.lockedFaces.Remove(offer.face); }
@@ -495,6 +496,7 @@ public class Market
 
     // The Normal Market upgrades Common and Rare faces; the Grand Market upgrades every face, Epic ones included.
     public bool IsUpgradableHere(int dieSlot){
+        if(run.dieFaces[dieSlot].IsBlank) return false;
         return isGrand || run.dieFaces[dieSlot].definition.rarity != Rarity.Epic;
     }
 
@@ -582,12 +584,39 @@ public class Market
         run.bench.Add(face);
     }
 
+    public bool BenchHasRoom => run.bench.Count < BenchSlots;
+
     // Free and unlimited at any Market: the benched face takes the die place, the die face takes its bench slot.
+    // A Blank die face just disappears (the benched face fills its place).
     public bool SwapWithBench(int dieSlot, int benchIndex){
         if(dieSlot < 0 || dieSlot >= run.dieFaces.Count || benchIndex < 0 || benchIndex >= run.bench.Count) return false;
         DieFace benched = run.bench[benchIndex];
-        run.bench[benchIndex] = run.dieFaces[dieSlot];
+        if(run.dieFaces[dieSlot].IsBlank) run.bench.RemoveAt(benchIndex);
+        else run.bench[benchIndex] = run.dieFaces[dieSlot];
         run.dieFaces[dieSlot] = benched;
+        return true;
+    }
+
+    // Moves a die face to a free bench slot; its place on the die becomes Blank.
+    public bool CanMoveToBench(int dieSlot){
+        return BenchHasRoom && economy.blankFace != null && dieSlot >= 0 && dieSlot < run.dieFaces.Count && !run.dieFaces[dieSlot].IsBlank;
+    }
+
+    public bool MoveToBench(int dieSlot){
+        if(!CanMoveToBench(dieSlot)) return false;
+        run.bench.Add(run.dieFaces[dieSlot]);
+        run.dieFaces[dieSlot] = new DieFace(economy.blankFace);
+        return true;
+    }
+
+    // Buys an offer straight onto a free bench slot, replacing nothing on the die.
+    public bool BuyToBench(int offerIndex){
+        if(!CanBuy(offerIndex) || !BenchHasRoom) return false;
+        MarketOffer offer = offers[offerIndex];
+        run.gold -= offer.price;
+        run.bench.Add(new DieFace(offer.face));
+        offer.sold = true;
+        if(offer.locked){ offer.locked = false; run.lockedFaces.Remove(offer.face); }
         return true;
     }
 

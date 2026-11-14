@@ -24,6 +24,9 @@ public class DieFaceSO : ScriptableObject
     // A special face whose value isn't a number (none exist yet). Rules that compare values treat it as lowest,
     // e.g. it counts as below any threshold (see PunishChoiceEffectSO).
     public bool hasNoValue;
+    // The Blank face (see GDD "Bench"): what a die place holds after its face moved to the bench. No actions, never
+    // upgraded or enchanted; landing on it means a reroll or a pass.
+    public bool isBlank;
 
     public bool HasKeyword(FaceKeyword keyword) => keywords != null && keywords.Contains(keyword);
     public bool Charges => HasKeyword(FaceKeyword.Charge);

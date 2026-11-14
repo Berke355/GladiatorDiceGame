@@ -3919,3 +3919,18 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - The content pack: items and enchantments for Retiarius, Provocator and Beastmaster, then more creative general ones (Day 119's list).
 
+## Day 120 - Blank Faces and a Bench of Its Own
+
+### Accomplished (the user's requests)
+- **Move a face to the bench:** Move, then an empty bench slot; its die place turns **Blank** (`BlankFace.asset`, `isBlank`: no actions, no value, never upgraded or enchanted; landing on it means a reroll or a pass). A benched face swapped onto a Blank fills it, and buying onto a Blank doesn't bench it.
+- **Buy straight onto the bench** (a pending buy, then an empty bench slot).
+- **The bench left the die net:** its own BENCH section in the right panel beside the die enchantments, slots the size of the die enchantment slots, Sell under each.
+- Tested on `Market` (move, buy to bench, fill a Blank, buy over a Blank, Blank not upgradable or enchantable), in Play Mode (screenshot: the Blank on the die, Ember and Lacerate on the bench), and in battle (a rolled Blank can't act, reroll and pass work; the simulator runs with one).
+
+### Findings
+- A Blank instead of the Health Potion: Bleed bot 25% → 14%, Opportunist 6% → 1%. Benching a face costs a lot, as it should.
+- The selected face panel said "Has its own Magic" for a Blank; now "Can't be enchanted".
+
+### Next Steps
+- The bench item (the user asked for ideas: an effect at the start of every battle per benched face).
+

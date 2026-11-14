@@ -419,8 +419,10 @@ Market services:
 
 **A face you replace isn't lost: it waits on the bench** (the user's idea, DevLog Day 119).
 
-- **Two slots.** Buying a face sends the face it replaces to the bench, with its upgrades and its enchantment. A full bench sells its oldest face to make room (the Market's hint says which one before the click).
+- **Two slots**, in their own BENCH section of the Market's right panel, beside the die enchantments. Buying a face sends the face it replaces to the bench, with its upgrades and its enchantment. A full bench sells its oldest face to make room (the Market's hint says which one before the click).
 - **Free swaps at any Market:** click a benched face, then a face on the die; they trade places. Never during a battle.
+- **Move a face to the bench** (Move, then an empty bench slot): its place on the die turns **Blank**, a face with no actions, no value, never upgraded or enchanted; landing on it means a reroll or a pass. A benched face swapped onto a Blank fills it (the Blank is gone), and a face bought onto a Blank doesn't send it to the bench. Taking a face off the die is a real cost: a Blank instead of the Health Potion took the Bleed bot from 25% to 14%. (The Blank is also the price the Mad Scientist plans for a merge.)
+- **Buy straight onto the bench:** a bought face can go to an empty bench slot instead of replacing a die face.
 - **Sell** a benched face for a quarter of its rarity's price (Common 2, Rare 6, Epic 11 gold), so the bench never becomes a shop.
 - **Why two:** enough for a plan B (a Burn face kept for the Hydra, a defensive face for the War Elephant), not enough for a second die. Replacing a face still matters, but a wrong buy is no longer final. Later, the Mad Scientist (Roadmap) can merge a benched face.
 - Bots don't use the bench; their replaced faces are sold when it overflows, which changed nothing measurable (Opportunist 5% → 6%, Burn 12% → 12%, Bleed 26% → 25%).

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e2310fff4c3cb34aa4353ed9ec0611e, type: 3}
   m_Name: EconomyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EconomyConfigSO
+  blankFace: {fileID: 11400000, guid: 584f2ab00c5adf64a80de44effa5a8cb, type: 2}
   goldPerVictory: 20
   startingGold: 20
   weightByBuildTags: 0

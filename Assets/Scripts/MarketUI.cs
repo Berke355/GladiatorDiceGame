@@ -194,14 +194,20 @@ public class MarketUI : MonoBehaviour
     }
 
     // A benched face: picked to swap in, or (while a die face is being moved) swapped with it at once.
+    // An empty one: a bought face goes there, or the face being moved goes there (its die place turns Blank).
     private void OnBenchClicked(int benchIndex){
-        if(benchIndex >= run.bench.Count) return;
-        if(pendingSwap >= 0){
-            if(market.SwapWithBench(pendingSwap, benchIndex)) AudioManager.Play(Sfx.Swap);
+        bool filled = benchIndex < run.bench.Count;
+        if(pendingOffer >= 0 && !filled){
+            if(market.BuyToBench(pendingOffer)) AudioManager.Play(Sfx.Buy);
+            ClearPending();
+        }
+        else if(pendingSwap >= 0){
+            bool done = filled ? market.SwapWithBench(pendingSwap, benchIndex) : market.MoveToBench(pendingSwap);
+            if(done) AudioManager.Play(Sfx.Swap);
             selectedSlot = pendingSwap;
             ClearPending();
         }
-        else pendingBench = pendingBench == benchIndex ? -1 : benchIndex;
+        else if(filled) pendingBench = pendingBench == benchIndex ? -1 : benchIndex;
         Refresh();
     }
 
@@ -462,17 +468,18 @@ public class MarketUI : MonoBehaviour
             slot.tile.gameObject.SetActive(filled);
             slot.upgradeButton.gameObject.SetActive(filled);
             if(!filled){
-                slot.faceText.text = "<color=#7F8C8D>Empty</color>";
-                slot.tooltip.text = "An empty bench slot. A face you replace at the Market waits here.";
-                slot.slotButton.interactable = false;
-                slot.slotButton.image.color = new Color(0f, 0f, 0f, 0f);
+                bool takes = pendingOffer >= 0 || (pendingSwap >= 0 && market.CanMoveToBench(pendingSwap));
+                slot.faceText.text = takes ? "<color=#E2B23C>Put here</color>" : "<color=#7F8C8D>Empty</color>";
+                slot.tooltip.text = "An empty bench slot: a face you replace waits here. You can also buy a face straight onto it, or move a face here from your die (its place turns Blank).";
+                slot.slotButton.interactable = takes;
+                slot.slotButton.image.color = takes ? new Color32(0xE2, 0xB2, 0x3C, 0x60) : new Color(0f, 0f, 0f, 0f);
                 continue;
             }
             DieFace face = run.bench[i];
             slot.tile.Set(face, face.value, "");
             slot.faceText.text = i == pendingBench ? "<color=#E2B23C>SWAPPING</color>" : "";
             slot.tooltip.text = GameText.FaceTooltip(face) + "\n<color=#9AA5B1>On the bench: click it, then a face on your die, to swap them.</color>";
-            slot.slotButton.interactable = !ChoosingDieSlot && pendingDieEnchantment < 0;
+            slot.slotButton.interactable = pendingEnchantment < 0 && pendingOffer < 0 && pendingDieEnchantment < 0;
             slot.slotButton.image.color = i == pendingBench ? new Color32(0xE2, 0xB2, 0x3C, 0xFF) : new Color(0f, 0f, 0f, 0f);
             slot.upgradeButtonText.text = "Sell " + GameText.Icon("Gold") + market.GetSellPrice(face);
             slot.upgradeButton.interactable = !Choosing;
@@ -500,20 +507,20 @@ public class MarketUI : MonoBehaviour
         selectedBody.text = GameText.FaceRules(face.FullDescription) +"\n<size=80%>" + MagicStatus(face) + "</size>";
         bool upgradable = market.IsUpgradableHere(selectedSlot);
         selectedUpgradeButton.interactable = upgradable && !Choosing && market.CanUpgrade(selectedSlot);
-        selectedUpgradeText.text = upgradable
-            ? "Upgrade " + face.value + " → " + (face.value + 1) + "  " + GameText.Icon("Gold") + market.GetUpgradeCost(selectedSlot)
+        selectedUpgradeText.text = face.IsBlank ? "<size=80%>Blank: buy or swap a face in</size>"
+            : upgradable ? "Upgrade " + face.value + " → " + (face.value + 1) + "  " + GameText.Icon("Gold") + market.GetUpgradeCost(selectedSlot)
             : "<size=80%>Upgraded at the Grand Market</size>";
         selectedMoveButton.interactable = !ChoosingDieSlot && pendingDieEnchantment < 0;
         selectedMoveText.text = pendingSwap == selectedSlot ? "Moving…" : "Move";
     }
 
     private string Hint(){
-        if(pendingOffer >= 0) return "Choose a face to replace with " + market.offers[pendingOffer].face.faceName + ": the replaced face goes to your bench"
+        if(pendingOffer >= 0) return "Choose a face to replace with " + market.offers[pendingOffer].face.faceName + " (it goes to your bench), or an empty bench slot"
             + (run.bench.Count >= Market.BenchSlots ? " (the bench is full: " + run.bench[0].DisplayName + " will be sold)" : "");
         if(pendingBench >= 0) return "Choose a face on your die to swap with " + run.bench[pendingBench].DisplayName;
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingDieEnchantment >= 0) return "Your die has 2 enchantments. Choose one to replace with " + market.dieEnchantmentOffers[pendingDieEnchantment].enchantment.enchantmentName;
-        if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click";
+        if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click, or goes to the bench (its place turns Blank)";
         if(HasSelectedPanel) return market.isGrand ? "Grand Market: every face can be upgraded, Epic ones included." : "Buy a face, then click the face on your die it replaces.";
         return (market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market.") + " Click a die face to move it (free).";
     }
@@ -528,6 +535,7 @@ public class MarketUI : MonoBehaviour
     // Whether the face can take an enchantment, or which one it has.
     private static string MagicStatus(DieFace face){
         if(face.enchantment != null) return "<color=#B388FF>Enchanted: " + face.enchantment.enchantmentName + "</color>";
+        if(face.IsBlank) return "<color=#A89C88>Can't be enchanted</color>";
         return face.CanEnchant ? "<color=#E2B23C>Can be enchanted</color>" : "<color=#A89C88>Has its own Magic</color>";
     }
 }

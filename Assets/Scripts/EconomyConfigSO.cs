@@ -6,6 +6,9 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "EconomyConfig", menuName = "Dice/Economy Config")]
 public class EconomyConfigSO : ScriptableObject
 {
+    // The Blank face a die place gets when its face moves to the bench (see GDD "Bench").
+    public DieFaceSO blankFace;
+
     public int goldPerVictory = 10;
     // Gold every run starts with; the run start screen's reroll is paid from it (see GDD "Run Start").
     public int startingGold = 20;
