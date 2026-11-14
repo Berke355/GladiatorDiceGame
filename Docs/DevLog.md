@@ -3979,3 +3979,14 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Two more faults the user found: the cut faces had holes around the bone and looked dull brown (the pink flesh was taken for the magenta background, and the shared palette came from the 3-headed picture, which has no cut), and the back neck ended on the middle stump's cut instead of passing behind it. The holes and faces are repainted from the source images' own colors; the middle stump is drawn over the back neck again and the neck runs down behind the front neck into the shoulder; the headless 3-neck picture's back stump is now that same neck cut square, with a cut face like the others (drawn by script, PixelLab's daily quota was spent).
 - The user marked the real gap: a notch of background between the back neck's end and the middle stump's top. The neck now goes on there and disappears behind the stump's rim (3 necks with 2, 1 and 0 heads).
 - The earlier fill below the back neck (down to the front neck) was taken out again at the user's request: the gap between the two necks is open as before, and only the notch fill at the stump stays.
+
+## Day 123 - The Map, Step 1: Data and Generator
+
+### Accomplished
+- **The plan** (Roadmap Phase B, agreed with the user): three acts, one per boss, each a branching map of 6 floors plus the boss; nodes Battle, Market, Enchanting Table (its own node, the user's choice), Rest (healing leaves the Market) and Boss first, then Elite, events and special nodes. Written to GDD "Map" and the Roadmap as eight steps.
+- **`MapData`** (`MapNodeType`, `MapNode`, `ActMap`: nodes, next links, `Reachable`, `Routes`), plain serializable data for `RunData`.
+- **`MapGenerator`**: paths walk up from the first floor, one lane at most to either side, never crossing; nodes are where they pass. Types: the first floor battles, the last floor rests, the rest by weights (`MapConfigSO`, `Assets/Config/MapConfig.asset`) with rules (no non-battle node after one of its own type, siblings differ, no rest on the second floor or right before the last floor). A map is drawn again until every route has two battles and a Market (`Problems`).
+- Tested on 2000 maps: none broke a rule; 16 nodes and 11-12 routes per map on average, 2-4 battles per route (3 on most), 2.4-2.9 nodes per floor.
+
+### Next Steps
+- Step 2: the map screen and the run flow.

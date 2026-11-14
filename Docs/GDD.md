@@ -330,6 +330,24 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 - **Player HP:** 50 max. HP carries over between battles.
 - **Healing after bosses:** winning a boss battle restores 30% of max HP. Without it, runs would end from slow HP loss instead of from how good the build is. It was 50%, but in play-tests that made boss fights feel safe ("my HP will come back anyway"), so HP stays a resource to manage through the boss.
 - **Gold after bosses:** winning a boss battle pays a 30 gold bonus on top of the normal reward, so the player can always afford one Epic at the Grand Market: a boss victory alone pays 50 gold and an Epic costs 45.
+- **Being replaced by the map** (see Map): three acts, each a branching map that ends with its boss.
+
+### Map
+
+Between battles the player walks a branching map instead of the fixed battle → Market → battle line (inspired by Slay the Spire, Roadmap Phase B). The route is the run's big decision outside battles: more fights for gold, a Market, the Enchanting Table, or a rest.
+
+- **Three acts,** one per boss: the Minotaur, Medusa and the Hydra. Act 1 fights Weak enemies, act 2 Medium, act 3 Strong.
+- **An act's map:** 6 floors of nodes, then the boss. Each floor has 2-4 nodes on 4 lanes; paths go up one floor at a time to a node on the same or a neighbouring lane, and never cross. The whole act fits one screen, so the player plans the route from the start.
+- **Nodes:**
+  - **Battle:** a normal fight; its enemies are shown on hover (this replaces the Market's "Next battle" line).
+  - **Market:** faces, items, the bench and rerolls, as today, without the Healer and without the Enchanting Table.
+  - **Enchanting Table:** a node of its own (the user's choice): face enchantments and die enchantments, with the same locks and rerolls.
+  - **Rest:** heal 30% of max HP, or upgrade one face for free. One of the two. Healing moved here from the Market, so the route becomes a choice between healing and shopping.
+  - **Boss:** the act's last node. Winning it opens the Grand Market (with the boss reward), then the next act's map.
+  - **Later:** Elite (a harder fight with a bigger reward), "?" events, the Blacksmith and the Mad Scientist (Roadmap Phase B).
+- **Rules for the node types:** the first floor is all battles and the last floor before the boss is all rests (a last heal or upgrade before the boss). On every route from the first floor to the boss there are at least one Market and two battles, and no two of the same non-battle node follow each other.
+- **Length:** a typical route has 3-4 battles plus the boss per act, about 12-15 battles a run (11 before), towards the 25-30 minute target.
+- **Saved with the run:** the map is plain data in `RunData`, generated per act from a seed.
 
 ### Run Start
 

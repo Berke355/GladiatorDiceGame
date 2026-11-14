@@ -16,7 +16,16 @@ Slay the Spire is the main reference for this phase. The order matters: the batt
 
 ## Phase B: Run Structure
 
-- **Map.** A branching path between battles (inspired by Slay the Spire) instead of battle → Market → battle:
+- **Map (in progress, GDD "Map").** Steps agreed with the user (DevLog Day 123), each ending playable:
+  1. Map data and generator (plain C#, tested without a scene).
+  2. The map screen and the run flow (battle → map → node).
+  3. Nodes: battle, Market, Enchanting Table (its own node), rest (healing leaves the Market), boss. First play-test.
+  4. Elite.
+  5. Economy and difficulty pass; the simulator walks the map.
+  6. "?" events.
+  7. Special nodes: the Blacksmith (the Mad Scientist later).
+  8. Map art and sound.
+- **Map (the original idea).** A branching path between battles (inspired by Slay the Spire) instead of battle → Market → battle:
   - Node types: normal battle, elite (harder, extra reward such as an Epic face or item), rest (heal or upgrade a face), event (risk/reward choices, e.g. pay HP for an enchantment), Market and boss.
   - The Market becomes a node, so the economy needs a new pass.
   - **Ideas from play-tests:**
