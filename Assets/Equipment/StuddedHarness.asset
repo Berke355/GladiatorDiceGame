@@ -15,7 +15,7 @@ MonoBehaviour:
   equipmentName: Studded Harness
   description: Your beast has 3 more max HP.
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9d28a9bee04ee7a4fa64dde08898a46b, type: 3}
   tags: 0d000000
   triggers: []
   goldPerVictory: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Mend
   description: 'Magic: heal your beast equal to the face''s value.'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0d1adc63c9f8d514a8da3dfdee8223bc, type: 3}
   tags: 0d000000
   effects:
   - {fileID: 11400000, guid: 7db81985747f96c4abac6778fa881d92, type: 2}

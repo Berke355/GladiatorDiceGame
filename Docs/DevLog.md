@@ -4024,4 +4024,5 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - Pictures for the nine new pieces (`Docs/ArtPrompts.md`: Sheet 11, Items 5, Face enchantments 3, Die enchantments 4).
 - The user plays the beast. Then the map's step 4 (Elite).
+- **Pictures** for the nine pieces (Gemini): five face emblems, two items, the Mend seal and the Doghouse medallion, cut with the grid and blob cutters. Mend's sheet came on a darker pink than magenta (turned to magenta before cutting), and its motif (a paw, a bandage and two dice Gemini added) is muddy at 36 pixels; it stays until a simpler one is made.
 

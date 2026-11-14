@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Doghouse
   description: 'When the Top or Bottom face lands: heal your beast 1 (once per turn).'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0e28f105789b14d4d84dbbac3722b6f7, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []

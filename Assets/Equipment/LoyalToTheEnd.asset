@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Once per battle, a blow that would kill your beast leaves it at 1
     HP.
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d07ae96b434f47746924533acee9730a, type: 3}
   tags: 0d000000
   triggers: []
   goldPerVictory: 0
