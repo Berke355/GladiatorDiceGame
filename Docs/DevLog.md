@@ -3880,6 +3880,7 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Accomplished (the user's three ideas)
 - **Lex Talionis** (Provocator, Rare, value 2): Magic: if the enemy intends to attack, gain Riposte equal to the damage of its hit (its Rage included); Defense: block. In the Market pool, and bots take the hit with it when one of 3 or more is coming. Tested with 2 Encourage: Stomp 7 → 9 Riposte (7 taken, 9 back), Twin Strike 2 × 2 → 4 Riposte (4 taken, 8 back).
 - **Encourage now boosts Riposte and Vigil**, as it did FireShield, Riposte's twin (`EffectContext.IsEncouraged`, the glossary). Not Reversal or Hound.
+- **The Lex Talionis emblem** from Gemini: bronze scales with a sword across the beam.
 - **Rerolls per battle 2 → 3** (`RunData.rerollsPerBattle`): with 2 the game felt like it played itself.
 
 ### Findings
@@ -3888,6 +3889,5 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - At battle 9: Essedarius kills all bots 17% (11% with 2 rerolls; each reroll feeds its Momentum), Provocator 33%; the War Elephant kills all bots 22% (30% before) and Provocator 35% (52% before).
 
 ### Next Steps
-- The Lex Talionis emblem (ArtPrompts "Lex Talionis").
 - After the map: Bleed with 3 rerolls.
 
