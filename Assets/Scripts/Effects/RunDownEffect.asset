@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RunDownEffect
   m_EditorClassIdentifier: Assembly-CSharp::PunishChoiceEffectSO
   condition: 0
-  threshold: 5
+  threshold: 4
   action: 0

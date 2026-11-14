@@ -15,6 +15,6 @@ public class CleanseSelfEffectSO : EffectSO
     }
 
     public override string Describe(EffectContext context){
-        return "removes half of its " + string.Join(", ", statuses);
+        return "cleanses half of the " + string.Join(", ", statuses) + " on itself";
     }
 }

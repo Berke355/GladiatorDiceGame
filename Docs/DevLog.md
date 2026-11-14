@@ -3850,3 +3850,18 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - The user plays them.
 
+## Day 116 - The User's Provocator Run
+
+### Findings (the user's play)
+- **Provocator costs HP:** Riposte pays off only when the enemy hits, so the user's HP went fast; investing in Shield faces and Fortify got them past Medusa, but healing at the Market ate the gold for upgrades.
+- **Essedarius killed the run:** Run Down ("7 damage if you act with a face below 5") counters any build whose faces don't reach 5, and Kick Up Dust (Day 115) now also takes a reroll to dodge it with.
+- **Antidote was unclear:** "removes half of its Poison, Burn, Bleed" read as if Venefica put those on the player.
+
+### Accomplished
+- **Run Down's threshold 5 → 4** (the user's call): it still catches starter faces and unupgraded Commons. Not measured yet (the Unity bridge was down).
+- **Antidote's text** now says "cleanses half of the Poison, Burn, Bleed on itself".
+
+### Next Steps
+- Measure Essedarius's kill rate with the new threshold (`RunSimulator.DeathRateAt`).
+- Watch Provocator's HP cost in the next play-tests (a blocked hit still sets off Riposte, so Block + Riposte is its intended way to take hits).
+
