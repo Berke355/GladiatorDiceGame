@@ -1,0 +1,254 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+// The map screen (see GDD "Map"): draws the act's map from the run, floor by floor up to the boss, and sends a click
+// on a reachable node to RunManager.EnterNode. Rests are played here: heal, or upgrade one face.
+public class MapUI : MonoBehaviour
+{
+    public TextMeshProUGUI titleText;
+    public TextMeshProUGUI hintText;
+    public TextMeshProUGUI infoText;
+    // Nodes and lines are copied from these inactive templates into mapArea, centered on it.
+    public RectTransform mapArea;
+    public MapNodeUI nodeTemplate;
+    public Image lineTemplate;
+    // One picture per MapNodeType, in enum order; the boss node shows the boss itself.
+    public Sprite[] typeIcons;
+    public float laneSpacing = 330f;
+    public float floorSpacing = 150f;
+    public float bossSize = 190f;
+
+    [Header("Rest")]
+    public GameObject restPanel;
+    public TextMeshProUGUI restBody;
+    public Button restHealButton;
+    public TextMeshProUGUI restHealText;
+    public Button restUpgradeButton;
+    // The die's faces to pick from for an upgrade, copied from the template.
+    public RectTransform restFaceRow;
+    public Button restFaceTemplate;
+    public Button restBackButton;
+
+    private RunData run;
+    private readonly List<MapNodeUI> nodes = new List<MapNodeUI>();
+    private readonly List<GameObject> drawn = new List<GameObject>();
+    private readonly List<GameObject> faceButtons = new List<GameObject>();
+    private List<int> reachable = new List<int>();
+
+    private static readonly Color[] TypeColors = {
+        new Color(0.56f, 0.19f, 0.15f),   // Battle
+        new Color(0.80f, 0.60f, 0.20f),   // Market
+        new Color(0.47f, 0.32f, 0.70f),   // Enchanting Table
+        new Color(0.26f, 0.55f, 0.30f),   // Rest
+        new Color(0.70f, 0.12f, 0.12f),   // Boss
+        new Color(0.45f, 0.10f, 0.35f),   // Elite
+        new Color(0.22f, 0.42f, 0.66f),   // Event
+    };
+
+    void Start(){
+        RunManager manager = RunManager.Instance;
+        run = manager.run;
+        if(!manager.UsesMap){
+            manager.GoToNextBattle();
+            return;
+        }
+        // Played directly from the Editor before a run had a map.
+        if(run.map == null) manager.BeginAct(run.act);
+        manager.PrepareReachable();
+        AudioManager.PlayMusic(MusicTrack.RunStart);
+        nodeTemplate.gameObject.SetActive(false);
+        lineTemplate.gameObject.SetActive(false);
+        if(restFaceTemplate != null) restFaceTemplate.gameObject.SetActive(false);
+        restHealButton.onClick.AddListener(OnRestHeal);
+        restUpgradeButton.onClick.AddListener(ShowUpgradeChoice);
+        restBackButton.onClick.AddListener(ShowRestChoice);
+        Draw();
+        restPanel.SetActive(false);
+        if(run.restPending) ShowRestChoice();
+    }
+
+    void Update(){
+        // The nodes the player can go to breathe a little.
+        float pulse = 1f + 0.06f * Mathf.Sin(Time.unscaledTime * 4f);
+        foreach(int index in reachable){
+            if(index < nodes.Count && nodes[index] != null && !run.restPending) nodes[index].transform.localScale = new Vector3(pulse, pulse, 1f);
+        }
+    }
+
+    private Vector2 PositionOf(MapNode node){
+        ActMap map = run.map;
+        float bottom = -floorSpacing * map.floors / 2f;
+        if(node.type == MapNodeType.Boss) return new Vector2(0f, bottom + floorSpacing * map.floors + 30f);
+        return new Vector2((node.lane - (map.lanes - 1) / 2f) * laneSpacing, bottom + floorSpacing * node.floor);
+    }
+
+    private void Draw(){
+        foreach(GameObject each in drawn) Destroy(each);
+        drawn.Clear();
+        nodes.Clear();
+        ActMap map = run.map;
+        reachable = run.restPending ? new List<int>() : map.Reachable(run.mapNode);
+        BossSO boss = run.actBoss;
+        titleText.text = "ACT " + (run.act + 1) + (boss != null ? ":  " + boss.bossName.ToUpperInvariant() : "");
+        hintText.text = run.mapNode < 0 ? "Choose your first fight. Hover a node to see what waits there." : "Choose where to go next.";
+        infoText.text = GameText.Icon("Health") + " " + run.currentHP + " / " + run.maxHP + "     " + GameText.Icon("Gold") + " " + run.gold;
+
+        // Lines first, so the nodes cover their ends.
+        for(int i = 0; i < map.nodes.Count; i++){
+            foreach(int next in map.nodes[i].next){
+                Image line = Instantiate(lineTemplate, mapArea);
+                line.gameObject.SetActive(true);
+                drawn.Add(line.gameObject);
+                Vector2 a = PositionOf(map.nodes[i]), b = PositionOf(map.nodes[next]);
+                RectTransform rect = line.rectTransform;
+                rect.anchoredPosition = (a + b) / 2f;
+                rect.sizeDelta = new Vector2(Vector2.Distance(a, b), rect.sizeDelta.y);
+                rect.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg);
+                bool walked = run.visitedNodes.Contains(i) && run.visitedNodes.Contains(next);
+                bool open = i == run.mapNode && reachable.Contains(next);
+                line.color = open ? new Color(0.95f, 0.78f, 0.35f, 1f) : walked ? new Color(0.92f, 0.86f, 0.72f, 0.9f) : new Color(0.55f, 0.48f, 0.38f, 0.45f);
+            }
+        }
+        for(int i = 0; i < map.nodes.Count; i++){
+            MapNode node = map.nodes[i];
+            MapNodeUI ui = Instantiate(nodeTemplate, mapArea);
+            ui.gameObject.SetActive(true);
+            drawn.Add(ui.gameObject);
+            nodes.Add(ui);
+            RectTransform rect = (RectTransform)ui.transform;
+            rect.anchoredPosition = PositionOf(node);
+            if(node.type == MapNodeType.Boss) rect.sizeDelta = new Vector2(bossSize, bossSize);
+            bool visited = run.visitedNodes.Contains(i);
+            bool canGo = reachable.Contains(i);
+            bool current = i == run.mapNode;
+            Color color = TypeColors[Mathf.Clamp((int)node.type, 0, TypeColors.Length - 1)];
+            ui.disc.color = visited && !current ? Color.Lerp(color, Color.black, 0.55f) : color;
+            Sprite picture = node.type == MapNodeType.Boss && boss != null && boss.sprite != null ? boss.sprite
+                : (int)node.type < typeIcons.Length ? typeIcons[(int)node.type] : null;
+            ui.icon.sprite = picture;
+            ui.icon.enabled = picture != null;
+            ui.icon.preserveAspect = true;
+            ui.ring.enabled = canGo || current;
+            ui.ring.color = current ? new Color(1f, 1f, 1f, 0.9f) : new Color(0.95f, 0.78f, 0.35f, 1f);
+            ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);
+            CanvasGroup group = ui.GetComponent<CanvasGroup>();
+            if(group != null) group.alpha = canGo || current || visited || node.type == MapNodeType.Boss ? 1f : 0.55f;
+            // The node's look is drawn here; the button's own tint would wash out the nodes it can't go to.
+            ui.button.transition = Selectable.Transition.None;
+            ui.button.interactable = canGo;
+            int index = i;
+            ui.button.onClick.AddListener(() => OnNodeClicked(index));
+            ui.tooltip.text = Describe(node);
+        }
+    }
+
+    public static string TypeName(MapNodeType type){
+        switch(type){
+            case MapNodeType.EnchantingTable: return "Enchanting Table";
+            default: return type.ToString();
+        }
+    }
+
+    private string Describe(MapNode node){
+        RunManager manager = RunManager.Instance;
+        int battle = run.battlesWon + 1;
+        switch(node.type){
+            case MapNodeType.Battle:
+            case MapNodeType.Elite:
+                if(node.encounter != null && node.encounter.members.Count > 0)
+                    return EncounterInfo.Summary(node.encounter, battle) + "\n\n" + EncounterInfo.Details(node.encounter, battle);
+                return "<b>" + TypeName(node.type) + "</b>\nA fight with " + manager.ActTier + " enemies. Win it for gold.";
+            case MapNodeType.Boss:
+                return run.actBoss != null ? "<b>Boss</b>\n" + EncounterInfo.BossDetails(run.actBoss) + "\n\nWinning heals you and opens the Grand Market." : "<b>Boss</b>";
+            case MapNodeType.Market:
+                return "<b>Market</b>\nBuy faces and items, upgrade faces, use the bench.";
+            case MapNodeType.EnchantingTable:
+                return "<b>Enchanting Table</b>\nInscribe enchantments onto faces and onto the die.";
+            case MapNodeType.Rest:
+                return "<b>Rest</b>\nHeal " + manager.RestHealAmount + " HP, or upgrade one face for free.";
+            default:
+                return "<b>" + TypeName(node.type) + "</b>";
+        }
+    }
+
+    private void OnNodeClicked(int index){
+        if(!RunManager.Instance.CanEnter(index)) return;
+        AudioManager.Play(Sfx.UIClick);
+        RunManager.Instance.EnterNode(index);
+        // Fights and shops load their own screen; a rest stays here.
+        if(run.restPending){
+            Draw();
+            ShowRestChoice();
+        }
+    }
+
+    // ---------- Rest ----------
+
+    private void ShowRestChoice(){
+        restPanel.SetActive(true);
+        // The rest panel must draw over the map.
+        restPanel.transform.SetAsLastSibling();
+        if(TooltipUI.Instance != null) TooltipUI.Instance.transform.SetAsLastSibling();
+        ClearFaceButtons();
+        restFaceRow.gameObject.SetActive(false);
+        restBackButton.gameObject.SetActive(false);
+        restHealButton.gameObject.SetActive(true);
+        restUpgradeButton.gameObject.SetActive(true);
+        int heal = Mathf.Min(RunManager.Instance.RestHealAmount, run.maxHP - run.currentHP);
+        restBody.text = "Rest by the fire: heal, or work on one face of your die.\n" + GameText.Icon("Health") + " " + run.currentHP + " / " + run.maxHP;
+        restHealText.text = "Heal " + heal + " HP";
+        restHealButton.interactable = heal > 0;
+    }
+
+    private void ShowUpgradeChoice(){
+        restHealButton.gameObject.SetActive(false);
+        restUpgradeButton.gameObject.SetActive(false);
+        restBackButton.gameObject.SetActive(true);
+        restFaceRow.gameObject.SetActive(true);
+        restBody.text = "Pick a face: its value goes up by 1.";
+        ClearFaceButtons();
+        for(int i = 0; i < run.dieFaces.Count; i++){
+            DieFace face = run.dieFaces[i];
+            Button button = Instantiate(restFaceTemplate, restFaceRow);
+            button.gameObject.SetActive(true);
+            faceButtons.Add(button.gameObject);
+            FaceTileUI tile = button.GetComponentInChildren<FaceTileUI>();
+            if(tile != null) tile.Set(face, face.value);
+            // The caption under the tile (the tile has its own value text).
+            Transform captionObject = button.transform.Find("Caption");
+            TextMeshProUGUI caption = captionObject != null ? captionObject.GetComponent<TextMeshProUGUI>() : null;
+            if(caption != null) caption.text = face.IsBlank ? "Blank" : face.DisplayName + "\n" + face.value + " → " + (face.value + 1);
+            TooltipTrigger tooltip = button.GetComponent<TooltipTrigger>();
+            if(tooltip != null) tooltip.text = face.IsBlank ? "A blank face can't be upgraded." : GameText.FaceRules(face.FullDescription);
+            button.interactable = RunManager.Instance.CanRestUpgrade(i);
+            int slot = i;
+            button.onClick.AddListener(() => OnRestUpgrade(slot));
+        }
+    }
+
+    private void ClearFaceButtons(){
+        foreach(GameObject each in faceButtons) Destroy(each);
+        faceButtons.Clear();
+    }
+
+    private void OnRestHeal(){
+        RunManager.Instance.RestHeal();
+        AudioManager.Play(Sfx.Heal);
+        FinishRest();
+    }
+
+    private void OnRestUpgrade(int slot){
+        RunManager.Instance.RestUpgrade(slot);
+        AudioManager.Play(Sfx.Upgrade);
+        FinishRest();
+    }
+
+    private void FinishRest(){
+        RunManager.Instance.FinishRest();
+        ClearFaceButtons();
+        restPanel.SetActive(false);
+        Draw();
+    }
+}

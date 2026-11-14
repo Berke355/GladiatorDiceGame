@@ -3990,3 +3990,20 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Next Steps
 - Step 2: the map screen and the run flow.
+
+## Day 123 (later) - The Map, Steps 2 and 3: the Screen and the First Nodes
+
+### Accomplished
+- **A run walks the map now:** run start → act 1's map → nodes → the Minotaur → Grand Market → act 2's map → Medusa → Grand Market → act 3's map → the Hydra, which completes the run. `RunManager` owns the flow (`BeginRun`, `GoToMap`, `EnterNode`, `ContinueAfterVictory`, `LeaveShop`, `BeginAct`); `RunData` keeps the map, the position, the visited nodes and the act's boss, so a run can still be saved as data.
+- **The map screen** (`Map.unity`, `MapUI`, `MapNodeUI`): floors from the bottom to the boss, lines between nodes, the type's icon on a colored disc (the boss node shows the boss), the nodes you can go to ringed in gold and breathing, walked lines lighter, others dimmed. HP and gold in the corner. Hovering a node tells what waits there: a battle's enemies with HP, intents and traits (picked when the node becomes reachable, `PrepareReachable`, so the player chooses knowing the fight), the boss's die, what a shop or rest offers. `EncounterInfo` holds that text for the map and the old Market line.
+- **Nodes:** Battle and Boss load the battle with the node's enemies (act 1 Weak, act 2 Medium, act 3 Strong); Market and Enchanting Table share the Market scene in two modes (the table is its own node, the user's choice; the Grand Market keeps both tabs); Rest is played on the map screen: heal 30% of max HP or +1 value to any face, Epics included. The Market lost its Healer and the "next battle" line, and its button reads "To the Map" ("Next Act" after a boss).
+- The battle's top bar reads "ACT 1  FLOOR 3" (or "ACT 2 / 3  BOSS").
+- Tested in Play Mode, with screenshots: start → map, a battle won → map, Market (no table tab, no Healer), Enchanting Table node, rest heal and rest upgrade (2 → 3), the Minotaur → Grand Market with the boss reward → act 2's map with Medusa, the jump to the Hydra → run complete. The simulator still runs the old battle line.
+
+### Decisions
+- The rest's upgrade is +1 on any face (a free Epic upgrade is worth more than a Common one); the numbers wait for the economy pass (step 5).
+- The simulator keeps the old line until step 5, when bots learn to walk the map.
+
+### Next Steps
+- The user plays the map (step 3's play-test).
+- Step 4: Elite.

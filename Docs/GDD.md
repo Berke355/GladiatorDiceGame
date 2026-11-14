@@ -199,7 +199,7 @@ Every build should care where its faces sit, not only Fortune (play-test). Die e
 
   - Common and Rare ones are a small gain, and the Epics are strong, as their rarity should be. Balance's two versions are the same within noise; +2 / -2 makes the placement a heavier decision.
   - **Gold is their real cost:** bots that bought them before upgrades did much worse (Rage 34% to 18%, Shield 25% to 13%). Now bots buy Commons and Rares only with 30 gold left over, and overall rates are about as before.
-- **The Enchanting Table is a tab in the Market:** a button switches the offers between the Market (faces, items) and the table (face enchantments, die enchantments), with the die net always in view. The map will later make it a node of its own.
+- **The Enchanting Table is a tab in the Market:** a button switches the offers between the Market (faces, items) and the table (face enchantments, die enchantments), with the die net always in view. With the map, it is a node of its own; the Grand Market keeps both tabs.
 
 ### Value Is the Effect
 
@@ -405,7 +405,7 @@ Market services:
 - **The next battle is shown** under the die slots ("Next battle (5): Tiro Pair (Weak)", or the boss), with each enemy's HP, intents and traits on hover. The battle is picked when the Market opens. Until the map exists, this is how the player sees what is coming and plans purchases.
 - **Hover help:** every die face and item shows its full description on hover, and every highlighted keyword (Ritual, Bleed, Poison...) shows its definition when the pointer is over the word.
 - **Enchant a face:** inscribe an enchantment into the empty Magic action of one die face (see Enchanting Table).
-- **Healer:** heal **10 HP for 20 gold, once per visit**, in every Market (Normal and Grand). Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. The map's rest nodes will take over or join this later (Roadmap Phase B). The price was 40 after the first simulation, but in play-tests 40 felt far too expensive; 20 is measured together with the steeper early battles.
+- **Healer:** heal **10 HP for 20 gold, once per visit**, in every Market (Normal and Grand). Since boss healing dropped to 30%, HP is a real resource (play-test); buying it back competes with upgrades and rerolls, so it adds a decision instead of removing the pressure. With the map, healing moved to rest nodes and the Market has no Healer (the simulator, which doesn't walk the map yet, still uses it). The price was 40 after the first simulation, but in play-tests 40 felt far too expensive; 20 is measured together with the steeper early battles.
   - **Tuned by simulation (DevLog Day 59, 6 focused bots that heal below half HP, 800 runs):**
 
 | Healer | Burn | Poison | Shield | Rage | Bleed | Hammer |

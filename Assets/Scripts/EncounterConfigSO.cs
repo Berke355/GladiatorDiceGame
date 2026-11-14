@@ -66,6 +66,14 @@ public class EncounterConfigSO : ScriptableObject
         return slot.bosses[UnityEngine.Random.Range(0, slot.bosses.Count)];
     }
 
+    // The boss of an act on the map (see GDD "Map"): the act-th boss slot in battle order.
+    public BossSO PickBossForAct(int act){
+        List<BossSlot> slots = new List<BossSlot>(bossSlots);
+        slots.Sort((a, b) => a.battle.CompareTo(b.battle));
+        if(act < 0 || act >= slots.Count || slots[act].bosses.Count == 0) return null;
+        return slots[act].bosses[UnityEngine.Random.Range(0, slots[act].bosses.Count)];
+    }
+
     // Picks a normal encounter of this tier: a lone enemy or a group, every candidate equally likely, and adds
     // its members to met. Nothing already met is picked (a group needs all its members unmet) until the tier
     // runs out, then repeats are allowed. Shared by RunManager and the simulator (which passes scaled copies).

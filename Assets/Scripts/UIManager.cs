@@ -207,8 +207,8 @@ public class UIManager : MonoBehaviour
     private const float MountedPlateDrop = 0.35f;
 
     // The top bar: which battle this is and the run's gold.
-    public void ShowBattleInfo(int battle, int lastBattle, int gold, bool boss){
-        if(battleInfoText != null) battleInfoText.text = "BATTLE " + battle + " / " + lastBattle + (boss ? "  <color=#E2B23C>BOSS</color>" : "");
+    public void ShowBattleInfo(string title, int gold, bool boss){
+        if(battleInfoText != null) battleInfoText.text = title + (boss ? "  <color=#E2B23C>BOSS</color>" : "");
         if(goldText != null) goldText.text = GameText.Icon("Gold") + " " + gold;
     }
 

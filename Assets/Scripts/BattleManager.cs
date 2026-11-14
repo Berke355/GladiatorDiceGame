@@ -368,7 +368,7 @@ public class BattleManager : MonoBehaviour
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
             RunData battleRun = RunManager.Instance.run;
-            UIManager.Instance.ShowBattleInfo(battleRun.battlesWon + 1, RunManager.Instance.finalBattle, battleRun.gold, flow.enemies[0].endsBattleOnDeath);
+            UIManager.Instance.ShowBattleInfo(RunManager.Instance.BattleTitle(flow.enemies[0].endsBattleOnDeath), battleRun.gold, flow.enemies[0].endsBattleOnDeath);
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
             UIManager.Instance.WireDieChips(OnDieFaceClicked);
             flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);

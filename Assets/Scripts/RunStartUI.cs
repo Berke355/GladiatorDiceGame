@@ -55,6 +55,6 @@ public class RunStartUI : MonoBehaviour
         if(index >= run.startingFaceOffers.Count) return;
         AudioManager.Play(Sfx.Buy);
         RunManager.Instance.ChooseStartingFace(run.startingFaceOffers[index]);
-        RunManager.Instance.GoToNextBattle();
+        RunManager.Instance.BeginRun();
     }
 }

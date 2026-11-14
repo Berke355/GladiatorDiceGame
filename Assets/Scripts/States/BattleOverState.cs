@@ -23,10 +23,10 @@ public class BattleOverState : BattleState
         }
     }
 
-    // Victory continues to the market; defeat, or beating the final boss, ends the run and starts a new one.
+    // Victory continues to the map (a boss: the Grand Market); defeat, or beating the final boss, starts a new run.
     public void Continue(){
         if(playerWon && !RunManager.Instance.IsRunComplete){
-            RunManager.Instance.GoToMarket();
+            RunManager.Instance.ContinueAfterVictory();
         }
         else{
             RunManager.Instance.RestartRun();

@@ -24,6 +24,9 @@ public class MapNode
     public MapNodeType type;
     // Indices (into ActMap.nodes) of the nodes this one leads to, on the next floor.
     public List<int> next = new List<int>();
+    // A battle node's enemies, picked when the node becomes reachable so the map can show them; members count as met
+    // only once the player enters the node.
+    public EnemyGroup encounter;
 }
 
 // One act's map: its nodes, floor by floor, and the boss on top.

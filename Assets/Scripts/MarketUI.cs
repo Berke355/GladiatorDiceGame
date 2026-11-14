@@ -73,6 +73,7 @@ public class MarketUI : MonoBehaviour
     // A benched face picked to swap in: the next die face clicked trades places with it.
     private int pendingBench = -1;
     private bool showingTable;
+    private bool usesMap;
     // The die face shown in the selected face panel; -1 when none.
     private int selectedSlot = -1;
     private bool HasSelectedPanel => selectedPanel != null;
@@ -85,9 +86,24 @@ public class MarketUI : MonoBehaviour
         run = RunManager.Instance.run;
         market = new Market(run, RunManager.Instance.economy, RunManager.Instance.IsGrandMarket);
         titleText.text = market.isGrand ? "GRAND MARKET" : "MARKET";
-        // Usually picked already by GoToMarket; also covers playing the Market scene directly.
-        RunManager.Instance.PickNextBattle();
-        ShowNextBattle();
+        // With the map (GDD "Map") the Market and the Enchanting Table are separate nodes sharing this screen, the
+        // Healer moved to rest nodes and the map shows what comes next. The Grand Market keeps both tabs.
+        usesMap = RunManager.Instance.UsesMap;
+        if(usesMap){
+            showingTable = run.atEnchantingTable && !market.isGrand;
+            tabButton.gameObject.SetActive(market.isGrand);
+            if(healButton != null) healButton.gameObject.SetActive(false);
+            if(nextBattleText != null) nextBattleText.text = "";
+            if(nextBattleButton != null){
+                TextMeshProUGUI label = nextBattleButton.GetComponentInChildren<TextMeshProUGUI>();
+                if(label != null) label.text = market.isGrand ? "Next Act" : "To the Map";
+            }
+        }
+        else{
+            // Usually picked already by GoToMarket; also covers playing the Market scene directly.
+            RunManager.Instance.PickNextBattle();
+            ShowNextBattle();
+        }
         AudioManager.PlayMusic(MusicTrack.Market);
 
         // Buttons are wired here because each one needs its own index.
@@ -271,9 +287,9 @@ public class MarketUI : MonoBehaviour
         pendingBench = -1;
     }
 
-    // Called by the Next Battle button.
+    // Called by the Next Battle button: back to the map (or, without a map, the next battle).
     public void OnNextBattleClicked(){
-        RunManager.Instance.GoToNextBattle();
+        RunManager.Instance.LeaveShop();
     }
 
     private void ShowNextBattle(){
@@ -284,28 +300,11 @@ public class MarketUI : MonoBehaviour
         if(run.nextBoss != null){
             BossSO boss = run.nextBoss;
             summary = "<b>" + boss.bossName + "</b>  <size=80%>(boss)</size>";
-            details.Append("<b>" + boss.bossName + "</b>  " + boss.maxHP + " HP\nIts die: ");
-            List<string> faces = new List<string>();
-            foreach(DieFaceSO face in boss.faces) faces.Add(face.faceName);
-            details.Append(string.Join(", ", faces));
+            details.Append(EncounterInfo.BossDetails(boss));
         }
         else if(run.nextEncounter != null){
-            EnemyGroup encounter = run.nextEncounter;
-            int rage = RunManager.Instance.encounters.ScalingFor(battle).startingRage;
-            summary = "<b>" + encounter.DisplayName + "</b>  <size=80%>(" + encounter.tier + (rage > 0 ? ", starts with " + rage + " Rage" : "") + ")</size>";
-            List<string> names = BattleManager.MemberNames(encounter);
-            for(int i = 0; i < encounter.members.Count; i++){
-                EnemySO member = encounter.members[i];
-                if(i > 0) details.Append("\n\n");
-                details.Append("<b>" + names[i] + "</b>  " + RunManager.Instance.encounters.ScaledHP(encounter, member, battle) + " HP");
-                List<string> intents = new List<string>();
-                foreach(EnemyIntent intent in member.intents) intents.Add(intent.intentName);
-                details.Append("\nIntents: " + string.Join(", ", intents));
-                foreach(EnemyTrait trait in member.traits){
-                    if(trait.trigger == EnemyTrigger.Passive && trait.effects.Count == 0 && member.secondWindIntents.Count == 0) continue;
-                    details.Append("\n" + trait.traitName + ": " + GameText.Colorize(trait.description));
-                }
-            }
+            summary = EncounterInfo.Summary(run.nextEncounter, battle);
+            details.Append(EncounterInfo.Details(run.nextEncounter, battle));
         }
         else{
             nextBattleText.text = "";
@@ -521,6 +520,7 @@ public class MarketUI : MonoBehaviour
         if(pendingEnchantment >= 0) return "Choose a face with an empty Magic action to enchant with " + market.enchantmentOffers[pendingEnchantment].enchantment.enchantmentName;
         if(pendingDieEnchantment >= 0) return "Your die has 2 enchantments. Choose one to replace with " + market.dieEnchantmentOffers[pendingDieEnchantment].enchantment.enchantmentName;
         if(pendingSwap >= 0) return "Choose where to move " + run.dieFaces[pendingSwap].DisplayName + ": it swaps places with the face you click, or goes to the bench (its place turns Blank)";
+        if(showingTable) return "Buy an enchantment, then click the face (or the die place) it goes on.";
         if(HasSelectedPanel) return market.isGrand ? "Grand Market: every face can be upgraded, Epic ones included." : "Buy a face, then click the face on your die it replaces.";
         return (market.isGrand ? "Every face can be upgraded here, Epic ones included." : "Epic faces are upgraded at the Grand Market.") + " Click a die face to move it (free).";
     }

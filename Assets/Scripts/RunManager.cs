@@ -19,6 +19,16 @@ public class RunManager : MonoBehaviour
     [Header("Encounters")]
     public EncounterConfigSO encounters;
 
+    [Header("Map")]
+    // The map's shape and node types (see GDD "Map"). Without it the run is the old line of battles and Markets
+    // (bossBattles, finalBattle), which the simulator still uses.
+    public MapConfigSO mapConfig;
+    public int acts = 3;
+    public bool UsesMap => mapConfig != null;
+    // Share of max HP a rest heals.
+    [Range(0f, 1f)]
+    public float restHealFraction = 0.3f;
+
     [Header("Run Structure")]
     // Boss battle numbers. Winning one opens the Grand Market instead of a normal one and heals the player.
     // Boss enemies themselves are not implemented yet.
@@ -27,15 +37,16 @@ public class RunManager : MonoBehaviour
     [Range(0f, 1f)]
     public float bossHealFraction = 0.5f;
 
-    public bool IsGrandMarket => bossBattles.Contains(run.battlesWon);
+    public bool IsGrandMarket => UsesMap ? run.grandMarketPending : bossBattles.Contains(run.battlesWon);
     // Winning this battle (the final boss's) completes the run.
     public int finalBattle = 11;
-    public bool IsRunComplete => run.battlesWon >= finalBattle;
+    public bool IsRunComplete => UsesMap ? run.runComplete : run.battlesWon >= finalBattle;
 
     [Header("Scenes")]
     public string runStartSceneName = "RunStart";
     public string battleSceneName = "Battle";
     public string marketSceneName = "Market";
+    public string mapSceneName = "Map";
 
     public RunData run;
 
@@ -77,6 +88,136 @@ public class RunManager : MonoBehaviour
         run = new RunData(startingDieFaces, startingMaxHP);
         run.gold = economy.startingGold;
         run.startingFaceOffers = StartingFaceOffers.Generate(economy, startingDieFaces);
+        if(UsesMap) BeginAct(0);
+    }
+
+    // ---------- Map ----------
+
+    // A new act: its map, its boss, and the player before the first floor.
+    public void BeginAct(int act){
+        run.act = act;
+        run.map = MapGenerator.Generate(mapConfig, act, new System.Random(UnityEngine.Random.Range(int.MinValue, int.MaxValue)));
+        run.mapNode = -1;
+        run.visitedNodes.Clear();
+        run.restPending = false;
+        run.actBoss = encounters.PickBossForAct(act);
+        PrepareReachable();
+    }
+
+    public MapNode CurrentNode => run.map != null && run.mapNode >= 0 ? run.map.nodes[run.mapNode] : null;
+    public bool AtBoss => UsesMap && CurrentNode != null && CurrentNode.type == MapNodeType.Boss;
+
+    // Picks the enemies of the battle nodes the player can go to next, each different, so the map can show them.
+    // Members count as met only when the player enters the node.
+    public void PrepareReachable(){
+        if(run.map == null) return;
+        List<EnemySO> reserved = new List<EnemySO>(run.metEnemies);
+        EnemyTier tier = ActTier;
+        foreach(int index in run.map.Reachable(run.mapNode)){
+            MapNode node = run.map.nodes[index];
+            if(node.type != MapNodeType.Battle && node.type != MapNodeType.Elite) continue;
+            if(node.encounter == null || node.encounter.members.Count == 0){
+                node.encounter = EncounterConfigSO.PickEncounter(encounters.enemyPool, encounters.groups, tier, reserved);
+            }
+            else reserved.AddRange(node.encounter.members);
+        }
+    }
+
+    public bool CanEnter(int index){
+        return run.map != null && run.map.Reachable(run.mapNode).Contains(index);
+    }
+
+    // The player steps onto a reachable node: a fight, a shop, or a rest (played on the map screen, which stays open).
+    public void EnterNode(int index){
+        if(!CanEnter(index)) return;
+        run.mapNode = index;
+        run.visitedNodes.Add(index);
+        MapNode node = run.map.nodes[index];
+        switch(node.type){
+            case MapNodeType.Battle:
+            case MapNodeType.Elite:
+                run.nextBoss = null;
+                run.nextEncounter = node.encounter;
+                if(node.encounter != null) run.metEnemies.AddRange(node.encounter.members);
+                run.nextBattlePicked = node.encounter != null;
+                GoToNextBattle();
+                break;
+            case MapNodeType.Boss:
+                run.nextBoss = run.actBoss;
+                run.nextEncounter = null;
+                run.nextBattlePicked = run.actBoss != null;
+                GoToNextBattle();
+                break;
+            case MapNodeType.Market:
+            case MapNodeType.EnchantingTable:
+                run.atEnchantingTable = node.type == MapNodeType.EnchantingTable;
+                SceneManager.LoadScene(marketSceneName);
+                break;
+            case MapNodeType.Rest:
+                run.restPending = true;
+                break;
+            default:
+                PrepareReachable();
+                break;
+        }
+    }
+
+    // A rest's two choices (see GDD "Map"): heal a share of max HP, or upgrade one face for free.
+    public int RestHealAmount => Mathf.RoundToInt(run.maxHP * restHealFraction);
+
+    public void RestHeal(){
+        run.currentHP = Mathf.Min(run.maxHP, run.currentHP + RestHealAmount);
+    }
+
+    public bool CanRestUpgrade(int dieSlot){
+        return dieSlot >= 0 && dieSlot < run.dieFaces.Count && !run.dieFaces[dieSlot].IsBlank;
+    }
+
+    public void RestUpgrade(int dieSlot){
+        if(CanRestUpgrade(dieSlot)) run.dieFaces[dieSlot].value++;
+    }
+
+    public void FinishRest(){
+        run.restPending = false;
+        PrepareReachable();
+    }
+
+    public void GoToMap(){
+        PrepareReachable();
+        SceneManager.LoadScene(mapSceneName);
+    }
+
+    // The run start screen's choice is made: the first act's map, or the first battle without a map.
+    public void BeginRun(){
+        if(UsesMap) GoToMap();
+        else GoToNextBattle();
+    }
+
+    // The battle screen's continue after a victory: a boss opens the Grand Market, any other fight goes back to the map.
+    public void ContinueAfterVictory(){
+        if(UsesMap && !AtBoss) GoToMap();
+        else GoToMarket();
+    }
+
+    // The shop's continue: back to the map; after a boss's Grand Market the next act begins.
+    public void LeaveShop(){
+        if(!UsesMap){
+            GoToNextBattle();
+            return;
+        }
+        run.atEnchantingTable = false;
+        if(run.grandMarketPending){
+            run.grandMarketPending = false;
+            BeginAct(run.act + 1);
+        }
+        GoToMap();
+    }
+
+    // The battle's title in the top bar.
+    public string BattleTitle(bool boss){
+        if(!UsesMap || run.map == null) return "BATTLE " + (run.battlesWon + 1) + " / " + finalBattle;
+        if(boss) return "ACT " + (run.act + 1) + " / " + acts;
+        return "ACT " + (run.act + 1) + "  FLOOR " + ((CurrentNode != null ? CurrentNode.floor : 0) + 1);
     }
 
     // The run start screen's paid reroll of the three offers.
@@ -105,8 +246,16 @@ public class RunManager : MonoBehaviour
         run.battlesWon++;
         int goldEarned = economy.goldPerVictory + EquipmentSO.TotalGoldPerVictory(run.equipment);
 
+        bool bossWon = UsesMap ? AtBoss : bossBattles.Contains(run.battlesWon);
+        // The final boss ends the run.
+        if(UsesMap && bossWon && run.act >= acts - 1){
+            run.runComplete = true;
+            run.gold += goldEarned;
+            return goldEarned;
+        }
         // Bosses heal and pay a bonus, so the player reaches the Grand Market with gold to spend.
-        if(bossBattles.Contains(run.battlesWon)){
+        if(bossWon){
+            run.grandMarketPending = true;
             int heal = Mathf.RoundToInt(run.maxHP * bossHealFraction);
             run.currentHP = Mathf.Min(run.maxHP, run.currentHP + heal);
             goldEarned += economy.bossVictoryBonus;
@@ -119,6 +268,9 @@ public class RunManager : MonoBehaviour
 
     // Weak before the first boss, Medium between the bosses, Strong after the second.
     // Until bosses exist, a boss slot uses the tier that follows it (battle 4: Medium, battle 8: Strong).
+    // On the map, every normal fight of an act has the act's tier (GDD "Map").
+    public EnemyTier ActTier => (EnemyTier)Mathf.Min(run.act, (int)EnemyTier.Strong);
+
     public EnemyTier GetTierForBattle(int battleNumber){
         int bossesReached = 0;
         foreach(int bossBattle in bossBattles){
@@ -131,12 +283,13 @@ public class RunManager : MonoBehaviour
 
     // The boss for the upcoming battle, or null if it is a normal battle (or its boss isn't built yet).
     public BossSO PickBossForNextBattle(){
+        if(UsesMap) return AtBoss ? run.actBoss : null;
         return encounters.PickBoss(run.battlesWon + 1);
     }
 
     // Picks the enemy or enemy group for the upcoming battle and remembers its members so they won't appear again this run.
     public EnemyGroup PickEncounterForNextBattle(){
-        EnemyTier tier = GetTierForBattle(run.battlesWon + 1);
+        EnemyTier tier = UsesMap ? ActTier : GetTierForBattle(run.battlesWon + 1);
         return EncounterConfigSO.PickEncounter(encounters.enemyPool, encounters.groups, tier, run.metEnemies);
     }
 
@@ -145,7 +298,7 @@ public class RunManager : MonoBehaviour
     }
 
     public void GoToMarket(){
-        PickNextBattle();
+        if(!UsesMap) PickNextBattle();
         SceneManager.LoadScene(marketSceneName);
     }
 
@@ -177,6 +330,11 @@ public class RunManager : MonoBehaviour
         run.maxHP = BossTestHP;
         run.currentHP = BossTestHP;
         run.nextBattlePicked = false;
+        if(UsesMap){
+            BeginAct(acts - 1);
+            run.mapNode = run.map.bossNode;
+            run.visitedNodes.Add(run.mapNode);
+        }
         PickNextBattle();
         GoToNextBattle();
     }

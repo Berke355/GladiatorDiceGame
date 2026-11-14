@@ -54,12 +54,16 @@ MonoBehaviour:
   startingMaxHP: 50
   economy: {fileID: 11400000, guid: 7c6729f1722a84a4a8373d47c7c57e9d, type: 2}
   encounters: {fileID: 11400000, guid: 0c03be810ca835746ad6247037d6106a, type: 2}
+  mapConfig: {fileID: 11400000, guid: f71f8d490be80f543812c26880cfce83, type: 2}
+  acts: 3
+  restHealFraction: 0.3
   bossBattles: 0400000008000000
   bossHealFraction: 0.3
   finalBattle: 11
   runStartSceneName: RunStart
   battleSceneName: Battle
   marketSceneName: Market
+  mapSceneName: Map
   run:
     dieFaces: []
     maxHP: 0
@@ -76,6 +80,7 @@ MonoBehaviour:
     lockedEquipment: []
     dieEnchantments: []
     lockedDieEnchantments: []
+    bench: []
     rerollsPerBattle: 0
     bossRewardPending: 0
     nextBattlePicked: 0
@@ -85,6 +90,20 @@ MonoBehaviour:
       tier: 0
       members: []
       hpMultiplier: 0.6
+    act: 0
+    map:
+      act: 0
+      floors: 0
+      lanes: 0
+      nodes: []
+      bossNode: -1
+    mapNode: 0
+    actBoss: {fileID: 0}
+    visitedNodes: 
+    restPending: 0
+    grandMarketPending: 0
+    atEnchantingTable: 0
+    runComplete: 0
     startingDie: []
 --- !u!114 &6754578716004510914
 MonoBehaviour:

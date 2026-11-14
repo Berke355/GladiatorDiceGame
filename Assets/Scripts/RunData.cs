@@ -50,6 +50,22 @@ public class RunData
     public BossSO nextBoss;
     public EnemyGroup nextEncounter;
 
+    // The map (see GDD "Map"): the current act (0, 1, 2), its map, the node the player stands on (-1: before the first
+    // floor) and the act's boss, picked with the map so the map can show it.
+    public int act;
+    public ActMap map;
+    public int mapNode = -1;
+    public BossSO actBoss;
+    // The nodes walked this act, and a rest waiting for its choice (the map screen shows it).
+    public List<int> visitedNodes = new List<int>();
+    public bool restPending;
+    // Set by a boss victory: the next shop is the Grand Market, after which the next act's map begins.
+    public bool grandMarketPending;
+    // The shop scene's mode for this visit: the Enchanting Table node instead of a Market.
+    public bool atEnchantingTable;
+    // The final boss was beaten: the run is won.
+    public bool runComplete;
+
     // The run's starting die (before the chosen sixth face), so the Market can tell build faces from starter faces.
     public List<DieFaceSO> startingDie = new List<DieFaceSO>();
 
