@@ -3836,6 +3836,7 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Accomplished
 - **Six enemies got intents that change something** instead of plain blocks (the user's idea from Day 112): Howl (Arena Wolf: it and every ally gain 1 Rage), Shield Wall (Murmillo: block for it and every ally), Crossed Blades (Dimachaerus, new: you are Exposed for your next turn), Kick Up Dust (Essedarius: you lose 1 reroll), Antidote (Venefica: halves its Poison, Burn and Bleed, blocks 2), Feed the Beast (Bestiarius: it and every ally heal 3).
+- **The Exposed icon** (icon Sheet 5, a shield falling from an open hand), added to the icon atlas's top row.
 - New pieces: enemies' effects reach their allies (`ForEachAllyEffectSO`, `EffectContext.allies`) and the player's rerolls (`targetRerolls`, `StealRerollEffectSO`); `CleanseSelfEffectSO`; the Exposed status (no Block, Fortify still works).
 - Tested on a real `BattleFlow`: both wolves gained Rage from one Howl, Murmillo and Retiarius both got 2 block, Exposed stopped 5 block the next turn and Twin Strike hit unblocked for 4, then it ran out; Kick Up Dust took a reroll; Antidote halved 3 Poison, 6 Burn and 2 Bleed and the Burn still decayed on time; Feed the Beast healed the Bestiarius and the Arena Lion.
 
@@ -3847,6 +3848,5 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Old and new intents in the same runs (300 per bot): Opportunist 2% → 2%, Bleed 21% → 20%, Hound 23% → 20%, Poison 17% → 15%, Rage 11% → 7%, Fortune 2% → 4%, Shield 2% → 2%. A little harder; Rage's drop is near the noise.
 
 ### Next Steps
-- The Exposed icon (icon Sheet 5).
 - The user plays them.
 
