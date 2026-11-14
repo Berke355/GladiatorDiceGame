@@ -3972,3 +3972,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 
 ### Day 122 (later) - A test button for the Hydra
 - The user asked for a way to reach the Hydra without playing ten battles: the starting face screen has a **TEST: Hydra** button (`RunStartUI.bossTestButton`, shown only in the Editor and development builds). `RunManager.JumpToFinalBoss` takes the first starting offer if none was chosen, sets the run to battle 11 with 150 HP (`BossTestHP`; the starting die alone can't survive the Hydra at 50) and loads the battle. Tested in Play Mode: the button lands on BATTLE 11/11 BOSS with the 2-headed Hydra.
+
+### Day 122 (later) - The back head's neck
+- The user saw pixels missing on the 3-headed Hydra after a cut: in the two pictures with the middle head cut (3 necks, 2 and 1 heads) the middle head had hidden part of the back head's neck, so the back head floated with a gap and left-over drool. Bridged the neck with its own colors, removed the drool and gave the new part an outline. All seven states checked again in Play Mode.
