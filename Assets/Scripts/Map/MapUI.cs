@@ -225,9 +225,9 @@ public class MapUI : MonoBehaviour
                 icon.preserveAspect = true;
             }
             TextMeshProUGUI name = option.Find("Name") != null ? option.Find("Name").GetComponent<TextMeshProUGUI>() : null;
-            if(name != null) name.text = item.equipmentName + "\n<size=70%>" + item.rarity + "</size>";
+            if(name != null) name.text = item.equipmentName;
             TextMeshProUGUI text = option.Find("Text") != null ? option.Find("Text").GetComponent<TextMeshProUGUI>() : null;
-            if(text != null) text.text = GameText.Colorize(item.description);
+            if(text != null) text.text = "<color=#C9A46A>" + item.rarity + "</color>\n" + GameText.Colorize(item.description);
         }
     }
 

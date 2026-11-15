@@ -4056,3 +4056,8 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The Plating icon** took a new row at the top of the icon atlas (768 x 768 now; glyph rects count from the bottom left, so the old icons keep theirs), with a glyph and a character in the `Icons` sprite asset and `GameText.IconNames`.
 - Checked in Play Mode: the Necromancer behind two skeletons, the Colossus with its Plating chip.
 
+### Day 125 (later) - Two screens tidied
+- **The elite reward:** the rarity line ran into the rules text; the rarity now opens the rules text and the name has a line of its own.
+- **The battle result:** a plain black veil with Unity's default white button became a framed window like the game's other panels (dark leather, gold edge), VICTORY in gold with the gold won, DEFEAT in red, and the button in the Roll button's style.
+- **Next (the user's wish):** a title menu (New Run, Settings, Exit to Desktop) and a picture for the map, perhaps a parchment like Slay the Spire's.
+

@@ -347,8 +347,9 @@ public class UIManager : MonoBehaviour
         actionPhase = false;
         battleResultPanel.SetActive(true);
         battleResultText.text = runComplete
-            ? "RUN COMPLETE\n<size=50%>The arena is yours</size>"
-            : playerWon ? "VICTORY\n<size=50%>+" + goldEarned + " Gold</size>" : "DEFEAT";
+            ? "<color=#E2B23C>RUN COMPLETE</color>\n<size=40%><color=#E8DCC0>The arena is yours</color></size>"
+            : playerWon ? "<color=#E2B23C>VICTORY</color>\n<size=40%><color=#E8DCC0>" + GameText.Icon("Gold") + " +" + goldEarned + " gold</color></size>"
+            : "<color=#C0392B>DEFEAT</color>\n<size=40%><color=#E8DCC0>The crowd falls silent</color></size>";
         battleResultButtonText.text = playerWon && !runComplete ? "Continue" : "New Run";
         AudioManager.StopMusic();
         AudioManager.Play(runComplete ? Sfx.RunComplete : playerWon ? Sfx.Victory : Sfx.Defeat);
