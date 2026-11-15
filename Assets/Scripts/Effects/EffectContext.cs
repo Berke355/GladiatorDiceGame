@@ -19,6 +19,9 @@ public class EffectContext
     public RerollPool rerolls;
     // Set by an effect that rerolls the die (Steady Hand); BattleFlow reads it after the action.
     public bool rerollRequested;
+    // Raises one of the source's minions (the Necromancer's Raise Dead); null when the source can't. Returns whether
+    // one rose.
+    public System.Func<bool> summon;
     // Set by an effect that steers the next roll (Fortune's engines); BattleFlow reads it after the action.
     public RollSteer steer;
     public int steerPosition;

@@ -65,6 +65,17 @@ Size words keep the enemies in scale with each other: the gladiator is "human-si
 | HoplomachusChampion | `Subject: a champion hoplomachus gladiator, human-sized but tall and proud, large round bronze shield with an eagle emblem, long spear, crested helmet with a red plume, gleaming armor.` |
 | WarElephant | `Subject: a huge armored war elephant, three times taller than a human, bronze plates on its head and flanks, tusks with metal caps, a small empty tower on its back.` |
 
+### Elites
+
+Elites are a little bigger and grander than the enemies of their act.
+
+| Asset | Subject |
+|---|---|
+| Necromancer | `Subject: a gaunt necromancer, human-sized, a tattered black and deep purple hooded robe, a pale skull-like face, a tall staff of bone topped with a ram skull and a sickly green glow, one bony hand raised as if lifting the dead.` |
+| Skeleton | `Subject: a risen skeleton warrior, human-sized but hunched, yellowed bones, a rusty broken gladius in one hand and a cracked small round shield in the other, scraps of a torn tunic, faint green light in its eye sockets.` |
+| BronzeColossus | `Subject: a bronze colossus, an automaton statue of a gladiator one and a half times taller than a human, made of riveted bronze plates with green patina, glowing orange furnace light between the plates and in its eyes, huge fists, no weapon.` |
+| Mimic | Done: the player's own idle frame, flipped and turned into a violet shadow by a script. |
+
 ### Bosses
 
 The Minotaur is done (see the art comparison page). Bosses are bigger than everyone else.

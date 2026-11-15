@@ -24,6 +24,11 @@ MonoBehaviour:
     weight: 15
   - type: 3
     weight: 15
+  - type: 5
+    weight: 12
+  firstEliteFloor: 2
+  maxElitesPerMap: 2
+  minElitesPerMap: 1
   firstRestFloor: 2
   minBattlesPerRoute: 2
   minMarketsPerRoute: 1

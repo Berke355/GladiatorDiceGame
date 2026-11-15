@@ -45,6 +45,9 @@ public class EconomyConfigSO : ScriptableObject
     public List<EquipmentSO> equipmentPool = new List<EquipmentSO>();
     // A boss reward is a free pick of one of this many items.
     public int bossRewardChoices = 3;
+    // Elites (see GDD "Elite Enemies"): gold on top of the normal reward, and a free pick of one item among this many.
+    public int eliteGoldBonus = 20;
+    public int eliteRewardChoices = 3;
     // The Grand Market sells this many items at this price (the Normal Market sells none).
     public int equipmentPerMarket = 1;
     public int equipmentPerGrandMarket = 2;

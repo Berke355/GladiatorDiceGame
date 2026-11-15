@@ -31,6 +31,12 @@ public class MapUI : MonoBehaviour
     public Button restFaceTemplate;
     public Button restBackButton;
 
+    [Header("Elite reward")]
+    // A free item after an elite: one option per button (each with children named Icon, Name and Text), or skip.
+    public GameObject rewardPanel;
+    public Button[] rewardOptions;
+    public Button rewardSkipButton;
+
     private RunData run;
     private readonly List<MapNodeUI> nodes = new List<MapNodeUI>();
     private readonly List<GameObject> drawn = new List<GameObject>();
@@ -64,9 +70,18 @@ public class MapUI : MonoBehaviour
         restHealButton.onClick.AddListener(OnRestHeal);
         restUpgradeButton.onClick.AddListener(ShowUpgradeChoice);
         restBackButton.onClick.AddListener(ShowRestChoice);
+        if(rewardPanel != null){
+            for(int i = 0; i < rewardOptions.Length; i++){
+                int index = i;
+                rewardOptions[i].onClick.AddListener(() => OnRewardTaken(index));
+            }
+            rewardSkipButton.onClick.AddListener(OnRewardSkipped);
+            rewardPanel.SetActive(false);
+        }
         Draw();
         restPanel.SetActive(false);
         if(run.restPending) ShowRestChoice();
+        else if(run.eliteRewardChoices.Count > 0) ShowReward();
     }
 
     void Update(){
@@ -89,7 +104,7 @@ public class MapUI : MonoBehaviour
         drawn.Clear();
         nodes.Clear();
         ActMap map = run.map;
-        reachable = run.restPending ? new List<int>() : map.Reachable(run.mapNode);
+        reachable = run.restPending || run.eliteRewardChoices.Count > 0 ? new List<int>() : map.Reachable(run.mapNode);
         BossSO boss = run.actBoss;
         titleText.text = "ACT " + (run.act + 1) + (boss != null ? ":  " + boss.bossName.ToUpperInvariant() : "");
         hintText.text = run.mapNode < 0 ? "Choose your first fight. Hover a node to see what waits there." : "Choose where to go next.";
@@ -155,8 +170,14 @@ public class MapUI : MonoBehaviour
         RunManager manager = RunManager.Instance;
         int battle = run.battlesWon + 1;
         switch(node.type){
-            case MapNodeType.Battle:
             case MapNodeType.Elite:
+                if(node.encounter != null && node.encounter.members.Count == 1 && node.encounter.members[0].tier == EnemyTier.Elite){
+                    EnemySO elite = node.encounter.members[0];
+                    return "<b>Elite: " + elite.enemyName + "</b>  " + elite.maxHP + " HP\n" + GameText.Colorize(elite.eliteMechanic)
+                        + "\n\nHarder than a battle. Win it for " + manager.economy.eliteGoldBonus + " extra gold and a free item.\n\n" + EncounterInfo.Details(node.encounter, battle);
+                }
+                goto case MapNodeType.Battle;
+            case MapNodeType.Battle:
                 if(node.encounter != null && node.encounter.members.Count > 0)
                     return EncounterInfo.Summary(node.encounter, battle) + "\n\n" + EncounterInfo.Details(node.encounter, battle);
                 return "<b>" + TypeName(node.type) + "</b>\nA fight with " + manager.ActTier + " enemies. Win it for gold.";
@@ -182,6 +203,45 @@ public class MapUI : MonoBehaviour
             Draw();
             ShowRestChoice();
         }
+    }
+
+    // ---------- Elite reward ----------
+
+    private void ShowReward(){
+        if(rewardPanel == null) return;
+        rewardPanel.SetActive(true);
+        rewardPanel.transform.SetAsLastSibling();
+        if(TooltipUI.Instance != null) TooltipUI.Instance.transform.SetAsLastSibling();
+        for(int i = 0; i < rewardOptions.Length; i++){
+            bool has = i < run.eliteRewardChoices.Count;
+            rewardOptions[i].gameObject.SetActive(has);
+            if(!has) continue;
+            EquipmentSO item = run.eliteRewardChoices[i];
+            Transform option = rewardOptions[i].transform;
+            Image icon = option.Find("Icon") != null ? option.Find("Icon").GetComponent<Image>() : null;
+            if(icon != null){
+                icon.sprite = item.icon;
+                icon.enabled = item.icon != null;
+                icon.preserveAspect = true;
+            }
+            TextMeshProUGUI name = option.Find("Name") != null ? option.Find("Name").GetComponent<TextMeshProUGUI>() : null;
+            if(name != null) name.text = item.equipmentName + "\n<size=70%>" + item.rarity + "</size>";
+            TextMeshProUGUI text = option.Find("Text") != null ? option.Find("Text").GetComponent<TextMeshProUGUI>() : null;
+            if(text != null) text.text = GameText.Colorize(item.description);
+        }
+    }
+
+    private void OnRewardTaken(int index){
+        EliteReward.Claim(run, index);
+        AudioManager.Play(Sfx.Buy);
+        rewardPanel.SetActive(false);
+        Draw();
+    }
+
+    private void OnRewardSkipped(){
+        EliteReward.Skip(run);
+        rewardPanel.SetActive(false);
+        Draw();
     }
 
     // ---------- Rest ----------

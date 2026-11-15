@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf8ccbab6a5cddb41a3b386f1321f2df, type: 3}
+  m_Name: Mimic
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySO
+  enemyName: Mimic
+  tier: 4
+  maxHP: 70
+  sprite: {fileID: 21300000, guid: 322165a8c0ee7d444bd71403073a7cb6, type: 3}
+  spriteHeight: 1
+  escalationPerTurn: 0
+  intents: []
+  traits:
+  - traitName: Mirror Match
+    description: 'Fights with a copy of your die: each turn it rolls it and uses
+      the face, attacking when it can.'
+    trigger: 0
+    requireAction: 0
+    action: 0
+    requireBlock: 0
+    requireTargeted: 0
+    requireUnblocked: 0
+    nextTurn: 0
+    effects: []
+    value: 1
+    maxPerBattle: 0
+  packTactics: 0
+  packTacticsTurns: 0
+  secondWindIntents: []
+  eliteAct: 2
+  eliteMechanic: 'Mirror Match: copies your die at the start of the fight and fights
+    with it, your faces, values and enchantments against you.'
+  endsBattleOnDeath: 0
+  minion: {fileID: 0}
+  startingMinions: 0
+  maxMinions: 3
+  guardedByMinions: 0
+  startingPlates: 0
+  platesPerTurn: 0
+  mirrorsPlayerDie: 1

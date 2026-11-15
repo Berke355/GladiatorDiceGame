@@ -8,7 +8,9 @@ public enum EnemyTier
     Medium,
     Strong,
     // Only used to label boss battles (e.g. in the simulator's statistics); bosses are BossSO assets.
-    Boss
+    Boss,
+    // Elite enemies: the map's Elite nodes (see GDD "Elite Enemies"), one act each (eliteAct).
+    Elite
 }
 
 // A normal enemy definition (see GDD "Enemy Roster").
@@ -34,4 +36,24 @@ public class EnemySO : ScriptableObject
     public int packTacticsTurns;
     // Second Wind: below half HP the enemy switches to these intents for the rest of the battle (empty = never).
     public List<EnemyIntent> secondWindIntents = new List<EnemyIntent>();
+
+    [Header("Elite")]
+    // The act whose Elite nodes this enemy can be (0, 1, 2), with tier Elite; -1: not an elite.
+    public int eliteAct = -1;
+    // Its mechanic in one sentence, shown on the map before the player chooses the node.
+    [TextArea] public string eliteMechanic;
+    // The battle ends when it dies, even if its minions live (the Necromancer).
+    public bool endsBattleOnDeath;
+    // Minions it raises (Raise Dead, SummonMinionEffectSO): which enemy, how many at the start, at most how many alive.
+    public EnemySO minion;
+    public int startingMinions;
+    public int maxMinions = 3;
+    // While one of its minions lives, it can't be targeted (the Wall of Bones). Area effects still reach it.
+    public bool guardedByMinions;
+    // Bronze plates (Plating): how many at the start, and how many come back at the end of each of its turns (never
+    // more than the starting count).
+    public int startingPlates;
+    public int platesPerTurn;
+    // The Mimic: it copies the player's die at the start of the battle and fights with it (MimicBrain).
+    public bool mirrorsPlayerDie;
 }

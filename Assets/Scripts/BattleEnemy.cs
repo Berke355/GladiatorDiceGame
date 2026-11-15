@@ -23,6 +23,8 @@ public class BattleEnemy
     public int mountIndex = -1;
     // A dead head has let its mount go: when it grows back it takes a free one.
     public bool releasedMount;
+    // A minion raised by another enemy (the Necromancer's skeletons): it stands in front of it and guards it.
+    public BattleEnemy summonedBy;
 
     public BattleEnemy(Entity entity, IEnemyBrain brain, bool endsBattleOnDeath = false){
         this.entity = entity;

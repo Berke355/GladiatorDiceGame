@@ -332,6 +332,19 @@ A face's rarity is defined by **how strongly its value scales its effect**, not 
 - **Gold after bosses:** winning a boss battle pays a 30 gold bonus on top of the normal reward, so the player can always afford one Epic at the Grand Market: a boss victory alone pays 50 gold and an Epic costs 45.
 - **Being replaced by the map** (see Map): three acts, each a branching map that ends with its boss.
 
+### Elite Enemies
+
+Elites are the map's Elite nodes: harder fights with a bigger reward, each with a mechanic of its own (the user's design, DevLog Day 125), so choosing one is a question of "does my build beat this one?". Hovering the node shows the elite, its HP and its mechanic.
+
+- **On the map:** from the third floor on, one or two per act's map (`MapConfigSO.firstEliteFloor`, `min/maxElitesPerMap`). Each act has its own elites (`EnemySO.eliteAct`, `EncounterConfigSO.elites`); one isn't met twice in a run while others are left.
+- **Reward:** the normal gold plus `EconomyConfigSO.eliteGoldBonus` (20), and a free pick of one item among three (Rare or Epic when there are enough, leaning toward the build's tags; `EliteReward`), shown on the map screen. Taking it or skipping it.
+- **Not scaled** by the battle number, like bosses; their numbers are their own. Elites fight to the boss music.
+- **Necromancer** (act 1): **Wall of Bones**. Starts with a skeleton and raises more (Raise Dead, at most 3 alive, then 3 turns before it can raise again). While a skeleton stands it can't be targeted; area effects still reach it. Its death ends the fight. Skeletons (3 HP) hit for 2 or block. Tests single-target builds; area effects shine.
+- **Bronze Colossus** (act 2): **Bronze Plates**. 4 Plating: a hit that gets past Block deals only 1 damage and breaks a plate; Reforge brings one back now and then. Tests big single hits (Bleed's and Rage's payoffs); many small hits, Poison and Bleed's ticks get through.
+- **Mimic** (act 3): **Mirror Match**. Copies the player's die at the start of the fight (faces, values, face enchantments) and fights with it: each turn it rolls its copy and uses the face, Attack first, else Magic, else Defense (`MimicBrain`). Its own beast doesn't exist, so the player's Hound faces only give it Hound (Sic 'Em still bites).
+- **Tuning (DevLog Day 125):** the first numbers killed 90% of the bots at their act's battle (the starting die deals about 2 a turn, and the Necromancer raised a skeleton every turn; the Colossus's plates came back as fast as one-hit-a-turn builds broke them). Elites now kill about 35% (Necromancer at battle 3, Colossus at battle 7) and 2-36% (Mimic at battle 10), against 1-18% for a normal battle there. They are optional; the map's economy pass (Roadmap step 5) tunes them again with bots that walk the map.
+- **Planned:** Hex Witch (curses a die face), Doctore (reads your last action), Pyromancer (scorches the face you use), Aquilifer (the eagle standard), Chained Titan.
+
 ### Map
 
 Between battles the player walks a branching map instead of the fixed battle → Market → battle line (inspired by Slay the Spire, Roadmap Phase B). The route is the run's big decision outside battles: more fights for gold, a Market, the Enchanting Table, or a rest.
@@ -344,7 +357,8 @@ Between battles the player walks a branching map instead of the fixed battle →
   - **Enchanting Table:** a node of its own (the user's choice): face enchantments and die enchantments, with the same locks and rerolls.
   - **Rest:** heal 30% of max HP, or upgrade one face for free. One of the two. Healing moved here from the Market, so the route becomes a choice between healing and shopping.
   - **Boss:** the act's last node. Winning it opens the Grand Market (with the boss reward), then the next act's map.
-  - **Later:** Elite (a harder fight with a bigger reward), "?" events, the Blacksmith and the Mad Scientist (Roadmap Phase B).
+  - **Elite:** a harder fight with a mechanic of its own and a bigger reward (see Elite Enemies).
+  - **Later:** "?" events, the Blacksmith and the Mad Scientist (Roadmap Phase B).
 - **Rules for the node types:** the first floor is all battles and the last floor before the boss is all rests (a last heal or upgrade before the boss). On every route from the first floor to the boss there are at least one Market and two battles, and no two of the same non-battle node follow each other.
 - **Length:** a typical route has 3-4 battles plus the boss per act, about 12-15 battles a run (11 before), towards the 25-30 minute target.
 - **Saved with the run:** the map is plain data in `RunData`, generated per act from a seed.

@@ -84,7 +84,7 @@ public class BattleFlow
     private BattleEnemy selectedTarget;
     public BattleEnemy Target{
         get{
-            if(selectedTarget == null || selectedTarget.IsDead) selectedTarget = enemies.Find(enemy => !enemy.IsDead) ?? selectedTarget;
+            if(selectedTarget == null || !CanTarget(selectedTarget)) selectedTarget = enemies.Find(CanTarget) ?? enemies.Find(enemy => !enemy.IsDead) ?? selectedTarget;
             return selectedTarget;
         }
     }
@@ -136,22 +136,33 @@ public class BattleFlow
     // Adds a normal enemy to the battle (at the back of the turn order) with full HP. It picks its first intent at the
     // next player turn, so it doesn't act on the turn it appears.
     // mountedOn: the body a head grows from (the Hydra's), set before EnemyAdded so the UI never lays it out in the row.
-    public BattleEnemy SpawnEnemy(EnemySO data, string name, BattleEnemy mountedOn = null){
+    public BattleEnemy SpawnEnemy(EnemySO data, string name, BattleEnemy mountedOn = null, BattleEnemy summonedBy = null){
         if(entityFactory == null) return null;
         Entity entity = entityFactory();
         entity.entityName = name;
         entity.maxHP = data.maxHP;
         entity.currentHP = data.maxHP;
-        BattleEnemy enemy = new BattleEnemy(entity, new EnemyBrain(data, entity, player)){ sprite = data.sprite, spriteHeight = data.spriteHeight, mountedOn = mountedOn };
+        BattleEnemy enemy = new BattleEnemy(entity, EnemyBrain.Create(data, entity, player, die), data.endsBattleOnDeath){ sprite = data.sprite, spriteHeight = data.spriteHeight, mountedOn = mountedOn, summonedBy = summonedBy };
         enemies.Add(enemy);
         Setup(enemy);
         EnemyAdded?.Invoke(enemy);
         return enemy;
     }
 
-    // Selects the target of the player's attacks; returns false (and keeps the old one) for a dead or unknown enemy.
+    // An enemy guarded by its living minions (the Necromancer's Wall of Bones) can't be targeted.
+    public bool IsGuarded(BattleEnemy enemy){
+        EnemyBrain brain = enemy.brain as EnemyBrain;
+        if(brain == null || !brain.definition.guardedByMinions) return false;
+        return enemies.Exists(other => other.summonedBy == enemy && !other.IsDead);
+    }
+
+    public bool CanTarget(BattleEnemy enemy){
+        return enemy != null && !enemy.IsDead && enemies.Contains(enemy) && !IsGuarded(enemy);
+    }
+
+    // Selects the target of the player's attacks; returns false (and keeps the old one) for a dead, guarded or unknown enemy.
     public bool SelectTarget(BattleEnemy enemy){
-        if(enemy == null || enemy.IsDead || !enemies.Contains(enemy)) return false;
+        if(!CanTarget(enemy)) return false;
         selectedTarget = enemy;
         return true;
     }

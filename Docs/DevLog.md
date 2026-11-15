@@ -4034,3 +4034,20 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Day 124 (later) - The Hydra's HP bars after a regrowth
 - **The user's bug:** after heads were cut and grew back, their HP bars stood in the wrong place. Heads grow back at the start of the body's turn, right as it lunges at the player (`HitReaction`), and `PlaceDrawnHeads` put the head boxes (which the cards follow) from the body's position that frame; they stayed there until the next HP change. Now they are placed from the body's resting place (`HitReaction.Rest`), also for mounted heads. Tested: heads placed with the body pushed mid-lunge keep their places.
 
+## Day 125 - Elite Enemies
+
+### Accomplished
+- **Elites on the map** (Roadmap map step 4, the user's design: each elite has a mechanic of its own). Eight concepts were proposed; the user picked three to start, and renamed Umbra **Mimic**. Elite nodes appear from the third floor, one or two per act (2000 maps: none broke a rule), show the elite's mechanic on hover, pay 20 extra gold and offer a free item among three on the map screen (`EliteReward`, the reward panel).
+- **Necromancer** (act 1, Wall of Bones): raises skeletons in front of it and can't be targeted while one stands (`BattleFlow.IsGuarded`, `CanTarget`; area effects reach it); its death ends the fight. Minions are a general tool (`EnemySO.minion`, `RaiseMinion`, `SummonMinionEffectSO`, `BattleEnemy.summonedBy`), and intents can now wait (`EnemyIntent.cooldown`) or need room for a minion (`requiresMinionRoom`).
+- **Bronze Colossus** (act 2, Bronze Plates): `StatusType.Plating`, a hit past Block deals 1 and breaks a plate (`Entity.TakeDamage`).
+- **Mimic** (act 3, Mirror Match): `MimicBrain` copies the player's die and fights with it. Every one of the 197 effects of the Market's faces ran with an enemy as source without an error, as the effects were written source/target-agnostic. Its picture is the player's idle frame turned into a violet shadow (no new art needed).
+- Tested in Play Mode: each elite's fight, the ELITE title (it said BOSS for an enemy whose death ends the fight: the boss check now looks for a boss brain), the reward panel (gold 20 → 60, three Rare items, taking one).
+
+### Findings
+- **First numbers were brutal:** 90% of the bots died to the Necromancer at battle 3 and 30-87% to the Colossus at battle 7 (1-18% for a normal battle there). Traced fight by fight: the starting die deals about 2 a turn, the Necromancer raised a skeleton almost every turn and its Dark Pact Rage piled up; the Colossus's plates came back as fast as a one-hit-a-turn die broke them.
+- **Tuned:** Necromancer 15 HP, one starting skeleton, skeletons 3 HP / 2 damage, Raise Dead every 3 turns at most, Dark Pact replaced by Bone Shield (block for the group, nothing that piles up). Colossus 24 HP, 4 plates that don't come back by themselves, Reforge +1 every 4 turns at most, Bronze Fist 6. Now about 35% die at the Necromancer (Shield and Hound 55%, Bleed 20%) and at the Colossus (Bleed 57%, Rage 46%: their big hits meet the plates). The Mimic is 2-36% at battle 10 as first built.
+
+### Next Steps
+- Pictures for the Necromancer, the Skeleton and the Bronze Colossus (`Docs/ArtPrompts.md`, Elites), and an icon for Plating.
+- The user plays the elites. Then the map's step 5: the economy pass, with bots that walk the map (and the elites tuned again).
+

@@ -59,6 +59,8 @@ public class RunData
     // The nodes walked this act, and a rest waiting for its choice (the map screen shows it).
     public List<int> visitedNodes = new List<int>();
     public bool restPending;
+    // An elite was beaten: the map offers these items, one to take for free (or none).
+    public List<EquipmentSO> eliteRewardChoices = new List<EquipmentSO>();
     // Set by a boss victory: the next shop is the Grand Market, after which the next act's map begins.
     public bool grandMarketPending;
     // The shop scene's mode for this visit: the Enchanting Table node instead of a Market.

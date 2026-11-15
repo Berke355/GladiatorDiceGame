@@ -480,11 +480,13 @@ public static class RunSimulator
                 Entity enemy = Reset<Entity>(enemyObjects[i]);
                 enemy.entityName = names[i];
                 // Same scaling as BattleManager: HP multiplier and starting Rage for this battle number.
-                enemy.maxHP = encounters.ScaledHP(encounter, encounter.members[i], battleNumber);
+                // Elites aren't scaled, like bosses.
+                bool elite = encounter.members[i].tier == EnemyTier.Elite;
+                enemy.maxHP = elite ? encounter.members[i].maxHP : encounters.ScaledHP(encounter, encounter.members[i], battleNumber);
                 enemy.currentHP = enemy.maxHP;
-                int startingRage = encounters.ScalingFor(battleNumber).startingRage;
+                int startingRage = elite ? 0 : encounters.ScalingFor(battleNumber).startingRage;
                 if(startingRage > 0) enemy.ApplyStatus(StatusType.Rage, startingRage);
-                enemies.Add(new BattleEnemy(enemy, new EnemyBrain(encounter.members[i], enemy, player)));
+                enemies.Add(new BattleEnemy(enemy, EnemyBrain.Create(encounter.members[i], enemy, player, run.dieFaces), encounter.members[i].endsBattleOnDeath));
             }
         }
 
@@ -632,6 +634,7 @@ public static class RunSimulator
         }
         BattleEnemy best = null;
         foreach(BattleEnemy enemy in flow.LivingEnemies){
+            if(!flow.CanTarget(enemy)) continue;
             if(best == null || enemy.entity.currentHP < best.entity.currentHP) best = enemy;
         }
         return best;

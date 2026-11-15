@@ -117,9 +117,14 @@ public class RunManager : MonoBehaviour
             MapNode node = run.map.nodes[index];
             if(node.type != MapNodeType.Battle && node.type != MapNodeType.Elite) continue;
             if(node.encounter == null || node.encounter.members.Count == 0){
-                node.encounter = EncounterConfigSO.PickEncounter(encounters.enemyPool, encounters.groups, tier, reserved);
+                if(node.type == MapNodeType.Elite){
+                    EnemySO elite = encounters.PickElite(run.act, reserved);
+                    // An act without elites yet fights a normal battle there.
+                    node.encounter = elite != null ? EnemyGroup.Alone(elite) : EncounterConfigSO.PickEncounter(encounters.enemyPool, encounters.groups, tier, reserved);
+                }
+                else node.encounter = EncounterConfigSO.PickEncounter(encounters.enemyPool, encounters.groups, tier, reserved);
             }
-            else reserved.AddRange(node.encounter.members);
+            if(node.encounter != null) reserved.AddRange(node.encounter.members);
         }
     }
 
@@ -217,7 +222,8 @@ public class RunManager : MonoBehaviour
     public string BattleTitle(bool boss){
         if(!UsesMap || run.map == null) return "BATTLE " + (run.battlesWon + 1) + " / " + finalBattle;
         if(boss) return "ACT " + (run.act + 1) + " / " + acts;
-        return "ACT " + (run.act + 1) + "  FLOOR " + ((CurrentNode != null ? CurrentNode.floor : 0) + 1);
+        string title = "ACT " + (run.act + 1) + "  FLOOR " + ((CurrentNode != null ? CurrentNode.floor : 0) + 1);
+        return CurrentNode != null && CurrentNode.type == MapNodeType.Elite ? title + "  <color=#C77DFF>ELITE</color>" : title;
     }
 
     // The run start screen's paid reroll of the three offers.
@@ -247,6 +253,11 @@ public class RunManager : MonoBehaviour
         int goldEarned = economy.goldPerVictory + EquipmentSO.TotalGoldPerVictory(run.equipment);
 
         bool bossWon = UsesMap ? AtBoss : bossBattles.Contains(run.battlesWon);
+        // An elite pays more and offers an item (picked on the map screen).
+        if(UsesMap && CurrentNode != null && CurrentNode.type == MapNodeType.Elite){
+            goldEarned += economy.eliteGoldBonus;
+            run.eliteRewardChoices = EliteReward.Pick(economy, run, economy.eliteRewardChoices);
+        }
         // The final boss ends the run.
         if(UsesMap && bossWon && run.act >= acts - 1){
             run.runComplete = true;

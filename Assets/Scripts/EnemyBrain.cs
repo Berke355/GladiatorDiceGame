@@ -15,6 +15,15 @@ public class EnemyBrain : IEnemyBrain
     private readonly Entity opponent;
     private int currentIndex = -1;
     private int repeatCount;
+    // Intent cooldowns: the turn (count of picks) each intent was last picked.
+    private int picks;
+    private readonly Dictionary<int, int> lastPicked = new Dictionary<int, int>();
+
+    // The brain for an enemy asset: the Mimic fights with a copy of the player's die, every other enemy with intents.
+    public static IEnemyBrain Create(EnemySO enemy, Entity self, Entity opponent, List<DieFace> playerDie){
+        if(enemy.mirrorsPlayerDie) return new MimicBrain(enemy, self, opponent, playerDie);
+        return new EnemyBrain(enemy, self, opponent);
+    }
 
     public EnemyBrain(EnemySO enemy, Entity self, Entity opponent){
         definition = enemy;
@@ -69,6 +78,8 @@ public class EnemyBrain : IEnemyBrain
 
         repeatCount = picked == currentIndex ? repeatCount + 1 : 1;
         currentIndex = picked;
+        picks++;
+        lastPicked[picked] = picks;
         currentIntent = intents[picked];
         Debug.Log(definition.enemyName + "'s new intent: " + DescribeCurrentIntent());
     }
@@ -106,11 +117,35 @@ public class EnemyBrain : IEnemyBrain
         }
     }
 
-    // Called after the enemy's turn: escalating enemies gain Rage, which is visible as a status.
+    // Called after the enemy's turn: escalating enemies gain Rage, which is visible as a status; plated ones get plates
+    // back, up to their starting count.
     public void OnTurnEnd(){
         if(definition.escalationPerTurn > 0){
             self.ApplyStatus(StatusType.Rage, definition.escalationPerTurn);
         }
+        if(definition.platesPerTurn > 0){
+            int room = definition.startingPlates - self.GetStatus(StatusType.Plating);
+            if(room > 0) self.ApplyStatus(StatusType.Plating, System.Math.Min(room, definition.platesPerTurn));
+        }
+    }
+
+    // ---------- Minions (the Necromancer) ----------
+
+    private BattleEnemy Me => flow != null ? flow.enemies.Find(enemy => enemy.brain == this) : null;
+
+    public int LivingMinions{
+        get{
+            BattleEnemy me = Me;
+            return me == null ? 0 : flow.enemies.FindAll(enemy => enemy.summonedBy == me && !enemy.IsDead).Count;
+        }
+    }
+
+    // Raises one minion in front of this enemy, if there is room. Returns whether one rose.
+    public bool RaiseMinion(){
+        BattleEnemy me = Me;
+        if(me == null || definition.minion == null || LivingMinions >= definition.maxMinions) return false;
+        int number = flow.enemies.FindAll(enemy => enemy.summonedBy == me).Count + 1;
+        return flow.SpawnEnemy(definition.minion, definition.minion.enemyName + " " + number, null, me) != null;
     }
 
     private EffectContext CreateContext(){
@@ -122,7 +157,8 @@ public class EnemyBrain : IEnemyBrain
             targetLastValue = flow != null ? flow.LastActedValue : 0,
             targetLastAction = flow != null ? flow.LastAction : ActionType.Attack,
             allies = Allies(),
-            targetRerolls = flow != null ? flow.rerolls : null
+            targetRerolls = flow != null ? flow.rerolls : null,
+            summon = RaiseMinion
         };
     }
 
@@ -190,7 +226,12 @@ public class EnemyBrain : IEnemyBrain
     }
     // The battle, for the player's last action (threats on the player's choice).
     private BattleFlow flow;
-    public void Bind(BattleFlow flow){ this.flow = flow; }
+    // Starting plates and minions join here.
+    public void Bind(BattleFlow flow){
+        this.flow = flow;
+        if(definition.startingPlates > 0) self.ApplyStatus(StatusType.Plating, definition.startingPlates);
+        for(int i = 0; i < definition.startingMinions; i++) RaiseMinion();
+    }
 
     public List<EnemyTrait> Traits => definition.traits;
     // Second Wind: true once the enemy dropped below half HP and switched to its second intent list.
@@ -207,6 +248,9 @@ public class EnemyBrain : IEnemyBrain
             StatusType needed = intents[i].requiresTargetStatus;
             if(checkStatus && needed != StatusType.None && opponent.GetStatus(needed) <= 0) continue;
             if(avoidAttack && intents[i].intentType == ActionType.Attack) continue;
+            if(checkStatus && intents[i].requiresMinionRoom && LivingMinions >= definition.maxMinions) continue;
+            int last;
+            if(checkStatus && intents[i].cooldown > 0 && lastPicked.TryGetValue(i, out last) && picks + 1 - last <= intents[i].cooldown) continue;
             allowed.Add(i);
         }
         return allowed;

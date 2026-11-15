@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf8ccbab6a5cddb41a3b386f1321f2df, type: 3}
+  m_Name: BronzeColossus
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySO
+  enemyName: Bronze Colossus
+  tier: 4
+  maxHP: 24
+  sprite: {fileID: 0}
+  spriteHeight: 1.5
+  escalationPerTurn: 0
+  intents:
+  - intentName: Bronze Fist
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
+    value: 6
+    weight: 2
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
+  - intentName: Grinding Gears
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}
+    value: 3
+    weight: 2
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
+  - intentName: Reforge
+    intentType: 2
+    effects:
+    - {fileID: 11400000, guid: 4f5d99de3cb80de4e815941773a5510b, type: 2}
+    value: 1
+    weight: 1
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 4
+  - intentName: Brace
+    intentType: 1
+    effects:
+    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    value: 6
+    weight: 1
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
+  traits:
+  - traitName: Bronze Plates
+    description: A hit that gets past Block deals only 1 damage and breaks a plate.
+      Reforge brings plates back.
+    trigger: 0
+    requireAction: 0
+    action: 0
+    requireBlock: 0
+    requireTargeted: 0
+    requireUnblocked: 0
+    nextTurn: 0
+    effects: []
+    value: 1
+    maxPerBattle: 0
+  packTactics: 0
+  packTacticsTurns: 0
+  secondWindIntents: []
+  eliteAct: 1
+  eliteMechanic: 'Bronze Plates: starts with 4 Plating. A hit that gets past Block
+    deals only 1 damage and breaks a plate; Reforge brings one back now and then.
+    Many small hits, Poison and Bleed get through.'
+  endsBattleOnDeath: 0
+  minion: {fileID: 0}
+  startingMinions: 0
+  maxMinions: 3
+  guardedByMinions: 0
+  startingPlates: 4
+  platesPerTurn: 0
+  mirrorsPlayerDie: 0

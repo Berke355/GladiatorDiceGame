@@ -164,7 +164,8 @@ public class UIManager : MonoBehaviour
             float worldWidth = 2f * view.orthographicSize * view.aspect;
             float slot = card.Enemy.slotWidth > 0f ? card.Enemy.slotWidth : worldWidth * 0.1f;
             bool drawn = BattleManager.IsDrawnHead(card.Enemy);
-            if(drawn) card.gameObject.SetActive(!card.Enemy.IsDead);
+            // Dead drawn heads and dead minions (they leave the row) hide their cards.
+            if(drawn || card.Enemy.summonedBy != null) card.gameObject.SetActive(!card.Enemy.IsDead);
             card.Place(Vector2.Scale(feet, canvasSize), (top.y - feet.y) * canvasSize.y, slot / worldWidth * canvasSize.x, card.Enemy.mountedOn != null, drawn ? PlateShift(card, canvasSize.x * slot / worldWidth) : 0f);
         }
     }

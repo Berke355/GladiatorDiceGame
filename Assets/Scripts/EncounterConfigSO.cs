@@ -66,6 +66,16 @@ public class EncounterConfigSO : ScriptableObject
         return slot.bosses[UnityEngine.Random.Range(0, slot.bosses.Count)];
     }
 
+    // Elite enemies of every act (EnemySO.eliteAct, tier Elite), for the map's Elite nodes.
+    public List<EnemySO> elites = new List<EnemySO>();
+
+    // An elite of this act the run hasn't met (any of the act's if all were met); null if the act has none.
+    public EnemySO PickElite(int act, List<EnemySO> met){
+        List<EnemySO> candidates = elites.FindAll(elite => elite != null && elite.eliteAct == act && (met == null || !met.Contains(elite)));
+        if(candidates.Count == 0) candidates = elites.FindAll(elite => elite != null && elite.eliteAct == act);
+        return candidates.Count > 0 ? candidates[UnityEngine.Random.Range(0, candidates.Count)] : null;
+    }
+
     // The boss of an act on the map (see GDD "Map"): the act-th boss slot in battle order.
     public BossSO PickBossForAct(int act){
         List<BossSlot> slots = new List<BossSlot>(bossSlots);

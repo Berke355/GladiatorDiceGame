@@ -58,13 +58,15 @@ public class BattleManager : MonoBehaviour
                 Entity entity = i == 0 ? enemy : Instantiate(enemy, enemy.transform.parent);
                 entity.name = "Enemy " + names[i];
                 entity.entityName = names[i];
-                // Later battles of a tier are tougher: more HP and starting Rage (see GDD "Difficulty Curve").
+                // Later battles of a tier are tougher: more HP and starting Rage (see GDD "Difficulty Curve"). Elites
+                // aren't scaled, like bosses.
                 int battleNumber = run.battlesWon + 1;
-                entity.maxHP = RunManager.Instance.encounters.ScaledHP(encounter, enemyData, battleNumber);
+                bool elite = enemyData.tier == EnemyTier.Elite;
+                entity.maxHP = elite ? enemyData.maxHP : RunManager.Instance.encounters.ScaledHP(encounter, enemyData, battleNumber);
                 entity.currentHP = entity.maxHP;
-                int startingRage = RunManager.Instance.encounters.ScalingFor(battleNumber).startingRage;
+                int startingRage = elite ? 0 : RunManager.Instance.encounters.ScalingFor(battleNumber).startingRage;
                 if(startingRage > 0) entity.ApplyStatus(StatusType.Rage, startingRage);
-                enemies.Add(new BattleEnemy(entity, new EnemyBrain(enemyData, entity, player)){ sprite = enemyData.sprite, spriteHeight = enemyData.spriteHeight });
+                enemies.Add(new BattleEnemy(entity, EnemyBrain.Create(enemyData, entity, player, currentDiceFaces), enemyData.endsBattleOnDeath){ sprite = enemyData.sprite, spriteHeight = enemyData.spriteHeight });
             }
         }
 
@@ -103,8 +105,14 @@ public class BattleManager : MonoBehaviour
     // Each enemy takes its own width; if the row doesn't fit, all of them shrink by the same factor, so a boss stays
     // bigger than its heads. The row is centered on the placeholder's x and kept inside the sprite area.
     private void ArrangeEnemySprites(){
-        // Heads mounted on a body (the Hydra's) don't stand in the row; they are placed on the body afterwards.
-        List<BattleEnemy> row = flow.enemies.FindAll(enemy => enemy.mountedOn == null);
+        // Heads mounted on a body (the Hydra's) don't stand in the row; they are placed on the body afterwards. Raised
+        // minions (the Necromancer's skeletons) stand in front of their master, and dead ones give their place up.
+        List<BattleEnemy> row = new List<BattleEnemy>();
+        foreach(BattleEnemy each in flow.enemies){
+            if(each.mountedOn != null || each.summonedBy != null) continue;
+            row.AddRange(flow.enemies.FindAll(minion => minion.summonedBy == each && !minion.IsDead));
+            row.Add(each);
+        }
         int count = row.Count;
         float area = SpriteAreaRight - SpriteAreaLeft;
         float groundY = enemySpriteY - PlaceholderSize().y / 2f;
@@ -200,6 +208,9 @@ public class BattleManager : MonoBehaviour
         HitReaction reaction = body.entity.GetComponent<HitReaction>();
         return reaction != null ? reaction.Rest : body.entity.transform.position;
     }
+
+    // A boss fight (an elite whose death ends the fight isn't one).
+    private bool IsBossBattle => flow != null && flow.enemies.Exists(enemy => enemy.brain is BossBrain);
 
     public static bool IsDrawnHead(BattleEnemy enemy){
         BossBrain boss = enemy != null && enemy.mountedOn != null ? enemy.mountedOn.brain as BossBrain : null;
@@ -375,7 +386,7 @@ public class BattleManager : MonoBehaviour
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
             RunData battleRun = RunManager.Instance.run;
-            UIManager.Instance.ShowBattleInfo(RunManager.Instance.BattleTitle(flow.enemies[0].endsBattleOnDeath), battleRun.gold, flow.enemies[0].endsBattleOnDeath);
+            UIManager.Instance.ShowBattleInfo(RunManager.Instance.BattleTitle(IsBossBattle), battleRun.gold, IsBossBattle);
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
             UIManager.Instance.WireDieChips(OnDieFaceClicked);
             flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);
@@ -387,7 +398,8 @@ public class BattleManager : MonoBehaviour
             player.HitDealt += OnPlayerHitDealt;
             player.HitTaken += OnPlayerHitTaken;
         }
-        AudioManager.PlayMusic(flow.enemies[0].endsBattleOnDeath ? MusicTrack.Boss : MusicTrack.Battle);
+        // Elites fight to the boss music too.
+        AudioManager.PlayMusic(IsBossBattle || flow.enemies[0].endsBattleOnDeath ? MusicTrack.Boss : MusicTrack.Battle);
         flow.StartBattle();
         if(CheckBattleOver()) return;
         ChangeState(new PlayerRollState(this));

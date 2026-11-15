@@ -36,7 +36,10 @@ public enum StatusType {
     // A debuff (stacks are turns, -1 at the owner's turn end): its owner gains no Block (Fortify still works).
     Exposed,
     // Phoenix Feather: HP that would drop to 0 stops at 1 and one stack is spent (any HP loss: hits, ticks, costs).
-    Undying
+    Undying,
+    // Bronze plates (the Bronze Colossus): a hit that gets through Block and Fortify deals only 1 damage and breaks
+    // one plate. Ticks and HP costs go past them.
+    Plating
 }
 
 public class Entity : MonoBehaviour
@@ -135,7 +138,14 @@ public class Entity : MonoBehaviour
             activeStatuses[StatusType.Fortify] -= fortified;
             remaining -= fortified;
         }
-        LastHitAbsorbed = blocked + fortified;
+        // Plates take the hit: only 1 gets through, and one plate breaks.
+        int plated = 0;
+        if(remaining > 0 && GetStatus(StatusType.Plating) > 0){
+            plated = remaining - 1;
+            remaining = 1;
+            activeStatuses[StatusType.Plating] -= 1;
+        }
+        LastHitAbsorbed = blocked + fortified + plated;
 
         if(remaining > 0){
             LoseHP(remaining);

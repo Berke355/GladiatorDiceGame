@@ -109,6 +109,7 @@ public static class MapGenerator
     private static bool Fits(ActMap map, MapConfigSO config, int index, MapNodeType type, List<int> parents){
         if(type == MapNodeType.Battle) return true;
         MapNode node = map.nodes[index];
+        if(type == MapNodeType.Elite && (node.floor < config.firstEliteFloor || map.nodes.FindAll(other => other.type == MapNodeType.Elite).Count >= config.maxElitesPerMap)) return false;
         if(type == MapNodeType.Rest && (node.floor < config.firstRestFloor || node.floor == config.floors - 2)) return false;
         foreach(int parent in parents){
             if(map.nodes[parent].type == type) return false;
@@ -129,6 +130,7 @@ public static class MapGenerator
     public static List<string> Problems(ActMap map, MapConfigSO config){
         List<string> problems = new List<string>();
         if(map.NodesOnFloor(0).Count < 2) problems.Add("fewer than two first-floor nodes");
+        if(map.nodes.FindAll(node => node.type == MapNodeType.Elite).Count < config.minElitesPerMap) problems.Add("too few elites");
         for(int i = 0; i < map.nodes.Count; i++){
             if(i != map.bossNode && map.nodes[i].next.Count == 0) problems.Add("dead end at node " + i);
             if(map.nodes[i].floor > 0 && Parents(map, i).Count == 0) problems.Add("unreachable node " + i);

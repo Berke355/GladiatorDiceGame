@@ -84,3 +84,7 @@ MonoBehaviour:
   - battle: 10
     hpMultiplier: 1.15
     startingRage: 0
+  elites:
+  - {fileID: 11400000, guid: 2a648e8401ee0ad4d9d761832763ced2, type: 2}
+  - {fileID: 11400000, guid: 94c124ca8edb7964892be0a8ebaf8ef9, type: 2}
+  - {fileID: 11400000, guid: 9d438ea8a02d6624e968d0aac167cc15, type: 2}

@@ -20,7 +20,12 @@ public class MapConfigSO : ScriptableObject
         new NodeWeight{ type = MapNodeType.Market, weight = 20 },
         new NodeWeight{ type = MapNodeType.EnchantingTable, weight = 15 },
         new NodeWeight{ type = MapNodeType.Rest, weight = 15 },
+        new NodeWeight{ type = MapNodeType.Elite, weight = 12 },
     };
+    // Elites: not before this floor (0 is the first), and at most this many on one act's map.
+    public int firstEliteFloor = 2;
+    public int maxElitesPerMap = 2;
+    public int minElitesPerMap = 1;
     // A rest on the second floor would come before the player has lost anything.
     public int firstRestFloor = 2;
     // Every route from the first floor to the boss must have at least this many battles and Markets.
