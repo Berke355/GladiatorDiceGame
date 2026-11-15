@@ -4051,3 +4051,8 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Pictures for the Necromancer, the Skeleton and the Bronze Colossus (`Docs/ArtPrompts.md`, Elites), and an icon for Plating.
 - The user plays the elites. Then the map's step 5: the economy pass, with bots that walk the map (and the elites tuned again).
 
+### Day 125 (later) - The elites' pictures
+- **Necromancer, Skeleton, Bronze Colossus** (Gemini, `Docs/ArtPrompts.md` Elites). A new cutter: Gemini's pixels aren't a whole number of source pixels (the Necromancer's are 6, the others 11), so the grid is measured as a float from the autocorrelation of color edges and each cell takes the median color. The Necromancer is cut at two of its pixels per sprite pixel, so all three match the other enemies' pixel size (the Secutor's).
+- **The Plating icon** took a new row at the top of the icon atlas (768 x 768 now; glyph rects count from the bottom left, so the old icons keep theirs), with a glyph and a character in the `Icons` sprite asset and `GameText.IconNames`.
+- Checked in Play Mode: the Necromancer behind two skeletons, the Colossus with its Plating chip.
+

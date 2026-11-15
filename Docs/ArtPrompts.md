@@ -76,6 +76,8 @@ Elites are a little bigger and grander than the enemies of their act.
 | BronzeColossus | `Subject: a bronze colossus, an automaton statue of a gladiator one and a half times taller than a human, made of riveted bronze plates with green patina, glowing orange furnace light between the plates and in its eyes, huge fists, no weapon.` |
 | Mimic | Done: the player's own idle frame, flipped and turned into a violet shadow by a script. |
 
+All four are done (DevLog Day 125).
+
 ### Bosses
 
 The Minotaur is done (see the art comparison page). Bosses are bigger than everyone else.
