@@ -4061,3 +4061,10 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The battle result:** a plain black veil with Unity's default white button became a framed window like the game's other panels (dark leather, gold edge), VICTORY in gold with the gold won, DEFEAT in red, and the button in the Roll button's style.
 - **Next (the user's wish):** a title menu (New Run, Settings, Exit to Desktop) and a picture for the map, perhaps a parchment like Slay the Spire's.
 
+## Day 126 - The Title Menu
+
+### Accomplished
+- **The game's name: Dice & Gladius** (the user's choice among Alea Iacta, ALEA, Sextus, Fortuna's Arena and Dice & Gladius).
+- **The title screen** (`Title.unity`, first in Build Settings; `UI/TitleUI`): the Colosseum at dusk with a stone die, a helmet and a sword in the sand (Gemini, the user's picture, resampled to the arena backgrounds' 480 pixels wide), New Run (to the run start), Settings (opens the settings overlay, `SettingsUI.Instance.Open`) and Exit to Desktop (hidden in the Editor and on the web). The title is Cinzel text on a holder that sways, waiting for the logo: a red banner hanging over the die with the name (the user is drawing it with Gemini).
+- Tested in Play Mode: the screen, New Run → the run start.
+

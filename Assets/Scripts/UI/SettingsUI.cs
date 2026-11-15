@@ -24,6 +24,11 @@ public class SettingsUI : MonoBehaviour
 
     private const string SeenHelpKey = "seenHowToPlay";
 
+    // The one settings overlay (it lives through scene loads), so other screens can open it (the title menu).
+    public static SettingsUI Instance { get; private set; }
+    void Awake(){ Instance = this; }
+    public void Open(){ SetOpen(true); }
+
     void Start(){
         musicSlider.value = AudioManager.MusicVolume;
         sfxSlider.value = AudioManager.SfxVolume;
