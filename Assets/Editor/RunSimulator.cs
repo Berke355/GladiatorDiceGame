@@ -6,7 +6,7 @@ using System.Text;
 // Balance tool (Editor only): simulates full runs with bots that fight with the real battle rules
 // (Entity, EnemyBrain, effects) and shop in the real Market between battles. See DevLog Day 22–23.
 // Battles are simulated directly, without loading scenes, so thousands of runs take seconds.
-public static class RunSimulator
+public static partial class RunSimulator
 {
     // Opportunist: no fixed build; it follows what the run offers (the normal run in GDD "Every Run Is Its Own Build").
     public enum Shopping { None, Focused, Unplanned, Opportunist, Carry }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Bronze Colossus
   tier: 4
-  maxHP: 24
+  maxHP: 20
   sprite: {fileID: 21300000, guid: eb555d8c4ab6c4a489e237bd541fca59, type: 3}
   spriteHeight: 1.5
   escalationPerTurn: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-    value: 6
+    value: 5
     weight: 2
     requiresTargetStatus: 0
     requiresMinionRoom: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
     intentType: 0
     effects:
     - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}
-    value: 3
+    value: 2
     weight: 2
     requiresTargetStatus: 0
     requiresMinionRoom: 0

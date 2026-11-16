@@ -4069,3 +4069,19 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Tested in Play Mode: the screen, New Run → the run start.
 - **The logo:** Gemini's first logo wrote the name crudely, so the banner is drawn without text (a crimson Roman banner with a golden eagle, Greek key borders, a laurel wreath around a die and a gladius, gold fringe and tassels; cut at twice the pixel density so the emblem stays clear, `Assets/Art/UI/TitleBanner.png`) and the name is TextMeshPro on it: Cinzel bold with a gold vertical gradient, a dark outline and a shadow (`Resources/Fonts & Materials/Cinzel SDF Title.mat`). The letters stay sharp and the name can change in a minute. The banner hangs over the die and sways.
 
+## Day 127 - The Map, Step 5: Bots Walk the Map
+
+### Accomplished
+- **The simulator walks the map** (`RunSimulator.Map.cs`): bots play three generated acts the way `RunManager` runs them, choosing a route node by node (rest when hurt, the Market with gold in hand, elites when healthy), with the same rewards, the Market and the Enchanting Table apart, no Healer, and rests that heal or upgrade. 150 runs take under a second.
+- **Elites tuned on the map:** at first 45% of the elite fights killed the bot, and most builds cleared more without them (Rage 3% with elites, 7% without). Necromancer 15 → 12 HP and Bone Spear 4 → 3; Bronze Colossus 24 → 20 HP, Bronze Fist 6 → 5, Grinding Gears 2 x 3 → 2 x 2. Elite deaths are now 18-20%, and taking them is a real choice (with and without elites within noise for every bot).
+
+### Findings (300 runs per bot, map)
+- **Clear rates:** Poison 27%, Ritual + Poison 27%, Hound + Rage 19%, Burn 17%, Ritual + Bleed 16%, Bleed 15%, Hound 15%, Ritual 12%, Bleed + Rage 10%, Fortune 9%, Opportunist 8%, Rage 8%, Net + Ritual 8%, Hammer 7%, Shield + Rage 7%, Riposte + Shield 5%, Shield 4%, Net 4%, Unplanned 3%, One-face carry 3%, Riposte 2%. Most sit in the 5-15% target (Roadmap Phase A); Poison is above it, Shield, Net and Riposte below.
+- **Poison is its ticks:** 3.5 damage a turn from Poison against 0.55 from its faces' hits. Smoke Pot 2 → 1 only moved it 27% → 24%, so it stays: the strength is the whole build (stacks, Ritual on every application, area faces against groups), a rule question for the user.
+- **Deaths spread over the acts** (Opportunist: act 1 battles 11%, act 2 battles 24%, act 3 battles 18%, bosses 12/6/3%). The Mimic is the Poison bot's second killer: it poisons back with the bot's own die.
+- **Rests are mostly heals** (heal 537, upgrade 182 for the Opportunist); bots reach each boss with about 25-33 gold.
+
+### Next Steps
+- The user decides on Poison (a rule change, e.g. Poison loses more each turn) and on helping Shield, Net and Riposte.
+- The rest of step 5: gold per battle and prices now that a Market isn't after every fight; the difficulty curve by act.
+
