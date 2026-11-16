@@ -28,8 +28,8 @@ public class BattleFlow
     private DieFace changeFrom;
     // The player passed this turn (no action): the rolled face counts as unused.
     public bool Passed { get; private set; }
-    // Whether the player chose Attack or Magic at least once this turn: the beast (Hound) stays by your side on a turn
-    // you only defended (or passed), and bites on the others.
+    // Whether the player chose Attack at least once this turn: the beast (Hound) bites only on such turns, and stays by
+    // your side when you defended, cast Magic or passed.
     public bool AttackedThisTurn { get; private set; }
     public int ChangesThisTurn { get; private set; }
     // The last action steered the die (Change, Flip, Tumble): it is rolled again at once and the turn goes on.
@@ -109,7 +109,7 @@ public class BattleFlow
             foreach(EquipmentSO item in equipment) enchantedFaceBonus += item.enchantedFaceBonus;
         }
         charge.placementBonus = face => DieEnchantmentSO.BonusAt(dieEnchantments, die, die.IndexOf(face)) + (face.enchantment != null ? enchantedFaceBonus : 0);
-        charge.placementMultiplier = face => DieEnchantmentSO.MultiplierAt(dieEnchantments, die.IndexOf(face));
+        charge.placementMultiplier = face => DieEnchantmentSO.MultiplierAt(dieEnchantments, die.IndexOf(face), die);
         rerolls = new RerollPool(rerollsPerBattle);
         this.player = player;
         this.enemies = enemies;
@@ -234,6 +234,7 @@ public class BattleFlow
         ChangesThisTurn = 0;
         ActionsThisTurn = 0;
         TurnNumber++;
+        houndAtTurnStart = player.GetStatus(StatusType.Hound);
         HitsTakenLastEnemyTurn = hitsSinceTurnStart;
         hitsSinceTurnStart = 0;
         PreventedLastEnemyTurn = preventedSinceTurnStart;
@@ -247,6 +248,7 @@ public class BattleFlow
         ChoicePending = false;
         Passed = false;
         AttackedThisTurn = false;
+        ActedThisTurnNotDefending = false;
         LastActedFace = null;
         triggers.StartRound();
         triggers.turnNumber = TurnNumber;
@@ -346,7 +348,9 @@ public class BattleFlow
         triggers.actionChanged = actionChanged;
         hasActedThisBattle = true;
         LastAction = action;
-        if(action != ActionType.Defense) AttackedThisTurn = true;
+        // The beast joins in only when its master attacks (GDD "Beastmaster").
+        if(action == ActionType.Attack) AttackedThisTurn = true;
+        if(action != ActionType.Defense) ActedThisTurnNotDefending = true;
         triggers.Fire(TriggerType.ActionChosen, action);
         if(IsOver) return;
         BattleEnemy target = Target;
@@ -418,13 +422,19 @@ public class BattleFlow
 
     // TurnEnd items run before the player's statuses tick.
     // The face you acted with spends its Charge (unless its action kept it); every other charging face gains 1.
-    // The beast bites at the end of the turn unless the player only defended or passed (and it needs to be out).
-    public bool BeastWillBite => AttackedThisTurn && !Target.IsDead && beast.IsOut && player.GetStatus(StatusType.Hound) > 0;
+    // The beast bites at the end of a turn the player attacked in (and it needs to be out).
+    public bool BeastWillBite => (AttackedThisTurn || !BiteOnlyOnAttack && ActedThisTurnNotDefending) && !Target.IsDead && beast.IsOut && BiteStrength > 0;
+    // Experiment switches (DevLog): bites only on Attack turns, and only with the Hound held at the turn's start.
+    public static bool BiteOnlyOnAttack = true;
+    public static bool BiteFromTurnStartHound = false;
+    private int houndAtTurnStart;
+    public bool ActedThisTurnNotDefending { get; private set; }
+    private int BiteStrength => BiteFromTurnStartHound ? Mathf.Min(houndAtTurnStart, player.GetStatus(StatusType.Hound)) : player.GetStatus(StatusType.Hound);
 
     // The end-of-turn bite on its own, so the battle screen can show it a moment after the player's action.
     public void BeastBite(){
         if(!BeastWillBite) return;
-        Beast.Bite(new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), die = die, charge = charge, rerolls = rerolls });
+        Beast.Bite(new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), die = die, charge = charge, rerolls = rerolls }, BiteStrength);
     }
 
     // biteFirst: the bite as the turn's first end step (the simulator); the battle screen calls BeastBite itself first.

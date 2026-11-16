@@ -390,7 +390,7 @@ public class MarketUI : MonoBehaviour
 
             DieFace dieFace = run.dieFaces[i];
             string moving = i == pendingSwap ? "<color=#E2B23C>Moving: </color>" : "";
-            int bonus = (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i) - dieFace.value;
+            int bonus = (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i, run.dieFaces) - dieFace.value;
             string bonusText = bonus > 0 ? " <color=#E2B23C>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
             int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
             string weightText = (weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often")
@@ -498,7 +498,7 @@ public class MarketUI : MonoBehaviour
             return;
         }
         DieFace face = run.dieFaces[selectedSlot];
-        int bonus = (face.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, selectedSlot)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, selectedSlot) - face.value;
+        int bonus = (face.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, selectedSlot)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, selectedSlot, run.dieFaces) - face.value;
         selectedTile.Set(face, face.value, bonus > 0 ? "<color=#FFC857>+" + bonus + "</color>" : bonus < 0 ? "<color=#FF7A6B>" + bonus + "</color>" : "");
         selectedHeader.text = "<font=\"Cinzel SDF\"><b>" + face.DisplayName + "</b></font>\n"
             + OfferCardUI.RarityName(face.definition.rarity) + "  <color=#C9B796>· " + DieLayout.Name(selectedSlot) + "</color>\n"

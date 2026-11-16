@@ -6,14 +6,18 @@ public class PayHPEffectSO : EffectSO
 {
     // Leaves at least 1 HP (an item paying on its own at the start of a battle, Blood Pact, should never kill).
     public bool neverLethal;
+    // When above 0, this exact amount instead of the value (Feed: upgrades don't raise the cost).
+    public int fixedAmount;
+
+    private int Amount(EffectContext context){ return fixedAmount > 0 ? fixedAmount : context.value; }
 
     public override void Execute(EffectContext context){
-        int amount = neverLethal ? Mathf.Min(context.value, context.source.currentHP - 1) : context.value;
+        int amount = neverLethal ? Mathf.Min(Amount(context), context.source.currentHP - 1) : Amount(context);
         context.source.PayHP(amount);
         Debug.Log(context.source.entityName + " paid " + amount + " HP.");
     }
 
     public override string Describe(EffectContext context){
-        return "lose " + context.value + " HP";
+        return "lose " + Amount(context) + " HP";
     }
 }

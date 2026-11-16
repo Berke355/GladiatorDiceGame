@@ -38,7 +38,7 @@ MonoBehaviour:
   secondWindIntents: []
   eliteAct: 2
   eliteMechanic: 'Mirror Match: copies your die at the start of the fight and fights
-    with it, your faces, values and enchantments against you.'
+    with it, your faces and enchantments against you, every face +1.'
   endsBattleOnDeath: 0
   minion: {fileID: 0}
   startingMinions: 0

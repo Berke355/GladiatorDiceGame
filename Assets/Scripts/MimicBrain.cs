@@ -27,9 +27,12 @@ public class MimicBrain : IEnemyBrain
         if(playerDie == null) return;
         // A snapshot: the player's upgrades later in the run don't change this battle's copy.
         foreach(DieFace face in playerDie){
-            die.Add(new DieFace(face.definition){ value = face.value, enchantment = face.enchantment });
+            // Every copy is a little better than the original (an elite's edge).
+            die.Add(new DieFace(face.definition){ value = face.IsBlank ? face.value : face.value + CopyBonus, enchantment = face.enchantment });
         }
     }
+
+    public const int CopyBonus = 1;
 
     public void Bind(BattleFlow flow){ this.flow = flow; }
 

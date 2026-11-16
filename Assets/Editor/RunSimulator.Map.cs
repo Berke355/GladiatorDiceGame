@@ -247,7 +247,7 @@ public static partial class RunSimulator
                     // The face that matters most: a build face with the highest value (else any).
                     DieFace best = null;
                     foreach(DieFace face in run.dieFaces){
-                        if(face.IsBlank) continue;
+                        if(!RunManager.CanRestUpgradeFace(face)) continue;
                         bool fits = bot.Fits(face.definition);
                         bool bestFits = best != null && bot.Fits(best.definition);
                         if(best == null || (fits && !bestFits) || (fits == bestFits && face.value > best.value)) best = face;

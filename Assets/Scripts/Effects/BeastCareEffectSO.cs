@@ -5,7 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewBeastCareEffect", menuName = "Dice/Effects/Beast Care Effect")]
 public class BeastCareEffectSO : EffectSO
 {
-    public enum Care { Heal, MaxHP, Shelter }
+    // Serialized as numbers: append only. HealFull heals the beast to its max HP (Feed).
+    public enum Care { Heal, MaxHP, Shelter, HealFull }
     public Care care;
     // When above 0, this exact amount instead of the value.
     public int fixedAmount;
@@ -18,6 +19,7 @@ public class BeastCareEffectSO : EffectSO
             case Care.Heal: beast.Heal(amount); break;
             case Care.MaxHP: beast.RaiseMaxHP(amount); break;
             case Care.Shelter: beast.Shelter(); break;
+            case Care.HealFull: beast.Heal(beast.MaxHP); break;
         }
     }
 
@@ -28,6 +30,7 @@ public class BeastCareEffectSO : EffectSO
         switch(care){
             case Care.MaxHP: return "your beast gains " + amount + " max HP" + none;
             case Care.Shelter: return "your beast takes no damage until your next turn" + none;
+            case Care.HealFull: return "heal your beast fully" + none;
             default: return "heal your beast " + amount + none;
         }
     }

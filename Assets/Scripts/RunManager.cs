@@ -199,7 +199,12 @@ public class RunManager : MonoBehaviour
     }
 
     public bool CanRestUpgrade(int dieSlot){
-        return dieSlot >= 0 && dieSlot < run.dieFaces.Count && !run.dieFaces[dieSlot].IsBlank;
+        return dieSlot >= 0 && dieSlot < run.dieFaces.Count && CanRestUpgradeFace(run.dieFaces[dieSlot]);
+    }
+
+    // A rest works on Common and Rare faces, like the Normal Market: Epics grow only at the Grand Market.
+    public static bool CanRestUpgradeFace(DieFace face){
+        return face != null && !face.IsBlank && face.definition.rarity != Rarity.Epic;
     }
 
     public void RestUpgrade(int dieSlot){

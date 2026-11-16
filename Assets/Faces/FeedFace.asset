@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: FeedFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Feed
-  description: 'Magic: Lose HP equal to my value and gain Hound equal to my value.
-    Defense: Gain block equal to my value.'
+  description: 'Magic: Lose 2 HP, gain Hound equal to my value and heal your beast
+    fully. Defense: Gain block equal to my value.'
   rarity: 1
   tags: 0d00000005000000
   emblem: {fileID: 21300000, guid: 1b457772ed5cf0c45afcf175a38d87a5, type: 3}
@@ -22,10 +22,13 @@ MonoBehaviour:
   baseValue: 3
   effects:
   - actionType: 2
-    effectLogic: {fileID: 11400000, guid: 2196e85068fc6e445ab5cd09f28e19e2, type: 2}
+    effectLogic: {fileID: 11400000, guid: 750ae503e32e1bc4b9bc567a27bd4b79, type: 2}
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: c0e0f1bdf43215843995c9d557edfd05, type: 2}
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: f2ace052de54d314a8ddfc96412d9687, type: 2}
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   keywords: 
   hasNoValue: 0
+  isBlank: 0

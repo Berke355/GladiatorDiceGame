@@ -52,10 +52,16 @@ public class DieEnchantmentSO : ScriptableObject
             }
             if(enchantment.oppositeTagBonus != 0 && SharesTagWithOpposite(die, position)) bonus += enchantment.oppositeTagBonus;
         }
-        return bonus;
+        return IsEpicAt(die, position) ? System.Math.Min(0, bonus) : bonus;
     }
 
-    public static int MultiplierAt(List<DieEnchantmentSO> enchantments, int position){
+    // Die enchantments never raise an Epic face's value (their penalties still count): a cheap +2 on an Epic skipped
+    // the Grand Market, the only place Epics are upgraded (GDD "Die Enchantments").
+    private static bool IsEpicAt(List<DieFace> die, int position){
+        return die != null && position >= 0 && position < die.Count && die[position] != null && die[position].definition.rarity == Rarity.Epic;
+    }
+
+    public static int MultiplierAt(List<DieEnchantmentSO> enchantments, int position, List<DieFace> die = null){
         int multiplier = 1;
         if(enchantments == null) return multiplier;
         foreach(DieEnchantmentSO enchantment in enchantments){
@@ -63,7 +69,7 @@ public class DieEnchantmentSO : ScriptableObject
                 if(entry.position == position) multiplier *= entry.amount;
             }
         }
-        return multiplier;
+        return IsEpicAt(die, position) ? System.Math.Min(1, multiplier) : multiplier;
     }
 
     public static bool ConsumableAt(List<DieEnchantmentSO> enchantments, int position){
