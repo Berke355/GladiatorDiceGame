@@ -162,6 +162,8 @@ Every build should care where its faces sit, not only Fortune (play-test). Die e
 - **The minus side is the real decision:** faces that don't depend on their value go there (Turnabout used for its Flip, Lucky Buckler for its reroll, a drunk potion).
 - **Value Is the Effect holds:** like Charge, it is part of a face's battle value. The die shows "Sword 2 +2", and effects and previews use 4. A battle value never goes below 0. Upgrade prices use the face's own value.
 - **Medusa's gaze takes the highest battle value,** so the face on the bonus spot is her target.
+- **Never on an Epic's value:** a die enchantment's bonus (and Twin Soul's doubling) doesn't raise an Epic face; its penalties still count. A +2 for 10 gold skipped the Grand Market, the only place Epics grow (the user's play-test). Rests upgrade only Common and Rare faces for the same reason.
+- **Rolled enchantments** give a status once per turn when the face at their place lands: War Paint, Kennel, Fisher's Corner, Doghouse, and Bulwark (Top: 2 Fortify), Blood Altar (Middle: 2 Bleed), Brazier (Left or Right: 2 Burn), Venom Gland (Bottom: 3 Poison), War Drum (Rightmost: 1 Rage), so every build has one.
 - **At most 2 at a time;** a new one replaces one of them. They can't be removed otherwise. Few means each one is a heavy decision.
 - **Prices:** the same as other offers (Common 10, Rare 25, Epic 45). The table offers 2 per Market, under the same rules as faces (Grand Market: Epic only), and they can be locked.
 
@@ -302,6 +304,8 @@ Every battle gives the player a small pool of **rerolls** (3), refilled at the s
 - **Simulation (DevLog Day 58, 6 focused bots, 800 runs):** the old potion (heal 3 every time) cleared Burn 15%, Poison 19%, Shield 17%, Rage 8%, Bleed 6%, Hammer 4%. Consumable 4 with Change: 19%, 25%, 16%, 10%, 8%, 4%. Consumable 3 with Change: 16%, 16%, 19%, 6%, 7%, 3%, about the same as the old potion. So Change's die thinning costs little; the extra point of healing is most of the gain. The value stays 4 (one strong drink), and the difficulty and gold pass will balance the total.
 
 ## Rarity & Economy
+
+- **Upgraded finds:** about 20% of a Normal Market's face offers come already upgraded (+1, a quarter of them +2), priced at the face's price plus half of what those upgrades cost (the user's idea). The Grand Market's Epics come plain.
 
 ### Goals
 
@@ -455,7 +459,7 @@ Market services:
 - **Free swaps at any Market:** click a benched face, then a face on the die; they trade places. Never during a battle.
 - **Move a face to the bench** (Move, then an empty bench slot): its place on the die turns **Blank**, a face with no actions, no value, never upgraded or enchanted; landing on it means a reroll or a pass. A benched face swapped onto a Blank fills it (the Blank is gone), and a face bought onto a Blank doesn't send it to the bench. Taking a face off the die is a real cost: a Blank instead of the Health Potion took the Bleed bot from 25% to 14%. (The Blank is also the price the Mad Scientist plans for a merge.)
 - **Buy straight onto the bench:** a bought face can go to an empty bench slot instead of replacing a die face.
-- **Sell** a benched face for a quarter of its rarity's price (Common 2, Rare 6, Epic 11 gold), so the bench never becomes a shop.
+- **Sell** a benched face for a quarter of its rarity's price (Common 2, Rare 6, Epic 11 gold), so the bench never becomes a shop, **plus half the gold its upgrades cost** (the user's play-test: selling an upgraded face threw that gold away).
 - **Why two:** enough for a plan B (a Burn face kept for the Hydra, a defensive face for the War Elephant), not enough for a second die. Replacing a face still matters, but a wrong buy is no longer final. Later, the Mad Scientist (Roadmap) can merge a benched face.
 - **Reserve Roster** (Rare item, Fortune): at the start of each battle, gain 1 reroll for each face on your bench (`EquipmentSO.rerollsPerBenchedFace`, read by `RunData.RerollsThisBattle`). The user's idea of an item that counts the bench; it pays for a benched face (and its Blank) with the rerolls that skip a Blank, at most +2.
 - Bots don't use the bench; their replaced faces are sold when it overflows, which changed nothing measurable (Opportunist 5% → 6%, Burn 12% → 12%, Bleed 26% → 25%).
@@ -996,6 +1000,8 @@ The beast tamer: a war dog fights beside you, and your die commands it (summon, 
   - Measured (1200-1500 runs per rule, same content): Hound about 14% → 11%, Hound + Rage 15% → 12%, next to Rage (11%), under Bleed (21%). Before the toughness content joined the pool the Hound bot cleared 20-26% (it now also buys toughness faces, which an immortal beast doesn't need).
 - **Summoned by faces, not a hero** (the user's choice): any run can find it and mix it with its build; a future Beastmaster hero (Roadmap: heroes) can start with Whistle.
 - **Enemies don't target the beast;** it is hurt only through you (above). Utility intents that answer it (e.g. "Scare") stay an option for later.
+- **Bites only on Attack turns was tried (DevLog Day 128) and dropped:** most Hound faces are Magic, so the beast hardly bit (Hound 8% → 1%).
+- **Feed** costs a flat 2 HP, gives Hound equal to its value and heals the beast fully, so its upgrades are pure gain.
 - **Tile color:** leather brown (`FaceTag.Hound`).
 
 | Face | Role | Rarity | Value | Actions |

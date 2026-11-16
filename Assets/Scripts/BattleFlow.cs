@@ -28,8 +28,8 @@ public class BattleFlow
     private DieFace changeFrom;
     // The player passed this turn (no action): the rolled face counts as unused.
     public bool Passed { get; private set; }
-    // Whether the player chose Attack at least once this turn: the beast (Hound) bites only on such turns, and stays by
-    // your side when you defended, cast Magic or passed.
+    // Whether the player chose Attack this turn (BiteOnlyOnAttack), or any action but Defense: the beast (Hound) stays
+    // by your side on a turn you only defended (or passed), and bites on the others.
     public bool AttackedThisTurn { get; private set; }
     public int ChangesThisTurn { get; private set; }
     // The last action steered the die (Change, Flip, Tumble): it is rolled again at once and the turn goes on.
@@ -348,7 +348,6 @@ public class BattleFlow
         triggers.actionChanged = actionChanged;
         hasActedThisBattle = true;
         LastAction = action;
-        // The beast joins in only when its master attacks (GDD "Beastmaster").
         if(action == ActionType.Attack) AttackedThisTurn = true;
         if(action != ActionType.Defense) ActedThisTurnNotDefending = true;
         triggers.Fire(TriggerType.ActionChosen, action);
@@ -422,10 +421,11 @@ public class BattleFlow
 
     // TurnEnd items run before the player's statuses tick.
     // The face you acted with spends its Charge (unless its action kept it); every other charging face gains 1.
-    // The beast bites at the end of a turn the player attacked in (and it needs to be out).
+    // The beast bites at the end of the turn unless the player only defended or passed (and it needs to be out).
+    // Attack-only bites were tried and dropped (DevLog): most Hound faces are Magic, so the beast hardly ever bit.
     public bool BeastWillBite => (AttackedThisTurn || !BiteOnlyOnAttack && ActedThisTurnNotDefending) && !Target.IsDead && beast.IsOut && BiteStrength > 0;
     // Experiment switches (DevLog): bites only on Attack turns, and only with the Hound held at the turn's start.
-    public static bool BiteOnlyOnAttack = true;
+    public static bool BiteOnlyOnAttack = false;
     public static bool BiteFromTurnStartHound = false;
     private int houndAtTurnStart;
     public bool ActedThisTurnNotDefending { get; private set; }

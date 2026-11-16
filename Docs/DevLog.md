@@ -4108,3 +4108,27 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Gold is the strongest lever:** gold per victory 15 / 20 / 25 gives Opportunist 5 / 10 / 14%, Burn 12 / 17 / 22%, Rage 6 / 7 / 11%, Ritual 2 / 5 / 10%, Bleed 12 / 18 / 27% (300 runs). At 20 the average sits in the 5-15% target, so nothing changed; the user's play decides whether a Market visit feels rich enough.
 - **Playtest build 0.3** (`Builds/Playtest/DiceAndGladius-0.3-playtest.zip`, 46.5 MB, the game's name on the files now): the title menu, elites, the beast's HP, the Poison rework, Vulnerable, Deflect, Fortify. The 0.1 and 0.2 builds and zips were deleted at the user's request. A headless start loaded with no errors.
 
+
+## Day 128 - The 0.3 Playtest Notes
+
+### Accomplished
+- **The Hydra's plates:** with every head cut, `UIManager.MountedHeadsTop` found no living head and returned `float.MinValue`, which made the heads' cards absurdly tall; their layout wrote NaN into the plates' position, and the NaN stayed after the heads grew back (the plates jumped around). The row now falls back to the head's own box and `EnemyCardUI.Place` resets a non-finite plate. Reproduced and checked in Play Mode (two heads cut, three grown back).
+- **Battle screen:** action buttons show a short preview (`UIManager.ShortPreview`: no explanations in parentheses, at most three effects) and shrink long lines; the top bar names the enemy (boss, group or lone enemy); the Minotaur's Stampede shows over its head ("STAMPEDE 12 in 2 turns", red on its last turn).
+- **Settings:** Abandon Run beside How to Play (asks twice, `RunManager.AbandonRun` → the title menu); hidden on the title screen.
+- **Map:** a Market or Enchanting Table left for the map can be entered again until the player steps on (`RunManager.TakeShop` keeps the `Market` object, so offers, rerolls and purchases stay: never a free reroll).
+- **Encourage** grows only what the die's actions give: `EffectContext.fromItem` (set by `TriggerSystem` and rolled die enchantments) turns `EncourageBonus` off.
+- **Market:** faces and equipment are split by a gold line and a darker backing; the bench is a framed box with slot frames and a hint. About 20% of a Normal Market's face offers come upgraded (+1, a quarter of them +2; price + half the upgrades' cost; `EconomyConfigSO.upgradedOfferChance`, `UpgradeGoldBetween`). A benched face sells for a quarter of its price plus half its upgrades' cost. Face enchantments cost Common 3, Rare 6.
+- **Die enchantments:** Bulwark (Top: 2 Fortify), Blood Altar (Middle: 2 Bleed), Brazier (Left/Right: 2 Burn), Venom Gland (Bottom: 3 Poison), War Drum (Rightmost: 1 Rage); no icons yet. They never raise an Epic face's value now (penalties still count), and rests upgrade only Common and Rare faces (`RunManager.CanRestUpgradeFace`): a +2 for 10 gold skipped the Grand Market.
+- **Enemies:** multi-hit intents (Quick Cuts, Blade Dance, Pummel, Spear Flurry, Chariot Pass, Trample, Crack the Whip) and two-part ones (Shield Bash, Net Cast, Phalanx, Choking Mist); Lampadarius's Torch Swing hits as it burns and Ignite comes more often; Medusa's Stone Skin Entangles the player (no rerolls next turn); Tiro HP 11 → 14; the Necromancer is bigger and its skeletons smaller; the Mimic's copied faces are +1.
+- **Snare:** against a Weak enemy its Defense adds Fortify (kept) instead of a second Block (mostly wasted).
+- **Feed:** a flat 2 HP, Hound equal to its value and the beast healed fully (`BeastCareEffectSO.Care.HealFull`, `PayHPEffectSO.fixedAmount`).
+
+### Decisions
+- **Multi-hit intents add the enemy's Rage on every hit.** Added on top of the old attacks they took Bleed 18% → 4%; they now take a share of the main attack's weight, the Lion (a Rage builder) has none, and Tiro got HP instead of damage (three Tiros in a group tripled it). With the old enemies Opportunist / Burn / Poison / Bleed clear 10 / 14 / 15 / 18%, now 4 / 11 / 12 / 10% (300 runs): a bit harder on purpose, the user asked for more threatening intents.
+- **1 Vulnerable from an enemy does nothing:** it counts down at the end of the player's own turn, before any enemy hits. Enemy intents apply 2. Riposte's Off-Balance (1 Vulnerable) has the same flaw; the user postponed the Riposte rework for a longer discussion.
+- **Bites on Attack turns only was tried and dropped:** 9 of 12 Hound faces are Magic, so the beast hardly bit (Hound 8% → 1%); "Hound gained this turn bites next turn" gave 4%. The user kept the old rule; `BattleFlow.BiteOnlyOnAttack` and `BiteFromTurnStartHound` stay as experiment switches.
+
+### Next Steps
+- Icons for the five new die enchantments and the parchment map background (prompts given in chat).
+- The Riposte rework, discussed at length with the user (timing, Off-Balance, Reversal, the Magic escape, its faces and items).
+- Music last.

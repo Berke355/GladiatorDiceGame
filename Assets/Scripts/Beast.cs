@@ -2,7 +2,7 @@ using System;
 
 // The Beastmaster's beast (GDD "Beastmaster"): the source's Hound stacks are its strength. A bite is the source's own
 // hit (through EffectContext.Hit), so Rage, Weak, the target's Vulnerable and the source's on-hit items all count.
-// Used at the end of the player's turn (BattleFlow.BeastBite, on turns the player attacked) and by faces that
+// Used at the end of the player's turn (BattleFlow.BeastBite, unless the player only defended) and by faces that
 // make it attack at once (Sic 'Em).
 public static class Beast
 {
