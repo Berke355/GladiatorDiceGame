@@ -38,6 +38,21 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4e7b6ba1166bbbf41ae94df1039fe948, type: 2}
     value: 1
     weight: 1
+  - intentName: Phalanx
+    intentType: 1
+    effects:
+    - {fileID: 11400000, guid: 2346b8293607bd2419e0471bc7f914a1, type: 2}
+    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    value: 6
+    weight: 1
+    requiresTargetStatus: 0
+  - intentName: Spear Flurry
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
+    value: 3
+    weight: 1
+    requiresTargetStatus: 0
   traits:
   - traitName: Challenge
     description: 'The first 3 times you choose Defense each battle: it gains 1 Rage.'

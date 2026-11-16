@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26c9c6887b0917a41bb2e78f07bb2965, type: 3}
-  m_Name: IfWeakBlockEffect
+  m_Name: IfWeakFortifyEffect
   m_EditorClassIdentifier: Assembly-CSharp::ConditionalEffectSO
   requiredStatus: 9
   checkTarget: 1
   effects:
-  - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+  - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}

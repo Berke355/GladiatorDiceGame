@@ -40,6 +40,13 @@ MonoBehaviour:
     value: 1
     weight: 1
     requiresTargetStatus: 0
+  - intentName: Blade Dance
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
+    value: 2
+    weight: 1
+    requiresTargetStatus: 0
   traits:
   - traitName: Parry
     description: 'Each time you choose Attack against it while it has block: you

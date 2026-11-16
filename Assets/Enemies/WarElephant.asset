@@ -37,6 +37,13 @@ MonoBehaviour:
     - {fileID: 11400000, guid: d3b82aa1bb07da8439cf3bf7eebaea3c, type: 2}
     value: 1
     weight: 1
+  - intentName: Trample
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
+    value: 3
+    weight: 1
+    requiresTargetStatus: 0
   traits:
   - traitName: Thorns
     description: 'The first 6 times you hit it each battle: you take 1 damage.'

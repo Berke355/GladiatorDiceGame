@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Snare
   description: 'Attack: Deal damage equal to my value. Defense: Gain block equal
-    to my value; if the enemy is Weak, gain it again.'
+    to my value; if the enemy is Weak, also gain Fortify equal to my value.'
   rarity: 1
   tags: 0b00000001000000
   emblem: {fileID: 21300000, guid: 24aff459195c5404a84a3302e78cffe0, type: 3}

@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: StoneSkinFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Stone Skin
-  description: 'Defense: Gain block equal to my value.'
+  description: 'Defense: Gain block equal to my value. The player is Entangled (no rerolls) on their next turn.'
   rarity: 2
   tags: 
   baseValue: 8
   effects:
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+  - actionType: 1
+    effectLogic: {fileID: 11400000, guid: 71ba63f0646ae864cb166fa266cdd16a, type: 2}
   charges: 0

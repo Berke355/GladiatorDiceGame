@@ -41,6 +41,14 @@ MonoBehaviour:
     value: 3
     weight: 1
     requiresTargetStatus: 0
+  - intentName: Crack the Whip
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
+    - {fileID: 11400000, guid: 500381d8c1c6de746b04f404c897c503, type: 2}
+    value: 2
+    weight: 1
+    requiresTargetStatus: 0
   traits: []
   packTactics: 0
   packTacticsTurns: 0

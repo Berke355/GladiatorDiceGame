@@ -37,5 +37,12 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 1
     weight: 1
+  - intentName: Quick Cuts
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
+    value: 1
+    weight: 1
+    requiresTargetStatus: 0
   traits: []
   secondWindIntents: []

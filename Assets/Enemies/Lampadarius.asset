@@ -20,8 +20,9 @@ MonoBehaviour:
   escalationPerTurn: 0
   intents:
   - intentName: Torch Swing
-    intentType: 2
+    intentType: 0
     effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     - {fileID: 11400000, guid: 6b11e72c35be2e344b7e718b742f902d, type: 2}
     value: 2
     weight: 2
@@ -43,9 +44,10 @@ MonoBehaviour:
   - intentName: Ignite
     intentType: 0
     effects:
+    - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     - {fileID: 11400000, guid: 8b6a869f4e5efd64d824f9b5a5183b3d, type: 2}
-    value: 0
-    weight: 1
+    value: 2
+    weight: 2
     requiresTargetStatus: 1
   traits: []
   packTactics: 0

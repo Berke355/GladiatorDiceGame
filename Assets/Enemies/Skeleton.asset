@@ -16,7 +16,7 @@ MonoBehaviour:
   tier: 0
   maxHP: 3
   sprite: {fileID: 21300000, guid: b538e95fa79805e4294d1878fdf5193d, type: 3}
-  spriteHeight: 0.95
+  spriteHeight: 0.7
   escalationPerTurn: 0
   intents:
   - intentName: Rusty Blade

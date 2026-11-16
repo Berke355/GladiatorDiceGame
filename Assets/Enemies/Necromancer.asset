@@ -16,7 +16,7 @@ MonoBehaviour:
   tier: 4
   maxHP: 12
   sprite: {fileID: 21300000, guid: 2c0c23d5fae01424f8d4f36ae2f4736a, type: 3}
-  spriteHeight: 1.05
+  spriteHeight: 1.25
   escalationPerTurn: 0
   intents:
   - intentName: Raise Dead
