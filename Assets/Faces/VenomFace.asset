@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: VenomFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Venom
-  description: 'Attack: Apply Poison equal to my value. Defense: Gain block equal
-    to my value.'
+  description: 'Attack: Apply Poison equal to my value.'
   rarity: 0
   tags: 04000000
   emblem: {fileID: 21300000, guid: 8fef3d6f949d4c74785d151a7e736ed4, type: 3}
@@ -23,7 +22,6 @@ MonoBehaviour:
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 4e09dfd69596317439eded8d7ed69021, type: 2}
-  - actionType: 1
-    effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   keywords: 
   hasNoValue: 0
+  isBlank: 0

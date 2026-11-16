@@ -802,12 +802,14 @@ Slow and inevitable. Strongest in long fights, which makes it the boss-fighting 
 
 | Face | Role | Rarity | Value | Actions |
 |---|---|---|---|---|
-| **Venom** | Starter | Common | 2 | Attack: apply Poison equal to my value. Defense: gain block equal to my value. |
-| **Blowgun** | Starter (Poison + Ritual) | Common | 1 | Attack: apply Poison equal to my value, then 1 more Poison (two applications, so Ritual counts twice). |
-| **Smoke Pot** | Starter (area) | Common | 2 | Magic: apply Poison equal to my value to every enemy. Defense: gain block equal to my value. |
+| **Venom** | Starter | Common | 2 | Attack: apply Poison equal to my value. |
+| **Blowgun** | Starter (payoff) | Common | 2 | Attack: deal damage equal to the enemy's Poison (at least my value). The Poison stays. |
+| **Smoke Pot** | Starter (area) | Common | 2 | Magic: apply Poison equal to my value to every enemy. |
 | **Toxic Blade** | Bridge (Poison + Physical) | Rare | 2 | Attack: deal damage and apply Poison equal to my value. |
 | **Miasma** | Bridge (Poison + Block) | Rare | 2 | Defense: gain block and apply Poison equal to my value. |
-| **Plague** | Payoff | Epic | 2 | Magic: apply Poison equal to my value for each Poison face on your die. Attack: apply Poison equal to my value. |
+| **Plague** | Payoff | Epic | 2 | Magic: apply Poison equal to my value for each Poison face on your die. |
+
+- **Reworked on the map (the user's call, DevLog Day 127): Poison was too easy to put on.** Almost every Poison face poisoned on one action and blocked for free on the other, and Blowgun applied twice (Ritual twice). Venom and Smoke Pot lost their Defense (a Poison turn is now a turn without block), Plague lost its Attack (only the payoff is left), and Blowgun became the Common payoff Poison lacked: it deals the enemy's Poison as damage, like an ignition, and puts none on (its old self only repeated Venom). On the map: Poison 24% → 14%, Ritual + Poison 24% → 16%, Burn and the Opportunist unchanged (500 runs).
 
 **Three Commons, not one** (DevLog Day 114): with Venom alone a Poison die rarely came together (7%). Blowgun and Smoke Pot brought it back to 22%, near the 28% it had when halving came in. Blowgun first applied its value twice, so every cheap upgrade added 2 Poison (27% with Smoke Pot); value + 1 keeps the double Ritual without the double upgrade.
 

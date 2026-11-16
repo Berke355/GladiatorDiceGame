@@ -715,8 +715,9 @@ public static partial class RunSimulator
             // Area Magic faces: spread the status unless a big hit needs blocking.
             case "Wildfire":
             case "Contagion":
-            case "Smoke Pot":
             case "Hex": return bigHit ? ActionType.Defense : ActionType.Magic;
+            // No block on it any more (DevLog Day 127): spreading the Poison is all it does.
+            case "Smoke Pot": return ActionType.Magic;
             // Nets the enemy for this turn's hits and its next attacks, unless a big hit needs blocking.
             case "Tangle": return bigHit ? ActionType.Defense : ActionType.Magic;
             // The beast is permanent for the battle, so grow it early; a big hit still comes first.

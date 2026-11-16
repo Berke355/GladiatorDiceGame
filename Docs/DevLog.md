@@ -4085,3 +4085,8 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - The user decides on Poison (a rule change, e.g. Poison loses more each turn) and on helping Shield, Net and Riposte.
 - The rest of step 5: gold per battle and prices now that a Market isn't after every fight; the difficulty curve by act.
 
+### Day 127 (later) - Poison is harder to put on
+- **The user's call:** make Poison harder to apply instead of weakening its ticks. Venom and Smoke Pot lost their free Defense (block), Plague its second Poison action (Attack), and Blowgun its double application (Ritual twice).
+- **Blowgun's new self:** applying once made it Venom again, which the user didn't want. It is now the Common payoff Poison lacked: Attack, damage equal to the enemy's Poison (at least its value, 2), the Poison stays (`PoisonDartEffect`, a `StatusStacksDamageEffectSO`). It puts no Poison on, so Ritual doesn't feed it.
+- **Measured on the map (400-500 runs):** Poison 24% → 14%, Ritual + Poison 24% → 16%, Burn 18% → 15% (noise), Opportunist 7% → 7%. Hex was left alone: changing it pulled Burn down too (Burn 18% → 11%). The bots' Smoke Pot rule now always spreads (no block to fall back on).
+
