@@ -649,10 +649,10 @@ Items, face enchantments and die enchantments for Retiarius, Provocator and Beas
 | **Fortify** | Self | — | Never resets | Absorbs damage after Block |
 | **Rage** | Self | — | Lasts the whole battle | Every hit deals +1 damage per stack; each hit of a multi-hit gets it |
 | **Ritual** | Self | — | Lasts the whole battle | Every status applied to the opponent gets +1 per stack |
-| **Vulnerable** | Target | — | −1 per tick (stacks are turns) | Every hit it takes deals +1 damage |
+| **Vulnerable** | Target | — | −1 per tick (stacks are turns) | Every hit it takes is half again as big, rounded up (big hits gain most; Rage rewards many hits instead) |
 | **Weak** | Target | — | −1 per tick (stacks are turns) | Every hit it deals deals −1 damage |
 | **Entangled** | Target | — | −1 per tick (stacks are turns) | Can't reroll |
-| **Riposte** | Self | — | Cleared at the start of its owner's turn | Every attacker that hits its owner takes its stacks as damage (Provocator) |
+| **Riposte** | Self | — | Cleared at the start of its owner's turn | Deflect: each hit is reduced by its stacks and the attacker takes what was stopped; if no hit came, its owner is Off-Balance (1 Vulnerable). Timing is the build (Provocator) |
 | **Vigil** | Self | — | Spent by the first hit its owner takes | Like Riposte, but it waits for the first hit, across turns |
 | **Reversal** | Self | — | Cleared at the start of its owner's turn | A hit Block and Fortify absorb completely is dealt back to the attacker in full |
 | **Exposed** | Target | — | −1 per tick (stacks are turns) | Its owner gains no Block (Fortify still works); Dimachaerus's Crossed Blades |

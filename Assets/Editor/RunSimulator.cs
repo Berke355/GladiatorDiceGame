@@ -143,7 +143,7 @@ public static partial class RunSimulator
             new Bot("One-face carry", Shopping.Carry),
             new Bot("Focused: Burn", Shopping.Focused, FaceTag.Burn),
             new Bot("Focused: Poison", Shopping.Focused, FaceTag.Poison),
-            new Bot("Focused: Shield", Shopping.Focused, FaceTag.Block),
+            new Bot("Focused: Shield", Shopping.Focused, FaceTag.Fortify),
             new Bot("Focused: Rage", Shopping.Focused, FaceTag.Rage),
             new Bot("Focused: Ritual", Shopping.Focused, FaceTag.Ritual),
             new Bot("Focused: Bleed", Shopping.Focused, FaceTag.Bleed),
@@ -155,11 +155,11 @@ public static partial class RunSimulator
             // Ritual only boosts statuses other faces apply, so it is measured together with a status archetype.
             new Bot("Hybrid: Ritual + Poison", Shopping.Focused, FaceTag.Ritual, FaceTag.Poison),
             new Bot("Hybrid: Ritual + Bleed", Shopping.Focused, FaceTag.Ritual, FaceTag.Bleed),
-            new Bot("Hybrid: Shield + Rage", Shopping.Focused, FaceTag.Block, FaceTag.Rage),
+            new Bot("Hybrid: Shield + Rage", Shopping.Focused, FaceTag.Fortify, FaceTag.Rage),
             // Lose HP for power, heal it back from a bleeding enemy (Bloodrage + Bloodscent loop).
             new Bot("Hybrid: Bleed + Rage", Shopping.Focused, FaceTag.Bleed, FaceTag.Rage),
             new Bot("Hybrid: Net + Ritual", Shopping.Focused, FaceTag.Net, FaceTag.Ritual),
-            new Bot("Hybrid: Riposte + Shield", Shopping.Focused, FaceTag.Riposte, FaceTag.Block),
+            new Bot("Hybrid: Riposte + Shield", Shopping.Focused, FaceTag.Riposte, FaceTag.Fortify),
             new Bot("Hybrid: Hound + Rage", Shopping.Focused, FaceTag.Hound, FaceTag.Rage),
         };
     }

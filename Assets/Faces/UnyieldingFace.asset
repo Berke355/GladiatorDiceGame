@@ -17,7 +17,7 @@ MonoBehaviour:
     and Fortify stopped on the enemies'' last turn. Defense: Gain block equal to
     my value.'
   rarity: 1
-  tags: 01000000
+  tags: 0e000000
   emblem: {fileID: 0}
   plainTile: 0
   baseValue: 2

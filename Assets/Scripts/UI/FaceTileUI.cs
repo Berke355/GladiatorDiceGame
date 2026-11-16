@@ -98,7 +98,8 @@ public class FaceTileUI : MonoBehaviour
             case FaceTag.Poison: return new Color32(0x3A, 0x68, 0x28, 0xFF);
             case FaceTag.Ritual: return new Color32(0x58, 0x30, 0x78, 0xFF);
             case FaceTag.Rage: return new Color32(0x78, 0x34, 0x24, 0xFF);
-            case FaceTag.Block: return new Color32(0x3A, 0x54, 0x6E, 0xFF);
+            case FaceTag.Block:
+            case FaceTag.Fortify: return new Color32(0x3A, 0x54, 0x6E, 0xFF);
             case FaceTag.Hammer: return new Color32(0x4E, 0x4C, 0x4A, 0xFF);
             case FaceTag.Fortune: return new Color32(0xA8, 0x80, 0x28, 0xFF);
             case FaceTag.Net: return new Color32(0x2C, 0x6B, 0x73, 0xFF);

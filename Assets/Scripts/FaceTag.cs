@@ -20,5 +20,8 @@ public enum FaceTag
     // Provocator: invites the enemy's attacks and punishes them (see GDD "Provocator").
     Riposte,
     // Beastmaster: a beast that grows and bites at the end of every turn (see GDD "Beastmaster").
-    Hound
+    Hound,
+    // The Shield build's own faces (Fortify and its siege payoffs), apart from the many faces of other builds that only
+    // block (see GDD "Shield").
+    Fortify
 }

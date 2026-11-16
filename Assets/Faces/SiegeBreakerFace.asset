@@ -17,7 +17,7 @@ MonoBehaviour:
     this battle, times my value; the count starts again. Defense: Gain Fortify equal
     to my value.'
   rarity: 2
-  tags: 01000000
+  tags: 0e000000
   emblem: {fileID: 0}
   plainTile: 0
   baseValue: 1

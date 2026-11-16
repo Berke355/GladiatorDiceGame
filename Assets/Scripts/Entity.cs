@@ -53,13 +53,10 @@ public class Entity : MonoBehaviour
     public int currentBlock;
 
     public event Action OnHealthChanged;
-    // Experiment switches waiting for the user's call (DevLog Day 127); the game uses the defaults.
-    public static bool VulnerablePercent = false;
-    public static bool RiposteDeflects = false;
-
-    // Vulnerable's extra damage on a hit: +1, or with VulnerablePercent half the hit (rounded up).
+    // Vulnerable makes a hit half again as big (rounded up), so it rewards big hits where Rage rewards many hits
+    // (GDD "Status Effects").
     public static int VulnerableExtra(int damage){
-        return VulnerablePercent ? (damage + 1) / 2 : 1;
+        return (damage + 1) / 2;
     }
     // A Riposte that met a hit this round (no Off-Balance at the owner's turn start).
     private bool riposteUsed;
@@ -143,9 +140,9 @@ public class Entity : MonoBehaviour
             damageAmount += VulnerableExtra(damageAmount);
         }
         int remaining = damageAmount;
-        // Deflect: Riposte takes the hit first (only with an attacker), and what it stopped goes back.
+        // Deflect (GDD "Provocator"): Riposte takes the hit first (only with an attacker), and what it stopped goes back.
         int deflected = 0;
-        if(RiposteDeflects && source != null && GetStatus(StatusType.Riposte) > 0){
+        if(source != null && GetStatus(StatusType.Riposte) > 0){
             deflected = Math.Min(GetStatus(StatusType.Riposte), remaining);
             remaining -= deflected;
             riposteUsed = true;
@@ -181,7 +178,7 @@ public class Entity : MonoBehaviour
         // a hit absorbed completely. It lands without a source, so nothing answers it back (no chains), but the
         // attacker's Vulnerable still counts.
         if (source != null) {
-            int back = (RiposteDeflects ? deflected : GetStatus(StatusType.Riposte)) + GetStatus(StatusType.Vigil);
+            int back = deflected + GetStatus(StatusType.Vigil);
             if (GetStatus(StatusType.Reversal) > 0 && remaining == 0 && damageAmount > 0) back += damageAmount;
             if (GetStatus(StatusType.Vigil) > 0) activeStatuses[StatusType.Vigil] = 0;
             if (back > 0 && !source.IsDead) {
@@ -264,7 +261,7 @@ public class Entity : MonoBehaviour
         ResetBlock();
         ConsumeStatus(StatusType.FireShield);
         // Off-Balance: a Riposte no hit came into opens its owner up (Sekiro).
-        if(RiposteDeflects && GetStatus(StatusType.Riposte) > 0 && !riposteUsed) ApplyStatus(StatusType.Vulnerable, 1);
+        if(GetStatus(StatusType.Riposte) > 0 && !riposteUsed) ApplyStatus(StatusType.Vulnerable, 1);
         riposteUsed = false;
         ConsumeStatus(StatusType.Riposte);
         ConsumeStatus(StatusType.Reversal);
