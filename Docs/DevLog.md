@@ -4102,3 +4102,8 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Pure Shield stays low on purpose:** with its own faces found (Spiked Shield rolls 1% → 15%), fights still last 12 turns at 1.3 damage a turn and the Minotaur's Stampede (stopped by damage) kills a quarter of the runs. Its weakness is offense by design (the user's rule), and its hybrids carry the damage.
 - **Pictures** (Gemini): Unyielding (a shield full of arrows) and Siege Breaker (a ram's-head battering ram cracking a wall), Lorica Segmentata, and the Armor icon, next to Plating in the icon atlas's top row (glyph and character in the `Icons` sprite asset, `GameText.IconNames`).
 
+### Day 127 (later) - Gold on the map
+- **The simulator counts gold** (`MapStats.GoldReport`): earned per run, and for each kind of shop its visits, the gold brought in and spent.
+- **Measured (400 runs):** a run earns 150-225 gold (the old battle line about 260). The Market is visited about twice a run with ~40 gold and almost all of it is spent; the Enchanting Table half a time with ~30 (spends ~25); the Grand Market with ~75-80.
+- **Gold is the strongest lever:** gold per victory 15 / 20 / 25 gives Opportunist 5 / 10 / 14%, Burn 12 / 17 / 22%, Rage 6 / 7 / 11%, Ritual 2 / 5 / 10%, Bleed 12 / 18 / 27% (300 runs). At 20 the average sits in the 5-15% target, so nothing changed; the user's play decides whether a Market visit feels rich enough.
+

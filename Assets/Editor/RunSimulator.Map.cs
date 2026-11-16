@@ -24,6 +24,21 @@ public static partial class RunSimulator
         public long battlesFought;
         public long[] goldAtBoss = new long[3], hpAtBoss = new long[3];
         public int[] bossArrivals = new int[3];
+        // Gold: earned in total, and at each kind of shop the gold brought in and taken out.
+        public long goldEarned;
+        public Dictionary<string, long[]> shops = new Dictionary<string, long[]>();
+        public void Shopped(string kind, int goldIn, int goldOut){
+            if(!shops.ContainsKey(kind)) shops[kind] = new long[3];
+            shops[kind][0]++; shops[kind][1] += goldIn; shops[kind][2] += goldOut;
+        }
+        public string GoldReport(){
+            StringBuilder s = new StringBuilder("gold earned per run " + (goldEarned / Mathf.Max(1, runs)) + " |");
+            foreach(KeyValuePair<string, long[]> shop in shops){
+                long n = Mathf.Max(1, (int)shop.Value[0]);
+                s.Append(" " + shop.Key + ": " + ((float)shop.Value[0] / runs).ToString("0.0") + " visits/run, in " + (shop.Value[1] / n) + "g, spent " + ((shop.Value[1] - shop.Value[2]) / n) + "g |");
+            }
+            return s.ToString();
+        }
 
         public string Report(string label){
             StringBuilder s = new StringBuilder("== " + label + " (" + runs + " runs, map) ==\n");
@@ -177,6 +192,7 @@ public static partial class RunSimulator
                     return false;
                 }
                 run.battlesWon++;
+                int goldBefore = run.gold;
                 run.gold += economy.goldPerVictory + EquipmentSO.TotalGoldPerVictory(run.equipment);
                 if(node.type == MapNodeType.Elite){
                     run.gold += economy.eliteGoldBonus;
@@ -188,14 +204,18 @@ public static partial class RunSimulator
                     }
                 }
                 if(node.type == MapNodeType.Boss){
-                    if(act >= config.acts - 1) return true;
+                    if(act >= config.acts - 1){ stats.goldEarned += run.gold - goldBefore; return true; }
                     run.currentHP = Mathf.Min(run.maxHP, run.currentHP + Mathf.RoundToInt(run.maxHP * config.bossHealFraction));
                     run.gold += economy.bossVictoryBonus;
+                    stats.goldEarned += run.gold - goldBefore;
                     run.bossRewardPending = true;
                     Market grand = new Market(run, economy, true);
+                    int grandIn = run.gold;
                     Shop(bot, grand, run, 0);
+                    stats.Shopped("Grand", grandIn, run.gold);
                     if(grand.IsRewardPending) grand.SkipReward();
                 }
+                if(node.type != MapNodeType.Boss) stats.goldEarned += run.gold - goldBefore;
                 return true;
             }
             case MapNodeType.Market:{
@@ -203,7 +223,9 @@ public static partial class RunSimulator
                 Market market = new Market(run, economy, false);
                 market.enchantmentOffers.Clear();
                 market.dieEnchantmentOffers.Clear();
+                int marketIn = run.gold;
                 Shop(bot, market, run, 0);
+                stats.Shopped("Market", marketIn, run.gold);
                 return true;
             }
             case MapNodeType.EnchantingTable:{
@@ -211,7 +233,9 @@ public static partial class RunSimulator
                 Market table = new Market(run, economy, false);
                 table.offers.Clear();
                 table.equipmentOffers.Clear();
+                int tableIn = run.gold;
                 Shop(bot, table, run, 0);
+                stats.Shopped("Table", tableIn, run.gold);
                 return true;
             }
             case MapNodeType.Rest:{
