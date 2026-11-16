@@ -4106,4 +4106,5 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The simulator counts gold** (`MapStats.GoldReport`): earned per run, and for each kind of shop its visits, the gold brought in and spent.
 - **Measured (400 runs):** a run earns 150-225 gold (the old battle line about 260). The Market is visited about twice a run with ~40 gold and almost all of it is spent; the Enchanting Table half a time with ~30 (spends ~25); the Grand Market with ~75-80.
 - **Gold is the strongest lever:** gold per victory 15 / 20 / 25 gives Opportunist 5 / 10 / 14%, Burn 12 / 17 / 22%, Rage 6 / 7 / 11%, Ritual 2 / 5 / 10%, Bleed 12 / 18 / 27% (300 runs). At 20 the average sits in the 5-15% target, so nothing changed; the user's play decides whether a Market visit feels rich enough.
+- **Playtest build 0.3** (`Builds/Playtest/DiceAndGladius-0.3-playtest.zip`, 46.5 MB, the game's name on the files now): the title menu, elites, the beast's HP, the Poison rework, Vulnerable, Deflect, Fortify. The 0.1 and 0.2 builds and zips were deleted at the user's request. A headless start loaded with no errors.
 
