@@ -159,7 +159,9 @@ public class UIManager : MonoBehaviour
                 // one body put their plates on one line over the highest head, so they read as a row.
                 Bounds box = renderer.bounds;
                 feet = view.WorldToViewportPoint(new Vector3(box.center.x, box.min.y, 0f));
-                top = view.WorldToViewportPoint(new Vector3(box.center.x, MountedHeadsTop(card.Enemy.mountedOn), 0f));
+                // With every head of the body dead there is no row to line up with: the head keeps its own box.
+                float rowTop = MountedHeadsTop(card.Enemy.mountedOn);
+                top = view.WorldToViewportPoint(new Vector3(box.center.x, rowTop > float.MinValue ? rowTop : box.max.y, 0f));
             }
             float worldWidth = 2f * view.orthographicSize * view.aspect;
             float slot = card.Enemy.slotWidth > 0f ? card.Enemy.slotWidth : worldWidth * 0.1f;
@@ -201,6 +203,9 @@ public class UIManager : MonoBehaviour
             Bounds local = renderer.sprite.bounds;
             highest = Mathf.Max(highest, renderer.transform.TransformPoint(new Vector3(local.center.x, local.max.y, 0f)).y);
         }
+        // No living head (all cut): float.MinValue, which the caller replaces; subtracting from it would make the card's
+        // height absurd, and its layout then wrote NaN into the plate's position, which stayed after the heads grew back.
+        if(highest == float.MinValue) return highest;
         // The picture's top is its spines; the plates sit a little lower, on the crowns, to stay clear of the boss's die.
         return highest - MountedPlateDrop;
     }
@@ -208,8 +213,9 @@ public class UIManager : MonoBehaviour
     private const float MountedPlateDrop = 0.35f;
 
     // The top bar: which battle this is and the run's gold.
-    public void ShowBattleInfo(string title, int gold, bool boss){
-        if(battleInfoText != null) battleInfoText.text = title + (boss ? "  <color=#E2B23C>BOSS</color>" : "");
+    public void ShowBattleInfo(string title, int gold, bool boss, string enemyName = ""){
+        if(battleInfoText != null) battleInfoText.text = title + (boss ? "  <color=#E2B23C>BOSS</color>" : "")
+            + (!string.IsNullOrEmpty(enemyName) ? "  <color=#8A7A5A>|</color>  <color=#E8DCC0>" + enemyName.ToUpperInvariant() + "</color>" : "");
         if(goldText != null) goldText.text = GameText.Icon("Gold") + " " + gold;
     }
 
@@ -338,7 +344,13 @@ public class UIManager : MonoBehaviour
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = !tumbling && preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
             actionButtonTexts[i].text = ActionTitle((ActionType)i)
-                + (preview != "" ? "\n<size=85%>" + GameText.Colorize(preview) + "</size>" : "");
+                + (preview != "" ? "\n<size=85%>" + GameText.Colorize(ShortPreview(preview)) + "</size>" : "");
+            // A long line shrinks instead of spilling out of the button.
+            if(!actionButtonTexts[i].enableAutoSizing){
+                actionButtonTexts[i].fontSizeMax = actionButtonTexts[i].fontSize;
+                actionButtonTexts[i].fontSizeMin = actionButtonTexts[i].fontSize * 0.6f;
+                actionButtonTexts[i].enableAutoSizing = true;
+            }
         }
     }
 
@@ -393,6 +405,16 @@ public class UIManager : MonoBehaviour
         }
         string text = string.Join(", ", parts);
         return text != "" && (flow != null ? flow.IsConsumableFace(face) : face.definition.IsConsumable) ? text + " (Consumable)" : text;
+    }
+
+    // The button only needs the numbers: the dice tray beside it holds the face's full rules. Explanations in
+    // parentheses go, and past PreviewParts effects the rest becomes "...".
+    private const int PreviewParts = 3;
+    private static string ShortPreview(string preview){
+        string text = System.Text.RegularExpressions.Regex.Replace(preview, @"\s*\((?!Consumable\)|petrified\))[^()]*\)", "");
+        string[] parts = text.Split(new[]{ ", " }, System.StringSplitOptions.RemoveEmptyEntries);
+        if(parts.Length <= PreviewParts) return text;
+        return string.Join(", ", parts, 0, PreviewParts) + ", ...";
     }
 
     private void UpdateRerollButton(bool canReroll){

@@ -77,7 +77,7 @@ public class EffectContext
 
     // The source's Encourage: added to every buff it gains on itself (Rage, Fortify, FireShield), never to Block,
     // Ritual or Encourage itself.
-    public int EncourageBonus => source != null ? source.GetStatus(StatusType.Encourage) : 0;
+    public int EncourageBonus => source != null && !fromItem ? source.GetStatus(StatusType.Encourage) : 0;
 
     // Preview only: what the earlier effects of this action will have added by the time a later one runs, so a face
     // that makes its own fuel shows the real numbers. Filled by Describe; empty when effects really run.
@@ -109,6 +109,10 @@ public class EffectContext
     }
 
     // Every status an effect gives its own source goes through here so Encourage is never forgotten.
+    // Set for effects run by equipment and die enchantments: Encourage grows what the die's actions give, not what items
+    // give (an item's Fortify stays its printed number).
+    public bool fromItem;
+
     public int GainSelf(StatusType status, int baseAmount){
         int total = baseAmount + (IsEncouraged(status) ? EncourageBonus : 0);
         source.ApplyStatus(status, total);

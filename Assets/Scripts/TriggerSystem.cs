@@ -88,7 +88,7 @@ public class TriggerSystem
                     Count(firedThisRound, reaction);
                     Count(firedThisBattle, reaction);
 
-                    EffectContext context = new EffectContext{ source = player, target = attacker != null ? attacker : bitten != null ? bitten : target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls };
+                    EffectContext context = new EffectContext{ source = player, target = attacker != null ? attacker : bitten != null ? bitten : target(), opponents = opponents(), value = reaction.value, die = die, face = currentFace, charge = charge, rerolls = rerolls, fromItem = true };
                     foreach(EffectSO effect in reaction.effects){
                         effect.Execute(context);
                     }

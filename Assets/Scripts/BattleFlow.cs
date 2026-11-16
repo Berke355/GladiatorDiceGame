@@ -290,7 +290,7 @@ public class BattleFlow
             if(enchantment.rolledBeastHeal > 0) beast.Heal(enchantment.rolledBeastHeal);
             if(enchantment.rolledStatus == StatusType.None) continue;
             if(enchantment.rolledOnTarget && Target.IsDead) continue;
-            EffectContext context = new EffectContext{ source = player, target = Target.entity, value = enchantment.rolledAmount };
+            EffectContext context = new EffectContext{ source = player, target = Target.entity, value = enchantment.rolledAmount, fromItem = true };
             if(enchantment.rolledOnTarget) context.ApplyToTarget(enchantment.rolledStatus, enchantment.rolledAmount);
             else context.GainSelf(enchantment.rolledStatus, enchantment.rolledAmount);
         }

@@ -44,6 +44,9 @@ public class BattleManager : MonoBehaviour
         EnemyGroup encounter;
         RunManager.Instance.TakeNextBattle(out boss, out encounter);
         List<BattleEnemy> enemies = new List<BattleEnemy>();
+        encounterName = boss != null ? boss.bossName
+            : !string.IsNullOrEmpty(encounter.groupName) ? encounter.groupName
+            : encounter.members.Count > 0 ? encounter.members[0].enemyName : "";
         if(boss != null){
             if(arenaBackground != null && bossArena != null) arenaBackground.sprite = bossArena;
             enemy.entityName = boss.bossName;
@@ -208,6 +211,9 @@ public class BattleManager : MonoBehaviour
         HitReaction reaction = body.entity.GetComponent<HitReaction>();
         return reaction != null ? reaction.Rest : body.entity.transform.position;
     }
+
+    // The top bar's name for this fight: the boss, the group or the lone enemy.
+    private string encounterName = "";
 
     // A boss fight (an elite whose death ends the fight isn't one).
     private bool IsBossBattle => flow != null && flow.enemies.Exists(enemy => enemy.brain is BossBrain);
@@ -386,7 +392,7 @@ public class BattleManager : MonoBehaviour
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
             RunData battleRun = RunManager.Instance.run;
-            UIManager.Instance.ShowBattleInfo(RunManager.Instance.BattleTitle(IsBossBattle), battleRun.gold, IsBossBattle);
+            UIManager.Instance.ShowBattleInfo(RunManager.Instance.BattleTitle(IsBossBattle), battleRun.gold, IsBossBattle, encounterName);
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);
             UIManager.Instance.WireDieChips(OnDieFaceClicked);
             flow.EnemyAdded += added => UIManager.Instance.AddEnemyCard(added, flow.enemies.IndexOf(added), OnEnemyClicked);

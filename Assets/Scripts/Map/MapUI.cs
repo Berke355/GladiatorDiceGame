@@ -136,7 +136,7 @@ public class MapUI : MonoBehaviour
             rect.anchoredPosition = PositionOf(node);
             if(node.type == MapNodeType.Boss) rect.sizeDelta = new Vector2(bossSize, bossSize);
             bool visited = run.visitedNodes.Contains(i);
-            bool canGo = reachable.Contains(i);
+            bool canGo = reachable.Contains(i) || RunManager.Instance.CanReenterShop(i);
             bool current = i == run.mapNode;
             Color color = TypeColors[Mathf.Clamp((int)node.type, 0, TypeColors.Length - 1)];
             ui.disc.color = visited && !current ? Color.Lerp(color, Color.black, 0.55f) : color;

@@ -99,6 +99,8 @@ public class RunManager : MonoBehaviour
         run.map = MapGenerator.Generate(mapConfig, act, new System.Random(UnityEngine.Random.Range(int.MinValue, int.MaxValue)));
         run.mapNode = -1;
         run.visitedNodes.Clear();
+        openShop = null;
+        openShopNode = -1;
         run.restPending = false;
         run.actBoss = encounters.PickBossForAct(act);
         PrepareReachable();
@@ -129,14 +131,36 @@ public class RunManager : MonoBehaviour
     }
 
     public bool CanEnter(int index){
-        return run.map != null && run.map.Reachable(run.mapNode).Contains(index);
+        return run.map != null && (run.map.Reachable(run.mapNode).Contains(index) || CanReenterShop(index));
+    }
+
+    // A shop left for the map stays open until the player steps on: its node can be entered again, with the same
+    // offers, rerolls and purchases (the Market object lives on), so walking back in is never a free reroll. Runtime only.
+    private Market openShop;
+    private int openShopNode = -1;
+
+    public bool CanReenterShop(int index){
+        return run.map != null && index == run.mapNode && index == openShopNode && openShop != null && !run.grandMarketPending;
+    }
+
+    // MarketUI's Market: the open shop of this node when the player walks back in, else a new one, kept for that.
+    public Market TakeShop(){
+        if(UsesMap && openShop != null && openShopNode == run.mapNode && !IsGrandMarket) return openShop;
+        Market market = new Market(run, economy, IsGrandMarket);
+        openShop = UsesMap && !IsGrandMarket ? market : null;
+        openShopNode = openShop != null ? run.mapNode : -1;
+        return market;
     }
 
     // The player steps onto a reachable node: a fight, a shop, or a rest (played on the map screen, which stays open).
     public void EnterNode(int index){
         if(!CanEnter(index)) return;
+        if(index != openShopNode){
+            openShop = null;
+            openShopNode = -1;
+        }
         run.mapNode = index;
-        run.visitedNodes.Add(index);
+        if(!run.visitedNodes.Contains(index)) run.visitedNodes.Add(index);
         MapNode node = run.map.nodes[index];
         switch(node.type){
             case MapNodeType.Battle:
@@ -352,6 +376,12 @@ public class RunManager : MonoBehaviour
 
     public void GoToNextBattle(){
         SceneManager.LoadScene(battleSceneName);
+    }
+
+    // Settings' Abandon Run: the run is dropped and the title menu opens; New Run there starts a fresh one.
+    public void AbandonRun(){
+        StartNewRun();
+        SceneManager.LoadScene(SettingsUI.TitleSceneName);
     }
 
     // A new run begins on the run start screen, where the starting face is picked.

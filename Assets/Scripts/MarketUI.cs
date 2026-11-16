@@ -84,7 +84,7 @@ public class MarketUI : MonoBehaviour
     void Start(){
         equipmentChips = new List<EquipmentSlotUI>(equipmentSlots);
         run = RunManager.Instance.run;
-        market = new Market(run, RunManager.Instance.economy, RunManager.Instance.IsGrandMarket);
+        market = RunManager.Instance.TakeShop();
         titleText.text = market.isGrand ? "GRAND MARKET" : "MARKET";
         // With the map (GDD "Map") the Market and the Enchanting Table are separate nodes sharing this screen, the
         // Healer moved to rest nodes and the map shows what comes next. The Grand Market keeps both tabs.
@@ -350,7 +350,7 @@ public class MarketUI : MonoBehaviour
             if(!hasOffer) continue;
 
             MarketOffer offer = market.offers[i];
-            card.ShowFace(offer.face);
+            card.ShowFace(offer.face, offer.bonus);
             card.buyButtonText.text = offer.sold ? "SOLD" : (i == pendingOffer ? "Choose a face" : "Buy  " + GameText.Icon("Gold") + offer.price);
             card.buyButton.interactable = !Choosing && market.CanBuy(i);
             DrawLock(card, offer.sold, offer.locked, market.CanToggleFaceLock(i));

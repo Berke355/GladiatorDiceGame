@@ -48,6 +48,14 @@ public class EnemyCardUI : MonoBehaviour
         // Over the head: the intent in the card language, plus a waiting trait; the full text is in the tooltip.
         string summary = GameText.IntentSummary(intent);
         if(!dead && Enemy.traits != null && Enemy.traits.HasPending) summary += "\n" + GameText.Iconize(Enemy.traits.PendingDescription) + " next turn";
+        // A boss countdown (the Minotaur's Stampede) is the fight's big threat: always over its head, red on its last turn.
+        BossBrain boss = Enemy.brain as BossBrain;
+        if(!dead && boss != null && boss.CountdownRunning){
+            int damage = boss.CountdownDamage + Enemy.entity.GetStatus(StatusType.Rage);
+            summary += boss.CountdownTurnsLeft == 1
+                ? "\n<color=#FF5A4A><b>STAMPEDE " + GameText.Icon("Damage") + damage + " THIS TURN!</b></color>"
+                : "\n<color=#F0B040>STAMPEDE " + GameText.Icon("Damage") + damage + " in " + boss.CountdownTurnsLeft + " turns</color>";
+        }
         // A trait waiting for its next turn (Curl Up) is shown with the intent.
         if(!dead && Enemy.traits != null && Enemy.traits.HasPending) intent += "\n" + Enemy.traits.PendingDescription + " (at the start of its turn)";
         intentText.text = dead ? "<color=#888888>Defeated</color>" : summary;
@@ -65,7 +73,10 @@ public class EnemyCardUI : MonoBehaviour
     // plateShift moves the plate and the intent sideways (canvas units), so the plates of heads drawn close together on
     // one body stand side by side; the card's clickable root stays over its head.
     public void Place(Vector2 feet, float spriteHeight, float slotWidth, bool plateOnTop = false, float plateShift = 0f){
+        // A bad frame must never stick: a NaN height is set again from the card's side.
+        if(plate != null && (!Finite(plate.anchoredPosition.y) || !Finite(head.anchoredPosition.y))) this.plateOnTop = !plateOnTop;
         SetPlateOnTop(plateOnTop);
+        if(!Finite(feet.x) || !Finite(feet.y) || !Finite(spriteHeight)) return;
         RectTransform rect = (RectTransform)transform;
         float scale = Mathf.Min(1f, slotWidth / MinWidth);
         rect.anchoredPosition = feet;
@@ -78,6 +89,8 @@ public class EnemyCardUI : MonoBehaviour
     }
 
     private const float MinWidth = 240f;
+
+    private static bool Finite(float value){ return !float.IsNaN(value) && !float.IsInfinity(value); }
 
     // A mounted head (the Hydra's) has its body under it, so its plate goes over its head, with the intent above it.
     public RectTransform plate;
