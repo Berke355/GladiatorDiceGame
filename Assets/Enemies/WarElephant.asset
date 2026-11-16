@@ -30,7 +30,7 @@ MonoBehaviour:
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 2
-    weight: 2
+    weight: 1
   - intentName: Thick Hide
     intentType: 1
     effects:
@@ -40,8 +40,8 @@ MonoBehaviour:
   - intentName: Trample
     intentType: 0
     effects:
-    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
-    value: 3
+    - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}
+    value: 2
     weight: 1
     requiresTargetStatus: 0
   traits:

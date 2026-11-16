@@ -41,10 +41,10 @@ MonoBehaviour:
   - intentName: Net Cast
     intentType: 2
     effects:
-    - {fileID: 11400000, guid: 2346b8293607bd2419e0471bc7f914a1, type: 2}
+    - {fileID: 11400000, guid: 85d1a193740cee94f88fb0390c2309b3, type: 2}
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 4
-    weight: 2
+    weight: 1
     requiresTargetStatus: 0
   traits: []
   secondWindIntents: []

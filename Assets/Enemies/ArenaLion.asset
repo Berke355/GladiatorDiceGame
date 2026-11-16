@@ -31,13 +31,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: b229b4a960c1396479b9dbe77bf593eb, type: 2}
     value: 1
     weight: 1
-  - intentName: Pounce
-    intentType: 0
-    effects:
-    - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}
-    value: 3
-    weight: 1
-    requiresTargetStatus: 0
   traits:
   - traitName: Enrage
     description: 'The first 2 times each battle a hit costs it HP: gain 1 Rage.'

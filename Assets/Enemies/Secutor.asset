@@ -30,12 +30,12 @@ MonoBehaviour:
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 4
-    weight: 2
+    weight: 1
   - intentName: Pummel
     intentType: 0
     effects:
     - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
-    value: 2
+    value: 1
     weight: 1
     requiresTargetStatus: 0
   traits:

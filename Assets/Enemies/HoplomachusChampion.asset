@@ -24,7 +24,7 @@ MonoBehaviour:
     effects:
     - {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
     value: 3
-    weight: 2
+    weight: 1
   - intentName: Shield Rush
     intentType: 0
     effects:
@@ -41,7 +41,7 @@ MonoBehaviour:
   - intentName: Phalanx
     intentType: 1
     effects:
-    - {fileID: 11400000, guid: 2346b8293607bd2419e0471bc7f914a1, type: 2}
+    - {fileID: 11400000, guid: 85d1a193740cee94f88fb0390c2309b3, type: 2}
     - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
     value: 6
     weight: 1
@@ -49,7 +49,7 @@ MonoBehaviour:
   - intentName: Spear Flurry
     intentType: 0
     effects:
-    - {fileID: 11400000, guid: a77557f64514cd44e85477a07a03f083, type: 2}
+    - {fileID: 11400000, guid: 42fa2bb45e6d0074a9f34ffe1e78c075, type: 2}
     value: 3
     weight: 1
     requiresTargetStatus: 0
