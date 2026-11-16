@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'At the start of each battle: gain 1 Armor (every hit and every Poison
     or Bleed tick you take is 1 smaller).'
   rarity: 2
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8c86eba86f9edbf46ae7493ecc5d1540, type: 3}
   tags: 
   triggers:
   - trigger: 0
