@@ -22,6 +22,9 @@ public class EconomyConfigSO : ScriptableObject
     // Every face the Market can offer.
     public List<DieFaceSO> marketPool = new List<DieFaceSO>();
     public int offersPerMarket = 3;
+    // The chance that a Normal Market's face offer comes already upgraded, and that such an offer is +2 instead of +1.
+    [Range(0f, 1f)] public float upgradedOfferChance = 0.2f;
+    [Range(0f, 1f)] public float doubleUpgradedOfferChance = 0.25f;
     // Normal Market rarity weights. The Grand Market only offers Epic faces.
     public int commonWeight = 70;
     public int rareWeight = 25;
@@ -83,8 +86,8 @@ public class EconomyConfigSO : ScriptableObject
 
     [Header("Face Enchantment Price")]
     // Cheaper than faces: enchantments are an easy-to-reach option, and bought rarely at the face prices.
-    public int commonEnchantmentPrice = 5;
-    public int rareEnchantmentPrice = 10;
+    public int commonEnchantmentPrice = 3;
+    public int rareEnchantmentPrice = 6;
     public int epicEnchantmentPrice = 20;
 
     [Header("Upgrade Cost Multiplier (x current value)")]
@@ -118,13 +121,22 @@ public class EconomyConfigSO : ScriptableObject
 
     // Each upgrade costs more than the last because it scales with the current value. There is no cap.
     public int GetUpgradeCost(DieFace face){
-        int multiplier;
-        switch(face.definition.rarity){
-            case Rarity.Rare: multiplier = rareUpgradeMultiplier; break;
-            case Rarity.Epic: multiplier = epicUpgradeMultiplier; break;
-            default: multiplier = commonUpgradeMultiplier; break;
+        return UpgradeMultiplier(face.definition.rarity) * face.value;
+    }
+
+    private int UpgradeMultiplier(Rarity rarity){
+        switch(rarity){
+            case Rarity.Rare: return rareUpgradeMultiplier;
+            case Rarity.Epic: return epicUpgradeMultiplier;
+            default: return commonUpgradeMultiplier;
         }
-        return multiplier * face.value;
+    }
+
+    // The gold the upgrades from one value to a higher one cost (each step at the value it starts from).
+    public int UpgradeGoldBetween(DieFaceSO face, int from, int to){
+        int gold = 0;
+        for(int value = Mathf.Max(0, from); value < to; value++) gold += UpgradeMultiplier(face.rarity) * value;
+        return gold;
     }
 
     // Rising cost within one Market visit, e.g. 5 / 10 / 15 (Grand: 15 / 30 / 45).

@@ -117,6 +117,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: beb1056bfbb74ce42b749c7eca28bc5d, type: 2}
   - {fileID: 11400000, guid: 2ffe5081d4810044a96e7a8c31dd38e4, type: 2}
   offersPerMarket: 3
+  upgradedOfferChance: 0.2
+  doubleUpgradedOfferChance: 0.25
   commonWeight: 70
   rareWeight: 25
   epicWeight: 5
@@ -159,6 +161,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9d027f650d9ddee4b8254e29c29c0cd2, type: 2}
   - {fileID: 11400000, guid: 8472dc333bd76ec4eb9c752e36983c73, type: 2}
   - {fileID: 11400000, guid: eaf62e41fb74812419e149b7b1707d85, type: 2}
+  - {fileID: 11400000, guid: debd37b8d7ab3194fa041bb81025efb9, type: 2}
+  - {fileID: 11400000, guid: 6a54d75e12f2b81469f51424447b0ff3, type: 2}
+  - {fileID: 11400000, guid: 7ed1883540b5c4041ac47259ed96c988, type: 2}
+  - {fileID: 11400000, guid: 3e3a00da8bced784fadf255d0a2c1719, type: 2}
+  - {fileID: 11400000, guid: 4eb93b691e385e946b688b690656f069, type: 2}
   dieEnchantmentsPerMarket: 2
   equipmentPool:
   - {fileID: 11400000, guid: 6e90231f085aa9d4b9cf0e4a9075518f, type: 2}
@@ -223,8 +230,8 @@ MonoBehaviour:
   commonPrice: 10
   rarePrice: 25
   epicPrice: 45
-  commonEnchantmentPrice: 5
-  rareEnchantmentPrice: 10
+  commonEnchantmentPrice: 3
+  rareEnchantmentPrice: 6
   epicEnchantmentPrice: 20
   commonUpgradeMultiplier: 3
   rareUpgradeMultiplier: 5

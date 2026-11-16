@@ -20,13 +20,19 @@ public class OfferCardUI : MonoBehaviour
 
     // A face offer: its tile and its full rules on the card. Shared by the Market and the run start. The card itself has
     // no tooltip: the rules are written out, and a keyword's definition shows when the pointer is over it.
-    public void ShowFace(DieFaceSO face){
+    // bonus: upgrades the offer comes with (the Market's lucky finds), shown on the tile and under the name.
+    public void ShowFace(DieFaceSO face, int bonus = 0){
         if(tile != null){
             tile.gameObject.SetActive(true);
-            tile.Set(face, face.baseValue);
+            tile.Set(face, face.baseValue + bonus);
         }
         ShowIcon(null);
         infoText.text = DescribeFace(face);
+        if(bonus > 0){
+            int lineEnd = infoText.text.IndexOf('\n');
+            string upgraded = "<color=#7FD66B>Upgraded +" + bonus + "</color>";
+            infoText.text = lineEnd >= 0 ? infoText.text.Substring(0, lineEnd) + "\n" + upgraded + infoText.text.Substring(lineEnd) : infoText.text + "\n" + upgraded;
+        }
         if(tooltip != null) tooltip.text = "";
     }
 

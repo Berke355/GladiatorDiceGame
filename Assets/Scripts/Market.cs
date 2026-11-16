@@ -7,6 +7,8 @@ public class MarketOffer
     public int price;
     public bool sold;
     public bool locked;
+    // Upgrades the face comes with (a lucky find, GDD "Rarity & Economy"); the price includes half their cost.
+    public int bonus;
 }
 
 public class EnchantmentOffer
@@ -170,8 +172,19 @@ public class Market
                 // The pool ran out of faces for this market (e.g. fewer Epic faces than offers).
                 break;
             }
-            offers.Add(new MarketOffer{ face = face, price = economy.GetBuyPrice(face.rarity) });
+            offers.Add(UpgradedOrPlain(face));
         }
+    }
+
+    // A Normal Market's face offer is sometimes already upgraded (+1, now and then +2), sold for its price plus half of
+    // what those upgrades would cost. The Grand Market's Epics come plain.
+    private MarketOffer UpgradedOrPlain(DieFaceSO face){
+        int bonus = 0;
+        if(!isGrand && !face.hasNoValue && Random.value < economy.upgradedOfferChance){
+            bonus = Random.value < economy.doubleUpgradedOfferChance ? 2 : 1;
+        }
+        int price = economy.GetBuyPrice(face.rarity) + economy.UpgradeGoldBetween(face, face.baseValue, face.baseValue + bonus) / 2;
+        return new MarketOffer{ face = face, price = price, bonus = bonus };
     }
 
     private DieFaceSO PickOfferFace(){
@@ -487,6 +500,7 @@ public class Market
         if(!run.dieFaces[dieSlot].IsBlank) SendToBench(run.dieFaces[dieSlot]);
         else LastAutoSold = null;
         run.dieFaces[dieSlot] = new DieFace(offer.face);
+        run.dieFaces[dieSlot].value += offer.bonus;
         offer.sold = true;
         if(offer.locked){ offer.locked = false; run.lockedFaces.Remove(offer.face); }
         return true;
@@ -568,9 +582,11 @@ public class Market
     // The face sold to make room the last time the bench overflowed (for the UI's hint); null if none.
     public DieFace LastAutoSold { get; private set; }
 
-    // A benched face sells for a quarter of its rarity's price (at least 1), so the bench doesn't become a shop.
+    // A benched face sells for a quarter of its rarity's price (at least 1), so the bench doesn't become a shop, plus half
+    // of the gold its upgrades cost, so selling an upgraded face isn't throwing that gold away.
     public int GetSellPrice(DieFace face){
-        return Mathf.Max(1, economy.GetBuyPrice(face.definition.rarity) / 4);
+        int upgrades = economy.UpgradeGoldBetween(face.definition, face.definition.baseValue, face.value) / 2;
+        return Mathf.Max(1, economy.GetBuyPrice(face.definition.rarity) / 4) + upgrades;
     }
 
     private void SendToBench(DieFace face){
@@ -614,7 +630,7 @@ public class Market
         if(!CanBuy(offerIndex) || !BenchHasRoom) return false;
         MarketOffer offer = offers[offerIndex];
         run.gold -= offer.price;
-        run.bench.Add(new DieFace(offer.face));
+        run.bench.Add(new DieFace(offer.face){ value = offer.face.baseValue + offer.bonus });
         offer.sold = true;
         if(offer.locked){ offer.locked = false; run.lockedFaces.Remove(offer.face); }
         return true;
