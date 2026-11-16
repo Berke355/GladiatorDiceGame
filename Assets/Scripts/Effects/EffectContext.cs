@@ -56,6 +56,11 @@ public class EffectContext
     // source took on the enemies' last turn (Wrath).
     public int retaliations;
     public int hitsTakenLastEnemyTurn;
+    // Damage the source's Block and Fortify absorbed this battle and on the enemies' last turn (Shield's siege payoffs),
+    // and how to spend the battle's count (Siege Breaker). Zero and null for enemies.
+    public int preventedThisBattle;
+    public int preventedLastEnemyTurn;
+    public System.Action spendPrevented;
     // Set by an effect that starts a boss countdown to a hit of this much damage (Stampede); BossBrain runs it.
     public int countdownDamage;
 
@@ -115,7 +120,7 @@ public class EffectContext
     public int PreviewHit(int baseDamage){
         int weak = source != null && Stacks(source, StatusType.Weak) > 0 ? 1 : 0;
         int total = System.Math.Max(0, baseDamage + RageBonus - weak);
-        if(total > 0 && target != null && Stacks(target, StatusType.Vulnerable) > 0) total += 1;
+        if(total > 0 && target != null && Stacks(target, StatusType.Vulnerable) > 0) total += Entity.VulnerableExtra(total);
         return total;
     }
 

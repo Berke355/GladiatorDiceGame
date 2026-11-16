@@ -33,6 +33,7 @@ public static class GameText
         new Keyword{ word = "Exposed", color = "#C98B6B", definition = "Its owner gains no Block (Fortify still works). Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Blank", color = "#C9B796", definition = "A die place whose face is on the bench: it has no actions, so landing on it means a reroll or a pass." },
         new Keyword{ word = "Undying", color = "#FFB347", definition = "When its owner would drop to 0 HP, it stays at 1 HP instead and loses 1 stack." },
+        new Keyword{ word = "Armor", color = "#B8B8C8", definition = "Every hit and every Poison or Bleed tick you take is this much smaller. It lasts the whole battle and is never spent." },
         new Keyword{ word = "Plating", color = "#C8A060", definition = "Bronze plates. A hit that gets past Block deals only 1 damage and breaks one plate. Poison and Bleed go past them." },
         new Keyword{ word = "Consumable", color = "#E8C170", definition = "This face can be used once per battle, whichever action you choose. Afterwards every action on it is Change, usable once per turn." },
         new Keyword{ word = "Change", color = "#E8C170", definition = "Roll the die again and land on a face other than this one: your turn goes on and the enemy doesn't act. Not a reroll: it spends no rerolls." },

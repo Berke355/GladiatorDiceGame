@@ -834,6 +834,10 @@ Reworking Shield into the Shield starter also ends the Sword/Shield duplication:
 
 - **Spiked Shield vs. Shield Bash:** Spiked Shield's hit is just your Fortify (at least its value), while Shield Bash adds its value and your Block on top. Fortify never resets, so Spiked Shield's hit only grows during a fight.
 
+- **Siege payoffs (the user's design, DevLog Day 127):** Shield's strength is not taking damage and its weakness is dealing it, so it doesn't get damage of its own: it gets payoffs for what it stopped. **Unyielding** (Rare, 2): Attack, my value plus the damage Block and Fortify stopped on the enemies' last turn; Defense, block. **Siege Breaker** (Epic, 1): Attack, the damage stopped this battle times my value, then the count starts again; Defense, Fortify. (`PreventedDamageEffectSO`, counted by `BattleFlow` from `Entity.HitAbsorbed`.) Rejected because they break the concept: Fortify dealing damage back (spikes), leftover Block turning into Fortify.
+- **Measured:** Shield 4% → 7%. Its payoffs are rarely found: the Block tag is on 20+ faces of other builds, so "fits the build" offers are mostly someone else's faces. Hybrids with Fortify are left as they are (their other half brings the damage).
+- **Armor** (a mechanic of its own, items only): every hit and every Poison or Bleed tick its owner takes is Armor smaller, all battle, never spent; HP costs ignore it. Too strong for a build, so it comes from **Lorica Segmentata** (Epic item: start each battle with 1 Armor).
+
 ### Berserker (implemented)
 
 Power that keeps growing. Build Rage, then hit often or hit once with everything.

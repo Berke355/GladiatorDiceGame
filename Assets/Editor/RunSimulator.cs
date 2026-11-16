@@ -679,6 +679,9 @@ public static partial class RunSimulator
             case "Detonate": return burn >= 3 ? ActionType.Attack : ActionType.Magic;
             case "Plague": return ActionType.Magic;
             case "Shield Burst": return fortify >= 3 ? ActionType.Attack : ActionType.Defense;
+            // Siege payoffs: hit back after a turn that absorbed something; save the big one for a big count.
+            case "Unyielding": return !bigHit && flow.PreventedLastEnemyTurn >= 2 ? ActionType.Attack : (bigHit ? ActionType.Defense : ActionType.Attack);
+            case "Siege Breaker": return flow.PreventedThisBattle * flow.charge.ValueOf(face) >= Mathf.Max(12, enemy.currentHP) || (!bigHit && flow.PreventedThisBattle >= 15) ? ActionType.Attack : ActionType.Defense;
             // Fortify never resets, so stack it first; blocking a big hit also builds it.
             case "Spiked Shield": return !bigHit && fortify >= 6 ? ActionType.Attack : ActionType.Defense;
             case "Bite": return player.currentHP < player.maxHP / 2 ? ActionType.Magic : ActionType.Attack;
@@ -814,6 +817,7 @@ public static partial class RunSimulator
             case "Fuel": return value * (target.GetStatus(StatusType.Burn) + value);
             case "Plague": return value * Mathf.Max(1, die.FindAll(f => f.definition.tags.Contains(FaceTag.Poison)).Count);
             case "Shield Burst": return value + value * player.GetStatus(StatusType.Fortify);
+            case "Siege Breaker": return Mathf.Max(value, value * flow.PreventedThisBattle);
             case "Fate's Edge": return value * Mathf.Max(1, flow.rerolls.UsedThisBattle);
             case "Earthshaker":
                 int highest = 0;

@@ -4090,3 +4090,8 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Blowgun's new self:** applying once made it Venom again, which the user didn't want. It is now the Common payoff Poison lacked: Attack, damage equal to the enemy's Poison (at least its value, 2), the Poison stays (`PoisonDartEffect`, a `StatusStacksDamageEffectSO`). It puts no Poison on, so Ritual doesn't feed it.
 - **Measured on the map (400-500 runs):** Poison 24% → 14%, Ritual + Poison 24% → 16%, Burn 18% → 15% (noise), Opportunist 7% → 7%. Hex was left alone: changing it pulled Burn down too (Burn 18% → 11%). The bots' Smoke Pot rule now always spreads (no block to fall back on).
 
+### Day 127 (later) - The weak builds, concept first
+- **The user's rule:** changes must keep each build's feeling, not only its numbers. Rejected for that: Riposte lasting longer (Riposte is timing, like a parry in Sekiro: big when right, nothing when wrong), Fortify dealing damage back or Block turning into Fortify (Fortify's weakness must stay offense).
+- **Waiting for the user's call** (off switches in `Entity`): **Vulnerable as +50% of the hit** instead of +1 (Net 3% → 9%; it rewards big hits where Rage rewards many hits), and **Riposte as Deflect** (it stops as much of a hit as its stacks and sends that back; a Riposte no hit came into leaves its owner Off-Balance, 1 Vulnerable; Riposte 5% → 16%).
+- **Shield:** siege payoffs Unyielding and Siege Breaker, and Armor with Lorica Segmentata (GDD "Shield"). Tested: Armor shrinks hits and ticks; the prevented count, Siege Breaker spending it. Shield 4% → 7%; its payoffs are hard to find because the Block tag is shared by many builds.
+

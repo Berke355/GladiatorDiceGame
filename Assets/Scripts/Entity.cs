@@ -39,7 +39,10 @@ public enum StatusType {
     Undying,
     // Bronze plates (the Bronze Colossus): a hit that gets through Block and Fortify deals only 1 damage and breaks
     // one plate. Ticks and HP costs go past them.
-    Plating
+    Plating,
+    // Armor (Lorica Segmentata): every hit and every Poison or Bleed tick its owner takes is this much smaller. It lasts
+    // the battle and isn't spent. HP costs ignore it.
+    Armor
 }
 
 public class Entity : MonoBehaviour
@@ -50,6 +53,16 @@ public class Entity : MonoBehaviour
     public int currentBlock;
 
     public event Action OnHealthChanged;
+    // Experiment switches waiting for the user's call (DevLog Day 127); the game uses the defaults.
+    public static bool VulnerablePercent = false;
+    public static bool RiposteDeflects = false;
+
+    // Vulnerable's extra damage on a hit: +1, or with VulnerablePercent half the hit (rounded up).
+    public static int VulnerableExtra(int damage){
+        return VulnerablePercent ? (damage + 1) / 2 : 1;
+    }
+    // A Riposte that met a hit this round (no Off-Balance at the owner's turn start).
+    private bool riposteUsed;
     // The owner's beast in the current battle (Beastmaster), set by BattleFlow; null for enemies.
     [NonSerialized] public BeastCompanion beast;
     // Raised on the attacker for each hit it deals (target, damage before Block), e.g. for equipment triggers.
@@ -124,10 +137,19 @@ public class Entity : MonoBehaviour
     // Damage is absorbed by Block first, then Fortify, and only the rest reaches HP.
     public void TakeDamage(int damageAmount, Entity source = null){
         LastAttacker = source;
+        // Armor makes every hit smaller before anything else takes it.
+        if(GetStatus(StatusType.Armor) > 0) damageAmount = Math.Max(0, damageAmount - GetStatus(StatusType.Armor));
         if(damageAmount > 0 && GetStatus(StatusType.Vulnerable) > 0){
-            damageAmount += 1;
+            damageAmount += VulnerableExtra(damageAmount);
         }
         int remaining = damageAmount;
+        // Deflect: Riposte takes the hit first (only with an attacker), and what it stopped goes back.
+        int deflected = 0;
+        if(RiposteDeflects && source != null && GetStatus(StatusType.Riposte) > 0){
+            deflected = Math.Min(GetStatus(StatusType.Riposte), remaining);
+            remaining -= deflected;
+            riposteUsed = true;
+        }
 
         int blocked = Math.Min(currentBlock, remaining);
         currentBlock -= blocked;
@@ -159,7 +181,7 @@ public class Entity : MonoBehaviour
         // a hit absorbed completely. It lands without a source, so nothing answers it back (no chains), but the
         // attacker's Vulnerable still counts.
         if (source != null) {
-            int back = GetStatus(StatusType.Riposte) + GetStatus(StatusType.Vigil);
+            int back = (RiposteDeflects ? deflected : GetStatus(StatusType.Riposte)) + GetStatus(StatusType.Vigil);
             if (GetStatus(StatusType.Reversal) > 0 && remaining == 0 && damageAmount > 0) back += damageAmount;
             if (GetStatus(StatusType.Vigil) > 0) activeStatuses[StatusType.Vigil] = 0;
             if (back > 0 && !source.IsDead) {
@@ -241,6 +263,9 @@ public class Entity : MonoBehaviour
     public void OnTurnStart() {
         ResetBlock();
         ConsumeStatus(StatusType.FireShield);
+        // Off-Balance: a Riposte no hit came into opens its owner up (Sekiro).
+        if(RiposteDeflects && GetStatus(StatusType.Riposte) > 0 && !riposteUsed) ApplyStatus(StatusType.Vulnerable, 1);
+        riposteUsed = false;
         ConsumeStatus(StatusType.Riposte);
         ConsumeStatus(StatusType.Reversal);
     }
@@ -268,14 +293,14 @@ public class Entity : MonoBehaviour
         // Halving keeps one application's total damage about 2x its stacks; losing only 1 made it grow with the square.
         int poison = GetStatus(StatusType.Poison);
         if (poison > 0) {
-            LoseHP(poison);
+            LoseHP(Math.Max(0, poison - GetStatus(StatusType.Armor)));
             activeStatuses[StatusType.Poison] = poison / 2;
             OnHealthChanged?.Invoke();
         }
 
         // Bleed always deals 1 and bypasses block; its stacks count down the remaining turns.
         if (GetStatus(StatusType.Bleed) > 0) {
-            LoseHP(1);
+            LoseHP(Math.Max(0, 1 - GetStatus(StatusType.Armor)));
             activeStatuses[StatusType.Bleed] -= 1;
             OnHealthChanged?.Invoke();
         }

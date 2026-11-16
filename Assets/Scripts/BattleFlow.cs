@@ -61,6 +61,13 @@ public class BattleFlow
     private int hitsSinceTurnStart;
     private void OnRetaliated(int damage){ Retaliations++; }
     private void OnStruck(Entity attacker){ hitsSinceTurnStart++; }
+    // The Shield build's siege payoffs (GDD "Shield"): damage the player's Block and Fortify absorbed this battle (Siege
+    // Breaker spends it) and on the enemies' last turn (Unyielding).
+    public int PreventedThisBattle { get; private set; }
+    public int PreventedLastEnemyTurn { get; private set; }
+    private int preventedSinceTurnStart;
+    private void OnAbsorbed(int amount){ PreventedThisBattle += amount; preventedSinceTurnStart += amount; }
+    public void SpendPrevented(){ PreventedThisBattle = 0; }
     // How many times each face came up this turn.
     private readonly Dictionary<DieFace, int> landingsThisTurn = new Dictionary<DieFace, int>();
     public int LandingsThisTurn(DieFace face){
@@ -111,6 +118,7 @@ public class BattleFlow
         triggers = new TriggerSystem(player, () => Target.entity, LivingEnemyEntities, die, equipment, charge, rerolls);
         player.Retaliated += OnRetaliated;
         player.Struck += OnStruck;
+        player.HitAbsorbed += OnAbsorbed;
         int beastMaxHP = 0;
         bool beastLastStand = false;
         if(equipment != null){
@@ -228,6 +236,8 @@ public class BattleFlow
         TurnNumber++;
         HitsTakenLastEnemyTurn = hitsSinceTurnStart;
         hitsSinceTurnStart = 0;
+        PreventedLastEnemyTurn = preventedSinceTurnStart;
+        preventedSinceTurnStart = 0;
         landingsThisTurn.Clear();
         rolledEnchantmentsThisTurn.Clear();
         beast.OnOwnerTurnStart();
@@ -353,7 +363,7 @@ public class BattleFlow
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged, targetBrain = Target.brain, retaliations = Retaliations, hitsTakenLastEnemyTurn = HitsTakenLastEnemyTurn };
+        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged, targetBrain = Target.brain, retaliations = Retaliations, hitsTakenLastEnemyTurn = HitsTakenLastEnemyTurn, preventedThisBattle = PreventedThisBattle, preventedLastEnemyTurn = PreventedLastEnemyTurn, spendPrevented = SpendPrevented };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
@@ -472,6 +482,7 @@ public class BattleFlow
         triggers.Dispose();
         player.Retaliated -= OnRetaliated;
         player.Struck -= OnStruck;
+        player.HitAbsorbed -= OnAbsorbed;
         foreach(BattleEnemy enemy in enemies){
             if(enemy.traits != null) enemy.traits.Dispose();
             IDisposable disposableBrain = enemy.brain as IDisposable;
