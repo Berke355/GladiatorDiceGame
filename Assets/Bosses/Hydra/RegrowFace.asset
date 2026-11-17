@@ -16,8 +16,13 @@ MonoBehaviour:
   description: 'Magic: Heal equal to my value, unless I have Burn or Bleed.'
   rarity: 2
   tags: 
+  emblem: {fileID: 21300000, guid: 73f57014b130b5548bf6e4eb883767c2, type: 3}
+  plainTile: 0
   baseValue: 5
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 4de000a88fca69d48b67c5126434c84b, type: 2}
-  charges: 0
+  keywords: 
+  hasNoValue: 0
+  isBlank: 0
+  maxValue: 0
