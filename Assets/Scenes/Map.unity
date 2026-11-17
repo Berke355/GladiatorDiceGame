@@ -908,13 +908,17 @@ MonoBehaviour:
   nodeTemplate: {fileID: 89965012}
   lineTemplate: {fileID: 1172589241}
   typeIcons:
-  - {fileID: 21300000, guid: 6721b985698aa7c488891df4f2f59dcf, type: 3}
-  - {fileID: 21300000, guid: dfd8aad2fafa41440bd09182d10c79d4, type: 3}
-  - {fileID: 21300000, guid: cacf64fa570319e4c975e56fab956a3d, type: 3}
-  - {fileID: 21300000, guid: 7f024086b8ff8c44ca54a9a8ddff8492, type: 3}
+  - {fileID: 21300000, guid: 164f0bbebefa4b74ebe017c7431d2001, type: 3}
+  - {fileID: 21300000, guid: f1517d3de03871e4a8d19f9458955c12, type: 3}
+  - {fileID: 21300000, guid: c37c35f6bf7f6ce40883a95ab9af7879, type: 3}
+  - {fileID: 21300000, guid: 925a7727721c7124b84227c6f6e6133b, type: 3}
   - {fileID: 0}
-  - {fileID: 21300000, guid: e2faf43c3cf1f5a4b87edbd82b01a182, type: 3}
-  - {fileID: 21300000, guid: 54e9429157a8e264f98be2d75c0c37a1, type: 3}
+  - {fileID: 21300000, guid: c011853faba791f4ab953f5bcf126cfb, type: 3}
+  - {fileID: 21300000, guid: 37a0482da09e3d64c9539fa17d7ba0db, type: 3}
+  toolIcons:
+  - {fileID: 21300000, guid: 0a6679d012b26284486294f71632645f, type: 3}
+  - {fileID: 21300000, guid: a0522cf1c1ec06e499f0ed0b2befbfd5, type: 3}
+  - {fileID: 21300000, guid: c47fe5118bb3170449978464256e475c, type: 3}
   laneSpacing: 210
   floorSpacing: 290
   bossSize: 170
@@ -5351,7 +5355,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -50, y: -50}
+  m_SizeDelta: {x: -8, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1994535509
 CanvasRenderer:

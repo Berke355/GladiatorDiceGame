@@ -17,6 +17,8 @@ public class MapUI : MonoBehaviour
     public Image lineTemplate;
     // One picture per MapNodeType, in enum order; the boss node shows the boss itself.
     public Sprite[] typeIcons;
+    // The drawing tools' pictures: Pencil, Eraser, Clear.
+    public Sprite[] toolIcons;
     // Floors run left to right, lanes top to bottom.
     public float laneSpacing = 210f;
     public float floorSpacing = 290f;
@@ -82,7 +84,7 @@ public class MapUI : MonoBehaviour
         }
         Draw();
         // The tools sit in the bottom bar's right end.
-        MapDrawing.Build(mapArea, restBackButton, () => restPanel.activeSelf || (rewardPanel != null && rewardPanel.activeSelf), new Vector2(730f, -668f));
+        MapDrawing.Build(mapArea, restBackButton, () => restPanel.activeSelf || (rewardPanel != null && rewardPanel.activeSelf), new Vector2(730f, -668f), toolIcons);
         restPanel.SetActive(false);
         if(run.restPending) ShowRestChoice();
         else if(run.eliteRewardChoices.Count > 0) ShowReward();
@@ -149,12 +151,16 @@ public class MapUI : MonoBehaviour
             bool canGo = reachable.Contains(i) || RunManager.Instance.CanReenterShop(i);
             bool current = i == run.mapNode;
             Color color = TypeColors[Mathf.Clamp((int)node.type, 0, TypeColors.Length - 1)];
-            ui.disc.color = visited && !current ? Color.Lerp(color, Color.black, 0.55f) : color;
+            // The picture is the node; its type's color only glows softly behind it (the boss keeps a full disc).
+            bool isBoss = node.type == MapNodeType.Boss;
+            ui.disc.color = isBoss ? (visited && !current ? Color.Lerp(color, Color.black, 0.55f) : color) : new Color(color.r, color.g, color.b, 0.28f);
             Sprite picture = node.type == MapNodeType.Boss && boss != null && boss.sprite != null ? boss.sprite
                 : (int)node.type < typeIcons.Length ? typeIcons[(int)node.type] : null;
             ui.icon.sprite = picture;
             ui.icon.enabled = picture != null;
             ui.icon.preserveAspect = true;
+            // A place already passed fades to ink.
+            ui.icon.color = visited && !current && !isBoss ? new Color(0.55f, 0.48f, 0.40f, 1f) : Color.white;
             ui.ring.enabled = canGo || current;
             ui.ring.color = current ? WalkedInk : new Color(0.95f, 0.70f, 0.20f, 1f);
             ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);

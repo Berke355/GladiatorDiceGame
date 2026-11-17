@@ -34,7 +34,8 @@ public class MapDrawing : MonoBehaviour
     // Builds the ink layer over the map (right after mapArea, so it covers lines and nodes) and the tool buttons, copied
     // from a button of the scene. blocked: true while a panel (a rest, a reward) covers the map.
     // toolsAt: where the first tool button goes (canvas units from the center); the others follow to its right.
-    public static MapDrawing Build(RectTransform mapArea, Button buttonStyle, System.Func<bool> blocked, Vector2 toolsAt){
+    // icons: Pencil, Eraser, Clear (any may be missing).
+    public static MapDrawing Build(RectTransform mapArea, Button buttonStyle, System.Func<bool> blocked, Vector2 toolsAt, Sprite[] icons = null){
         RectTransform canvas = (RectTransform)mapArea.parent;
         GameObject layer = new GameObject("MapInk", typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
         layer.transform.SetParent(canvas, false);
@@ -46,6 +47,7 @@ public class MapDrawing : MonoBehaviour
         MapDrawing drawing = layer.AddComponent<MapDrawing>();
         drawing.blocked = blocked;
         drawing.Setup(canvas.rect.size);
+        drawing.icons = icons ?? new Sprite[0];
         drawing.BuildButtons(canvas, buttonStyle, toolsAt);
         return drawing;
     }
@@ -74,13 +76,16 @@ public class MapDrawing : MonoBehaviour
         if(style == null) return;
         Image styleImage = style.GetComponent<Image>();
         if(styleImage != null) buttonColor = styleImage.color;
-        pencilButton = MakeButton(canvas, style, "Pencil", at, () => Pick(Tool.Pencil));
-        eraserButton = MakeButton(canvas, style, "Eraser", at + new Vector2(ToolStep, 0f), () => Pick(Tool.Eraser));
-        MakeButton(canvas, style, "Clear", at + new Vector2(2f * ToolStep, 0f), ClearAll);
+        pencilButton = MakeButton(canvas, style, "Pencil", Icon(0), at, () => Pick(Tool.Pencil));
+        eraserButton = MakeButton(canvas, style, "Eraser", Icon(1), at + new Vector2(ToolStep, 0f), () => Pick(Tool.Eraser));
+        MakeButton(canvas, style, "Clear", Icon(2), at + new Vector2(2f * ToolStep, 0f), ClearAll);
         Pick(Tool.None);
     }
 
-    private static Button MakeButton(RectTransform canvas, Button style, string label, Vector2 position, UnityEngine.Events.UnityAction onClick){
+    private Sprite[] icons;
+    private Sprite Icon(int index){ return index < icons.Length ? icons[index] : null; }
+
+    private static Button MakeButton(RectTransform canvas, Button style, string label, Sprite icon, Vector2 position, UnityEngine.Events.UnityAction onClick){
         Button button = Instantiate(style, canvas);
         button.name = label + "Button";
         button.gameObject.SetActive(true);
@@ -96,6 +101,26 @@ public class MapDrawing : MonoBehaviour
             text.text = label;
             text.enableAutoSizing = false;
             text.fontSize = 34f;
+        }
+        // The tool's picture on the left, the word beside it.
+        if(icon != null){
+            GameObject picture = new GameObject("Icon", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            picture.transform.SetParent(button.transform, false);
+            RectTransform iconRect = (RectTransform)picture.transform;
+            iconRect.anchorMin = iconRect.anchorMax = new Vector2(0f, 0.5f);
+            iconRect.sizeDelta = new Vector2(58f, 58f);
+            iconRect.anchoredPosition = new Vector2(38f, 0f);
+            Image image = picture.GetComponent<Image>();
+            image.sprite = icon;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            if(text != null){
+                RectTransform textRect = text.rectTransform;
+                textRect.anchorMin = new Vector2(0f, 0f);
+                textRect.anchorMax = new Vector2(1f, 1f);
+                textRect.offsetMin = new Vector2(66f, 0f);
+                textRect.offsetMax = new Vector2(-6f, 0f);
+            }
         }
         return button;
     }
