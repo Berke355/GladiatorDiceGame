@@ -4155,4 +4155,6 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 ### Next Steps
 - Pictures: Wolf's Arm and Deathblow (prompts given in chat).
 - Balance the Deflect build after the user plays it (posture share, pips, recovery).
+- **Later the same day:** a Deflect face can't be passed (the user: otherwise a quiet turn's stance is never punished); the player's posture is drawn like an enemy's, cut into one step per mistake; merged faces will keep both parents' keywords (Roadmap); pictures for Deathblow and Wolf's Arm (a wood and iron prosthetic with a thread spool and a bandaged hand).
+- **Playtest build 0.4** (`Builds/Playtest/DiceAndGladius-0.4-playtest.zip`, 54 MB; the 0.3 build and zip deleted): the playtest fixes, the parchment map with the pencil, upgraded offers, the new enemy intents and Deflect. A headless start loaded with no errors.
 
