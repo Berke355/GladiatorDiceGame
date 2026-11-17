@@ -94,7 +94,8 @@ public class MapUI : MonoBehaviour
         ActMap map = run.map;
         float left = -floorSpacing * map.floors / 2f;
         // The boss's big portrait stands a little apart from the last floor.
-        if(node.type == MapNodeType.Boss) return new Vector2(left + floorSpacing * map.floors + bossSize * 0.25f, 0f);
+        // Raised a little, clear of the compass drawn in the parchment's bottom right corner.
+        if(node.type == MapNodeType.Boss) return new Vector2(left + floorSpacing * map.floors + bossSize * 0.25f, BossLift);
         return new Vector2(left + floorSpacing * node.floor, -(node.lane - (map.lanes - 1) / 2f) * laneSpacing);
     }
 
@@ -111,6 +112,9 @@ public class MapUI : MonoBehaviour
         dash = Sprite.Create(texture, new Rect(0f, 0f, 8f, 2f), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
         return dash;
     }
+
+    private const float BossLift = 70f;
+    private const float BossLabelSize = 46f;
 
     // Ink on the parchment: the open ways in red, the walked road dark, the rest faint.
     private static readonly Color OpenInk = new Color(0.62f, 0.12f, 0.08f, 1f);
@@ -180,7 +184,11 @@ public class MapUI : MonoBehaviour
             ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);
             ui.label.color = LabelInk;
             // Under the boss portrait's skull, not on it.
-            if(isBoss) ui.label.rectTransform.anchoredPosition += new Vector2(0f, -24f);
+            if(isBoss){
+                ui.label.rectTransform.anchoredPosition += new Vector2(0f, -24f);
+                ui.label.fontSize = BossLabelSize;
+                ui.label.fontStyle = TMPro.FontStyles.Bold;
+            }
             CanvasGroup group = ui.GetComponent<CanvasGroup>();
             if(group != null) group.alpha = canGo || current || visited || node.type == MapNodeType.Boss ? 1f : 0.55f;
             // The node's look is drawn here; the button's own tint would wash out the nodes it can't go to.
