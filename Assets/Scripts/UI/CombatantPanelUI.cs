@@ -29,7 +29,22 @@ public class CombatantPanelUI : MonoBehaviour
         float ratio = entity.maxHP > 0 ? Mathf.Clamp01((float)entity.currentHP / entity.maxHP) : 0f;
         hpFill.rectTransform.anchorMax = new Vector2(ratio, 1f);
         hpText.text = entity.IsDead ? "DEFEATED" : entity.currentHP + " / " + entity.maxHP;
-        RefreshShields(entity, ratio);
+        // Block and Fortify show as the first chips; drawn on the bar too, with Poison and Bleed, it read as a jumble
+        // (the user's play-test), so the bar keeps only the HP and what the next ticks will take.
+        if(fortifyFill != null) fortifyFill.enabled = false;
+        if(blockFill != null) blockFill.enabled = false;
+        // Dark numbers with a light rim read on every part of the bar (the fill, the empty part, the tick marks).
+        if(!hpTextStyled){
+            hpTextStyled = true;
+            hpText.color = new Color(0.08f, 0.06f, 0.05f, 1f);
+            hpText.outlineColor = new Color32(240, 230, 210, 255);
+            // The mobile SDF shader draws an outline only with its keyword on.
+            hpText.fontMaterial.EnableKeyword(ShaderUtilities.Keyword_Outline);
+            hpText.outlineWidth = 0.25f;
+            hpText.UpdateMeshPadding();
+            // Over the tick marks, which used to cover the numbers.
+            hpText.transform.SetAsLastSibling();
+        }
         RefreshTicks(entity);
 
         RefreshStatuses(entity);
@@ -41,6 +56,10 @@ public class CombatantPanelUI : MonoBehaviour
     // the same; the player's bar is cut into one step per timing mistake (ticks on both sides of the middle), so the
     // mistakes still allowed read at a glance.
     public static bool ShowPosture;
+    private bool hpTextStyled;
+    // The status chips' place under the HP bar; they move down by the posture bar's height while it shows.
+    private float statusRowY = float.NaN;
+    private const float PostureGap = 6f;
     private RectTransform postureRow;
     private Image postureFill;
     private readonly List<Image> ticks = new List<Image>();
@@ -54,6 +73,11 @@ public class CombatantPanelUI : MonoBehaviour
 
     private void RefreshPosture(Entity entity){
         bool show = ShowPosture && entity.MaxPosture > 0 && !entity.IsDead;
+        RectTransform chips = statusRow as RectTransform;
+        if(chips != null){
+            if(float.IsNaN(statusRowY)) statusRowY = chips.anchoredPosition.y;
+            chips.anchoredPosition = new Vector2(chips.anchoredPosition.x, statusRowY - (show ? PostureHeight + PostureGap : 0f));
+        }
         if(!show){
             if(postureRow != null) postureRow.gameObject.SetActive(false);
             return;
@@ -67,7 +91,8 @@ public class CombatantPanelUI : MonoBehaviour
         postureFill.color = lastStep ? PostureDanger : Color.Lerp(PostureColor, PostureDanger, ratio * ratio * 0.6f);
         if(entity.whiffCostsPosture && tickedFor != entity.MaxPosture) PlaceTicks(entity.MaxPosture);
         if(stunText != null){
-            stunText.gameObject.SetActive(entity.StunTurns > 0);
+            // An enemy's stun shows over its head and the player's as a banner; under the bar it covered the chips.
+            stunText.gameObject.SetActive(false);
             stunText.text = "STUNNED " + entity.StunTurns;
         }
     }

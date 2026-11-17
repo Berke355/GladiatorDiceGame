@@ -393,8 +393,9 @@ public class MarketUI : MonoBehaviour
             int bonus = (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i, run.dieFaces) - dieFace.value;
             string bonusText = bonus > 0 ? " <color=#E2B23C>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
             int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
-            string weightText = (weight == 1 ? "" : weight == 0 ? " | never rolled" : " | x" + weight + " often")
-                + (DieEnchantmentSO.ConsumableAt(run.dieEnchantments, i) ? " | Consumable" : "");
+            // A die enchantment's effect on this place stands out in purple, the enchantments' color (the user's request).
+            string weightText = (weight == 1 ? "" : weight == 0 ? " | <color=#C39BE0><b>never rolled</b></color>" : " | <color=#C39BE0><b>x" + weight + " more often</b></color>")
+                + (DieEnchantmentSO.ConsumableAt(run.dieEnchantments, i) ? " | <color=#C39BE0><b>Consumable</b></color>" : "");
             if(slot.tile != null){
                 // The tile is the face (its corner pips show its actions, so an empty Magic corner means it can be
                 // enchanted); the caption says only what matters now (moving, a die enchantment's effect on this place).

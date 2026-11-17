@@ -403,6 +403,10 @@ public class UIManager : MonoBehaviour
             string description = effect.Describe(context);
             parts.Add(description != "" ? description : effect.name);
         }
+        // The Deflect keyword comes with every action of its face, so every action's preview opens with it.
+        if(parts.Count > 0 && face.definition.HasKeyword(FaceKeyword.Deflect)){
+            parts.Insert(0, "gain " + (ValueOf(face) + player.GetStatus(StatusType.Encourage)) + " Deflect");
+        }
         string text = string.Join(", ", parts);
         return text != "" && (flow != null ? flow.IsConsumableFace(face) : face.definition.IsConsumable) ? text + " (Consumable)" : text;
     }
