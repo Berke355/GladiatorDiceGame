@@ -93,7 +93,8 @@ public class MapUI : MonoBehaviour
     private Vector2 PositionOf(MapNode node){
         ActMap map = run.map;
         float left = -floorSpacing * map.floors / 2f;
-        if(node.type == MapNodeType.Boss) return new Vector2(left + floorSpacing * map.floors + 40f, 0f);
+        // The boss's big portrait stands a little apart from the last floor.
+        if(node.type == MapNodeType.Boss) return new Vector2(left + floorSpacing * map.floors + bossSize * 0.25f, 0f);
         return new Vector2(left + floorSpacing * node.floor, -(node.lane - (map.lanes - 1) / 2f) * laneSpacing);
     }
 
@@ -178,6 +179,8 @@ public class MapUI : MonoBehaviour
             if(current) rect.localScale = new Vector3(1.15f, 1.15f, 1f);
             ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);
             ui.label.color = LabelInk;
+            // Under the boss portrait's skull, not on it.
+            if(isBoss) ui.label.rectTransform.anchoredPosition += new Vector2(0f, -24f);
             CanvasGroup group = ui.GetComponent<CanvasGroup>();
             if(group != null) group.alpha = canGo || current || visited || node.type == MapNodeType.Boss ? 1f : 0.55f;
             // The node's look is drawn here; the button's own tint would wash out the nodes it can't go to.

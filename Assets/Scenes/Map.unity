@@ -921,8 +921,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c47fe5118bb3170449978464256e475c, type: 3}
   inkCircle: {fileID: 21300000, guid: cf69cbc67cd67cd4aada346a822ea9c5, type: 3}
   laneSpacing: 210
-  floorSpacing: 290
-  bossSize: 290
+  floorSpacing: 270
+  bossSize: 520
   restPanel: {fileID: 1628306260}
   restBody: {fileID: 536689996}
   restHealButton: {fileID: 550794578}
