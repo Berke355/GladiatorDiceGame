@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LexTalionisFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Lex Talionis
-  description: 'Magic: If the enemy intends to attack, gain Deflect equal to the
-    damage of its hit.'
+  description: 'Deflect. Magic: If an enemy intends to attack this turn, my value
+    rises to all the damage coming this turn.'
   rarity: 1
   tags: 0c00000001000000
   emblem: {fileID: 21300000, guid: 955e56dcce1ad284999aa916a4fa48dc, type: 3}
@@ -23,6 +23,6 @@ MonoBehaviour:
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 14af3fc8a055e0940b18910b57530235, type: 2}
-  keywords: 
+  keywords: 02000000
   hasNoValue: 0
   isBlank: 0

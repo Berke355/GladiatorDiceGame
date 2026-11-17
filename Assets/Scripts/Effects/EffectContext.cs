@@ -56,6 +56,8 @@ public class EffectContext
     // source took on the enemies' last turn (Wrath).
     public int retaliations;
     public int hitsTakenLastEnemyTurn;
+    // All the damage the living enemies intend to deal this turn, Rage included (Lex Talionis). 0 for enemies.
+    public int incomingDamage;
     // Damage the source's Block and Fortify absorbed this battle and on the enemies' last turn (Shield's siege payoffs),
     // and how to spend the battle's count (Siege Breaker). Zero and null for enemies.
     public int preventedThisBattle;

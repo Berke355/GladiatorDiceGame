@@ -76,8 +76,12 @@ public class Entity : MonoBehaviour
     // Any status gained on this entity (Wolf's Arm watches Deflect).
     public event Action<StatusType, int> StatusGained;
 
+    // Set when posture grew since the round began (StartRound), for enemies' recovery.
+    public bool PostureHitThisRound { get; private set; }
+
     public void AddPosture(int amount){
         if(MaxPosture <= 0 || amount <= 0 || StunTurns > 0 || IsDead) return;
+        PostureHitThisRound = true;
         Posture = Math.Min(MaxPosture, Posture + amount);
         OnHealthChanged?.Invoke();
         if(Posture >= MaxPosture) PostureBroken?.Invoke();
@@ -271,6 +275,7 @@ public class Entity : MonoBehaviour
 
     public void StartRound(){
         hpLostThisRound = 0;
+        PostureHitThisRound = false;
     }
 
     // A dead entity can't be healed back (only Revive brings it back).

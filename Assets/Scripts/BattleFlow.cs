@@ -147,7 +147,9 @@ public class BattleFlow
     }
 
     // Posture (GDD "Deflect").
-    public const int PlayerPosture = 3;
+    public const int PlayerPosture = 2;
+    // An enemy whose posture went this many of its turns without a deflected hit recovers a quarter of it.
+    public const int PostureRecoveryTurns = 3;
     public const float EnemyPostureShare = 0.4f;
     // Whether the die has a Deflect face (or a Deflect enchantment): only then the battle shows posture.
     public bool PostureInPlay { get; private set; }
@@ -166,8 +168,20 @@ public class BattleFlow
     // A broken enemy takes half its posture as damage past Block and is stunned: 2 turns, 1 for elites and bosses.
     private void OnEnemyPostureBroken(BattleEnemy enemy){
         enemy.entity.PayHP(enemy.entity.MaxPosture / 2);
-        enemy.entity.Stun(IsEliteOrBoss(enemy) ? 1 : 2);
+        enemy.entity.Stun(1);
         EnemyPostureBroken?.Invoke(enemy);
+    }
+
+    // Posture recovery (GDD "Deflect"): counted at the end of each of the enemy's turns, reset by a deflected hit.
+    private void RecoverPosture(BattleEnemy enemy){
+        Entity entity = enemy.entity;
+        if(entity.Posture <= 0 || entity.PostureHitThisRound){
+            enemy.calmTurns = 0;
+            return;
+        }
+        if(++enemy.calmTurns < PostureRecoveryTurns) return;
+        enemy.calmTurns = 0;
+        entity.RecoverPosture(Math.Max(1, (entity.MaxPosture + 3) / 4));
     }
 
     public static bool IsEliteOrBoss(BattleEnemy enemy){
@@ -412,7 +426,7 @@ public class BattleFlow
             return;
         }
 
-        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged, targetBrain = Target.brain, retaliations = Retaliations, hitsTakenLastEnemyTurn = HitsTakenLastEnemyTurn, preventedThisBattle = PreventedThisBattle, preventedLastEnemyTurn = PreventedLastEnemyTurn, spendPrevented = SpendPrevented };
+        EffectContext context = new EffectContext{ source = player, target = Target.entity, opponents = LivingEnemyEntities(), value = charge.ValueOf(RolledFace), die = die, face = RolledFace, charge = charge, rerolls = rerolls, faceLandings = LandingsThisTurn(RolledFace), arrivedBySteer = ArrivedBySteer, turnNumber = TurnNumber, actionChanged = actionChanged, targetBrain = Target.brain, retaliations = Retaliations, hitsTakenLastEnemyTurn = HitsTakenLastEnemyTurn, preventedThisBattle = PreventedThisBattle, preventedLastEnemyTurn = PreventedLastEnemyTurn, spendPrevented = SpendPrevented, incomingDamage = IncomingDamage };
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
@@ -541,6 +555,7 @@ public class BattleFlow
             BattleEnemy enemy = enemies[i];
             if(enemy.IsDead) continue;
             enemy.entity.OnTurnEnd();
+            if(!enemy.IsDead && !enemy.stunnedThisTurn) RecoverPosture(enemy);
             if(enemy.IsDead || enemy.stunnedThisTurn) continue;
             enemy.brain.OnTurnEnd();
             if(IsOver) return;

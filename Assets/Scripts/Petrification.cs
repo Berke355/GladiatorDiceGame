@@ -4,7 +4,7 @@ using System.Collections.Generic;
 // so it never touches the run's DieFace instances. A stone face's only action is Defense: gain StoneBlock block.
 public class Petrification
 {
-    public const int StoneBlock = 2;
+    public const int StoneBlock = 1;
 
     // Player turns each stone face stays stone.
     private readonly Dictionary<DieFace, int> turnsLeft = new Dictionary<DieFace, int>();

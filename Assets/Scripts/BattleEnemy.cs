@@ -15,6 +15,8 @@ public class BattleEnemy
     public UnityEngine.Sprite sprite;
     // Stunned through this enemy turn (a broken posture): it neither acted nor ends its turn's plans (countdowns).
     public bool stunnedThisTurn;
+    // Its turns in a row without a deflected hit while its posture isn't empty (BattleFlow.RecoverPosture).
+    public int calmTurns;
     public float spriteHeight = 1f;
     // The world width BattleManager gives the enemy in the row (its sprite or its plate, whichever is wider, after a
     // crowded row shrinks); its card is as wide.

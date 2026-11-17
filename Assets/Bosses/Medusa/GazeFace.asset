@@ -14,11 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Gaze
   description: 'Magic: Petrify your highest-value face that isn''t stone yet for
-    turns equal to my value.'
+    turns equal to my value, and apply 2 Weak.'
   rarity: 2
   tags: 
+  emblem: {fileID: 0}
+  plainTile: 0
   baseValue: 2
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: 2f124e7c6cb1c8147a26ea44fa4aac35, type: 2}
-  charges: 0
+  - actionType: 2
+    effectLogic: {fileID: 11400000, guid: bb8c903f639098a429582cce37b8267b, type: 2}
+  keywords: 
+  hasNoValue: 0
+  isBlank: 0

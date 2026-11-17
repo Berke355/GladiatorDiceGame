@@ -397,7 +397,7 @@ public class UIManager : MonoBehaviour
         if(flow != null && flow.IsChange(face, action)){
             return flow.ChangesThisTurn < BattleFlow.MaxChangesPerTurn ? "Change: roll another face" : "";
         }
-        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null, faceLandings = flow != null ? flow.LandingsThisTurn(face) : 0, arrivedBySteer = flow != null && flow.ArrivedBySteer, turnNumber = flow != null ? flow.TurnNumber : 0, actionChanged = flow != null && flow.WouldChangeAction(action), targetBrain = flow != null ? flow.Target.brain : null, retaliations = flow != null ? flow.Retaliations : 0, hitsTakenLastEnemyTurn = flow != null ? flow.HitsTakenLastEnemyTurn : 0, preventedThisBattle = flow != null ? flow.PreventedThisBattle : 0, preventedLastEnemyTurn = flow != null ? flow.PreventedLastEnemyTurn : 0 };
+        EffectContext context = new EffectContext{ source = player, target = flow != null ? flow.Target.entity : null, opponents = flow != null ? flow.LivingEnemyEntities() : null, value = ValueOf(face), die = die, face = face, charge = flow != null ? flow.charge : null, rerolls = flow != null ? flow.rerolls : null, faceLandings = flow != null ? flow.LandingsThisTurn(face) : 0, arrivedBySteer = flow != null && flow.ArrivedBySteer, turnNumber = flow != null ? flow.TurnNumber : 0, actionChanged = flow != null && flow.WouldChangeAction(action), targetBrain = flow != null ? flow.Target.brain : null, retaliations = flow != null ? flow.Retaliations : 0, hitsTakenLastEnemyTurn = flow != null ? flow.HitsTakenLastEnemyTurn : 0, preventedThisBattle = flow != null ? flow.PreventedThisBattle : 0, preventedLastEnemyTurn = flow != null ? flow.PreventedLastEnemyTurn : 0, incomingDamage = flow != null ? flow.IncomingDamage : 0 };
         List<string> parts = new List<string>();
         foreach(EffectSO effect in face.GetEffects(action)){
             string description = effect.Describe(context);
@@ -405,7 +405,8 @@ public class UIManager : MonoBehaviour
         }
         // The Deflect keyword comes with every action of its face, so every action's preview opens with it.
         if(parts.Count > 0 && face.definition.HasKeyword(FaceKeyword.Deflect)){
-            parts.Insert(0, "gain " + (ValueOf(face) + player.GetStatus(StatusType.Encourage)) + " Deflect");
+            // After the describes: Lex Talionis raises the value it is given with.
+            parts.Insert(0, "gain " + (context.value + player.GetStatus(StatusType.Encourage)) + " Deflect");
         }
         string text = string.Join(", ", parts);
         return text != "" && (flow != null ? flow.IsConsumableFace(face) : face.definition.IsConsumable) ? text + " (Consumable)" : text;

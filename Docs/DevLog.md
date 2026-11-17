@@ -4158,3 +4158,10 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Later the same day:** a Deflect face can't be passed (the user: otherwise a quiet turn's stance is never punished); the player's posture is drawn like an enemy's, cut into one step per mistake; merged faces will keep both parents' keywords (Roadmap); pictures for Deathblow and Wolf's Arm (a wood and iron prosthetic with a thread spool and a bandaged hand).
 - **Playtest build 0.4** (`Builds/Playtest/DiceAndGladius-0.4-playtest.zip`, 54 MB; the 0.3 build and zip deleted): the playtest fixes, the parchment map with the pencil, upgraded offers, the new enemy intents and Deflect. A headless start loaded with no errors.
 
+## Day 130 - The 0.4 Playtest Notes
+
+### Accomplished
+- **Phase 1, the screens:** status chips sit under the posture bar; the HP bar keeps only the HP and the next ticks (Block and Fortify are chips; the overlap read as a jumble); HP numbers are dark with a light outline (the mobile SDF shader needs its OUTLINE_ON keyword), drawn over the tick marks; a Deflect face's action previews open with the Deflect it gives; the Market's bench is a column left of the die, and a die enchantment's effect under a face ("x2 more often") is purple and larger.
+- **Phase 2, balance:** Medusa's Gaze also applies 2 Weak and a stone face blocks 1 (was 2); Kick Up Dust applies 2 Vulnerable when the player has no rerolls left (`StealRerollEffectSO.fallbackStatus`); Lex Talionis carries the Deflect keyword and its Magic raises its value to all the damage coming this turn (`EffectContext.incomingDamage`), so it can't be a free pass; Deflect nerfed: every enemy is stunned 1 turn, the player has 2 steps of posture, and an enemy recovers a quarter of its posture after 3 of its turns without a deflected hit (`BattleFlow.RecoverPosture`, `BattleEnemy.calmTurns`, `Entity.PostureHitThisRound`).
+- **Measured (250 runs, Bleed bot):** Medusa now kills about 15% of the runs that reach her, the Minotaur about 11% (before, Medusa was the weaker one). Deflect bots 3% (they still play it poorly).
+
