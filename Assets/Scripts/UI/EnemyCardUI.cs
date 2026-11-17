@@ -23,6 +23,31 @@ public class EnemyCardUI : MonoBehaviour
 
     public BattleEnemy Enemy { get; private set; }
 
+    // An enemy that rolls a die (a boss, the Mimic) shows the face it rolled instead of the intent's numbers; the full
+    // text stays in the box's tooltip (the user's request). A copy of the dice tray's tile, built on first use.
+    private FaceTileUI intentFace;
+    private GameObject intentFaceHolder;
+    private const float IntentFaceSize = 120f;
+
+    private void EnsureIntentFace(){
+        if(intentFaceHolder != null || UIManager.Instance == null || UIManager.Instance.rolledFaceTile == null) return;
+        intentFaceHolder = new GameObject("IntentFace", typeof(RectTransform), typeof(LayoutElement));
+        intentFaceHolder.transform.SetParent(intentTooltip.transform, false);
+        intentFaceHolder.transform.SetSiblingIndex(intentText.transform.GetSiblingIndex());
+        LayoutElement layout = intentFaceHolder.GetComponent<LayoutElement>();
+        layout.minHeight = layout.preferredHeight = IntentFaceSize + 8f;
+        intentFace = Instantiate(UIManager.Instance.rolledFaceTile, intentFaceHolder.transform);
+        intentFace.gameObject.SetActive(true);
+        RectTransform rect = (RectTransform)intentFace.transform;
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = Vector2.zero;
+        rect.localRotation = Quaternion.identity;
+        rect.localScale = Vector3.one;
+        rect.sizeDelta = new Vector2(IntentFaceSize, IntentFaceSize);
+        // The box under it keeps the hover (the tooltip).
+        foreach(Graphic graphic in intentFace.GetComponentsInChildren<Graphic>(true)) graphic.raycastTarget = false;
+    }
+
     public void Bind(BattleEnemy enemy, System.Action onClick){
         Enemy = enemy;
         BossBrain boss = enemy.brain as BossBrain;
@@ -65,6 +90,17 @@ public class EnemyCardUI : MonoBehaviour
         }
         // A trait waiting for its next turn (Curl Up) is shown with the intent.
         if(!dead && Enemy.traits != null && Enemy.traits.HasPending) intent += "\n" + Enemy.traits.PendingDescription + " (at the start of its turn)";
+        // A rolled die face: its picture, and below it only what isn't the face (a countdown, a waiting trait).
+        DieFace rolled = !dead && Enemy.entity.StunTurns == 0 && Enemy.brain.Die != null ? Enemy.brain.RolledFace : null;
+        if(rolled != null) EnsureIntentFace();
+        bool showFace = rolled != null && intentFace != null;
+        if(intentFaceHolder != null) intentFaceHolder.SetActive(showFace);
+        if(showFace){
+            intentFace.Set(rolled, rolled.value);
+            int lineEnd = summary.IndexOf('\n');
+            summary = lineEnd >= 0 ? summary.Substring(lineEnd + 1) : "";
+        }
+        intentText.gameObject.SetActive(!showFace || summary != "");
         intentText.text = dead ? "<color=#888888>Defeated</color>" : summary;
         // An enemy that joined this turn has no intent yet: no empty box over its head.
         intentTooltip.gameObject.SetActive(dead || intent != "");
