@@ -326,7 +326,9 @@ public class UIManager : MonoBehaviour
         rolledFaceTooltip.text = "";
         if(landed) PlayRoll(face, die, stone);
         else ShowRolledTile(face, stone);
-        UpdateDieChips(die, face);
+        // While the die rolls the result stays hidden: the rules and the net's highlight come when it lands.
+        rolledFaceTitle.alpha = rolledFaceText.alpha = landed ? 0f : 1f;
+        UpdateDieChips(die, landed ? null : face);
 
         RefreshEnemies();
         SetDieChipsClickable(false);
@@ -344,7 +346,7 @@ public class UIManager : MonoBehaviour
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = !tumbling && preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));
             actionButtonTexts[i].text = ActionTitle((ActionType)i)
-                + (preview != "" ? "\n<size=85%>" + GameText.Colorize(ShortPreview(preview)) + "</size>" : "");
+                + (preview != "" && !tumbling ? "\n<size=85%>" + GameText.Colorize(ShortPreview(preview)) + "</size>" : "");
             // A long line shrinks instead of spilling out of the button.
             if(!actionButtonTexts[i].enableAutoSizing){
                 actionButtonTexts[i].fontSizeMax = actionButtonTexts[i].fontSize;
@@ -443,26 +445,88 @@ public class UIManager : MonoBehaviour
         if(rolledFaceTile == null) return;
         if(rollAnimation != null) StopCoroutine(rollAnimation);
         rollAnimation = null;
+        // A roll cut short (a quick reroll) starts again from the tile's place.
+        if(!float.IsNaN(rollHome.x)) rolledFaceTile.transform.localPosition = rollHome;
         rolledFaceTile.gameObject.SetActive(true);
         rollAnimation = StartCoroutine(RollAnimation(face, die, stone));
         AudioManager.Play(Sfx.DieRoll);
     }
 
+    // The throw (GDD "Visual Style"): a fake 2D physics roll seen from above. The tile is thrown into the tray from its
+    // right side, slides with friction, bounces off the tray's walls and spins, and every time it has rolled about its
+    // own width it tips over onto another face (a little hop). Slow enough, it shows the rolled face and settles into
+    // its place at a slight angle. Only the picture moves; the rules already happened.
+    private Vector3 rollHome = new Vector3(float.NaN, 0f, 0f);
+    private const float ThrowSpeed = 2300f, Friction = 3.2f, SpinFriction = 2.6f, WallBounce = 0.55f;
+    private const float StopSpeed = 140f, MaxRollTime = 0.95f, SettleTime = 0.16f;
+
     private IEnumerator RollAnimation(DieFace face, List<DieFace> die, bool stone){
         RectTransform tile = (RectTransform)rolledFaceTile.transform;
-        const int Tumbles = 7;
-        for(int i = 0; i < Tumbles; i++){
-            DieFace shown = die[Random.Range(0, die.Count)];
-            rolledFaceTile.Set(shown, ValueOf(shown));
-            tile.localRotation = Quaternion.Euler(0f, 0f, Random.Range(-28f, 28f));
-            float size = 0.8f + 0.15f * i / Tumbles;
-            tile.localScale = new Vector3(size, size, 1f);
-            yield return new WaitForSecondsRealtime(0.04f + 0.012f * i);
+        RectTransform tray = (RectTransform)tile.parent;
+        if(float.IsNaN(rollHome.x)) rollHome = tile.localPosition;
+        Rect area = tray.rect;
+        Vector2 half = tile.rect.size * 0.5f;
+        // The whole tray is the table (its rules text is hidden until the die lands).
+        float minX = area.xMin + half.x + 8f, maxX = area.xMax - half.x - 8f;
+        float minY = area.yMin + half.y + 8f, maxY = area.yMax - half.y - 8f;
+        Vector2 position = new Vector2(maxX, Random.Range(minY, maxY));
+        Vector2 velocity = new Vector2(-ThrowSpeed * Random.Range(0.85f, 1.1f), ThrowSpeed * Random.Range(-0.45f, 0.45f));
+        float angle = Random.Range(-40f, 40f), spin = Random.Range(500f, 900f) * (Random.value < 0.5f ? -1f : 1f);
+        float rolled = 0f, hop = 0f, time = 0f;
+        DieFace shown = null;
+        while(time < MaxRollTime && velocity.magnitude > StopSpeed){
+            float dt = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
+            time += dt;
+            position += velocity * dt;
+            // The tray's walls: bounce back, losing speed, and the spin turns.
+            if(position.x < minX || position.x > maxX){
+                position.x = Mathf.Clamp(position.x, minX, maxX);
+                velocity.x = -velocity.x * WallBounce;
+                spin = -spin * 0.7f;
+                hop = 1f;
+            }
+            if(position.y < minY || position.y > maxY){
+                position.y = Mathf.Clamp(position.y, minY, maxY);
+                velocity.y = -velocity.y * WallBounce;
+                spin = -spin * 0.7f;
+                hop = 1f;
+            }
+            velocity *= Mathf.Exp(-Friction * dt);
+            spin *= Mathf.Exp(-SpinFriction * dt);
+            angle += spin * dt;
+            // Rolling over onto another face every tile width.
+            rolled += velocity.magnitude * dt;
+            if(shown == null || rolled > half.x * 1.6f){
+                rolled = 0f;
+                DieFace next = die[Random.Range(0, die.Count)];
+                if(die.Count > 1 && next == shown) next = die[(die.IndexOf(next) + 1) % die.Count];
+                shown = next;
+                rolledFaceTile.Set(shown, ValueOf(shown));
+                hop = Mathf.Max(hop, 0.6f);
+            }
+            hop = Mathf.Max(0f, hop - dt * 6f);
+            float scale = 0.9f + 0.14f * hop;
+            tile.localPosition = new Vector3(position.x, position.y, rollHome.z);
+            tile.localRotation = Quaternion.Euler(0f, 0f, angle);
+            tile.localScale = new Vector3(scale, scale, 1f);
+            yield return null;
         }
+        // Landed: the rolled face, then it settles into its place.
         rolledFaceTile.Set(face, ValueOf(face), "", stone);
+        Vector3 from = tile.localPosition;
+        float fromAngle = Mathf.DeltaAngle(0f, angle);
+        float settle = 0f;
+        while(settle < SettleTime){
+            settle += Mathf.Min(Time.unscaledDeltaTime, 0.05f);
+            float t = Mathf.SmoothStep(0f, 1f, settle / SettleTime);
+            tile.localPosition = Vector3.Lerp(from, rollHome, t);
+            tile.localRotation = Quaternion.Euler(0f, 0f, Mathf.Lerp(fromAngle, RestAngle, t));
+            float pop = 1f + 0.1f * Mathf.Sin(t * Mathf.PI);
+            tile.localScale = new Vector3(pop, pop, 1f);
+            yield return null;
+        }
+        tile.localPosition = rollHome;
         tile.localRotation = Quaternion.Euler(0f, 0f, RestAngle);
-        tile.localScale = new Vector3(1.1f, 1.1f, 1f);
-        yield return new WaitForSecondsRealtime(0.07f);
         tile.localScale = Vector3.one;
         rollAnimation = null;
         // The die has landed: open the buttons, unless the phase moved on meanwhile (the battle ended).
