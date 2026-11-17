@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: Bulwark
   description: 'When the Top face lands: gain 2 Fortify (once per turn).'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 7bf233573fd9f0448b64edc89a59706c, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []

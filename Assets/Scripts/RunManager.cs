@@ -101,6 +101,7 @@ public class RunManager : MonoBehaviour
         run.visitedNodes.Clear();
         openShop = null;
         openShopNode = -1;
+        mapInk = null;
         run.restPending = false;
         run.actBoss = encounters.PickBossForAct(act);
         PrepareReachable();
@@ -136,6 +137,10 @@ public class RunManager : MonoBehaviour
 
     // A shop left for the map stays open until the player steps on: its node can be entered again, with the same
     // offers, rerolls and purchases (the Market object lives on), so walking back in is never a free reroll. Runtime only.
+    // The player's pencil drawings on this act's map (MapDrawing); runtime only, gone with the act.
+    [System.NonSerialized] public Color32[] mapInk;
+    [System.NonSerialized] public int mapInkAct = -1;
+
     private Market openShop;
     private int openShopNode = -1;
 

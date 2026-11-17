@@ -15,7 +15,7 @@ MonoBehaviour:
   enchantmentName: War Drum
   description: 'When the Rightmost face lands: gain 1 Rage (once per turn).'
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: e032ddd3620e2db49a868eece9564fbf, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []

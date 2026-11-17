@@ -4132,3 +4132,9 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - Icons for the five new die enchantments and the parchment map background (prompts given in chat).
 - The Riposte rework, discussed at length with the user (timing, Off-Balance, Reversal, the Magic escape, its faces and items).
 - Music last.
+
+### Day 128 (later) - The parchment map, left to right, with a pencil
+- **Pictures** (Gemini): the five new die enchantments' medallions (Bulwark, Blood Altar, Brazier, Venom Gland, War Drum) and the parchment map background (`Assets/Art/Backgrounds/MapParchment.png`, cut to its 6-pixel grid, 459 x 256).
+- **The map reads left to right** (the user's idea): `MapUI.PositionOf` puts floors on x and lanes on y, the boss on the right; ink colors for roads, labels and the title.
+- **Pencil and eraser** (`Map/MapDrawing`, the user's idea from Slay the Spire 2): a quarter-resolution texture over the nodes, drawn with the pencil (or any right-button drag) and cleared with the eraser or Clear. It catches clicks only while a tool is in hand, a stroke never starts on a button, and the ink is kept for the act in `RunManager.mapInk` (cleared by `BeginAct`). Checked in Play Mode: strokes, the tool buttons, the layout.
+

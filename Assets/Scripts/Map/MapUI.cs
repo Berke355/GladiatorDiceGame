@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// The map screen (see GDD "Map"): draws the act's map from the run, floor by floor up to the boss, and sends a click
-// on a reachable node to RunManager.EnterNode. Rests are played here: heal, or upgrade one face.
+// The map screen (see GDD "Map"): draws the act's map on a parchment, floor by floor from left to right up to the boss,
+// and sends a click on a reachable node to RunManager.EnterNode. Rests are played here: heal, or upgrade one face. The
+// player can plan a route with a pencil and an eraser (MapDrawing).
 public class MapUI : MonoBehaviour
 {
     public TextMeshProUGUI titleText;
@@ -16,8 +17,9 @@ public class MapUI : MonoBehaviour
     public Image lineTemplate;
     // One picture per MapNodeType, in enum order; the boss node shows the boss itself.
     public Sprite[] typeIcons;
-    public float laneSpacing = 330f;
-    public float floorSpacing = 150f;
+    // Floors run left to right, lanes top to bottom.
+    public float laneSpacing = 210f;
+    public float floorSpacing = 290f;
     public float bossSize = 190f;
 
     [Header("Rest")]
@@ -79,6 +81,7 @@ public class MapUI : MonoBehaviour
             rewardPanel.SetActive(false);
         }
         Draw();
+        MapDrawing.Build(mapArea, restBackButton, () => restPanel.activeSelf || (rewardPanel != null && rewardPanel.activeSelf));
         restPanel.SetActive(false);
         if(run.restPending) ShowRestChoice();
         else if(run.eliteRewardChoices.Count > 0) ShowReward();
@@ -94,10 +97,16 @@ public class MapUI : MonoBehaviour
 
     private Vector2 PositionOf(MapNode node){
         ActMap map = run.map;
-        float bottom = -floorSpacing * map.floors / 2f;
-        if(node.type == MapNodeType.Boss) return new Vector2(0f, bottom + floorSpacing * map.floors + 30f);
-        return new Vector2((node.lane - (map.lanes - 1) / 2f) * laneSpacing, bottom + floorSpacing * node.floor);
+        float left = -floorSpacing * map.floors / 2f;
+        if(node.type == MapNodeType.Boss) return new Vector2(left + floorSpacing * map.floors + 40f, 0f);
+        return new Vector2(left + floorSpacing * node.floor, -(node.lane - (map.lanes - 1) / 2f) * laneSpacing);
     }
+
+    // Ink on the parchment: the open ways in red, the walked road dark, the rest faint.
+    private static readonly Color OpenInk = new Color(0.62f, 0.12f, 0.08f, 1f);
+    private static readonly Color WalkedInk = new Color(0.24f, 0.14f, 0.08f, 0.95f);
+    private static readonly Color FaintInk = new Color(0.36f, 0.25f, 0.16f, 0.45f);
+    private static readonly Color LabelInk = new Color(0.22f, 0.13f, 0.07f, 1f);
 
     private void Draw(){
         foreach(GameObject each in drawn) Destroy(each);
@@ -123,7 +132,7 @@ public class MapUI : MonoBehaviour
                 rect.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(b.y - a.y, b.x - a.x) * Mathf.Rad2Deg);
                 bool walked = run.visitedNodes.Contains(i) && run.visitedNodes.Contains(next);
                 bool open = i == run.mapNode && reachable.Contains(next);
-                line.color = open ? new Color(0.95f, 0.78f, 0.35f, 1f) : walked ? new Color(0.92f, 0.86f, 0.72f, 0.9f) : new Color(0.55f, 0.48f, 0.38f, 0.45f);
+                line.color = open ? OpenInk : walked ? WalkedInk : FaintInk;
             }
         }
         for(int i = 0; i < map.nodes.Count; i++){
@@ -146,8 +155,9 @@ public class MapUI : MonoBehaviour
             ui.icon.enabled = picture != null;
             ui.icon.preserveAspect = true;
             ui.ring.enabled = canGo || current;
-            ui.ring.color = current ? new Color(1f, 1f, 1f, 0.9f) : new Color(0.95f, 0.78f, 0.35f, 1f);
+            ui.ring.color = current ? WalkedInk : new Color(0.95f, 0.70f, 0.20f, 1f);
             ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);
+            ui.label.color = LabelInk;
             CanvasGroup group = ui.GetComponent<CanvasGroup>();
             if(group != null) group.alpha = canGo || current || visited || node.type == MapNodeType.Boss ? 1f : 0.55f;
             // The node's look is drawn here; the button's own tint would wash out the nodes it can't go to.

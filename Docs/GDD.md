@@ -351,6 +351,9 @@ Elites are the map's Elite nodes: harder fights with a bigger reward, each with 
 
 ### Map
 
+- **The screen is a parchment map read left to right** (the user's idea after seeing the parchment): floors go from left to right, the boss waits on the right edge. Roads are ink: red where you can go, dark where you walked, faint elsewhere.
+- **Pencil and eraser** (like Slay the Spire 2): the player draws a planned route in ink over the map (Pencil, Eraser, Clear on the left; a right-button drag draws without picking the pencil). The ink is chunky pixels like the art, stays for the whole act (through battles and shops) and is gone in the next act. While a tool is in hand the nodes don't take clicks; picking the tool again puts it down.
+
 Between battles the player walks a branching map instead of the fixed battle → Market → battle line (inspired by Slay the Spire, Roadmap Phase B). The route is the run's big decision outside battles: more fights for gold, a Market, the Enchanting Table, or a rest.
 
 - **Three acts,** one per boss: the Minotaur, Medusa and the Hydra. Act 1 fights Weak enemies, act 2 Medium, act 3 Strong.

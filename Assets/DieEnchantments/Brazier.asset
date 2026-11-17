@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 'When the Left or Right face lands: apply 2 Burn to your target (once
     per turn).'
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a86c13da0cdf0914eb5694966f29aad4, type: 3}
   positionBonuses: []
   oppositeTagBonus: 0
   rollWeights: []
