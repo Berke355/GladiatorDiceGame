@@ -15,7 +15,7 @@ MonoBehaviour:
   equipmentName: Wolf's Arm
   description: Each time you gain Deflect, gain 1 more (5 times per battle).
   rarity: 2
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 45404aeedcbdc734baafce3ca0501c2f, type: 3}
   tags: 0c000000
   triggers:
   - trigger: 10

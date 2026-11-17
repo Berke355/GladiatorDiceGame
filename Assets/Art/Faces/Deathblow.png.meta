@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 95d5e43f150a6514791b7bff99c8ff1f
+guid: 7d4dd073a75986d42988eba12df9386f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2911965501377351524
-    second: Vigil_0
+      213: 6148033467016487815
+    second: Deathblow_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Vigil_0
+      name: Deathblow_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 43
-        height: 42
+        width: 38
+        height: 50
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 46f0acbf131696820800000000000000
-      internalID: 2911965501377351524
+      spriteID: 7832bb45dd3325550800000000000000
+      internalID: 6148033467016487815
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Vigil_0: 2911965501377351524
+      Deathblow_0: 6148033467016487815
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
