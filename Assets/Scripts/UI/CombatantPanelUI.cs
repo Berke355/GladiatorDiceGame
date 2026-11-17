@@ -33,6 +33,109 @@ public class CombatantPanelUI : MonoBehaviour
         RefreshTicks(entity);
 
         RefreshStatuses(entity);
+        RefreshPosture(entity);
+    }
+
+    // Posture (GDD "Deflect"), shown only when the die has a Deflect face (UIManager sets it from BattleFlow). Enemies:
+    // a thin bar under the HP bar that fills from its middle out, red when close to breaking. The player: one pip per
+    // timing mistake left, so the mistakes still allowed read at a glance.
+    public static bool ShowPosture;
+    private RectTransform postureRow;
+    private Image postureFill;
+    private readonly List<Image> pips = new List<Image>();
+    private TextMeshProUGUI stunText;
+    private static readonly Color PostureColor = new Color(0.91f, 0.71f, 0.29f, 1f);
+    private static readonly Color PostureDanger = new Color(0.86f, 0.25f, 0.18f, 1f);
+    private static readonly Color PipLost = new Color(0.22f, 0.16f, 0.12f, 0.9f);
+    private const float PostureHeight = 12f;
+    private const float PipSize = 32f;
+
+    private void RefreshPosture(Entity entity){
+        bool show = ShowPosture && entity.MaxPosture > 0 && !entity.IsDead;
+        if(!show){
+            if(postureRow != null) postureRow.gameObject.SetActive(false);
+            return;
+        }
+        if(postureRow == null) BuildPosture(entity.whiffCostsPosture);
+        postureRow.gameObject.SetActive(true);
+        if(entity.whiffCostsPosture){
+            int left = entity.MaxPosture - entity.Posture;
+            while(pips.Count < entity.MaxPosture) pips.Add(NewPip());
+            for(int i = 0; i < pips.Count; i++){
+                pips[i].gameObject.SetActive(i < entity.MaxPosture);
+                pips[i].color = i < left ? (left == 1 ? PostureDanger : PostureColor) : PipLost;
+            }
+        }
+        else{
+            float ratio = Mathf.Clamp01((float)entity.Posture / entity.MaxPosture);
+            postureFill.rectTransform.anchorMin = new Vector2(0.5f - ratio / 2f, 0f);
+            postureFill.rectTransform.anchorMax = new Vector2(0.5f + ratio / 2f, 1f);
+            postureFill.color = Color.Lerp(PostureColor, PostureDanger, ratio * ratio);
+        }
+        if(stunText != null){
+            stunText.gameObject.SetActive(entity.StunTurns > 0);
+            stunText.text = "STUNNED " + entity.StunTurns;
+        }
+    }
+
+    private void BuildPosture(bool asPips){
+        RectTransform bar = (RectTransform)hpFill.rectTransform.parent;
+        GameObject row = new GameObject("Posture", typeof(RectTransform));
+        row.transform.SetParent(bar, false);
+        postureRow = (RectTransform)row.transform;
+        postureRow.anchorMin = new Vector2(0f, 0f);
+        postureRow.anchorMax = new Vector2(1f, 0f);
+        postureRow.pivot = new Vector2(0.5f, 1f);
+        postureRow.sizeDelta = new Vector2(0f, asPips ? PipSize : PostureHeight);
+        postureRow.anchoredPosition = new Vector2(0f, -4f);
+        if(asPips){
+            HorizontalLayoutGroup layout = row.AddComponent<HorizontalLayoutGroup>();
+            layout.spacing = 8f;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = layout.childControlHeight = false;
+            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+        }
+        else{
+            Image back = row.AddComponent<Image>();
+            back.color = new Color(0.08f, 0.06f, 0.05f, 0.85f);
+            back.raycastTarget = false;
+            GameObject fill = new GameObject("Fill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            fill.transform.SetParent(row.transform, false);
+            postureFill = fill.GetComponent<Image>();
+            postureFill.raycastTarget = false;
+            postureFill.rectTransform.offsetMin = postureFill.rectTransform.offsetMax = Vector2.zero;
+        }
+        // STUNNED under the posture while it lasts.
+        GameObject label = new GameObject("Stun", typeof(RectTransform));
+        label.transform.SetParent(row.transform, false);
+        LayoutElement ignore = label.AddComponent<LayoutElement>();
+        ignore.ignoreLayout = true;
+        stunText = label.AddComponent<TextMeshProUGUI>();
+        stunText.font = hpText.font;
+        stunText.fontSize = 30f;
+        stunText.fontStyle = FontStyles.Bold;
+        stunText.alignment = TextAlignmentOptions.Center;
+        stunText.color = PostureColor;
+        stunText.raycastTarget = false;
+        RectTransform labelRect = stunText.rectTransform;
+        labelRect.anchorMin = new Vector2(0f, 0f);
+        labelRect.anchorMax = new Vector2(1f, 0f);
+        labelRect.pivot = new Vector2(0.5f, 1f);
+        labelRect.sizeDelta = new Vector2(0f, 34f);
+        labelRect.anchoredPosition = new Vector2(0f, -2f);
+        label.SetActive(false);
+    }
+
+    // A pip: a small diamond (a square turned 45 degrees).
+    private Image NewPip(){
+        GameObject pip = new GameObject("Pip", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        pip.transform.SetParent(postureRow, false);
+        RectTransform rect = (RectTransform)pip.transform;
+        rect.sizeDelta = new Vector2(PipSize * 0.75f, PipSize * 0.75f);
+        rect.localRotation = Quaternion.Euler(0f, 0f, 45f);
+        Image image = pip.GetComponent<Image>();
+        image.raycastTarget = false;
+        return image;
     }
 
     // Fortify then Block follow the HP on the bar, each as wide as its share of max HP. When the bar runs out (HP near
@@ -79,7 +182,7 @@ public class CombatantPanelUI : MonoBehaviour
             if(fortify > 0) SetChip(index++, "Fortify", fortify);
             foreach(KeyValuePair<StatusType, int> status in entity.Statuses){
                 if(status.Value <= 0 || status.Key == StatusType.Fortify || status.Key == StatusType.None) continue;
-                SetChip(index++, status.Key.ToString(), status.Value);
+                SetChip(index++, GameText.StatusName(status.Key), status.Value);
             }
         }
         for(int i = index; i < chips.Count; i++){

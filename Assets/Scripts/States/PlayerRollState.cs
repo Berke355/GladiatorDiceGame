@@ -15,6 +15,16 @@ public class PlayerRollState : BattleState
         if(startsTurn){
             battleManager.flow.StartPlayerTurn();
             if(battleManager.CheckBattleOver()) return;
+            // A broken posture (GDD "Deflect"): the turn is lost, the enemies act at once.
+            if(battleManager.flow.PlayerSkipsTurn){
+                if(UIManager.Instance != null) UIManager.Instance.ShowTurnBanner("STUNNED");
+                AudioManager.Play(Sfx.YourTurn);
+                battleManager.flow.PassTurn();
+                battleManager.flow.EndPlayerTurn();
+                if(battleManager.CheckBattleOver()) return;
+                battleManager.ChangeState(new EnemyTurnState(battleManager));
+                return;
+            }
             if(UIManager.Instance != null) UIManager.Instance.ShowTurnBanner("YOUR TURN");
             AudioManager.Play(Sfx.YourTurn);
         }

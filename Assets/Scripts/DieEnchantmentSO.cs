@@ -41,6 +41,8 @@ public class DieEnchantmentSO : ScriptableObject
     public bool rolledOnTarget;
     // Heals the beast this much when the face at one of rolledPositions lands (Doghouse), once per turn.
     public int rolledBeastHeal;
+    // When the face at one of rolledPositions lands: the player recovers this many pips of posture (War Paint).
+    public int rolledPostureRecover;
 
     // The total bonus of these enchantments for the face on a position.
     public static int BonusAt(List<DieEnchantmentSO> enchantments, List<DieFace> die, int position){

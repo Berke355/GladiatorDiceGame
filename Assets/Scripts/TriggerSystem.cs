@@ -35,6 +35,8 @@ public class TriggerSystem
     private readonly Action<Entity, int> onHitDealt;
     private readonly Action<int> onHitTaken;
     private readonly Action<Entity> onBeastBit;
+    private readonly Action<StatusType, int> onStatusGained;
+    private readonly Action<Entity, int> onDeflected;
     // The enemy the beast just bit, the target of BeastBit reactions.
     private Entity bitten;
 
@@ -58,9 +60,17 @@ public class TriggerSystem
             Fire(TriggerType.BeastBit);
             bitten = null;
         };
+        onStatusGained = (status, amount) => { if(status == StatusType.Deflect) Fire(TriggerType.DeflectGained); };
+        onDeflected = (source, amount) => {
+            attacker = source;
+            Fire(TriggerType.HitDeflected);
+            attacker = null;
+        };
         player.HitDealt += onHitDealt;
         player.HitTaken += onHitTaken;
         player.BeastBit += onBeastBit;
+        player.StatusGained += onStatusGained;
+        player.Deflected += onDeflected;
     }
 
     // Unsubscribes from the player's events; call when the battle ends.
@@ -68,6 +78,8 @@ public class TriggerSystem
         player.HitDealt -= onHitDealt;
         player.HitTaken -= onHitTaken;
         player.BeastBit -= onBeastBit;
+        player.StatusGained -= onStatusGained;
+        player.Deflected -= onDeflected;
     }
 
     // Called at the start of each player turn.

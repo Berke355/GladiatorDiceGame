@@ -512,6 +512,8 @@ public static partial class RunSimulator
             // Steady Hand rerolls within the same turn, so a turn can hold several rolls and actions.
             int rerolls = 0;
             do{
+                // A broken posture (GDD "Deflect") loses the turn.
+                if(flow.PlayerSkipsTurn){ flow.PassTurn(); break; }
                 // An action let the bot choose the next face: the strongest attacker.
                 if(flow.ChoicePending) flow.ChooseNextFace(StrongestAttacker(run.dieFaces, flow));
                 DieFace face = flow.Roll();
@@ -520,8 +522,11 @@ public static partial class RunSimulator
                     face = flow.RerollFace();
                 }
                 if(flow.IsOver) break;
-                // A face that can't act now (e.g. a used potion after this turn's Change): pass the turn.
-                if(!System.Array.Exists(new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }, a => flow.CanAct(face, a))){
+                // A face that can't act now (e.g. a used potion after this turn's Change): pass the turn. A Deflect face
+                // with nothing coming would whiff: pass rather than lose the last pip of posture.
+                bool lastPip = player.MaxPosture - player.Posture <= 1;
+                if(!System.Array.Exists(new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }, a => flow.CanAct(face, a))
+                    || (face.definition.HasKeyword(FaceKeyword.Deflect) && flow.IncomingDamage == 0 && lastPip)){
                     flow.PassTurn();
                     break;
                 }
@@ -735,10 +740,9 @@ public static partial class RunSimulator
             case "Alpha": return ActionType.Magic;
             // Paying HP for the beast is only worth it with HP to spare.
             case "Feed": return !bigHit && player.currentHP > face.value + 15 ? ActionType.Magic : ActionType.Defense;
-            // Vigil waits for the first hit, so set it once and keep blocking while it waits.
-            // Lex Talionis: take the hit in Riposte when one is coming, else block.
-            case "Lex Talionis": return flow.Target.brain.IntendsAttack && flow.Target.brain.IncomingDamage >= 3 ? ActionType.Magic : ActionType.Defense;
-            case "Vigil": return !bigHit && player.GetStatus(StatusType.Vigil) == 0 ? ActionType.Magic : ActionType.Defense;
+            // Lex Talionis: Deflect the whole hit when one is coming (it only has Magic).
+            case "Lex Talionis": return ActionType.Magic;
+            case "Deathblow": return ActionType.Attack;
             // Provoke an enemy that isn't attacking (its plan is the threat); against an attack, just block.
             // Provoke a utility intent (Magic: debuffs, petrify, buffs), never a block: turning a harmless turn into an
             // attack and giving Rage for it is a bad trade.
@@ -784,6 +788,8 @@ public static partial class RunSimulator
         if(!safeAction) return true;
         bool bigHit = flow.IncomingDamage >= 6;
         if(bigHit && !flow.CanAct(face, ActionType.Defense)) return true;
+        // A Deflect face on a turn nothing comes would whiff (GDD "Deflect").
+        if(face.definition.HasKeyword(FaceKeyword.Deflect) && flow.IncomingDamage == 0) return true;
         // Fortune plans: savers (Patient Blade, Hedge) keep their rerolls; a spender (Gambit) spends the last one too.
         bool spender = die.Exists(f => f.definition.faceName == "Gambit");
         if(flow.rerolls.Left <= (spender ? 0 : 1)) return false;

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WarPaint
   m_EditorClassIdentifier: Assembly-CSharp::DieEnchantmentSO
   enchantmentName: War Paint
-  description: 'When the Top or Bottom face lands: gain 2 Riposte (once per turn).'
+  description: 'When the Top or Bottom face lands: recover 1 posture (once per turn).'
   rarity: 0
   icon: {fileID: 21300000, guid: 9d61c3f57eb8abc48ae7cef3262e7d5c, type: 3}
   positionBonuses: []
@@ -22,6 +22,8 @@ MonoBehaviour:
   positionMultipliers: []
   consumablePositions: 
   rolledPositions: 0000000005000000
-  rolledStatus: 12
-  rolledAmount: 2
+  rolledStatus: 0
+  rolledAmount: 0
   rolledOnTarget: 0
+  rolledBeastHeal: 0
+  rolledPostureRecover: 1

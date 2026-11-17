@@ -129,6 +129,16 @@ public class BattleFlow
             }
         }
         beast = new BeastCompanion(player, beastMaxHP, beastLastStand);
+        // Posture (GDD "Deflect"): the player's pips, every enemy's share of its HP.
+        int extraPosture = 0;
+        if(equipment != null){
+            foreach(EquipmentSO item in equipment) extraPosture += item.extraPosture;
+        }
+        player.whiffCostsPosture = true;
+        player.MaxPosture = PlayerPosture + extraPosture;
+        player.ResetPosture();
+        player.PostureBroken += OnPlayerPostureBroken;
+        PostureInPlay = die.Exists(UsesDeflect);
         // Binding can spawn enemies (the Hydra grows its heads), which SpawnEnemy sets up itself.
         int initial = enemies.Count;
         for(int i = 0; i < initial; i++){
@@ -136,7 +146,40 @@ public class BattleFlow
         }
     }
 
+    // Posture (GDD "Deflect").
+    public const int PlayerPosture = 3;
+    public const float EnemyPostureShare = 0.4f;
+    // Whether the die has a Deflect face (or a Deflect enchantment): only then the battle shows posture.
+    public bool PostureInPlay { get; private set; }
+    // The player's posture broke at the start of this turn: the turn is lost (the states and the simulator skip it).
+    public bool PlayerSkipsTurn { get; private set; }
+    public event Action<BattleEnemy> EnemyPostureBroken;
+
+    public static bool UsesDeflect(DieFace face){
+        if(face == null || face.IsBlank) return false;
+        return face.definition.HasKeyword(FaceKeyword.Deflect) || face.definition.tags.Contains(FaceTag.Riposte)
+            || (face.enchantment != null && face.enchantment.tags.Contains(FaceTag.Riposte));
+    }
+
+    private void OnPlayerPostureBroken(){ player.Stun(1); }
+
+    // A broken enemy takes half its posture as damage past Block and is stunned: 2 turns, 1 for elites and bosses.
+    private void OnEnemyPostureBroken(BattleEnemy enemy){
+        enemy.entity.PayHP(enemy.entity.MaxPosture / 2);
+        enemy.entity.Stun(IsEliteOrBoss(enemy) ? 1 : 2);
+        EnemyPostureBroken?.Invoke(enemy);
+    }
+
+    public static bool IsEliteOrBoss(BattleEnemy enemy){
+        if(enemy.brain is BossBrain || enemy.brain is MimicBrain) return true;
+        EnemyBrain brain = enemy.brain as EnemyBrain;
+        return brain != null && brain.definition.tier == EnemyTier.Elite;
+    }
+
     private void Setup(BattleEnemy enemy){
+        enemy.entity.MaxPosture = Math.Max(1, (int)Math.Round(enemy.entity.maxHP * EnemyPostureShare));
+        enemy.entity.ResetPosture();
+        enemy.entity.PostureBroken += () => OnEnemyPostureBroken(enemy);
         enemy.traits = new EnemyTraitSystem(enemy.entity, player, enemy.brain.Traits);
         enemy.brain.Bind(this);
     }
@@ -191,7 +234,7 @@ public class BattleFlow
         get{
             int damage = 0;
             foreach(BattleEnemy enemy in enemies){
-                if(!enemy.IsDead) damage += enemy.brain.IncomingDamage;
+                if(!enemy.IsDead && enemy.entity.StunTurns == 0) damage += enemy.brain.IncomingDamage;
             }
             return damage;
         }
@@ -201,7 +244,7 @@ public class BattleFlow
     public int ThreatAgainst(DieFace face, int battleValue, ActionType action){
         int damage = 0;
         foreach(BattleEnemy enemy in enemies){
-            if(!enemy.IsDead) damage += enemy.brain.ThreatAgainst(face, battleValue, action);
+            if(!enemy.IsDead && enemy.entity.StunTurns == 0) damage += enemy.brain.ThreatAgainst(face, battleValue, action);
         }
         return damage;
     }
@@ -254,6 +297,8 @@ public class BattleFlow
         triggers.turnNumber = TurnNumber;
         foreach(BattleEnemy enemy in enemies) enemy.entity.StartRound();
         player.OnTurnStart();
+        // A whiff that broke the player's posture just now costs this turn.
+        PlayerSkipsTurn = player.SpendStunTurn();
         triggers.Fire(TriggerType.TurnStart);
         foreach(BattleEnemy enemy in enemies){
             if(!enemy.IsDead) enemy.brain.ChooseNextIntent();
@@ -287,9 +332,10 @@ public class BattleFlow
         if(dieEnchantments == null) return;
         int place = die.IndexOf(RolledFace);
         foreach(DieEnchantmentSO enchantment in dieEnchantments){
-            if(enchantment == null || (enchantment.rolledStatus == StatusType.None && enchantment.rolledBeastHeal <= 0) || !enchantment.rolledPositions.Contains(place)) continue;
+            if(enchantment == null || (enchantment.rolledStatus == StatusType.None && enchantment.rolledBeastHeal <= 0 && enchantment.rolledPostureRecover <= 0) || !enchantment.rolledPositions.Contains(place)) continue;
             if(!rolledEnchantmentsThisTurn.Add(enchantment)) continue;
             if(enchantment.rolledBeastHeal > 0) beast.Heal(enchantment.rolledBeastHeal);
+            if(enchantment.rolledPostureRecover > 0) player.RecoverPosture(enchantment.rolledPostureRecover);
             if(enchantment.rolledStatus == StatusType.None) continue;
             if(enchantment.rolledOnTarget && Target.IsDead) continue;
             EffectContext context = new EffectContext{ source = player, target = Target.entity, value = enchantment.rolledAmount, fromItem = true };
@@ -370,6 +416,8 @@ public class BattleFlow
         foreach(EffectSO effect in RolledFace.GetEffects(action)){
             effect.Execute(context);
         }
+        // The Deflect keyword: whatever the action, the face's value goes up as a stance.
+        if(RolledFace.definition.HasKeyword(FaceKeyword.Deflect) && !player.IsDead) context.GainSelf(StatusType.Deflect, context.value);
         if(IsConsumableFace(RolledFace)) consumables.MarkUsed(RolledFace);
         actedThisTurn.Add(RolledFace);
         if(context.keepCharge) keptChargeThisTurn.Add(RolledFace);
@@ -466,6 +514,9 @@ public class BattleFlow
         BattleEnemy enemy = enemies[index];
         if(enemy.IsDead) return false;
         enemy.entity.OnTurnStart();
+        // A stunned enemy loses its turn (its posture is whole again after the last one).
+        enemy.stunnedThisTurn = enemy.entity.SpendStunTurn();
+        if(enemy.stunnedThisTurn) return true;
         enemy.traits.RunPending();
         enemy.brain.ExecuteCurrentIntent();
         return true;
@@ -477,7 +528,7 @@ public class BattleFlow
             BattleEnemy enemy = enemies[i];
             if(enemy.IsDead) continue;
             enemy.entity.OnTurnEnd();
-            if(enemy.IsDead) continue;
+            if(enemy.IsDead || enemy.stunnedThisTurn) continue;
             enemy.brain.OnTurnEnd();
             if(IsOver) return;
         }
@@ -493,6 +544,7 @@ public class BattleFlow
         player.Retaliated -= OnRetaliated;
         player.Struck -= OnStruck;
         player.HitAbsorbed -= OnAbsorbed;
+        player.PostureBroken -= OnPlayerPostureBroken;
         foreach(BattleEnemy enemy in enemies){
             if(enemy.traits != null) enemy.traits.Dispose();
             IDisposable disposableBrain = enemy.brain as IDisposable;

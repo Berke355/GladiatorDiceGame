@@ -964,7 +964,19 @@ The net-fighter of the arena: throw the net, then stab what's caught in it. The 
 - **Net has an Attack on purpose:** with only Defense, the Net bot put Nets in the place of Swords, and its Net rolls dealt nothing (a quarter of its rolls). Standalone Faces rule.
 - **To watch after the map:** Haul In with Ritual and Rage (both raise it every turn), and Medusa, where the Net bot died most (its upgraded Trident is the face she turns to stone).
 
-### Provocator (implemented)
+### Deflect (implemented, the Provocator reworked)
+
+The user's design (DevLog Day 129), after Riposte proved too easy to time, too rewarding (defense and damage in one) and free to dodge (block fallbacks, a Magic enchantment): Sekiro's deflect and posture. The reward is delayed and comes from keeping the rhythm, the penalty is real.
+
+- **Deflect (status, the old Riposte):** a pool. Each hit an enemy lands is reduced by it until it runs out; what it stops **doesn't come back as damage**, it fills the attacker's **posture**. Gone at the start of your next turn.
+- **Deflect (face keyword, like Consumable):** whatever action the face takes, you also gain Deflect equal to its value. A Deflect face that comes up on a quiet turn is a commitment: playing it is a stance, the ways out are Pass or a reroll.
+- **A whiff costs posture:** if no hit came into your Deflect, you lose a pip of posture. You have 3 pips (Spiked Pauldron +1); when the last goes, you are **stunned for a turn** and the pips come back. The pips show under your HP bar, so the mistakes left read at a glance.
+- **Enemies' posture** is 40% of their max HP, a thin bar under their HP bar that fills from the middle. Full, it **breaks**: the enemy takes half its posture as damage (past Block) and is **stunned** for 2 turns (elites and bosses 1, so boss fights don't collapse). When the stun ends the posture is whole again.
+- **Only you hurt your posture** (the user: a unique enemy that attacks it can come later). Posture shows only when the die has a Deflect face, so other builds never see it. Whether postures recover on their own is left to the balance tests.
+- **Gone:** Vigil, Reversal, Off-Balance, damage back. Feints (intents that look like attacks) were rejected by the user.
+- **Content:** Parry (Deflect. Defense: block), Bait (Deflect. Attack: damage), Grudge (Attack: value + the enemy's posture), Lex Talionis (Magic: Deflect equal to the incoming hit), Provoke (Deflect; Magic forces an attack), Perfect Counter (Deflect. Defense: block and Perfect Guard: a hit Deflect stops completely breaks the attacker's posture), Deathblow (Rare, replaces Vigil: x3 against a stunned enemy); items Old Scars (a deflected hit gives 2 block), Spiked Pauldron (+1 pip), **Wolf's Arm** (Epic, a nod to Sekiro's prosthetic: each time you gain Deflect, 1 more, 5 times per battle); Mirror Stance (Magic: Deflect); War Paint (Top or Bottom lands: recover 1 posture).
+
+### Provocator (replaced by Deflect, kept for history)
 
 The challenger of the arena: invite the attack and make the enemy pay for it. The other builds fear an enemy's attack; this one wants it, so it reads every intent.
 

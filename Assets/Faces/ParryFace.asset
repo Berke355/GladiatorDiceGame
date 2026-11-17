@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ParryFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Parry
-  description: 'Defense: Gain block and Riposte equal to my value.'
+  description: 'Deflect. Defense: Gain block equal to my value.'
   rarity: 0
   tags: 0c00000001000000
   emblem: {fileID: 21300000, guid: a1e611865b936fb438e33cb23d3b9870, type: 3}
@@ -22,7 +22,6 @@ MonoBehaviour:
   effects:
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
-  - actionType: 1
-    effectLogic: {fileID: 11400000, guid: ef0d4cf8dc6f02048a8c9e8e0ce72382, type: 2}
-  keywords: 
+  keywords: 02000000
   hasNoValue: 0
+  isBlank: 0

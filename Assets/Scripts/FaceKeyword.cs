@@ -5,5 +5,8 @@ public enum FaceKeyword
     // Usable once per battle, whichever action is chosen; afterwards every action on the face is Change.
     Consumable,
     // Every turn the face isn't the one you act with, it gains +1 value for the battle.
-    Charge
+    Charge,
+    // Whatever action the face takes, its owner also gains Deflect equal to its value (GDD "Deflect"): a stance that
+    // costs posture if no hit comes.
+    Deflect
 }

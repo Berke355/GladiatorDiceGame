@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: BaitFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Bait
-  description: 'Attack: Deal damage equal to my value. If the enemy intends to attack,
-    also gain Riposte equal to my value.'
+  description: 'Deflect. Attack: Deal damage equal to my value.'
   rarity: 0
   tags: 0c00000000000000
   emblem: {fileID: 21300000, guid: 1f408f656c868dd48bce7eb72c6bfd4d, type: 3}
@@ -23,7 +22,6 @@ MonoBehaviour:
   effects:
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-  - actionType: 0
-    effectLogic: {fileID: 11400000, guid: abc975d86fda03c4c809efc42930a444, type: 2}
-  keywords: 
+  keywords: 02000000
   hasNoValue: 0
+  isBlank: 0

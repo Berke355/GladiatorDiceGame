@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: OldScars
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentSO
   equipmentName: Old Scars
-  description: 'When a hit makes you lose HP: gain 1 Riposte (up to 3 times each
-    round).'
+  description: 'When your Deflect stops a hit: gain 2 block.'
   rarity: 0
   icon: {fileID: 21300000, guid: 3f94cd7df26498841acc40501af66c70, type: 3}
   tags: 0c000000
   triggers:
-  - trigger: 5
+  - trigger: 11
     requireFaceTag: 0
     faceTag: 0
     requireAction: 0
@@ -31,12 +30,15 @@ MonoBehaviour:
     requireBelowHalfHP: 0
     onTurn: 0
     effects:
-    - {fileID: 11400000, guid: ef0d4cf8dc6f02048a8c9e8e0ce72382, type: 2}
-    value: 1
-    maxPerRound: 3
+    - {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
+    value: 2
+    maxPerRound: 0
     maxPerBattle: 0
   goldPerVictory: 0
   extraConsumableUses: 0
   enchantedFaceBonus: 0
   freeMarketRerolls: 0
   rerollsPerBenchedFace: 0
+  beastMaxHP: 0
+  extraPosture: 0
+  beastLastStand: 0

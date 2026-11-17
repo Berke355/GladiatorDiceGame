@@ -13,6 +13,8 @@ public class BattleEnemy
 
     // How the enemy looks in battle (from its EnemySO or BossSO); null keeps the scene's placeholder.
     public UnityEngine.Sprite sprite;
+    // Stunned through this enemy turn (a broken posture): it neither acted nor ends its turn's plans (countdowns).
+    public bool stunnedThisTurn;
     public float spriteHeight = 1f;
     // The world width BattleManager gives the enemy in the row (its sprite or its plate, whichever is wider, after a
     // crowded row shrinks); its card is as wide.

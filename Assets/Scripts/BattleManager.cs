@@ -391,6 +391,8 @@ public class BattleManager : MonoBehaviour
         if(UIManager.Instance != null){
             UIManager.Instance.ShowEquipment(RunManager.Instance.run.equipment);
             UIManager.Instance.flow = flow;
+            // Posture shows only for a die that plays Deflect (GDD "Deflect").
+            CombatantPanelUI.ShowPosture = flow.PostureInPlay;
             RunData battleRun = RunManager.Instance.run;
             UIManager.Instance.ShowBattleInfo(RunManager.Instance.BattleTitle(IsBossBattle), battleRun.gold, IsBossBattle, encounterName);
             UIManager.Instance.ShowEnemies(flow.enemies, OnEnemyClicked);

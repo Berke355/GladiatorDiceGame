@@ -23,13 +23,13 @@ public enum StatusType {
     Entangled,
     // Permanent for the battle: added to every Rage, Fortify and FireShield the owner gains on itself (Ritual's mirror).
     Encourage,
-    // Provocator (see GDD "Provocator"): every attacker that hits the owner takes the stacks as damage. Cleared at the
-    // start of the owner's turn.
-    Riposte,
-    // Like Riposte, but it waits: it isn't cleared at turn start, only spent by the first hit the owner takes.
-    Vigil,
-    // Until the owner's next turn, a hit Block and Fortify absorb completely is dealt back to the attacker in full.
-    Reversal,
+    // Deflect (see GDD "Deflect"): a pool that hits with an attacker spend first, until it runs out; what it stops
+    // fills the attacker's posture. Cleared at the start of the owner's turn; if no hit came, the owner loses posture.
+    Deflect,
+    // Retired (Vigil, before the Deflect rework): kept so the numbers after it stay the same.
+    RetiredVigil,
+    // Perfect Counter: until the owner's next turn, a hit Deflect stops completely breaks the attacker's posture at once.
+    PerfectGuard,
     // Beastmaster (see GDD "Beastmaster"): the owner's beast. At the end of the owner's turn it hits the target once
     // for the stacks. Permanent for the battle; 0 means no beast.
     Hound,
@@ -59,7 +59,55 @@ public class Entity : MonoBehaviour
         return (damage + 1) / 2;
     }
     // A Riposte that met a hit this round (no Off-Balance at the owner's turn start).
-    private bool riposteUsed;
+    private bool deflectUsed;
+
+    // Posture (GDD "Deflect"): enemies fill theirs with the damage the player's Deflect stops; the player fills theirs
+    // with timing mistakes (a Deflect no hit came into), one pip each. Full: it breaks (PostureBroken), which stuns.
+    // MaxPosture 0: no posture. The battle sets both up.
+    public int Posture { get; private set; }
+    public int MaxPosture;
+    // A whiffed Deflect costs this entity a pip of posture (the player).
+    public bool whiffCostsPosture;
+    // Turns its owner skips (a broken posture); the posture is whole again when the last one is spent.
+    public int StunTurns { get; private set; }
+    public event Action PostureBroken;
+    // A hit with an attacker that Deflect reduced, and by how much (Old Scars).
+    public event Action<Entity, int> Deflected;
+    // Any status gained on this entity (Wolf's Arm watches Deflect).
+    public event Action<StatusType, int> StatusGained;
+
+    public void AddPosture(int amount){
+        if(MaxPosture <= 0 || amount <= 0 || StunTurns > 0 || IsDead) return;
+        Posture = Math.Min(MaxPosture, Posture + amount);
+        OnHealthChanged?.Invoke();
+        if(Posture >= MaxPosture) PostureBroken?.Invoke();
+    }
+
+    public void RecoverPosture(int amount){
+        if(amount <= 0 || Posture <= 0) return;
+        Posture = Math.Max(0, Posture - amount);
+        OnHealthChanged?.Invoke();
+    }
+
+    public void ResetPosture(){
+        Posture = 0;
+        StunTurns = 0;
+        deflectUsed = false;
+    }
+
+    public void Stun(int turns){
+        StunTurns = Math.Max(StunTurns, turns);
+        OnHealthChanged?.Invoke();
+    }
+
+    // Spends one stunned turn; returns true if the owner skips this one. The last one makes the posture whole again.
+    public bool SpendStunTurn(){
+        if(StunTurns <= 0) return false;
+        StunTurns--;
+        if(StunTurns == 0) Posture = 0;
+        OnHealthChanged?.Invoke();
+        return true;
+    }
     // The owner's beast in the current battle (Beastmaster), set by BattleFlow; null for enemies.
     [NonSerialized] public BeastCompanion beast;
     // Raised on the attacker for each hit it deals (target, damage before Block), e.g. for equipment triggers.
@@ -107,6 +155,7 @@ public class Entity : MonoBehaviour
         }
 
         OnHealthChanged?.Invoke();
+        if(amount > 0) StatusGained?.Invoke(type, amount);
     }
 
     // Takes stacks away without counting as an application (a cleanse): Burn removed this way still decays on time.
@@ -140,12 +189,13 @@ public class Entity : MonoBehaviour
             damageAmount += VulnerableExtra(damageAmount);
         }
         int remaining = damageAmount;
-        // Deflect (GDD "Provocator"): Riposte takes the hit first (only with an attacker), and what it stopped goes back.
+        // Deflect (GDD "Deflect"): the pool takes hits with an attacker first, until it runs out.
         int deflected = 0;
-        if(source != null && GetStatus(StatusType.Riposte) > 0){
-            deflected = Math.Min(GetStatus(StatusType.Riposte), remaining);
+        if(source != null && remaining > 0 && GetStatus(StatusType.Deflect) > 0){
+            deflected = Math.Min(GetStatus(StatusType.Deflect), remaining);
             remaining -= deflected;
-            riposteUsed = true;
+            activeStatuses[StatusType.Deflect] -= deflected;
+            deflectUsed = true;
         }
 
         int blocked = Math.Min(currentBlock, remaining);
@@ -174,17 +224,13 @@ public class Entity : MonoBehaviour
             source.ApplyStatus(StatusType.Burn, GetStatus(StatusType.FireShield));
         }
 
-        // Provocator: the attacker takes Riposte (every hit), Vigil (the first hit, then it's spent) and, with Reversal,
-        // a hit absorbed completely. It lands without a source, so nothing answers it back (no chains), but the
-        // attacker's Vulnerable still counts.
-        if (source != null) {
-            int back = deflected + GetStatus(StatusType.Vigil);
-            if (GetStatus(StatusType.Reversal) > 0 && remaining == 0 && damageAmount > 0) back += damageAmount;
-            if (GetStatus(StatusType.Vigil) > 0) activeStatuses[StatusType.Vigil] = 0;
-            if (back > 0 && !source.IsDead) {
-                source.TakeDamage(back);
-                Retaliated?.Invoke(back);
-            }
+        // What Deflect stopped fills the attacker's posture; with Perfect Guard, a hit stopped completely by Deflect
+        // breaks it at once.
+        if (source != null && deflected > 0) {
+            bool perfect = GetStatus(StatusType.PerfectGuard) > 0 && deflected == damageAmount;
+            source.AddPosture(perfect ? source.MaxPosture : deflected);
+            Retaliated?.Invoke(deflected);
+            Deflected?.Invoke(source, deflected);
         }
 
         OnHealthChanged?.Invoke();
@@ -260,11 +306,11 @@ public class Entity : MonoBehaviour
     public void OnTurnStart() {
         ResetBlock();
         ConsumeStatus(StatusType.FireShield);
-        // Off-Balance: a Riposte no hit came into opens its owner up (Sekiro).
-        if(GetStatus(StatusType.Riposte) > 0 && !riposteUsed) ApplyStatus(StatusType.Vulnerable, 1);
-        riposteUsed = false;
-        ConsumeStatus(StatusType.Riposte);
-        ConsumeStatus(StatusType.Reversal);
+        // A Deflect no hit came into is a timing mistake: it costs a pip of posture (GDD "Deflect").
+        if(whiffCostsPosture && GetStatus(StatusType.Deflect) > 0 && !deflectUsed) AddPosture(1);
+        deflectUsed = false;
+        ConsumeStatus(StatusType.Deflect);
+        ConsumeStatus(StatusType.PerfectGuard);
     }
 
     // What OnTurnEnd will take from HP, for the HP bar's preview (kept next to the rules it mirrors): Poison's stacks,

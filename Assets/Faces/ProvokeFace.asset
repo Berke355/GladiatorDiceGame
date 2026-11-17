@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: ProvokeFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Provoke
-  description: 'Attack: Deal damage equal to my value. Magic: If the enemy doesn''t
-    intend to attack, it switches to its weakest attack and gains 1 Rage. Gain Riposte
-    equal to my value.'
+  description: 'Deflect. Attack: Deal damage equal to my value. Magic: If the enemy
+    doesn''t intend to attack, it switches to its weakest attack and gains 1 Rage.'
   rarity: 2
   tags: 0c000000
   emblem: {fileID: 21300000, guid: 86259d8b8c9f86a42b658316b6dbd2bc, type: 3}
@@ -24,9 +23,8 @@ MonoBehaviour:
   effects:
   - actionType: 2
     effectLogic: {fileID: 11400000, guid: fd3acbbc1b79bbc42aa8977bd4681c25, type: 2}
-  - actionType: 2
-    effectLogic: {fileID: 11400000, guid: ef0d4cf8dc6f02048a8c9e8e0ce72382, type: 2}
   - actionType: 0
     effectLogic: {fileID: 11400000, guid: 723e26d92eddf8c4a9667def2e9b5f1a, type: 2}
-  keywords: 
+  keywords: 02000000
   hasNoValue: 0
+  isBlank: 0

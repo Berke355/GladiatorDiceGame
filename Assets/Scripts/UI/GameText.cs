@@ -21,14 +21,15 @@ public static class GameText
         new Keyword{ word = "Poison", color = "#8BD45E", definition = "At the end of its owner's turn: lose HP equal to the stacks, then the stacks halve (rounded down). Ignores Block and Fortify." },
         new Keyword{ word = "Rage", color = "#FF5A5A", definition = "Every hit deals +1 damage per stack (each hit of a multi-hit). Lasts the whole battle." },
         new Keyword{ word = "Ritual", color = "#B388FF", definition = "Each time you apply Burn, Poison or Bleed, apply 1 more for each Ritual you have. Lasts the whole battle." },
-        new Keyword{ word = "Encourage", color = "#FFD27F", definition = "Every Rage, Fortify, FireShield, Riposte and Vigil you gain gets +1 per stack (not Block). Lasts the whole battle." },
+        new Keyword{ word = "Encourage", color = "#FFD27F", definition = "Every Rage, Fortify, FireShield and Deflect you gain gets +1 per stack (not Block). Lasts the whole battle." },
         new Keyword{ word = "Bleed", color = "#E0435A", definition = "At the end of its owner's turn: lose 1 HP, then lose 1 stack. Stacks are how many turns it lasts. Ignores Block and Fortify." },
         new Keyword{ word = "Vulnerable", color = "#E5A35C", definition = "Every hit its owner takes is half again as big (rounded up). Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Weak", color = "#9AA5B1", definition = "Every hit its owner deals deals 1 less damage. Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Entangled", color = "#7FA88B", definition = "Its owner can't reroll. Loses 1 stack at the end of its owner's turn." },
-        new Keyword{ word = "Riposte", color = "#D9668F", definition = "Deflect: each hit its owner takes is reduced by its stacks, and the attacker takes what was stopped. Lasts until its owner's next turn; if no hit came, its owner is left Off-Balance (1 Vulnerable)." },
-        new Keyword{ word = "Vigil", color = "#D9668F", definition = "The first attacker that hits its owner takes damage equal to its stacks, then it is spent. Waits until then." },
-        new Keyword{ word = "Reversal", color = "#D9668F", definition = "Until its owner's next turn, a hit that Block and Fortify absorb completely is dealt back to the attacker in full." },
+        new Keyword{ word = "Deflect", color = "#D9668F", definition = "A guard that takes hits first: each hit an enemy lands on you is reduced by the stacks until they run out, and what it stops fills the attacker's posture. Gone at the start of your next turn; if no hit came into it, you lose 1 posture." },
+        new Keyword{ word = "posture", color = "#E8B44A", definition = "An enemy's posture fills with what your Deflect stops; full, it breaks: the enemy takes half its posture as damage and is stunned (2 turns, elites and bosses 1). Your posture is 3 pips, one lost for each Deflect no hit came into; when the last goes, you are stunned for a turn." },
+        new Keyword{ word = "stunned", color = "#E8B44A", definition = "Skips its turns. Its posture is whole again when the stun ends." },
+        new Keyword{ word = "Perfect Guard", color = "#D9668F", definition = "Until your next turn, a hit your Deflect stops completely breaks the attacker's posture at once." },
         new Keyword{ word = "Hound", color = "#C9A46A", definition = "Your beast's strength. At the end of your turn (unless you only defended) it bites your target once for its stacks: a hit, so Rage adds to it and Block stops it. The beast has 4 HP and loses 1 each time a hit costs you HP; when it dies, Hound is lost." },
         new Keyword{ word = "Exposed", color = "#C98B6B", definition = "Its owner gains no Block (Fortify still works). Loses 1 stack at the end of its owner's turn." },
         new Keyword{ word = "Blank", color = "#C9B796", definition = "A die place whose face is on the bench: it has no actions, so landing on it means a reroll or a pass." },
@@ -53,7 +54,12 @@ public static class GameText
         "Magic", "Petrified", "Target", "Riposte", "Vigil", "Reversal", "Hound", "Exposed", "Undying", "Plating", "Armor"
     };
     // Statuses that show as an icon when they stand alone ("consume Bleed").
-    private const string StatusWords = "Fortify|Burn|Poison|Bleed|Rage|Ritual|Encourage|FireShield|Vulnerable|Weak|Entangled|Riposte|Vigil|Reversal|Hound|Exposed|Undying|Plating|Armor";
+    private const string StatusWords = "Fortify|Burn|Poison|Bleed|Rage|Ritual|Encourage|FireShield|Vulnerable|Weak|Entangled|Deflect|Perfect Guard|Hound|Exposed|Undying|Plating|Armor";
+
+    // A status's name on screen (chips, tooltips): its enum name, spaced where it reads better.
+    public static string StatusName(StatusType status){
+        return status == StatusType.PerfectGuard ? "Perfect Guard" : status.ToString();
+    }
 
     // The inline icon for a status, a keyword or an icon name; the word itself if there is no icon.
     public static string Icon(string name){
@@ -67,6 +73,9 @@ public static class GameText
         else if(string.Equals(name, "heal", System.StringComparison.OrdinalIgnoreCase)) name = "Heal";
         else if(name.StartsWith("reroll", System.StringComparison.OrdinalIgnoreCase)) name = "Reroll";
         else if(name == "HP") name = "Health";
+        // Deflect and Perfect Guard use the pictures of the statuses they replaced.
+        else if(name == "Deflect") name = "Riposte";
+        else if(name == "Perfect Guard" || name == "PerfectGuard") name = "Reversal";
         return System.Array.IndexOf(IconNames, name);
     }
 

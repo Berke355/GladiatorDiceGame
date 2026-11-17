@@ -22,7 +22,11 @@ public enum TriggerType
     // The player spent a reroll, after the die landed again.
     Rerolled,
     // The player's beast bit (Beastmaster); the bitten enemy is the target.
-    BeastBit
+    BeastBit,
+    // The player gained Deflect (Wolf's Arm).
+    DeflectGained,
+    // The player's Deflect reduced a hit; the target is the attacker (Old Scars).
+    HitDeflected
 }
 
 // One reaction of an item: when the trigger fires (and its condition holds), its effects run with the value.
@@ -82,6 +86,8 @@ public class EquipmentSO : ScriptableObject
     // The beast (GDD "Beastmaster"): extra max HP for every beast summoned (Studded Harness), and surviving one killing
     // blow per battle at 1 HP (Loyal to the End). Read by BattleFlow.
     public int beastMaxHP;
+    // Extra pips of posture for the player (Spiked Pauldron, GDD "Deflect"); read by BattleFlow.
+    public int extraPosture;
     public bool beastLastStand;
 
     public static int TotalGoldPerVictory(List<EquipmentSO> equipment){

@@ -209,6 +209,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae36d159cab3a1b4ebde35ab1357c183, type: 2}
   - {fileID: 11400000, guid: 81033f0f23b7e594bb42687fc6f2832f, type: 2}
   - {fileID: 11400000, guid: a970a4afd1b86ec48bf58c66810ab917, type: 2}
+  - {fileID: 11400000, guid: c97df3e3cdfd2e346b205e6932c3b719, type: 2}
   bossRewardChoices: 3
   eliteGoldBonus: 20
   eliteRewardChoices: 3

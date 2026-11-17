@@ -4140,3 +4140,19 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **Map polish after the user's try:** top and bottom bars like the Market's (title, HP and gold above; the hint and the tools below); the parchment stored at six times its grid with smooth filtering (stretched 5.6 times with point filtering its pixels came out uneven); Gemini pictures for every node (crossed swords, a horned helmet, a market stall, an altar with a rune book, a campfire, a sealed scroll) and the tools (a quill, an eraser, a sponge) in `Assets/Art/Map`, cut by the distance to the sheet's key color so purples near magenta survive. A node is its picture now, with its type's color as a soft glow behind it; places passed fade to ink.
 - **Map, second pass after the user's try:** no discs or rings behind the node pictures (they clashed with the parchment); the open nodes breathe, the node the player stands on is circled in red ink (`MapUI.inkCircle`, a Gemini brush stroke); roads are dashed ink (a tiled 8-pixel dash made in code); a Cancel button shows while a drawing tool is in hand; the parchment is a new, finer Gemini picture used at full size (2752 x 1536, smooth filtering); each act boss has a framed portrait on the map (`BossSO.portrait`: the Minotaur, Medusa, the Hydra in bronze laurel frames).
 
+## Day 129 - Deflect and Posture
+
+### Accomplished
+- **The Provocator rebuilt as Sekiro's deflect** (the user's design, GDD "Deflect"): Riposte is now **Deflect**, a pool that takes hits until it runs out and fills the attacker's **posture** instead of hitting back; the **Deflect keyword** gives Deflect on any action of its face; a whiff costs one of the player's 3 posture pips and a broken player loses a turn; a broken enemy takes half its posture and is stunned (2 turns, elites and bosses 1). Vigil and Reversal are gone; Perfect Guard (Perfect Counter) breaks posture on a complete stop.
+- **Content:** Parry, Bait, Provoke and Perfect Counter carry the keyword and lost their block fallbacks or Riposte gains; Grudge reads posture; Vigil became **Deathblow**; Old Scars, Spiked Pauldron, Mirror Stance and War Paint reworked; **Wolf's Arm** (Epic item) added.
+- **UI:** posture bars fill from the middle under enemies' HP bars, the player's pips sit under theirs, a stunned enemy shows STUNNED over its head and under its bar, and a stunned player sees a STUNNED banner. All hidden when the die has no Deflect face.
+- **Tested** (entities directly): the pool spends across hits (Deflect 5: a 3 and a 4 let 2 through, posture 5), a used Deflect costs nothing, three whiffs break the player and the stun gives the pips back, a 10 into Deflect 10 breaks an enemy, Perfect Guard breaks on a complete stop and not on a partial one. In Play Mode the pips, the bar and the stun show.
+- **Map, 200 runs:** Riposte 5%, Riposte + Shield 5% (11% before; the bots only know to reroll a Deflect face on a quiet turn and to pass on their last pip), Bleed 10%, Opportunist 4%.
+
+### Decisions
+- Postures don't recover on their own yet; the user decides after balance tests.
+
+### Next Steps
+- Pictures: Wolf's Arm and Deathblow (prompts given in chat).
+- Balance the Deflect build after the user plays it (posture share, pips, recovery).
+

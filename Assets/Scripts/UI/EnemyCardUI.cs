@@ -47,6 +47,11 @@ public class EnemyCardUI : MonoBehaviour
         string intent = dead ? "" : Enemy.brain.DescribeCurrentIntent();
         // Over the head: the intent in the card language, plus a waiting trait; the full text is in the tooltip.
         string summary = GameText.IntentSummary(intent);
+        // A stunned enemy (a broken posture) won't act on its next turn: that is all its head says.
+        if(!dead && Enemy.entity.StunTurns > 0){
+            summary = "<color=#E8B44A><b>STUNNED</b></color>";
+            intent = "Stunned: skips its next " + (Enemy.entity.StunTurns == 1 ? "turn" : Enemy.entity.StunTurns + " turns") + ".";
+        }
         if(!dead && Enemy.traits != null && Enemy.traits.HasPending) summary += "\n" + GameText.Iconize(Enemy.traits.PendingDescription) + " next turn";
         // A boss countdown (the Minotaur's Stampede) is the fight's big threat: always over its head, red on its last turn.
         BossBrain boss = Enemy.brain as BossBrain;

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: PerfectCounterFace
   m_EditorClassIdentifier: Assembly-CSharp::DieFaceSO
   faceName: Perfect Counter
-  description: 'Defense: Gain block equal to my value, 2 Riposte and Reversal: until
-    your next turn, a hit you absorb completely is dealt back in full.'
+  description: 'Deflect. Defense: Gain block equal to my value and Perfect Guard:
+    until your next turn, a hit your Deflect stops completely breaks the attacker''s
+    posture.'
   rarity: 2
   tags: 0c00000001000000
   emblem: {fileID: 21300000, guid: 2cccea98118241643a85a2cd5dc0eddb, type: 3}
@@ -24,8 +25,7 @@ MonoBehaviour:
   - actionType: 1
     effectLogic: {fileID: 11400000, guid: 1e7c36e3620068147b8af48a28cd1634, type: 2}
   - actionType: 1
-    effectLogic: {fileID: 11400000, guid: 825a8c8567e273749b20f50492d9b972, type: 2}
-  - actionType: 1
     effectLogic: {fileID: 11400000, guid: 4a040b37850e33f4fb59e97f2bb2bb53, type: 2}
-  keywords: 
+  keywords: 02000000
   hasNoValue: 0
+  isBlank: 0
