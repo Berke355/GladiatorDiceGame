@@ -28,6 +28,13 @@ public class DieFaceSO : ScriptableObject
     // upgraded or enchanted; landing on it means a reroll or a pass.
     public bool isBlank;
 
+    // Upgrade cap (GDD "Upgrade Caps"): the highest value a copy can reach by upgrades, rests and die enchantments.
+    // 0: baseValue + DefaultUpgradeRoom. Measured per face (RunSimulator.MeasureValueCurve): one below the value at
+    // which the face alone carries the starting die through act 3's strong fights. Not shown; the player finds it.
+    public int maxValue;
+    public const int DefaultUpgradeRoom = 6;
+    public int MaxValue => maxValue > 0 ? maxValue : baseValue + DefaultUpgradeRoom;
+
     public bool HasKeyword(FaceKeyword keyword) => keywords != null && keywords.Contains(keyword);
     public bool Charges => HasKeyword(FaceKeyword.Charge);
     public bool IsConsumable => HasKeyword(FaceKeyword.Consumable);

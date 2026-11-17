@@ -390,7 +390,7 @@ public class MarketUI : MonoBehaviour
 
             DieFace dieFace = run.dieFaces[i];
             string moving = i == pendingSwap ? "<color=#E2B23C>Moving: </color>" : "";
-            int bonus = (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i, run.dieFaces) - dieFace.value;
+            int bonus = DieEnchantmentSO.CapGain(dieFace, (dieFace.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, i)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, i, run.dieFaces) - dieFace.value);
             string bonusText = bonus > 0 ? " <color=#E2B23C>+" + bonus + "</color>" : bonus < 0 ? " <color=#C0392B>" + bonus + "</color>" : "";
             int weight = DieEnchantmentSO.WeightAt(run.dieEnchantments, i);
             // A die enchantment's effect on this place stands out in purple, the enchantments' color (the user's request).
@@ -415,7 +415,7 @@ public class MarketUI : MonoBehaviour
             bool upgradable = market.IsUpgradableHere(i) && !HasSelectedPanel;
             slot.upgradeButton.gameObject.SetActive(upgradable);
             if(upgradable){
-                slot.upgradeButtonText.text = slot.tile != null ? "+1\n" + GameText.Icon("Gold") + market.GetUpgradeCost(i) : "Upgrade\n" + market.GetUpgradeCost(i) + "g";
+                slot.upgradeButtonText.text = run.dieFaces[i].AtMaxValue ? "MAX" : slot.tile != null ? "+1\n" + GameText.Icon("Gold") + market.GetUpgradeCost(i) : "Upgrade\n" + market.GetUpgradeCost(i) + "g";
                 slot.upgradeButton.interactable = !Choosing && market.CanUpgrade(i);
             }
         }
@@ -499,7 +499,7 @@ public class MarketUI : MonoBehaviour
             return;
         }
         DieFace face = run.dieFaces[selectedSlot];
-        int bonus = (face.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, selectedSlot)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, selectedSlot, run.dieFaces) - face.value;
+        int bonus = DieEnchantmentSO.CapGain(face, (face.value + DieEnchantmentSO.BonusAt(run.dieEnchantments, run.dieFaces, selectedSlot)) * DieEnchantmentSO.MultiplierAt(run.dieEnchantments, selectedSlot, run.dieFaces) - face.value);
         selectedTile.Set(face, face.value, bonus > 0 ? "<color=#FFC857>+" + bonus + "</color>" : bonus < 0 ? "<color=#FF7A6B>" + bonus + "</color>" : "");
         selectedHeader.text = "<font=\"Cinzel SDF\"><b>" + face.DisplayName + "</b></font>\n"
             + OfferCardUI.RarityName(face.definition.rarity) + "  <color=#C9B796>· " + DieLayout.Name(selectedSlot) + "</color>\n"
@@ -508,6 +508,7 @@ public class MarketUI : MonoBehaviour
         bool upgradable = market.IsUpgradableHere(selectedSlot);
         selectedUpgradeButton.interactable = upgradable && !Choosing && market.CanUpgrade(selectedSlot);
         selectedUpgradeText.text = face.IsBlank ? "<size=80%>Blank: buy or swap a face in</size>"
+            : face.AtMaxValue ? "<size=80%>This face has reached its maximum value</size>"
             : upgradable ? "Upgrade " + face.value + " → " + (face.value + 1) + "  " + GameText.Icon("Gold") + market.GetUpgradeCost(selectedSlot)
             : "<size=80%>Upgraded at the Grand Market</size>";
         selectedMoveButton.interactable = !ChoosingDieSlot && pendingDieEnchantment < 0;

@@ -322,8 +322,13 @@ public class MapUI : MonoBehaviour
             TextMeshProUGUI caption = captionObject != null ? captionObject.GetComponent<TextMeshProUGUI>() : null;
             if(caption != null) caption.text = face.IsBlank ? "Blank" : face.DisplayName + "\n" + face.value + " → " + (face.value + 1);
             TooltipTrigger tooltip = button.GetComponent<TooltipTrigger>();
-            if(tooltip != null) tooltip.text = face.IsBlank ? "A blank face can't be upgraded." : GameText.FaceRules(face.FullDescription);
+            if(tooltip != null) tooltip.text = face.IsBlank ? "A blank face can't be upgraded."
+                : face.AtMaxValue ? "This face has reached its maximum value." : GameText.FaceRules(face.FullDescription);
             button.interactable = RunManager.Instance.CanRestUpgrade(i);
+            // A face that can't be upgraded fades.
+            CanvasGroup fade = button.GetComponent<CanvasGroup>();
+            if(fade == null) fade = button.gameObject.AddComponent<CanvasGroup>();
+            fade.alpha = button.interactable ? 1f : 0.35f;
             int slot = i;
             button.onClick.AddListener(() => OnRestUpgrade(slot));
         }

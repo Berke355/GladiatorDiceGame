@@ -21,10 +21,10 @@ public class DieCharge
         battleBonus[face] = current + amount;
     }
 
+    // What the face's battle value adds to its own value (Charge aside): Drill Sergeant's bonus and the die's
+    // enchantments, after the upgrade cap.
     public int Bonus(DieFace face){
-        int bonus;
-        battleBonus.TryGetValue(face, out bonus);
-        return bonus + (placementBonus != null ? placementBonus(face) : 0);
+        return ValueOf(face) - face.value - Get(face);
     }
 
     public int Get(DieFace face){
@@ -45,9 +45,15 @@ public class DieCharge
 
     // The value a face has in this battle, which is what its effects use (Value Is the Effect): its value, its Charge
     // and its place on the die. Never below 0.
+    // The die's enchantments never lift a face past its upgrade cap (GDD "Upgrade Caps"); their penalties still count.
     public int ValueOf(DieFace face){
+        int bonus;
+        battleBonus.TryGetValue(face, out bonus);
+        int own = face.value + Get(face) + bonus;
         int multiplier = placementMultiplier != null ? placementMultiplier(face) : 1;
-        return Mathf.Max(0, (face.value + Get(face) + Bonus(face)) * multiplier);
+        int placement = placementBonus != null ? placementBonus(face) : 0;
+        int gain = DieEnchantmentSO.CapGain(face, (own + placement) * multiplier - own);
+        return Mathf.Max(0, own + gain);
     }
 
     // The face with the highest battle value other than exclude (the first one on ties); null if there is none.

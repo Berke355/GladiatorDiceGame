@@ -162,7 +162,7 @@ Every build should care where its faces sit, not only Fortune (play-test). Die e
 - **The minus side is the real decision:** faces that don't depend on their value go there (Turnabout used for its Flip, Lucky Buckler for its reroll, a drunk potion).
 - **Value Is the Effect holds:** like Charge, it is part of a face's battle value. The die shows "Sword 2 +2", and effects and previews use 4. A battle value never goes below 0. Upgrade prices use the face's own value.
 - **Medusa's gaze takes the highest battle value,** so the face on the bonus spot is her target.
-- **Never on an Epic's value:** a die enchantment's bonus (and Twin Soul's doubling) doesn't raise an Epic face; its penalties still count. A +2 for 10 gold skipped the Grand Market, the only place Epics grow (the user's play-test). Rests upgrade only Common and Rare faces for the same reason.
+- **Never past a face's upgrade cap** (GDD "Upgrade Caps"): a bonus or Twin Soul's doubling lifts a face only up to its cap (an Epic with room for 1 on a +2 place gets 1); penalties still count. This replaced "no bonus on Epics" (the user, DevLog Day 130).
 - **Rolled enchantments** give a status once per turn when the face at their place lands: War Paint, Kennel, Fisher's Corner, Doghouse, and Bulwark (Top: 2 Fortify), Blood Altar (Middle: 2 Bleed), Brazier (Left or Right: 2 Burn), Venom Gland (Bottom: 3 Poison), War Drum (Rightmost: 1 Rage), so every build has one.
 - **At most 2 at a time;** a new one replaces one of them. They can't be removed otherwise. Few means each one is a heavy decision.
 - **Prices:** the same as other offers (Common 10, Rare 25, Epic 45). The table offers 2 per Market, under the same rules as faces (Grand Market: Epic only), and they can be locked.
@@ -304,6 +304,14 @@ Every battle gives the player a small pool of **rerolls** (3), refilled at the s
 - **Simulation (DevLog Day 58, 6 focused bots, 800 runs):** the old potion (heal 3 every time) cleared Burn 15%, Poison 19%, Shield 17%, Rage 8%, Bleed 6%, Hammer 4%. Consumable 4 with Change: 19%, 25%, 16%, 10%, 8%, 4%. Consumable 3 with Change: 16%, 16%, 19%, 6%, 7%, 3%, about the same as the old potion. So Change's die thinning costs little; the extra point of healing is most of the gain. The value stays 4 (one strong drink), and the difficulty and gold pass will balance the total.
 
 ## Rarity & Economy
+
+### Upgrade Caps
+
+Every face has a highest value (`DieFaceSO.MaxValue`) that upgrades, rests and die enchantments can't pass (the user's play-test: an over-upgraded Shield on Weighted Die made every fight start with 7 Fortify and never end). It is **not shown**: the upgrade button says "This face has reached its maximum value" (a small slot says MAX) and a rest fades a capped face, so the player learns it by playing.
+
+- **Measured, not guessed** (`RunSimulator.MeasureValueCurve`): the face on Rightmost with Weighted Die, on the starting die, against act 3's strong fights, value by value. The cap is one below the value at which that face alone carries the die (85% wins), at least base + 2 and at most base + 6; a face that never carries it gets base + 6.
+- **Lower caps (13 faces):** Fury 4, Siege Breaker 4, Haul In 4, Alpha 4, Witch's Curse 5, Bloodhound 5, Sic 'Em 5, Toxic Blade 6, Miasma 6, Whistle 6, Bloodrage 7, Unleash 7, Dark Communion 7. Everything else: base + 6 (Sword and Shield 8).
+- Rests may now upgrade Epic faces too (only the cap limits them); the Normal Market still upgrades only Common and Rare.
 
 - **Upgraded finds:** about 20% of a Normal Market's face offers come already upgraded (+1, a quarter of them +2), priced at the face's price plus half of what those upgrades cost (the user's idea). The Grand Market's Epics come plain.
 

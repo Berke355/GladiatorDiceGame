@@ -563,7 +563,7 @@ public class Market
     }
 
     public bool CanUpgrade(int dieSlot){
-        return IsUpgradableHere(dieSlot) && run.gold >= GetUpgradeCost(dieSlot);
+        return IsUpgradableHere(dieSlot) && !run.dieFaces[dieSlot].AtMaxValue && run.gold >= GetUpgradeCost(dieSlot);
     }
 
     // Swaps two faces' places on the net (see GDD "Die Layout"). Free and unlimited: the arrangement is a puzzle, not a

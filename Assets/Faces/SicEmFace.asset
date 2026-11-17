@@ -26,3 +26,5 @@ MonoBehaviour:
     effectLogic: {fileID: 11400000, guid: a1a06235252714c40a683b34ba264ef7, type: 2}
   keywords: 
   hasNoValue: 0
+  isBlank: 0
+  maxValue: 5

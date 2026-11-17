@@ -12,6 +12,9 @@ public class DieFace
     // Inscribed at the Enchanting Table into this copy's empty Magic action (see GDD "Enchanting Table"); null if none.
     public EnchantmentSO enchantment;
 
+    // At its upgrade cap: no more upgrades, and die enchantments add nothing past it.
+    public bool AtMaxValue => definition != null && value >= definition.MaxValue;
+
     public DieFace(DieFaceSO definition){
         this.definition = definition;
         value = definition.baseValue;

@@ -207,9 +207,9 @@ public class RunManager : MonoBehaviour
         return dieSlot >= 0 && dieSlot < run.dieFaces.Count && CanRestUpgradeFace(run.dieFaces[dieSlot]);
     }
 
-    // A rest works on Common and Rare faces, like the Normal Market: Epics grow only at the Grand Market.
+    // A rest upgrades any face below its upgrade cap (GDD "Upgrade Caps").
     public static bool CanRestUpgradeFace(DieFace face){
-        return face != null && !face.IsBlank && face.definition.rarity != Rarity.Epic;
+        return face != null && !face.IsBlank && !face.AtMaxValue;
     }
 
     public void RestUpgrade(int dieSlot){
