@@ -81,7 +81,8 @@ public class MapUI : MonoBehaviour
             rewardPanel.SetActive(false);
         }
         Draw();
-        MapDrawing.Build(mapArea, restBackButton, () => restPanel.activeSelf || (rewardPanel != null && rewardPanel.activeSelf));
+        // The tools sit in the bottom bar's right end.
+        MapDrawing.Build(mapArea, restBackButton, () => restPanel.activeSelf || (rewardPanel != null && rewardPanel.activeSelf), new Vector2(730f, -668f));
         restPanel.SetActive(false);
         if(run.restPending) ShowRestChoice();
         else if(run.eliteRewardChoices.Count > 0) ShowReward();

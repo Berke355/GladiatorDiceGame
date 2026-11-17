@@ -33,7 +33,8 @@ public class MapDrawing : MonoBehaviour
 
     // Builds the ink layer over the map (right after mapArea, so it covers lines and nodes) and the tool buttons, copied
     // from a button of the scene. blocked: true while a panel (a rest, a reward) covers the map.
-    public static MapDrawing Build(RectTransform mapArea, Button buttonStyle, System.Func<bool> blocked){
+    // toolsAt: where the first tool button goes (canvas units from the center); the others follow to its right.
+    public static MapDrawing Build(RectTransform mapArea, Button buttonStyle, System.Func<bool> blocked, Vector2 toolsAt){
         RectTransform canvas = (RectTransform)mapArea.parent;
         GameObject layer = new GameObject("MapInk", typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
         layer.transform.SetParent(canvas, false);
@@ -45,7 +46,7 @@ public class MapDrawing : MonoBehaviour
         MapDrawing drawing = layer.AddComponent<MapDrawing>();
         drawing.blocked = blocked;
         drawing.Setup(canvas.rect.size);
-        drawing.BuildButtons(canvas, buttonStyle);
+        drawing.BuildButtons(canvas, buttonStyle, toolsAt);
         return drawing;
     }
 
@@ -67,13 +68,15 @@ public class MapDrawing : MonoBehaviour
         surface.raycastTarget = false;
     }
 
-    private void BuildButtons(RectTransform canvas, Button style){
+    private const float ToolStep = 190f;
+
+    private void BuildButtons(RectTransform canvas, Button style, Vector2 at){
         if(style == null) return;
         Image styleImage = style.GetComponent<Image>();
         if(styleImage != null) buttonColor = styleImage.color;
-        pencilButton = MakeButton(canvas, style, "Pencil", new Vector2(-1165f, 110f), () => Pick(Tool.Pencil));
-        eraserButton = MakeButton(canvas, style, "Eraser", new Vector2(-1165f, 20f), () => Pick(Tool.Eraser));
-        MakeButton(canvas, style, "Clear", new Vector2(-1165f, -70f), ClearAll);
+        pencilButton = MakeButton(canvas, style, "Pencil", at, () => Pick(Tool.Pencil));
+        eraserButton = MakeButton(canvas, style, "Eraser", at + new Vector2(ToolStep, 0f), () => Pick(Tool.Eraser));
+        MakeButton(canvas, style, "Clear", at + new Vector2(2f * ToolStep, 0f), ClearAll);
         Pick(Tool.None);
     }
 
