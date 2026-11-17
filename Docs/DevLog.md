@@ -4170,4 +4170,9 @@ The user, who knows every face, still couldn't tell what a face did from its ico
 - **The Mimic rebuilt (the user's design):** no more die (`MimicBrain` removed); an elite with its own intents that copy the player (`MimicEffectSO`): Mirror Strike (plays the player's highest face with its value), Echo (repeats the player's last face and action), Copy Form (gains every status the player has, good or bad; never Deflect or Hound), Measured Blow and Mirror Guard (damage or block equal to the player's highest value). A face it can't use (`EffectSO.WorksForEnemies`) becomes a hit of its value. HP 70 → 45. Checked in battle: each intent describes the real copy, Copy Form copied Rage and Poison, a copied Whistle became a 5-damage hit.
 - **Boss face emblems** (Gemini): Gore, Hide, Stampede, Trample, Coil, Gaze, Serpent Bite, Stone Skin, Corrode, Hiss, Regrow, Thrash (`Assets/Art/Faces/Boss*.png`), so a boss's intent tile shows its face.
 - **The throw (fake 2D physics, the user's pick over a 3D die):** `UIManager.RollAnimation` throws the tile into the dice tray from its right side: it slides with friction, bounces off the tray's walls and spins, tips onto another face (with a hop) every tile width it rolls, then shows the rolled face and settles into its place. Under a second; the tray's rules, the die net's highlight and the action previews stay hidden until it lands, so the result isn't read early. A real 3D die stays possible later (rules untouched: it would only be rigged to land on the face the rules picked).
+- **Playtest build 0.5** (`Builds/Playtest/DiceAndGladius-0.5-playtest.zip`, 54 MB; the 0.4 build and zip deleted): the 0.4 notes' five phases, the new Mimic, boss face emblems and the dice throw. A headless start loaded with no errors.
+
+### Next Steps
+- The user plays 0.5.
+- Later: a real 3D die (the user wants it after the content settles), rigged to land on the face the rules picked.
 
