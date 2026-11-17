@@ -36,4 +36,8 @@ public class ApplyStatusEffectSO : EffectSO
     private int Amount(int value){
         return fixedAmount > 0 ? fixedAmount : value;
     }
+
+    // A beast or a stance on itself does nothing for an enemy (the Mimic copying Whistle or a Deflect face plays its
+    // value as a hit instead).
+    public override bool WorksForEnemies => !(applyToSelf && (statusToApply == StatusType.Hound || statusToApply == StatusType.Deflect || statusToApply == StatusType.PerfectGuard));
 }

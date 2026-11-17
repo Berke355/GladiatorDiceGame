@@ -19,4 +19,7 @@ public class PetrifiedFacesDamageEffectSO : EffectSO
         int stone = context.targetPetrification != null ? context.targetPetrification.CountStone(context.targetDie) : 0;
         return context.value + bonusPerStoneFace * stone;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

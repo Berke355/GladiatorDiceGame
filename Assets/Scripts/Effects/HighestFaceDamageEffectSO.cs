@@ -32,4 +32,7 @@ public class HighestFaceDamageEffectSO : EffectSO
         }
         return best;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

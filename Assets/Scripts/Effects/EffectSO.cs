@@ -10,4 +10,8 @@ public abstract class EffectSO : ScriptableObject
     public virtual string Describe(EffectContext context){
         return "";
     }
+
+    // Whether an enemy can play this effect as a copy of a player's face (the Mimic). False for effects that need the
+    // player's own systems: the die and its steering, rerolls, Charge, the beast, posture, reading an enemy's intent.
+    public virtual bool WorksForEnemies => true;
 }

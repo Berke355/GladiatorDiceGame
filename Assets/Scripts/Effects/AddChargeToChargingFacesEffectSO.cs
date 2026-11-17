@@ -24,4 +24,7 @@ public class AddChargeToChargingFacesEffectSO : EffectSO
         int count = context.die.FindAll(face => face != context.face && face.definition.Charges).Count;
         return context.value + " Charge to " + count + (count == 1 ? " face" : " faces") + ", keep my Charge";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

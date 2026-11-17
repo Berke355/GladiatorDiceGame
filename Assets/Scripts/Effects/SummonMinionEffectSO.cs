@@ -15,4 +15,7 @@ public class SummonMinionEffectSO : EffectSO
         int count = Mathf.Max(1, context.value);
         return "raise " + (count == 1 ? "a skeleton" : count + " skeletons");
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

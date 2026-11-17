@@ -28,4 +28,7 @@ public class IfRerolledEffectSO : EffectSO
     private static bool Rerolled(EffectContext context){
         return context.rerolls != null && context.rerolls.UsedThisTurn > 0;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

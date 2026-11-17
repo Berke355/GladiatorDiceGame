@@ -17,4 +17,7 @@ public class AddValueToLowestFaceEffectSO : EffectSO
     public override string Describe(EffectContext context){
         return "+" + context.value + " value to your lowest face";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

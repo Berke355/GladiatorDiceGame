@@ -14,11 +14,56 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Mimic
   tier: 4
-  maxHP: 70
+  maxHP: 45
   sprite: {fileID: 21300000, guid: 322165a8c0ee7d444bd71403073a7cb6, type: 3}
   spriteHeight: 1
   escalationPerTurn: 0
-  intents: []
+  intents:
+  - intentName: Mirror Strike
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 69a4fd37e83d8ef40afb7d236c92d672, type: 2}
+    value: 4
+    weight: 2
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
+  - intentName: Echo
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: 00bea85a2c713e04e84596432b6854e8, type: 2}
+    value: 4
+    weight: 2
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
+  - intentName: Copy Form
+    intentType: 2
+    effects:
+    - {fileID: 11400000, guid: 1d940fb6d15935b449a4acf69faeb74e, type: 2}
+    value: 0
+    weight: 1
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 3
+  - intentName: Measured Blow
+    intentType: 0
+    effects:
+    - {fileID: 11400000, guid: d091d71baba02a04cb524e5b78d11e2c, type: 2}
+    value: 4
+    weight: 2
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
+  - intentName: Mirror Guard
+    intentType: 1
+    effects:
+    - {fileID: 11400000, guid: 49b34d1cc2e2920409244703db7d0e0c, type: 2}
+    value: 0
+    weight: 1
+    requiresTargetStatus: 0
+    requiresMinionRoom: 0
+    cooldown: 0
   traits:
   - traitName: Mirror Match
     description: 'Fights with a copy of your die: each turn it rolls it and uses
@@ -37,8 +82,8 @@ MonoBehaviour:
   packTacticsTurns: 0
   secondWindIntents: []
   eliteAct: 2
-  eliteMechanic: 'Mirror Match: copies your die at the start of the fight and fights
-    with it, your faces and enchantments against you, every face +1.'
+  eliteMechanic: 'Mirror Match: everything it does copies you: your strongest face,
+    your last move, your statuses, your best value.'
   endsBattleOnDeath: 0
   minion: {fileID: 0}
   startingMinions: 0
@@ -46,4 +91,3 @@ MonoBehaviour:
   guardedByMinions: 0
   startingPlates: 0
   platesPerTurn: 0
-  mirrorsPlayerDie: 1

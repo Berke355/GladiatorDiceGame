@@ -12,4 +12,7 @@ public class RerollEffectSO : EffectSO
     public override string Describe(EffectContext context){
         return "reroll and act again";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

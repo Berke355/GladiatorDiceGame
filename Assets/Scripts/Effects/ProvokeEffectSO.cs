@@ -18,4 +18,7 @@ public class ProvokeEffectSO : EffectSO
         if(context.targetBrain.IntendsAttack) return "(the enemy already attacks)";
         return "the enemy switches to its weakest attack and gains " + rageCost + " Rage";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

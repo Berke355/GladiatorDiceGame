@@ -20,4 +20,7 @@ public class AlphaEffectSO : EffectSO
         context.NotePreviewGain(context.source, StatusType.Hound, hp);
         return "your beast gains " + context.value + " max HP, then gain " + hp + " Hound (its HP)";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

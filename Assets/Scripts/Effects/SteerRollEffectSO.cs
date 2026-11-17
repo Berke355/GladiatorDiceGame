@@ -29,4 +29,7 @@ public class SteerRollEffectSO : EffectSO
             default: return "";
         }
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

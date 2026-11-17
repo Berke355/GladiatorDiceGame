@@ -35,4 +35,7 @@ public class RerollScaledDamageEffectSO : EffectSO
             default: return context.value + perReroll * context.rerolls.UsedThisBattle;
         }
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

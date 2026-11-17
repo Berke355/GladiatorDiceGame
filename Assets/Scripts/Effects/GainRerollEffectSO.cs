@@ -20,4 +20,7 @@ public class GainRerollEffectSO : EffectSO
     private int Amount(EffectContext context){
         return fixedAmount > 0 ? fixedAmount : context.value;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

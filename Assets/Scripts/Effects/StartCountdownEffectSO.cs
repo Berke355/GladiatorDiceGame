@@ -12,4 +12,7 @@ public class StartCountdownEffectSO : EffectSO
     public override string Describe(EffectContext context){
         return "starts a countdown to " + (context.value + context.RageBonus) + " damage";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

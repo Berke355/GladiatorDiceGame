@@ -19,4 +19,7 @@ public class BeastAttackEffectSO : EffectSO
         if(hound <= 0) return "your beast bites " + times + " (no beast yet)";
         return (bites == 1 ? "" : bites + " x ") + context.PreviewHit(hound) + " damage (beast)";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

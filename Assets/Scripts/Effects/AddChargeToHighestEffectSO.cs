@@ -19,4 +19,7 @@ public class AddChargeToHighestEffectSO : EffectSO
         DieFace target = context.charge.HighestOther(context.die, context.face);
         return target != null ? context.value + " Charge to " + target.definition.faceName : "";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

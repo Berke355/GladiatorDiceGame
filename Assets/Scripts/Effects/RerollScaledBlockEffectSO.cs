@@ -18,4 +18,7 @@ public class RerollScaledBlockEffectSO : EffectSO
     private static int Amount(EffectContext context){
         return context.value + (context.rerolls != null ? context.rerolls.Left : 0);
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

@@ -54,6 +54,4 @@ public class EnemySO : ScriptableObject
     // more than the starting count).
     public int startingPlates;
     public int platesPerTurn;
-    // The Mimic: it copies the player's die at the start of the battle and fights with it (MimicBrain).
-    public bool mirrorsPlayerDie;
 }

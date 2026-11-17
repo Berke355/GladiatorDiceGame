@@ -28,4 +28,7 @@ public class PostureDamageEffectSO : EffectSO
         if(mode == Mode.PlusPosture) return context.value + context.target.Posture;
         return context.target.StunTurns > 0 ? context.value * multiplier : context.value;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

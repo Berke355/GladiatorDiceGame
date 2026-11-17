@@ -54,4 +54,7 @@ public class RollConditionEffectSO : EffectSO
                 return opposite < context.die.Count && context.die[opposite].definition.tags.Contains(tag);
         }
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

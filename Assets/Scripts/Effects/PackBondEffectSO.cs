@@ -14,4 +14,7 @@ public class PackBondEffectSO : EffectSO
         int damage = context.PreviewHit(context.value);
         return damage + " damage, heal your beast half of it (" + damage / 2 + ")";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

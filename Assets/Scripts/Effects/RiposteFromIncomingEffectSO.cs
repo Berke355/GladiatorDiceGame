@@ -16,4 +16,7 @@ public class RiposteFromIncomingEffectSO : EffectSO
         context.value = context.incomingDamage;
         return "my value becomes " + context.incomingDamage + " (the damage coming)";
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

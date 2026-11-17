@@ -27,4 +27,7 @@ public class PetrifyHighestFaceEffectSO : EffectSO
         if(context.targetFace != null) return context.targetFace;
         return context.targetPetrification != null ? context.targetPetrification.HighestNotStone(context.targetDie, context.targetCharge) : null;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

@@ -29,4 +29,7 @@ public class IfTargetIntendsAttackEffectSO : EffectSO
     private static bool ConditionMet(EffectContext context){
         return context.targetBrain != null && context.targetBrain.IntendsAttack;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }

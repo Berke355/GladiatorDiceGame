@@ -21,9 +21,11 @@ public class EnemyBrain : IEnemyBrain
 
     // The brain for an enemy asset: the Mimic fights with a copy of the player's die, every other enemy with intents.
     public static IEnemyBrain Create(EnemySO enemy, Entity self, Entity opponent, List<DieFace> playerDie){
-        if(enemy.mirrorsPlayerDie) return new MimicBrain(enemy, self, opponent, playerDie);
-        return new EnemyBrain(enemy, self, opponent);
+        return new EnemyBrain(enemy, self, opponent){ playerDie = playerDie };
     }
+
+    // The player's die, so intents can read it (the Mimic copies its faces).
+    public List<DieFace> playerDie;
 
     public EnemyBrain(EnemySO enemy, Entity self, Entity opponent){
         definition = enemy;
@@ -158,6 +160,8 @@ public class EnemyBrain : IEnemyBrain
             targetLastAction = flow != null ? flow.LastAction : ActionType.Attack,
             allies = Allies(),
             targetRerolls = flow != null ? flow.rerolls : null,
+            targetDie = playerDie,
+            targetCharge = flow != null ? flow.charge : null,
             summon = RaiseMinion
         };
     }

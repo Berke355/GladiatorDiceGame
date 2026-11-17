@@ -185,7 +185,7 @@ public class BattleFlow
     }
 
     public static bool IsEliteOrBoss(BattleEnemy enemy){
-        if(enemy.brain is BossBrain || enemy.brain is MimicBrain) return true;
+        if(enemy.brain is BossBrain) return true;
         EnemyBrain brain = enemy.brain as EnemyBrain;
         return brain != null && brain.definition.tier == EnemyTier.Elite;
     }

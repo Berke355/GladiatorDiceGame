@@ -24,4 +24,7 @@ public class PreventedDamageEffectSO : EffectSO
     private int Damage(EffectContext context){
         return wholeBattle ? context.preventedThisBattle * context.value : context.value + context.preventedLastEnemyTurn;
     }
+
+    // Needs the player's own systems (see EffectSO.WorksForEnemies).
+    public override bool WorksForEnemies => false;
 }
