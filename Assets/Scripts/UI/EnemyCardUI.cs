@@ -25,6 +25,8 @@ public class EnemyCardUI : MonoBehaviour
 
     public void Bind(BattleEnemy enemy, System.Action onClick){
         Enemy = enemy;
+        BossBrain boss = enemy.brain as BossBrain;
+        if(panel != null) panel.SetNotch(boss != null ? boss.definition.secondFormAt : 0f);
         int count = enemy.brain.Traits != null ? enemy.brain.Traits.Count : 0;
         traitStrip.SetActive(count > 0);
         for(int i = 0; i < traitChips.Length; i++){

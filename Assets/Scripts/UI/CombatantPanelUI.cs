@@ -56,6 +56,27 @@ public class CombatantPanelUI : MonoBehaviour
     // the same; the player's bar is cut into one step per timing mistake (ticks on both sides of the middle), so the
     // mistakes still allowed read at a glance.
     public static bool ShowPosture;
+
+    // A thin mark on the HP bar at this share of max HP (a boss's second form, unannounced), or none.
+    public void SetNotch(float share){
+        if(notch == null){
+            GameObject mark = new GameObject("Notch", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            mark.transform.SetParent(hpFill.rectTransform.parent, false);
+            notch = mark.GetComponent<Image>();
+            notch.color = new Color(0.08f, 0.06f, 0.05f, 1f);
+            notch.raycastTarget = false;
+        }
+        notch.gameObject.SetActive(share > 0f && share < 1f);
+        RectTransform rect = notch.rectTransform;
+        rect.anchorMin = new Vector2(share, 0f);
+        rect.anchorMax = new Vector2(share, 1f);
+        rect.sizeDelta = new Vector2(5f, 0f);
+        rect.anchoredPosition = Vector2.zero;
+        // Over the fill, under the numbers.
+        notch.transform.SetAsLastSibling();
+        hpText.transform.SetAsLastSibling();
+    }
+    private Image notch;
     private bool hpTextStyled;
     // The status chips' place under the HP bar; they move down by the posture bar's height while it shows.
     private float statusRowY = float.NaN;

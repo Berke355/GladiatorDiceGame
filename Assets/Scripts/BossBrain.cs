@@ -48,6 +48,8 @@ public class BossBrain : IEnemyBrain, IDisposable
     public int CutHeads => heads.FindAll(head => head.IsDead && !settledCuts.Contains(head)).Count;
     public bool RegrowthBlocked => Blocked(definition.regrowthBlockedBy);
     public bool RegenBlocked => Blocked(definition.regenBlockedBy);
+    // What the body heals at the end of its turn, before Burn and Bleed block it.
+    public int Regeneration => definition.regenPerHead * LivingHeads + (InSecondForm ? definition.secondFormRegen : 0);
 
     public BossBrain(BossSO boss, Entity self, Entity opponent, List<DieFace> playerDie){
         definition = boss;
@@ -62,8 +64,22 @@ public class BossBrain : IEnemyBrain, IDisposable
     }
 
     // The heads join the battle here, behind the boss.
+    // The second form (BossSO.secondFormAt), entered once when the body's HP falls to that share.
+    public bool InSecondForm { get; private set; }
+
+    private void CheckSecondForm(){
+        if(InSecondForm || definition.secondFormAt <= 0f || self.IsDead) return;
+        if(self.currentHP > self.maxHP * definition.secondFormAt) return;
+        InSecondForm = true;
+        foreach(BattleEnemy head in heads){
+            if(!head.IsDead && definition.secondFormHeadRage > 0) head.entity.ApplyStatus(StatusType.Rage, definition.secondFormHeadRage);
+        }
+        Debug.Log(definition.bossName + " enters its second form.");
+    }
+
     public void Bind(BattleFlow flow){
         this.flow = flow;
+        if(definition.secondFormAt > 0f) self.OnHealthChanged += CheckSecondForm;
         if(!HasHeads) return;
         for(int i = 0; i < definition.startingHeads; i++){
             GrowHead();
@@ -72,6 +88,7 @@ public class BossBrain : IEnemyBrain, IDisposable
 
     public void Dispose(){
         self.HitTaken -= OnHitTaken;
+        self.OnHealthChanged -= CheckSecondForm;
         foreach(KeyValuePair<BattleEnemy, System.Action> watcher in headWatchers){
             watcher.Key.entity.OnHealthChanged -= watcher.Value;
         }
@@ -121,7 +138,7 @@ public class BossBrain : IEnemyBrain, IDisposable
             text += "\nHeads: " + LivingHeads
                 + (definition.headCutDamage > 0 ? " (cutting one deals " + definition.headCutDamage + " to the body)" : "")
                 + (cut > 0 ? " | " + cut + " cut: " + regrowth : "")
-                + " | regenerates " + (RegenBlocked ? "0 (blocked)" : (definition.regenPerHead * LivingHeads).ToString());
+                + (Regeneration > 0 || RegenBlocked ? " | regenerates " + (RegenBlocked ? "0 (blocked)" : Regeneration.ToString()) : "");
         }
         if(definition.maxHPLossPerRound > 0){
             text += "\nScales: loses at most " + definition.maxHPLossPerRound + " HP a round (" + self.HPLossLeftThisRound + " left)";
@@ -199,9 +216,13 @@ public class BossBrain : IEnemyBrain, IDisposable
 
     // The countdown ticks at the end of each enemy turn after the one that started it, and the hit lands on the last.
     public void OnTurnEnd(){
-        // Heads: regenerate per living head, unless Burn or Bleed keeps the wounds open.
-        if(HasHeads && !RegenBlocked){
+        // Heads: regenerate per living head, unless Burn or Bleed keeps the wounds open. The second form regenerates
+        // on its own, also unless Burn or Bleed.
+        if(HasHeads && !RegenBlocked && definition.regenPerHead > 0){
             self.Heal(definition.regenPerHead * LivingHeads);
+        }
+        if(InSecondForm && !RegenBlocked && definition.secondFormRegen > 0){
+            self.Heal(definition.secondFormRegen);
         }
         if(!CountdownRunning) return;
         if(countdownJustStarted){

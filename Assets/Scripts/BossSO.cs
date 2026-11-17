@@ -53,6 +53,13 @@ public class BossSO : ScriptableObject
     // The body loses this much HP when a head is cut (it counts toward Scales), so cutting heads is a real path.
     public int headCutDamage;
     public List<StatusType> regenBlockedBy = new List<StatusType>{ StatusType.Burn, StatusType.Bleed };
+
+    // A second form (the Hydra, GDD "Hydra"): at or below this share of its max HP (0: none) the body regenerates
+    // secondFormRegen at the end of each of its turns (unless regenBlockedBy) and its living heads gain secondFormHeadRage
+    // Rage once. Not announced: the HP bar only has a notch at that share.
+    [Range(0f, 1f)] public float secondFormAt;
+    public int secondFormRegen = 1;
+    public int secondFormHeadRage = 1;
 }
 
 // A boss battle in the run and the bosses that can appear in it (one is picked per run).
