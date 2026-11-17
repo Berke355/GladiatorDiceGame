@@ -339,7 +339,7 @@ public class UIManager : MonoBehaviour
         // While the die tumbles nothing can be chosen; the buttons open when it lands (RollAnimation's end).
         bool tumbling = rollAnimation != null;
         UpdateRerollButton(!tumbling && flow != null && flow.CanReroll);
-        if(passButton != null) passButton.interactable = !tumbling;
+        if(passButton != null) passButton.interactable = !tumbling && (flow == null || flow.CanPass);
         for(int i = 0; i < actionButtons.Length; i++){
             string preview = DescribeAction(face, die, (ActionType)i);
             actionButtons[i].interactable = !tumbling && preview != "" && (flow == null || flow.CanAct(face, (ActionType)i));

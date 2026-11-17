@@ -522,11 +522,9 @@ public static partial class RunSimulator
                     face = flow.RerollFace();
                 }
                 if(flow.IsOver) break;
-                // A face that can't act now (e.g. a used potion after this turn's Change): pass the turn. A Deflect face
-                // with nothing coming would whiff: pass rather than lose the last pip of posture.
-                bool lastPip = player.MaxPosture - player.Posture <= 1;
-                if(!System.Array.Exists(new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }, a => flow.CanAct(face, a))
-                    || (face.definition.HasKeyword(FaceKeyword.Deflect) && flow.IncomingDamage == 0 && lastPip)){
+                // A face that can't act now (e.g. a used potion after this turn's Change): pass the turn. (A Deflect face
+                // can't be passed: on a quiet turn the bot rerolls it if it can, else it whiffs.)
+                if(!System.Array.Exists(new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }, a => flow.CanAct(face, a))){
                     flow.PassTurn();
                     break;
                 }

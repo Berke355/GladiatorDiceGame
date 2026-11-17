@@ -35,6 +35,7 @@ public class PlayerActionSelectState : BattleState
 
     // Ends the turn without acting (the Pass button).
     public void Pass(){
+        if(!battleManager.flow.CanPass) return;
         battleManager.flow.PassTurn();
         battleManager.flow.EndPlayerTurn();
         if(battleManager.CheckBattleOver()) return;

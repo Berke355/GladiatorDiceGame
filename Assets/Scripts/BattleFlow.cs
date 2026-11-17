@@ -461,6 +461,19 @@ public class BattleFlow
 
     // Ends the turn without an action (e.g. when the rolled face can't act): no items, traits or threats fire for an
     // action, and the rolled face keeps its Charge as if it hadn't come up. EndPlayerTurn follows as usual.
+    // A Deflect face can't be passed (GDD "Deflect"): when it lands you play it or reroll it, so a quiet turn's stance
+    // is a real risk. A stone face (no Deflect of its own) or a face that can't act at all can still be passed.
+    public bool CanPass{
+        get{
+            DieFace face = RolledFace;
+            if(face == null || !face.definition.HasKeyword(FaceKeyword.Deflect) || petrification.IsStone(face)) return true;
+            foreach(ActionType action in new[]{ ActionType.Attack, ActionType.Defense, ActionType.Magic }){
+                if(CanAct(face, action)) return false;
+            }
+            return true;
+        }
+    }
+
     public void PassTurn(){
         Passed = true;
         RerollPending = false;
