@@ -919,6 +919,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0a6679d012b26284486294f71632645f, type: 3}
   - {fileID: 21300000, guid: a0522cf1c1ec06e499f0ed0b2befbfd5, type: 3}
   - {fileID: 21300000, guid: c47fe5118bb3170449978464256e475c, type: 3}
+  inkCircle: {fileID: 21300000, guid: cf69cbc67cd67cd4aada346a822ea9c5, type: 3}
   laneSpacing: 210
   floorSpacing: 290
   bossSize: 170
@@ -1488,8 +1489,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 28, y: 28}
+  m_AnchoredPosition: {x: 0, y: 6}
+  m_SizeDelta: {x: 44, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &527275175
 CanvasRenderer:

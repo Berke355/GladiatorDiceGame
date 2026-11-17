@@ -16,6 +16,7 @@ MonoBehaviour:
   maxHP: 60
   sprite: {fileID: 21300000, guid: f87cf52660f4e704fb6e67147cac9c41, type: 3}
   spriteHeight: 1.6
+  portrait: {fileID: 21300000, guid: a60b54b5f73a4da4c80fdb35a8e86106, type: 3}
   maxHPLossPerRound: 12
   faces:
   - {fileID: 11400000, guid: d00c19d855bbff240beea212117ef10a, type: 2}

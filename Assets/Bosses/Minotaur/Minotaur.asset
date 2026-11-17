@@ -16,6 +16,7 @@ MonoBehaviour:
   maxHP: 25
   sprite: {fileID: 21300000, guid: d343e231ae3139f419df4407c1ebee86, type: 3}
   spriteHeight: 1.3
+  portrait: {fileID: 21300000, guid: 597a796aa583dfe4699b15f5b6b60581, type: 3}
   maxHPLossPerRound: 0
   faces:
   - {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
@@ -28,6 +29,10 @@ MonoBehaviour:
   staggerDamage: 8
   whileCountingDown: {fileID: 11400000, guid: 898339bef97ae39478ce9db6e656ec05, type: 2}
   headEnemy: {fileID: 0}
+  headMounts: []
+  headStates: []
+  cardTop: 1
+  mountedHeadScale: 0.65
   startingHeads: 0
   maxHeads: 3
   regrowthBlockedBy: 01000000

@@ -19,6 +19,8 @@ public class MapUI : MonoBehaviour
     public Sprite[] typeIcons;
     // The drawing tools' pictures: Pencil, Eraser, Clear.
     public Sprite[] toolIcons;
+    // A red ink circle drawn around the node the player stands on.
+    public Sprite inkCircle;
     // Floors run left to right, lanes top to bottom.
     public float laneSpacing = 210f;
     public float floorSpacing = 290f;
@@ -169,7 +171,10 @@ public class MapUI : MonoBehaviour
             ui.icon.preserveAspect = true;
             // A place already passed fades to ink.
             ui.icon.color = visited && !current && !isBoss ? new Color(0.55f, 0.48f, 0.40f, 1f) : Color.white;
-            ui.ring.enabled = false;
+            ui.ring.enabled = current && inkCircle != null;
+            ui.ring.sprite = inkCircle;
+            ui.ring.color = Color.white;
+            ui.ring.preserveAspect = true;
             if(current) rect.localScale = new Vector3(1.15f, 1.15f, 1f);
             ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);
             ui.label.color = LabelInk;
