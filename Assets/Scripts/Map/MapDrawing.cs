@@ -79,10 +79,15 @@ public class MapDrawing : MonoBehaviour
         pencilButton = MakeButton(canvas, style, "Pencil", Icon(0), at, () => Pick(Tool.Pencil));
         eraserButton = MakeButton(canvas, style, "Eraser", Icon(1), at + new Vector2(ToolStep, 0f), () => Pick(Tool.Eraser));
         MakeButton(canvas, style, "Clear", Icon(2), at + new Vector2(2f * ToolStep, 0f), ClearAll);
+        // While a tool is in hand, Cancel puts it down (picking the tool again works too, but nobody guesses that).
+        cancelButton = MakeButton(canvas, style, "Cancel", null, at - new Vector2(ToolStep, 0f), () => Pick(Tool.None));
+        TextMeshProUGUI cancelText = cancelButton.GetComponentInChildren<TextMeshProUGUI>();
+        if(cancelText != null) cancelText.color = new Color(1f, 0.55f, 0.45f, 1f);
         Pick(Tool.None);
     }
 
     private Sprite[] icons;
+    private Button cancelButton;
     private Sprite Icon(int index){ return index < icons.Length ? icons[index] : null; }
 
     private static Button MakeButton(RectTransform canvas, Button style, string label, Sprite icon, Vector2 position, UnityEngine.Events.UnityAction onClick){
@@ -129,6 +134,7 @@ public class MapDrawing : MonoBehaviour
     private void Pick(Tool picked){
         tool = tool == picked ? Tool.None : picked;
         surface.raycastTarget = tool != Tool.None;
+        if(cancelButton != null) cancelButton.gameObject.SetActive(tool != Tool.None);
         Highlight(pencilButton, tool == Tool.Pencil);
         Highlight(eraserButton, tool == Tool.Eraser);
     }

@@ -47,16 +47,6 @@ public class MapUI : MonoBehaviour
     private readonly List<GameObject> faceButtons = new List<GameObject>();
     private List<int> reachable = new List<int>();
 
-    private static readonly Color[] TypeColors = {
-        new Color(0.56f, 0.19f, 0.15f),   // Battle
-        new Color(0.80f, 0.60f, 0.20f),   // Market
-        new Color(0.47f, 0.32f, 0.70f),   // Enchanting Table
-        new Color(0.26f, 0.55f, 0.30f),   // Rest
-        new Color(0.70f, 0.12f, 0.12f),   // Boss
-        new Color(0.45f, 0.10f, 0.35f),   // Elite
-        new Color(0.22f, 0.42f, 0.66f),   // Event
-    };
-
     void Start(){
         RunManager manager = RunManager.Instance;
         run = manager.run;
@@ -105,6 +95,20 @@ public class MapUI : MonoBehaviour
         return new Vector2(left + floorSpacing * node.floor, -(node.lane - (map.lanes - 1) / 2f) * laneSpacing);
     }
 
+    // A dash and its gap, tiled along each road; DashScale stretches the 8-pixel pattern to 24 canvas units.
+    private const float DashScale = 1f / 3f;
+    private static Sprite dash;
+    private static Sprite DashSprite(){
+        if(dash != null) return dash;
+        Texture2D texture = new Texture2D(8, 2, TextureFormat.RGBA32, false){ filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Repeat };
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 2; y++) texture.SetPixel(x, y, x < 5 ? Color.white : new Color(1f, 1f, 1f, 0f));
+        }
+        texture.Apply();
+        dash = Sprite.Create(texture, new Rect(0f, 0f, 8f, 2f), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+        return dash;
+    }
+
     // Ink on the parchment: the open ways in red, the walked road dark, the rest faint.
     private static readonly Color OpenInk = new Color(0.62f, 0.12f, 0.08f, 1f);
     private static readonly Color WalkedInk = new Color(0.24f, 0.14f, 0.08f, 0.95f);
@@ -127,6 +131,10 @@ public class MapUI : MonoBehaviour
             foreach(int next in map.nodes[i].next){
                 Image line = Instantiate(lineTemplate, mapArea);
                 line.gameObject.SetActive(true);
+                // Roads are dashed ink, like a route drawn on an old map.
+                line.sprite = DashSprite();
+                line.type = Image.Type.Tiled;
+                line.pixelsPerUnitMultiplier = DashScale;
                 drawn.Add(line.gameObject);
                 Vector2 a = PositionOf(map.nodes[i]), b = PositionOf(map.nodes[next]);
                 RectTransform rect = line.rectTransform;
@@ -150,19 +158,19 @@ public class MapUI : MonoBehaviour
             bool visited = run.visitedNodes.Contains(i);
             bool canGo = reachable.Contains(i) || RunManager.Instance.CanReenterShop(i);
             bool current = i == run.mapNode;
-            Color color = TypeColors[Mathf.Clamp((int)node.type, 0, TypeColors.Length - 1)];
             // The picture is the node; its type's color only glows softly behind it (the boss keeps a full disc).
             bool isBoss = node.type == MapNodeType.Boss;
-            ui.disc.color = isBoss ? (visited && !current ? Color.Lerp(color, Color.black, 0.55f) : color) : new Color(color.r, color.g, color.b, 0.28f);
-            Sprite picture = node.type == MapNodeType.Boss && boss != null && boss.sprite != null ? boss.sprite
+            // No discs or rings behind the pictures (the user: they clash with the parchment); the open nodes breathe.
+            ui.disc.enabled = false;
+            Sprite picture = isBoss && boss != null && (boss.portrait != null || boss.sprite != null) ? (boss.portrait != null ? boss.portrait : boss.sprite)
                 : (int)node.type < typeIcons.Length ? typeIcons[(int)node.type] : null;
             ui.icon.sprite = picture;
             ui.icon.enabled = picture != null;
             ui.icon.preserveAspect = true;
             // A place already passed fades to ink.
             ui.icon.color = visited && !current && !isBoss ? new Color(0.55f, 0.48f, 0.40f, 1f) : Color.white;
-            ui.ring.enabled = canGo || current;
-            ui.ring.color = current ? WalkedInk : new Color(0.95f, 0.70f, 0.20f, 1f);
+            ui.ring.enabled = false;
+            if(current) rect.localScale = new Vector3(1.15f, 1.15f, 1f);
             ui.label.text = node.type == MapNodeType.Boss && boss != null ? boss.bossName : TypeName(node.type);
             ui.label.color = LabelInk;
             CanvasGroup group = ui.GetComponent<CanvasGroup>();

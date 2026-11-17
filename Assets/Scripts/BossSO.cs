@@ -12,6 +12,8 @@ public class BossSO : ScriptableObject
     // The battle sprite: facing left, pivot at the feet. spriteHeight is its height in human heights (1 = a gladiator).
     public Sprite sprite;
     public float spriteHeight = 1f;
+    // The map's picture of the act's boss (a framed portrait); the battle sprite stands in without one.
+    public Sprite portrait;
     // The most HP the boss can lose in a round (Scales). 0: no limit.
     public int maxHPLossPerRound;
     // The 6 faces of its die; a face listed twice comes up twice as often.
